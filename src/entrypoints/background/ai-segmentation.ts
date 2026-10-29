@@ -1,4 +1,5 @@
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
+import { z } from "zod"
 import { db } from "@/utils/db/dexie/db"
 import { Sha256Hex } from "@/utils/hash"
 import { logger } from "@/utils/logger"
@@ -7,12 +8,18 @@ import {
   canProviderRefGenerateText,
   getProviderCacheIdentity,
 } from "@/utils/providers/provider-ref"
-import { parseSimplifiedVttToFragments } from "@/utils/subtitles/processor/ai-segmentation"
+import {
+  isSegmentationAligned,
+  parseSimplifiedVttToFragments,
+} from "@/utils/subtitles/processor/ai-segmentation"
 import { generateTextForProviderRef } from "./background-stream"
 
 const VTT_CODE_BLOCK_RE = /```vtt\n?/g
 const CODE_BLOCK_RE = /```\n?/g
 const THINK_TAG_RE = /<\/think>([\s\S]*)/
+const inputFragmentsSchema = z.array(
+  z.object({ s: z.number().nonnegative(), e: z.number().nonnegative(), t: z.string() }),
+)
 
 interface AiSegmentSubtitlesData {
   jsonContent: string
@@ -58,17 +65,18 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
     throw new Error(`Provider cannot generate text; AI segmentation needs a promptable model`)
   }
 
-  // The ref is resolved on the content side, where a session already holds one:
+  const source = inputFragmentsSchema
+    .parse(JSON.parse(jsonContent))
+    .map(({ s, e, t }) => ({ start: s, end: e, text: t }))
 
   const cacheKey = Sha256Hex(Sha256Hex(jsonContent), getProviderCacheIdentity(providerRef))
   const cached = await db.aiSegmentationCache.get(cacheKey)
   if (cached) {
-    if (parseSimplifiedVttToFragments(cached.result).length > 0) {
+    if (isSegmentationAligned(source, parseSimplifiedVttToFragments(cached.result))) {
       logger.info("[Background] AI subtitle segmentation cache hit")
       return cached.result
     }
-    // Entry written before results were parse-checked; drop it and regenerate
-    // instead of serving the same unusable VTT on every attempt.
+    // Old caches can contain parseable but shifted/missing cues too.
     await db.aiSegmentationCache.delete(cacheKey)
   }
 
@@ -89,8 +97,12 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
     // Parse-check before caching: a cached result that yields no cues would be
     // served on every later attempt for this chunk, pinning the failure until
     // the provider's cache identity changes.
-    if (parseSimplifiedVttToFragments(result).length === 0) {
+    const segmented = parseSimplifiedVttToFragments(result)
+    if (segmented.length === 0) {
       throw new Error("AI segmentation returned an unparseable result")
+    }
+    if (!isSegmentationAligned(source, segmented)) {
+      throw new Error("AI segmentation does not match the source timeline")
     }
 
     await db.aiSegmentationCache.put({

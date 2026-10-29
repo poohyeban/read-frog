@@ -1,6 +1,6 @@
 {
   "name": "read-frog-lite",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "description": "Independent Chromium translation, native subtitles and user-configured audio services",
   "type": "module",

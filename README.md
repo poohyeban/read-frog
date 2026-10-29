@@ -1,12 +1,12 @@
 # Read Frog Lite
 
-**Read Frog Lite 0.2.2 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
+**Read Frog Lite 0.2.3 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
 
 普通使用者可以直接下载扩展安装包，**不需要下载源码或在个人电脑编译**。翻译、语音合成和语音转录服务均由用户选择；扩展不提供内置免费额度，也不通过 Read Frog 官方服务器中转请求。
 
-[直接下载 v0.2.2 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.2/read-frog-lite-0.2.2-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
+[直接下载 v0.2.3 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.3/read-frog-lite-0.2.3-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
 
-0.2.2 在「内置 LLM 提供商」中加入 DeepSeek，接入专用适配器，修复词典 / 长难句的 JSON 请求协议。OpenAI、DeepSeek、Gemini、Ollama 恢复各自的本地品牌图标；网页和字幕按钮的青蛙 Logo 也内嵌打包。0.2.1 的 DevTools 脱敏诊断继续保留。详见[本版说明](docs/restore/RELEASE-0.2.2.md)。
+0.2.3 修复长字幕在拖动进度后漏译、扩展重载后字幕层未清理，以及切回标签页时主题读取产生的未捕获异常。AI 智能断句会核对原字幕的文本顺序和时间边界，错位结果回退本地断句，旧错位缓存也会失效。保留 0.2.2 的内置 DeepSeek、专用适配器和本地图标。详见[本版说明](docs/restore/RELEASE-0.2.3.md)。
 
 ## 目录
 
@@ -48,7 +48,7 @@
 ### 首次安装：无需编译
 
 1. 打开本 Fork 的 [Releases](https://github.com/poohyeban/read-frog/releases)，选择所需版本，或使用上方的直接下载链接。
-2. 下载 Assets 中的 **`read-frog-lite-0.2.2-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
+2. 下载 Assets 中的 **`read-frog-lite-0.2.3-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
 3. 解压扩展 ZIP，将扩展目录保存在固定位置。Release 下载不受 Actions Artifact 的 30 天保留期限制。
 4. Chrome 打开 `chrome://extensions`，Edge 打开 `edge://extensions`，开启开发者模式，选择“加载已解压的扩展程序”。
 5. 选择**直接包含 `manifest.json` 的目录**，确认名称为 Read Frog Lite。打开扩展设置配置服务，再刷新要翻译的网页。
@@ -346,7 +346,7 @@ git push origin v0.2.0
 
 从 0.2.1 起，Action 的运行错误只在开发者控制台记录，不在面板显示红色错误框；缺少 Provider 等配置提示仍会显示。失败后可以切换服务或点击重试。
 
-1. 更新已加载的扩展目录，在 `chrome://extensions` 点击重新加载，确认版本为 0.2.2，然后刷新 YouTube 或普通网页。
+1. 更新已加载的扩展目录，在 `chrome://extensions` 点击重新加载，确认版本为 0.2.3，然后刷新 YouTube 或普通网页。
 2. 在出问题的网页按 F12，打开 **Console**，开启 **Preserve log**。确认没有启用会隐藏扩展消息的 **Selected context only**，过滤 `[Read Frog Lite][stream]`。
 3. 重新选词，打开词典或长难句分析。复制该前缀后的 JSON，附上触发操作及浏览器版本即可。
 4. 如果页面没有该日志，在 `chrome://extensions` 打开 Read Frog Lite 的 **Service worker → Inspect**，保持窗口打开再复现，复制同一前缀日志。
@@ -354,6 +354,16 @@ git push origin v0.2.0
 日志包含请求编号、失败阶段、HTTP 状态、请求输出格式及固定错误分类；页面与后台使用相同 requestId。`httpStatus: 400` + `responseFormat: json_schema` 可帮助定位结构化协议；`reason: no_receiver` 则表示扩展流端口未找到接收端。没有捕获到的字段会省略，不推测 HTTP 状态。
 
 诊断仅输出到本机 Console，不上传、不持久化；不会记录 Key、鉴权头、完整地址、Prompt、选中文字或原始响应。请勿提供整个 Network / HAR、完整控制台导出或配置文件。实现边界、官方 DeepSeek 适配差异与测试见[定位记录](docs/restore/DIAGNOSIS-ACTION-ICONS.md)。
+
+### 字幕等待、AI 断句与扩展更新
+
+- **“翻译中”之后能出现结果**：通常是模型排队、请求耗时或首次预取。AI 断句还会增加一次请求；本版没有缩短原请求超时，也不能保证第三方模型的响应速度。
+- **拖到长字幕中段一直等待**：0.2.3 按字幕结束时间判断待翻译范围，避免一条仍在显示的字幕因为开始时间较早而被漏出队列。
+- **AI 断句不同步**：模型只能按顺序合并完整原片段、补标点，开始 / 结束必须来自对应原片段；相对时间、秒与毫秒混用、遗漏或改写文本等会触发原时间轴上的本地回退。已有错位缓存会在读取时删除并重新生成，无需清空所有本地配置。原始平台字幕本身的时间错误不在此校验的修复范围内。
+- **`Extension context invalidated`**：更新或重载扩展会让旧网页脚本失效。0.2.3 在视频更新 / 标签页可见性事件中清理旧字幕层并恢复原生字幕，同时处理主题存储读取的失败。升级后仍应刷新已打开的视频页，让浏览器注入新版本脚本；本版不自动刷新用户网页。
+- **`Receiving end does not exist`**：这是另一条后台消息错误。已用 0.2.2 生产包确认，切到浏览器内置页或扩展更新后的旧页时，语言检测消息可能找不到内容脚本；上游消息库的回调也没有读取 `runtime.lastError`。本次按原要求只定位此项，没有顺带修改后台消息库。它不等同于模型 API 请求失败。
+
+开发回归入口：`e2e/subtitles.spec.mjs` 运行真实生产扩展，使用可控 YouTube 播放器 / 字幕及本地 HTTP 模型响应，覆盖跨批次翻译、长字幕跳转、扩展重载、刷新恢复，以及正确 / 错位 AI 断句结果。该测试不消耗用户 API 额度，也不代表已验证 YouTube 当前线上播放器或用户的 DeepSeek 账户。
 
 ## 来源、许可证与工程记录
 
