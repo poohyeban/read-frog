@@ -11,6 +11,21 @@ const icons = {
     height: 24,
     body: '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6.371c0 4.418 -2.239 6.629 -5 6.629"></path><path d="M4 6.371h7"></path><path d="M5 9c0 2.144 2.252 3.908 6 4"></path><path d="M12 20l4 -9l4 9"></path><path d="M19.1 18h-6.2"></path><path d="M6.694 3l.793 .582"></path></g>',
   },
+  "streamline-color:ai-edit-spark-flat": {
+    width: 24,
+    height: 24,
+    body: '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"></path><path d="M13.5 6.5l4 4"></path></g>',
+  },
+  "streamline-color:dictionary-language-book-flat": {
+    width: 24,
+    height: 24,
+    body: '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4v16h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12"></path><path d="M19 16h-12a2 2 0 0 0 -2 2"></path><path d="M9 8h6"></path></g>',
+  },
+  "streamline-color:search-visual-flat": {
+    width: 24,
+    height: 24,
+    body: '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6.371c0 4.418 -2.239 6.629 -5 6.629"></path><path d="M4 6.371h7"></path><path d="M5 9c0 2.144 2.252 3.908 6 4"></path><path d="M12 20l4 -9l4 9"></path><path d="M19.1 18h-6.2"></path><path d="M6.694 3l.793 .582"></path></g>',
+  },
   "tabler:adjustments-horizontal": {
     width: 24,
     height: 24,

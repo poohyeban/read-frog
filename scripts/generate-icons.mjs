@@ -4,7 +4,17 @@ import path from "node:path"
 import React from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 const tabler = await import("@tabler/icons-react")
-const names = new Set(["garden:translation-exists-stroke-16", "ri:translate"])
+// Keep persisted built-in Action names, using bundled MIT Tabler artwork.
+const aliases = {
+  "streamline-color:dictionary-language-book-flat": "book-2",
+  "streamline-color:search-visual-flat": "language",
+  "streamline-color:ai-edit-spark-flat": "pencil",
+}
+const names = new Set([
+  "garden:translation-exists-stroke-16",
+  "ri:translate",
+  ...Object.keys(aliases),
+])
 function visit(dir) {
   for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
     const file = path.join(dir, item.name)
@@ -20,7 +30,7 @@ function visit(dir) {
 visit("src")
 const icons = {}
 for (const name of [...names].sort()) {
-  const slug = name.startsWith("tabler:") ? name.split(":")[1] : "language"
+  const slug = aliases[name] ?? (name.startsWith("tabler:") ? name.split(":")[1] : "language")
   const symbol =
     "Icon" +
     slug

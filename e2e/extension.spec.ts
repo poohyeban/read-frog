@@ -176,6 +176,17 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
     })
     await page.keyboard.press("Alt+t")
     await expect(page.getByText(translated, { exact: true }).first()).toBeVisible()
+    const providerIcon = page
+      .getByRole("img", { name: "Local regression API", exact: true })
+      .first()
+    await expect(providerIcon).toHaveAttribute("src", /^data:image\/svg\+xml/)
+    await expect
+      .poll(() =>
+        providerIcon.evaluate(
+          (element: HTMLImageElement) => element.complete && element.naturalWidth > 0,
+        ),
+      )
+      .toBe(true)
     await page.keyboard.press("Escape")
     await page
       .getByRole("textbox", { name: "Editor" })

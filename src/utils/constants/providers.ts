@@ -8,7 +8,7 @@ import type {
 } from "@/types/config/provider"
 import type { Theme } from "@/types/config/theme"
 import { camelCase } from "case-anything"
-import customProviderLogo from "@/assets/providers/custom-provider.svg?url&no-inline"
+import customProviderLogo from "@/assets/providers/custom-provider.svg?inline"
 import {
   API_PROVIDER_TYPES,
   DEDICATED_LLM_PROVIDER_TYPES,
