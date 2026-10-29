@@ -125,7 +125,7 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
       evidence.cases.push(entry)
       console.log("LOADER_CASE", JSON.stringify({ browser: evidence.browser, ...entry }))
     }
-    const page = await context.newPage()
+    let page = await context.newPage()
     observe(page)
     for (let i = 0; i < 6; i++) {
       await clearErrors()
@@ -149,6 +149,7 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
     await capture("back navigation", page)
     await clearErrors()
     await manager.bringToFront()
+    const discardedURL = page.url()
     const discardResult = await worker.evaluate(async (url) => {
       const tab = (await chrome.tabs.query({})).find((tab) => tab.url === url)
       try {
@@ -157,7 +158,16 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
       } catch (error) {
         return { error: error.message }
       }
-    }, page.url())
+    }, discardedURL)
+    if (discardResult.discarded) {
+      await worker.evaluate(
+        async (id) => chrome.tabs.update(id, { active: true }),
+        discardResult.id,
+      )
+      await expect.poll(() => context.pages().some((p) => p.url() === discardedURL)).toBe(true)
+      page = context.pages().find((p) => p.url() === discardedURL)
+      observe(page)
+    }
     await page.bringToFront()
     await page.waitForTimeout(800)
     await capture("discard and reactivate", page, { discardResult })
