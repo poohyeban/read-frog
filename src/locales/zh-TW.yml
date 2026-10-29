@@ -58,8 +58,6 @@ options:
     leaveDescription: 你可以繼續編輯並修正問題，或捨棄尚未儲存的變更。
     keepEditing: 繼續編輯
     discard: 捨棄未儲存變更
-  batchSavings:
-    savedCost: 約省 $1% API 費用
   commandPalette:
     placeholder: 搜尋設定…
     noResults: 找不到設定
@@ -70,8 +68,8 @@ options:
     features: 功能
   apiProviders:
     title: API 提供者
-    pageDescription: 接入 Read Frog 呼叫的 AI 服務，並為每項功能指定使用哪一個。
-    description: 新增 Read Frog 可以呼叫的提供者。內建 20 多個，也可以新增相容 Chat Completions 的自訂 API 和 Open Responses 自訂 API。
+    pageDescription: 接入 Read Frog Lite 呼叫的 AI 服務，並為每項功能指定使用哪一個。
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
     configTitle: 提供者設定
     addProvider: 新增提供者
     setApiKeyWarning:
@@ -141,36 +139,9 @@ options:
         customChatComplete: 自訂 Chat Complete
       description:
         openai: 提供 GPT-4o 等模型
-        azure: 透過 Azure 部署使用 OpenAI 模型
-        deepseek: 建議在中國使用
-        openrouter: 多個 LLM 提供者的統一介面，按使用量付費
         ollama: 在本機執行大型語言模型，確保完整隱私
         google: 具有先進推理能力的 Google 旗艦 AI 模型
-        anthropic: 以安全性和推理能力著稱的 Claude 模型
-        xai: 馬斯克的 AI 公司，提供具有即時資料存取能力的 Grok 模型
-        atlascloud: 統一的 OpenAI 相容模型平台，提供 DeepSeek、Kimi、Qwen、豆包、GLM 等較新模型
-        jalapenocloud: 頂尖團隊都在用的企業級 AI，現在為你而來！
-        siliconflow: 針對中國和國際模型的高效能推理平台
-        tensdaq: 革命性競價 AI MaaS 平台，價格由市場供需決定，告別高成本固定定價
         openaiCompatible: 連接與 OpenAI Chat Completions API 相容的自訂端點
-        openResponses: 連接與 Open Responses API 相容的自訂端點
-        deeplx: 非官方 DeepL API
-        deepl: 官方 DeepL API
-        bedrock: AWS 託管的企業級基礎模型服務
-        groq: 專注於超高速 LLM 推理速度的專用硬體
-        deepinfra: 為熱門開源模型提供經濟實惠的雲端推理
-        mistral: 專注於高效多語言模型的歐洲 AI 公司
-        togetherai: 用於執行和微調開源模型的協作平台
-        cohere: 具有強大多語言和 RAG 能力的企業級 AI
-        fireworks: 可用於正式環境的開源模型推理平台
-        cerebras: 超快速 AI 推理，適合快速翻譯和文字分析
-        replicate: 存取多樣化開源模型，適合專業翻譯任務
-        perplexity: 即時知識增強 AI，提供依脈絡翻譯和閱讀輔助
-        volcengine: 字節跳動旗下雲端 AI 平台，提供適合翻譯與閱讀的豆包系列大型語言模型
-        minimax: MiniMax AI 平台，提供適合文字產生的先進 MiniMax-M2 系列大型語言模型
-        alibaba: 阿里雲通義千問系列模型，具備先進的推理和多語言能力
-        moonshotai: 月之暗面 Kimi 系列模型，具備強大的推理和長上下文能力
-        huggingface: Hugging Face 推理 API，提供數千種開源模型存取
     apiKey:
       showAPIKey: 顯示 API 金鑰
       getAPIKey: 取得 API 金鑰
@@ -187,28 +158,9 @@ options:
       features:
         pageTranslation: 網頁翻譯
         selectionTranslation: 選取文字翻譯
-        inputTranslation: 輸入翻譯
-        videoSubtitles: 影片字幕
-        noteSuggestion: 猜你想存
       descriptions:
         pageTranslation: 翻譯整個網頁，雙語對照或直接取代原文。
         selectionTranslation: 透過劃詞工具列翻譯你選取的文字。
-        inputTranslation: 在送出前翻譯你寫在輸入框裡的內容。
-        videoSubtitles: 翻譯影片播放器中隨播放出現的字幕。
-        noteSuggestion: 選取文字翻譯後，推薦值得存入筆記庫的詞條。
-    languageDetection:
-      title: 語言偵測
-      description: 影響自動翻譯語言偵測和朗讀語音選擇的準確性。
-      mode:
-        basic: 基礎
-        llm: LLM
-      provider:
-        label: 偵測提供者
-        placeholder: 選擇提供者
-      status:
-        noProviders: 請先設定 LLM 提供者
-        basicRecommend: 建議啟用 LLM
-        llmEnabled: LLM 偵測已啟用
     aiContentAware:
       title: AI 智慧上下文翻譯
       description: 把網頁或影片的上下文提供給 AI，讓翻譯更準確
@@ -222,7 +174,7 @@ options:
     unsupported: 無法比對這個位址。不支援連接埠，也不支援 http 與 https 以外的協定。
   preference:
     title: 偏好設定
-    pageDescription: 設定陪讀蛙的外觀與生效範圍，以及設定檔的同步與備份方式。
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: 外觀與語言
       theme:
@@ -258,32 +210,19 @@ options:
         urlPattern: URL 模式
     config:
       title: 設定
-      googleDrive:
-        title: Google Drive 雲端同步
-        description: 遠端設定較新時下載，本機設定較新時上傳；術語庫走單獨一個檔案，逐條合併而不是整份覆蓋。
       manualSync:
         title: 手動設定同步
-        description: 手動匯入匯出你的設定，術語庫也一併帶走
+        description: Import or export your local configuration.
         exportSuccess: 設定匯出成功
-      backup:
-        title: 設定備份
-        description: 如果設定有變更，每小時會自動建立備份。可在此還原先前的設定。（最多 $1 個備份）
       reset:
         title: 重設設定
-        description: 將所有設定重設為預設，詞彙庫不受影響
+        description: Reset local configuration to its defaults.
         dialog:
           title: 重設設定
           trigger: 重設設定
           confirm: 確認
           cancel: 取消
-          description: 此操作將清空您所有的自訂設定，並重設為預設值。詞彙庫會保留 — 如需刪除請至詞彙庫頁面操作。請確認。
-    userExperience:
-      beta:
-        title: Beta 體驗
-        description: 開啟可能還不穩定的實驗性功能
-      analytics:
-        title: 幫助改進使用者體驗
-        description: 透過協助我們定位 bug、最佳化介面配置等改善陪讀蛙
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: 快速鍵
     pageDescription: 設定閱讀時觸發翻譯、朗讀和 AI 指令的按鍵。
@@ -297,19 +236,10 @@ options:
     selectionTranslation:
       title: 選取文字翻譯
       description: 翻譯選取的文字。
-    subtitlesToggle:
-      title: 字幕翻譯
-      description: 開啟或關閉影片的翻譯字幕。
     nodeTranslation:
       title: 滑鼠停留翻譯
       description: 滑鼠停留或長按段落，只翻譯這一段。
       customDescription: 滑鼠停留在段落上時按下這組按鍵，即可翻譯這一段。
-    translationHub:
-      title: 翻譯中心
-      description: 在新分頁中開啟翻譯中心。
-    selectionSpeak:
-      title: "選取文字朗讀"
-      description: "朗讀選取的文字，再按一次停止。"
     actions:
       title: "AI 指令"
       description: "對選取的文字執行 AI 指令。自訂指令預設沒有快速鍵，在這裡設定即可。"
@@ -317,37 +247,6 @@ options:
     turnOn: "去開啟"
     clash: "與「$1」的快速鍵相同，請修改其中一個。"
     taken: "$1 已被「$2」使用。"
-  inputTranslation:
-    title: 輸入翻譯
-    trigger:
-      title: 觸發方式
-      enable:
-        description: 在任何輸入欄位中快速連按 3 次空白鍵，即可翻譯你輸入的內容。
-      threshold:
-        title: 觸發門檻值
-        description: 相鄰兩次按鍵之間最多可間隔多少毫秒。經常觸發不了就調大，打字時誤觸發就調小。
-    languages:
-      title: 翻譯語言
-      pair:
-        description: 輸入的文字要以哪種語言辨識，又要翻譯成哪種語言。兩側都可以跟隨你翻譯網頁時使用的來源語言與目標語言。
-      cycle:
-        title: 每次翻譯時交換方向
-        description: 每次觸發都會交換這兩種語言，再觸發一次就能把文字換回你輸入時的語言。
-  floatingButton:
-    title: 懸浮按鈕
-    enable:
-      title: 啟用懸浮按鈕
-      description: 在網頁上顯示懸浮按鈕，快速存取陪讀蛙功能
-    display:
-      side:
-        title: 按鈕位置
-        description: 選擇懸浮按鈕停靠在頁面的哪一側
-      disabledSites:
-        title: 停用網站
-        description: 設定需要停用懸浮按鈕的網站
-    clickAction:
-      title: 點選行為
-      description: 選擇點選懸浮按鈕時執行的操作
   selectionToolbar:
     title: 選取工具列
     pageDescription: 設定選取文字時出現哪些操作，以及工具列在哪些網站顯示。
@@ -360,9 +259,6 @@ options:
       translate:
         title: 翻譯
         description: 在工具列中顯示翻譯按鈕
-      noteSuggestion:
-        title: 猜你想存
-        description: 使用 AI 供應商進行劃詞翻譯後，推薦可存入筆記庫的詞條
     display:
       title: 顯示
       opacity:
@@ -384,17 +280,11 @@ options:
       providerDisabled: 所選提供者已被停用
       providerUnavailable: 所選提供者無法使用
     customActions:
-      title: 自訂 AI 指令
+      title: AI explanations
       description: 為選取文字新增自訂的結構化 AI 指令
       form:
         selectProvider: 選擇提供者
         defaultFieldName: 結果
-        layout:
-          title: 版面
-          description: 結果在彈出視窗中的顯示方式。使用 HTML + Liquid，欄位會隨回答串流填入。
-        notebase:
-          title: 筆記庫連線
-          description: 將這個指令的結構化結果儲存到遠端筆記庫。
       templates:
         dialogTitle: 選擇範本
         dialogDescription: 選擇範本以快速建立新的 AI 指令，或從空白開始。
@@ -550,35 +440,6 @@ options:
           hardLabel: "難點"
           trunkLabel: "只看主幹"
           slashesLabel: "斷句"
-        improveWriting:
-          name: "改善寫作"
-          description: "像老師一樣批改：標出錯誤和不道地的表達，依場合給出修改後的版本"
-          fieldOriginal: "原文"
-          fieldSetting: "場合"
-          fieldAnnotations: "標註"
-          fieldImproved: "修改後"
-          fieldSummary: "總評"
-          types:
-            spelling: "拼寫"
-            grammar: "文法"
-            punctuation: "標點"
-            wordChoice: "用詞"
-            logic: "邏輯"
-            unnatural: "不道地"
-            register: "得體"
-            clarity: "清晰"
-            good: "亮點"
-          tiers:
-            error: "錯誤"
-            awkward: "欠妥"
-            good: "亮點"
-          hideFixesLabel: "藏答案"
-          hiddenHintLabel: "先自己想想怎麼改，再看答案。"
-          showImprovedLabel: "顯示修改後版本"
-          improvedLabel: "修改後"
-          copyLabel: "複製"
-          unchangedLabel: "與原文相同，無需修改"
-          removeLabel: "刪掉"
         blank:
           name: 空白
           description: 從空白指令開始建立
@@ -587,18 +448,9 @@ options:
             選取文字：{{selection}}
             段落：{{paragraphs}}
             目標語言：{{targetLanguage}}
-  advanced:
-    glossary:
-      title: 術語庫
-      enable:
-        title: 啟用
-        description: 把命中的術語一併傳給 LLM，讓它照你的寫法翻譯。術語庫是隨提示詞一起送出的，所以只對執行於 LLM 提供者的功能生效。
-      library:
-        title: 你的術語庫
-        description: 每個術語庫都有各自的術語和各自的網站清單，所以工作用的那套術語不會跟著你跑到其他地方。
   contextMenu:
     title: 右鍵選單
-    pageDescription: 控制瀏覽器右鍵選單裡的 Read Frog 選項。
+    pageDescription: 控制瀏覽器右鍵選單裡的 Read Frog Lite 選項。
     demoImageAlt: 右鍵選單示範
     enable:
       title: 啟用右鍵翻譯
@@ -675,10 +527,6 @@ options:
       title: 自訂網頁提示詞
       description: 自訂不同類型的提示詞，可以在翻譯時自行調整提示詞類型。提示詞表示以使用者身分傳送給 LLM 的文字。
       managePrompts: 管理提示詞
-      communityPrompts: 取得或分享社群提示詞
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/820
-      variableReference: 變數詳解
-      variableReferenceUrl: https://readfrog.app/zh-TW/docs/page-translation/prompts/variables
       addPrompt: 新增提示詞
       default: 通用
       builtIn: 內建
@@ -808,61 +656,6 @@ options:
       searchPlaceholder: 依 id、描述或網址模式搜尋
       showMore: 顯示更多
       count: 顯示 $1 / $2 條規則
-  tts:
-    title: 文字轉語音
-    voice:
-      language:
-        title: 語言語音
-        description: 先選擇一種語言，再挑選朗讀它時使用的語音。重設會換回陪讀蛙為該語言選定的語音。
-      fallback:
-        title: 備用語音
-        description: 你還沒有單獨指定語音的語言，都用這個語音朗讀。
-    speech:
-      rate:
-        title: 語速
-        description: 相對語音本身的語速快多少或慢多少，範圍 -100 到 100 個百分點。
-      pitch:
-        title: 音高
-        description: 相對語音本身的音高高多少或低多少，範圍 -100 到 100 赫茲。
-      volume:
-        title: 音量
-        description: 相對語音本身的音量大多少或小多少，範圍 -100 到 100 個百分點。
-  videoSubtitles:
-    title: 影片字幕
-    preference:
-      enable:
-        title: 開啟影片字幕
-        description: 在 YouTube、X 和 Netflix 的影片播放器控制列加上翻譯按鈕。
-      autoStart:
-        title: 打開影片就翻譯
-        description: 影片載入完成後自動開始翻譯字幕，不用再點按鈕。
-      aiSegmentation:
-        title: AI 智慧斷句
-        description: 讓 AI 把字幕重新切成完整句子，會增加翻譯回應時間。需要較強的 LLM，弱模型可能漏句或錯位。
-    aiQuota:
-      title: AI 字幕額度
-      description: AI 利用語音轉文字技術取得任何影片的準確字幕
-    style:
-      title: 字幕樣式
-      description: 顯示模式、位置、字型、顏色和背景，都對著預覽調
-      customCSS:
-        title: 自訂 CSS
-        description: 在上面的字型和顏色之上，為字幕行追加 CSS
-    customPrompts:
-      title: 自訂字幕提示詞
-      description: 字幕翻譯專用的提示詞範本，與網頁翻譯提示詞分開
-    subtitlesQueue:
-      requestQueueConfig:
-        title: 翻譯速率
-      batchQueueConfig:
-        title: 批次翻譯
-        description: 設定批次翻譯時的字元數限制和最大字幕條數（僅對大型語言模型翻譯有效）
-    cache:
-      clearCache:
-        title: 清除 AI 斷句快取
-        description: 已儲存的斷句結果，看過的影片不用重新斷句
-side:
-  targetLang: 目標語言
 translateService:
   builtInModels: 內建模型
   llmModels: 大語言模型
@@ -872,20 +665,14 @@ translatePrompt:
   description: 選擇在翻譯時使用的提示詞。可在選項頁面新增或修改自訂提示詞
 noAPIKeyConfig:
   warning: 如果想要使用 AI 模型，請先在選項頁面設定 API 金鑰
-languageDetection:
-  llmFailed: LLM 語言偵測失敗，已改用基礎偵測
 translation:
   sameLanguage: 來源語言和目標語言必須不同
   extensionContextInvalidated: 擴充功能已更新，請重新整理此頁面後再試一次。
-speak:
-  languageDetectionFallback: 已改用本機語言偵測
-  languageDetectionSettingsHint: 可在設定中更換可用的大型語言模型，或選擇本機偵測。
 action:
   copy: 複製
   copied: 已複製
   regenerate: 重新產生
   viewContextDetails: 前後文
-  customizeCustomAction: 自訂「$1」動作
   contextDetailsTitleLabel: 標題
   contextDetailsParagraphsLabel: 段落內容
   translation: 翻譯
@@ -903,11 +690,6 @@ hotkey:
   backtick: 反引號
   clickAndHold: 點選並按住
   custom: 自訂快速鍵
-translationHub:
-  searchLanguages: 搜尋語言…
-  noLanguagesFound: 找不到語言
-  translationFailed: 翻譯失敗
-  translationFailedFallback: 翻譯失敗
 languages:
   eng: 英語
   cmn: 簡體中文
@@ -1088,3 +870,10 @@ languages:
   wls: 瓦利斯語
   rar: 庫克群島毛利語
   hif: 斐濟印地語
+side:
+  targetLang: 目標語言
+translationHub:
+  searchLanguages: 搜尋語言…
+  noLanguagesFound: 找不到語言
+  translationFailed: 翻譯失敗
+  translationFailedFallback: 翻譯失敗

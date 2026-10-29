@@ -11,26 +11,6 @@ import { resolveProviderRefForCapability } from "@/utils/providers/provider-regi
 import { cn } from "@/utils/styles/utils"
 import { buildSectionLink } from "../command-palette/section-scroll"
 
-/**
- * Per-feature "is this running on an LLM provider" status, with the way to go
- * fix it.
- *
- * Used by every setting that only works on a prompt-driven provider. Each
- * feature picks its own provider, so a single global verdict would be wrong — a
- * user can easily have a setting working on selection translation while page
- * translation quietly ignores it.
- *
- * The resolution is capability-based on purpose, and two comments' worth of
- * history are load-bearing:
- *   - Built-in AI is synthesized by the provider registry and is never a row in
- *     `providersConfig`, so looking the id up there reports it unconfigured
- *     forever.
- *   - `kind === "system"` answers "is it prompt-driven", not "does it run", so
- *     on its own it reported every feature configured for accounts whose plan
- *     funds none of them, signed-out guests included.
- *
- * Renders as `span`s so it can sit inside a `ConfigItem` description.
- */
 export function LlmFeatureStatusList({
   featureKeys,
   className,

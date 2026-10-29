@@ -3,9 +3,8 @@ import type { SelectionSession, SelectionToolbarTranslateRequestSlice } from "..
 import type { SelectionPopoverActions } from "@/components/ui/selection-popover"
 import type { SelectionToolbarInlineError } from "@/components/ui/selection-popover/inline-error"
 import type { BackgroundTextStreamSnapshot, ThinkingSnapshot } from "@/types/background-stream"
-import type { LLMProviderConfig, TranslateProviderConfig } from "@/types/config/provider"
+import type { LLMProviderConfig } from "@/types/config/provider"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
-import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
 import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { useAtomValue, useSetAtom } from "jotai"
 import {
@@ -28,13 +27,12 @@ import {
 import { SelectionToolbarErrorAlert } from "@/components/ui/selection-popover/selection-toolbar-error-alert"
 import { SelectionToolbarFooterContent } from "@/components/ui/selection-popover/selection-toolbar-footer-content"
 import { SelectionToolbarTitleContent } from "@/components/ui/selection-popover/selection-toolbar-title-content"
-import { isLLMProviderConfig, isTranslateProviderConfig } from "@/types/config/provider"
+import { isTranslateProviderConfig } from "@/types/config/provider"
 import { configFieldsAtomMap, writeConfigAtom } from "@/utils/atoms/config"
 import { buildFeatureProviderPatch } from "@/utils/constants/feature-providers"
 import { streamBackgroundText } from "@/utils/content-script/background-stream-client"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
-import { translateTextCore } from "@/utils/host/translate/translate-text"
 import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
 import { getOrGenerateWebPageSummary } from "@/utils/host/translate/webpage-summary"
 import { onMessage } from "@/utils/message"
@@ -59,12 +57,6 @@ interface SelectionTranslatePendingOpenRequest {
   session: SelectionSession
 }
 
-/**
- * Page context for the selection prompt. `summaryProviderRef` is the provider
- * the (cached, smart-context-gated) page summary runs on — hosted and local
- * LLM refs both work; pass null to skip the summary while keeping the raw
- * context (pure translate providers, hosted tier unavailable).
- */
 async function getSelectionWebPagePromptContext(
   summaryProviderRef: PromptableProviderRef | null,
   enableAIContentAware: boolean,
@@ -75,12 +67,7 @@ async function getSelectionWebPagePromptContext(
   }
 
   const webSummary = summaryProviderRef
-    ? await getOrGenerateWebPageSummary(
-        webPageContext,
-        summaryProviderRef,
-        enableAIContentAware,
-        "selectionTranslation",
-      )
+    ? await getOrGenerateWebPageSummary(webPageContext, summaryProviderRef, enableAIContentAware)
     : null
   return {
     webTitle: webPageContext.webTitle,
@@ -131,7 +118,6 @@ async function translateWithTextStream({
   throwIfAborted()
 
   // Read from the already-compiled matcher — no await on this path. See
-  // `resolveGlossaryTermsFromCache`.
 
   const { systemPrompt, prompt } = getTranslatePromptFromConfig(
     { customPromptsConfig: translateRequest.customPromptsConfig },
@@ -170,43 +156,6 @@ async function translateWithTextStream({
   return translatedText
 }
 
-async function translateWithStandardProvider({
-  text,
-  provider,
-  translateRequest,
-}: {
-  text: string
-  provider: ResolvedProviderRef<TranslateProviderConfig>
-  translateRequest: SelectionToolbarTranslateRequestSlice
-}) {
-  // This path is reached only for pure translate providers (the dispatch sends
-  // system refs to the hosted stream and local LLMs to the text stream), and
-  // those take no prompt — requesting a summary for them was a doomed queue
-  // task that could never generate text.
-  const webPageContext = await getSelectionWebPagePromptContext(
-    null,
-    translateRequest.enableAIContentAware,
-  )
-  const translatedText = await translateTextCore({
-    text,
-    langConfig: translateRequest.language,
-    providerConfig: provider,
-    hostedFeature: "selectionTranslation",
-    enableAIContentAware: translateRequest.enableAIContentAware,
-
-    extraHashTags: ["selectionTranslation"],
-    webPageContext,
-  })
-
-  return translatedText
-}
-
-/**
- * Keeps the hosted-status hook inside SelectionPopover.Content, which stays
- * unmounted until the popover first opens — the selection app mounts on every
- * page, and merely loading a page must not fire hosted-AI session/status
- * requests. Mirrors CustomActionFooterContent.
- */
 function TranslateFooterContent({
   providers,
   ...props
@@ -373,42 +322,33 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
           }
 
           return
-        } else if (isLLMProviderConfig(provider.config)) {
-          const providerConfig = provider.config
-          setThinking({
-            status: "thinking",
-            text: "",
-          })
-
-          const nextSnapshot = await translateWithTextStream({
-            preparedText,
-            providerId: providerConfig.id,
-            providerConfig,
-            translateRequest,
-            onChunk: (data) => {
-              if (runIdRef.current === runId) {
-                setTranslatedText(data.output)
-                setThinking(data.thinking)
-              }
-            },
-            registerAbortController: (abortController) => {
-              abortControllerRef.current = abortController
-            },
-          })
-
-          nextTranslatedText = nextSnapshot.output
-          if (runIdRef.current === runId) {
-            setThinking(nextSnapshot.thinking)
-          }
-        } else {
-          setThinking(null)
-          nextTranslatedText = await translateWithStandardProvider({
-            text: preparedText,
-            provider,
-            translateRequest,
-          })
         }
+        const providerConfig = provider.config
+        setThinking({
+          status: "thinking",
+          text: "",
+        })
 
+        const nextSnapshot = await translateWithTextStream({
+          preparedText,
+          providerId: providerConfig.id,
+          providerConfig,
+          translateRequest,
+          onChunk: (data) => {
+            if (runIdRef.current === runId) {
+              setTranslatedText(data.output)
+              setThinking(data.thinking)
+            }
+          },
+          registerAbortController: (abortController) => {
+            abortControllerRef.current = abortController
+          },
+        })
+
+        nextTranslatedText = nextSnapshot.output
+        if (runIdRef.current === runId) {
+          setThinking(nextSnapshot.thinking)
+        }
         if (runIdRef.current === runId) {
           setTranslatedText(nextTranslatedText)
         }
@@ -578,7 +518,6 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
     })
   }, [openSelectionTranslationRequest, resolveContextMenuRequest])
 
-  // Turned off, the button and its key go together, as Speak's and the actions' do. Hiding the
   // whole toolbar does not stop the key.
   useSelectionShortcuts(
     {

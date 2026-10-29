@@ -75,3 +75,11 @@ Provider 收敛到 OpenAI / OpenAI-compatible / Gemini / Ollama，以及待终�
 Manifest 删除 cookies、identity、offscreen、sidePanel、unlimitedStorage；保留 storage、tabs、alarms、contextMenus、scripting、webNavigation 和任意网页/自定义 API 主机访问。移除上游固定开发扩展 ID。扩展与 npm 名称改为 Read Frog Lite，版本 0.1.0。
 
 锁文件更新并安装成功。移除自动下载 Node 的 runtime 声明，要求本机 Node >=24；这是为避免依赖删减时包管理器改选新 Node 并访问未配置镜像，原基线的 Node 26.12.1 与最终 Node 24.19.0 差异会影响耗时比较。类型/Lint 通过，生产构建 9.01 MB，3.807 秒，不再需要任何环境变量。全量 186 文件/1924 测试通过，2 个真实免费翻译测试按 AGENTS.md 跳过；仅 4 个已删除电子书桥接用例失败，其专属测试文件随后删除。
+
+## Phase 4
+
+最终删除非公开 Google Translate 传输、额外 LLM 语言检测、写作改写、Actions 自定义数组/排序/固定状态、批处理统计、远程图标代理、Session 请求缓存、失效搜索入口、旧截图、剩余云同步类型和无消费者函数。只保留四种用户 API、本地语言检测、词典/句子分析。清除预置自动翻译站点；可选上下文摘要默认关闭。
+
+安全收口：API SDK 与模型查询显式省略 Cookie 并拒绝重定向；凭证不进入请求正文或 URL；开发日志不输出原始 SDK 错误对象；无密钥导出同时去除自定义请求头，清理失败时不导出原对象。新增真实 SDK 请求拦截、本地配置重载、旧 Hosted ID 拒绝、导出凭证清理测试，保留流式取消/重试/固定弹窗/快捷键及 DOM 回归。
+
+最终数据与检查见 REPORT.md 和 final-metrics.json。Chromium 154 实测启动成功，但管理员策略拒绝加载未打包扩展，未将浏览器交互验收冒称通过。过程中自动审批曾拒绝范围过宽的组合编辑；改为逐文件修改、确认引用后再清理，并重新验证，未绕过审批或留下待批准操作。

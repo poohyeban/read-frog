@@ -1,17 +1,7 @@
-import {
-  LLM_PROVIDER_MODELS,
-  NON_API_TRANSLATE_PROVIDERS,
-  NON_API_TRANSLATE_PROVIDERS_MAP,
-  PURE_TRANSLATE_PROVIDERS,
-} from "@/utils/constants/models"
+import { LLM_PROVIDER_MODELS } from "@/utils/constants/models"
 
 // Re-export for external consumers.
-export {
-  LLM_PROVIDER_MODELS,
-  NON_API_TRANSLATE_PROVIDERS,
-  NON_API_TRANSLATE_PROVIDERS_MAP,
-  PURE_TRANSLATE_PROVIDERS,
-}
+export { LLM_PROVIDER_MODELS }
 
 /* ──────────────────────────────
   Derived provider names
@@ -19,8 +9,6 @@ export {
 
 // translate provider names
 export const TRANSLATE_PROVIDER_TYPES = [
-  "google-translate",
-
   "openai",
 
   "google",
@@ -28,9 +16,7 @@ export const TRANSLATE_PROVIDER_TYPES = [
   "openai-compatible",
 
   "ollama",
-] as const satisfies Readonly<
-  (keyof typeof LLM_PROVIDER_MODELS | (typeof PURE_TRANSLATE_PROVIDERS)[number])[]
->
+] as const satisfies Readonly<(keyof typeof LLM_PROVIDER_MODELS)[]>
 export type TranslateProviderTypes = (typeof TRANSLATE_PROVIDER_TYPES)[number]
 export function isTranslateProvider(provider: string): provider is TranslateProviderTypes {
   return TRANSLATE_PROVIDER_TYPES.includes(provider)
@@ -103,21 +89,14 @@ export const API_PROVIDER_TYPES = [
   "google",
 
   "ollama",
-] as const satisfies Readonly<(keyof typeof LLM_PROVIDER_MODELS | "deeplx" | "deepl")[]>
+] as const satisfies Readonly<(keyof typeof LLM_PROVIDER_MODELS)[]>
 export type APIProviderTypes = (typeof API_PROVIDER_TYPES)[number]
 export function isAPIProvider(provider: string): provider is APIProviderTypes {
   return API_PROVIDER_TYPES.includes(provider)
 }
 
-export type NonAPIProviderTypes = (typeof NON_API_TRANSLATE_PROVIDERS)[number]
-export function isNonAPIProvider(provider: string): provider is NonAPIProviderTypes {
-  return NON_API_TRANSLATE_PROVIDERS.includes(provider)
-}
-
 // all provider names
 export const ALL_PROVIDER_TYPES = [
-  "google-translate",
-
   "openai-compatible",
 
   "openai",
@@ -149,10 +128,4 @@ export function supportsTopLevelReasoning(
   provider: string,
 ): provider is TopLevelReasoningProviderTypes {
   return TOP_LEVEL_REASONING_PROVIDER_TYPES.includes(provider)
-}
-
-export function isPureTranslateProvider(
-  provider: TranslateProviderTypes,
-): provider is (typeof PURE_TRANSLATE_PROVIDERS)[number] {
-  return PURE_TRANSLATE_PROVIDERS.includes(provider)
 }

@@ -6,8 +6,7 @@ import type { ErrorAction } from "@/utils/error-action"
 
 interface BaseBackgroundStreamSerializablePayload {
   providerId: string
-  /** Hosted billing idempotency key. Ignored by local/BYOK providers. */
-  requestId?: string
+
   instructions?: string
   prompt?: string
   messages?: JSONValue[]
@@ -21,18 +20,6 @@ interface BaseBackgroundStreamSerializablePayload {
   reasoning?: AISDKReasoning
   providerOptions?: Record<string, Record<string, JSONValue>>
 }
-
-/** The hosted features that stream plain text through the `stream-text` port. */
-
-/**
- * Which hosted text route to call — normally one per feature, but video
- * subtitles has two: line/summary translation and segmentation, which is a
- * separate route because it carries a much larger output budget (and so a
- * larger credit reservation) than a subtitle line should ever reserve.
- *
- * So this is a superset of `HostedAiTextStreamFeature`: the server still bills
- * both subtitle routes against the single `videoSubtitles` feature.
- */
 
 export type BackgroundStreamTextSerializablePayload = BaseBackgroundStreamSerializablePayload & {
   providerKind: "local"
@@ -125,11 +112,3 @@ export interface StreamRuntimeOptions<TResponse = unknown> {
 }
 
 export type StreamPortHandler = (port: Browser.runtime.Port) => void
-
-export type HostedAiTextStreamRoute =
-  | "pageTranslation"
-  | "selectionTranslation"
-  | "videoSubtitles"
-  | "videoSubtitlesSegmentation"
-  | "inputTranslation"
-  | "languageDetection"

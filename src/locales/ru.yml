@@ -58,8 +58,6 @@ options:
     leaveDescription: Продолжите редактирование, чтобы исправить проблему, или отмените несохранённые изменения.
     keepEditing: Продолжить редактирование
     discard: Отменить несохранённые изменения
-  batchSavings:
-    savedCost: Сэкономлено примерно $1% расходов на API
   commandPalette:
     placeholder: Поиск настроек...
     noResults: Настройки не найдены
@@ -70,8 +68,8 @@ options:
     features: Функции
   apiProviders:
     title: API-провайдеры
-    pageDescription: Подключите ИИ-сервисы, которые вызывает Read Frog, и выберите провайдера для каждой функции.
-    description: Добавьте провайдеров, которых может вызывать Read Frog. Более 20 встроено; также можно добавить пользовательские API, совместимые с Chat Completions, и API Open Responses.
+    pageDescription: Подключите ИИ-сервисы, которые вызывает Read Frog Lite, и выберите провайдера для каждой функции.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
     configTitle: Настройка провайдеров
     addProvider: Добавить провайдера
     setApiKeyWarning:
@@ -140,36 +138,9 @@ options:
         customChatComplete: Пользовательский Chat Complete
       description:
         openai: Предоставляет модели, такие как GPT-4o
-        azure: Модели OpenAI в Azure через ваши развертывания
-        deepseek: Рекомендуется для использования в Китае
-        openrouter: Единый интерфейс для нескольких LLM-провайдеров с оплатой за использование
         ollama: Запускайте большие языковые модели локально на вашем компьютере для полной конфиденциальности
         google: Флагманские ИИ-модели Google с продвинутыми возможностями рассуждения
-        anthropic: Модели Claude, известные своей безопасностью и превосходными рассуждениями
-        xai: ИИ-компания Илона Маска, предлагающая модели Grok с доступом к данным в реальном времени
-        atlascloud: Единая OpenAI-совместимая платформа для новых моделей DeepSeek, Kimi, Qwen, Doubao, GLM и других
-        jalapenocloud: ИИ корпоративного уровня, которым пользуются ведущие команды — теперь и для вас!
-        siliconflow: Высокопроизводительная платформа вывода для китайских и международных моделей
-        tensdaq: Революционная MaaS-платформа с рыночным ценообразованием, устраняющая высокие фиксированные цены
         openaiCompatible: Подключение к пользовательской конечной точке, совместимой с OpenAI Chat Completions API
-        openResponses: Подключение к пользовательской конечной точке, совместимой с Open Responses API
-        deeplx: Неофициальный DeepL API
-        deepl: Официальный DeepL API
-        bedrock: Управляемый AWS сервис для корпоративных базовых моделей
-        groq: Специализированное оборудование для сверхбыстрого вывода LLM
-        deepinfra: Экономичный облачный вывод для популярных моделей с открытым исходным кодом
-        mistral: Европейская ИИ-компания, специализирующаяся на эффективных многоязычных моделях
-        togetherai: Коллаборативная платформа для запуска и дообучения моделей с открытым исходным кодом
-        cohere: Корпоративный ИИ с сильными многоязычными и RAG-возможностями
-        fireworks: Готовая к производству платформа вывода для моделей с открытым исходным кодом
-        cerebras: Сверхбыстрый ИИ-вывод для быстрого перевода и анализа текста
-        replicate: Доступ к разнообразным моделям с открытым исходным кодом для специализированных задач перевода
-        perplexity: ИИ с улучшенными знаниями в реальном времени для контекстных переводов и помощи в чтении
-        volcengine: Облачная ИИ-платформа ByteDance, предлагающая модели Doubao для перевода и чтения
-        minimax: ИИ-платформа MiniMax, предлагающая передовые модели MiniMax-M2
-        alibaba: Серия моделей Qwen от Alibaba Cloud с продвинутыми возможностями рассуждения и многоязычности
-        moonshotai: Серия моделей Kimi от Moonshot AI с мощными возможностями рассуждения и длинного контекста
-        huggingface: API вывода Hugging Face с доступом к тысячам моделей с открытым кодом
     apiKey:
       showAPIKey: Показать API-ключ
       getAPIKey: Получить API-ключ
@@ -186,28 +157,9 @@ options:
       features:
         pageTranslation: Перевод страницы
         selectionTranslation: Перевод выделения
-        inputTranslation: Перевод ввода
-        videoSubtitles: Субтитры видео
-        noteSuggestion: Подсказки для заметок
       descriptions:
         pageTranslation: Переводит страницу целиком — в двуязычном режиме или с заменой оригинала.
         selectionTranslation: Переводит выделенный текст через панель выделения.
-        inputTranslation: Переводит то, что вы набрали в поле ввода, перед отправкой.
-        videoSubtitles: Переводит субтитры, которые появляются в видеоплеере.
-        noteSuggestion: Предлагает слова, которые стоит сохранить в Notebase, после перевода выделенного текста.
-    languageDetection:
-      title: Определение языка
-      description: Влияет на точность определения языка для автоперевода и выбора голоса озвучивания.
-      mode:
-        basic: Базовый
-        llm: LLM
-      provider:
-        label: Провайдер определения
-        placeholder: Выберите провайдера
-      status:
-        noProviders: Сначала настройте LLM-провайдер
-        basicRecommend: Рекомендуется включить LLM
-        llmEnabled: LLM-определение включено
     aiContentAware:
       title: Умный контекстный перевод ИИ
       description: Передавайте ИИ контекст страницы или видео, чтобы перевод был точнее
@@ -218,15 +170,15 @@ options:
   patterns:
     duplicate: Этот шаблон уже в списке
     gluedWildcard: «*» должна заменять часть адреса целиком, например *.example.com или example.*
-    unsupported: Read Frog не может сопоставить этот адрес. Порты и схемы, кроме http и https, не поддерживаются.
+    unsupported: Read Frog Lite не может сопоставить этот адрес. Порты и схемы, кроме http и https, не поддерживаются.
   preference:
     title: Предпочтения
-    pageDescription: Задайте внешний вид Read Frog, места его работы, а также синхронизацию и резервное копирование конфигурации.
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: Оформление и язык
       theme:
         title: Тема
-        description: Выберите тему для Read Frog.
+        description: Выберите тему для Read Frog Lite.
         system: Системная
         light: Светлая
         dark: Тёмная
@@ -257,32 +209,19 @@ options:
         urlPattern: Шаблон URL
     config:
       title: Конфигурация
-      googleDrive:
-        title: Облачная синхронизация Google Drive
-        description: Загружает, когда удалённая версия новее, выгружает, когда локальная версия новее. Глоссарии передаются отдельным файлом и сливаются по терминам, а не заменяются целиком.
       manualSync:
         title: Ручная синхронизация конфигурации
-        description: Импорт и экспорт настроек вручную — вместе с глоссариями
+        description: Import or export your local configuration.
         exportSuccess: Конфигурация успешно экспортирована
-      backup:
-        title: Резервное копирование конфигурации
-        description: Автоматические резервные копии создаются каждый час при изменении конфигурации. Вы можете восстановить предыдущие конфигурации здесь. (Максимум $1 резервных копий)
       reset:
         title: Сбросить конфигурацию
-        description: Сбросить все настройки к значениям по умолчанию. Глоссарии не затрагиваются.
+        description: Reset local configuration to its defaults.
         dialog:
           title: Сбросить конфигурацию
           trigger: Сбросить конфигурацию
           confirm: Подтвердить
           cancel: Отмена
-          description: Эта операция удалит все ваши пользовательские настройки и вернёт значения по умолчанию. Глоссарии сохранятся — удалить их можно на странице глоссариев. Пожалуйста, подтвердите.
-    userExperience:
-      beta:
-        title: Бета-функции
-        description: Включить экспериментальные функции, которые могут быть нестабильны
-      analytics:
-        title: Помочь улучшить пользовательский опыт
-        description: Улучшайте Read Frog, помогая находить ошибки, дорабатывать интерфейс и не только
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: Горячие клавиши
     pageDescription: Задайте клавиши, которые запускают перевод, озвучивание и AI-действия во время чтения.
@@ -296,19 +235,10 @@ options:
     selectionTranslation:
       title: Перевод выделения
       description: Перевести выделенный текст.
-    subtitlesToggle:
-      title: Перевод субтитров
-      description: Включает или выключает переведённые субтитры видео.
     nodeTranslation:
       title: Перевод при наведении
       description: Наведите курсор на абзац или нажмите и удерживайте его, чтобы перевести только его.
       customDescription: Нажмите эти клавиши, наведя курсор на абзац, чтобы перевести его.
-    translationHub:
-      title: Центр переводов
-      description: Открывает Центр переводов в новой вкладке.
-    selectionSpeak:
-      title: "Озвучивание выделения"
-      description: "Прочитать выделенный текст вслух. Нажмите ещё раз, чтобы остановить."
     actions:
       title: "AI-действия"
       description: "Запустить AI-действие для выделенного текста. У пользовательских действий нет сочетания клавиш, пока вы не зададите его здесь."
@@ -316,37 +246,6 @@ options:
     turnOn: "Включить"
     clash: "То же сочетание, что у «$1». Измените одно из них."
     taken: "$1 уже используется для «$2»."
-  inputTranslation:
-    title: Перевод ввода
-    trigger:
-      title: Срабатывание
-      enable:
-        description: Быстро нажмите пробел три раза в любом поле ввода, чтобы перевести набранный текст.
-      threshold:
-        title: Порог срабатывания
-        description: Максимальный интервал между нажатиями в миллисекундах. Увеличьте, если перевод не срабатывает, уменьшите, если он срабатывает во время набора.
-    languages:
-      title: Языки перевода
-      pair:
-        description: С какого языка читается набранный текст и на какой он переводится. Обе стороны могут следовать исходному и целевому языкам, с которыми вы переводите страницы.
-      cycle:
-        title: Менять направление каждый раз
-        description: Каждое срабатывание меняет языки местами, поэтому следующее вернёт текст на язык, на котором вы печатали.
-  floatingButton:
-    title: Плавающая кнопка
-    enable:
-      title: Включить плавающую кнопку
-      description: Отображать плавающую кнопку на веб-страницах для быстрого доступа к функциям Read Frog
-    display:
-      side:
-        title: Сторона кнопки
-        description: Выберите, с какой стороны страницы закреплять плавающую кнопку
-      disabledSites:
-        title: Отключённые сайты
-        description: Настройте веб-сайты, где плавающая кнопка должна быть отключена
-    clickAction:
-      title: Действие по клику
-      description: Выберите действие при нажатии на плавающую кнопку
   selectionToolbar:
     title: Панель выделения
     pageDescription: Укажите, какие действия появляются при выделении текста и где показывать панель.
@@ -359,9 +258,6 @@ options:
       translate:
         title: Перевод
         description: Показывать кнопку перевода на панели
-      noteSuggestion:
-        title: Подсказки для заметок
-        description: После перевода выделенного текста с помощью ИИ-провайдера предлагать слова для сохранения в Notebase
     display:
       title: Отображение
       opacity:
@@ -383,17 +279,11 @@ options:
       providerDisabled: Выбранный провайдер отключен
       providerUnavailable: Выбранный провайдер недоступен
     customActions:
-      title: Пользовательские AI-действия
+      title: AI explanations
       description: Добавляйте собственные структурированные AI-действия для выделенного текста
       form:
         selectProvider: Выберите провайдера
         defaultFieldName: результат
-        layout:
-          title: Макет
-          description: Как результат выглядит во всплывающем окне. HTML с Liquid; поля заполняются по мере поступления ответа.
-        notebase:
-          title: Подключение Notebase
-          description: Сохранить структурированные результаты этого действия в удалённую Notebase.
       templates:
         dictionary:
           name: "Словарь"
@@ -547,53 +437,15 @@ options:
           hardLabel: "Сложно"
           trunkLabel: "Только основа"
           slashesLabel: "Паузы"
-        improveWriting:
-          name: "Улучшить текст"
-          description: "Отмечает ошибки и неудачные фразы, как учитель, и исправляет текст под ситуацию"
-          fieldOriginal: "Исходный текст"
-          fieldSetting: "Ситуация"
-          fieldAnnotations: "Пометки"
-          fieldImproved: "Исправленный текст"
-          fieldSummary: "Итог"
-          types:
-            spelling: "Орфография"
-            grammar: "Грамматика"
-            punctuation: "Пунктуация"
-            wordChoice: "Выбор слова"
-            logic: "Логика"
-            unnatural: "Неестественно"
-            register: "Стиль"
-            clarity: "Ясность"
-            good: "Удачно"
-          tiers:
-            error: "Ошибки"
-            awkward: "Неудачно"
-            good: "Удачно"
-          hideFixesLabel: "Скрыть исправления"
-          hiddenHintLabel: "Сначала попробуйте исправить сами."
-          showImprovedLabel: "Показать"
-          improvedLabel: "Исправленный текст"
-          copyLabel: "Копировать"
-          unchangedLabel: "Исправлять нечего"
-          removeLabel: "удалить"
         blank:
           prompt: |-
             ## Ввод
             Выделение: {{selection}}
             Абзацы: {{paragraphs}}
             Целевой язык: {{targetLanguage}}
-  advanced:
-    glossary:
-      title: Глоссарий
-      enable:
-        title: Включить
-        description: Передаёт совпавшие термины модели LLM, чтобы она переводила их так, как нужно вам. Глоссарий передаётся внутри промпта, поэтому он применяется только к функциям, работающим через LLM-провайдер.
-      library:
-        title: Ваши глоссарии
-        description: У каждого глоссария свои термины и свой список сайтов, поэтому рабочий набор терминов не будет применяться ко всему подряд.
   contextMenu:
     title: Контекстное меню
-    pageDescription: Управляйте пунктами Read Frog в контекстном меню браузера.
+    pageDescription: Управляйте пунктами Read Frog Lite в контекстном меню браузера.
     demoImageAlt: Демо контекстного меню
     enable:
       title: Включить перевод в контекстном меню
@@ -670,10 +522,6 @@ options:
       title: Пользовательские промпты страниц
       description: Настройка различных типов промптов позволяет вам самостоятельно изменять тип промпта во время перевода. Промпт — это текст, который пользователь отправляет LLM.
       managePrompts: Управление промптами
-      communityPrompts: Получайте или делитесь промптами с сообществом
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/821
-      variableReference: Справочник переменных
-      variableReferenceUrl: https://readfrog.app/ru/docs/page-translation/prompts/variables
       addPrompt: Добавить промпт
       default: По умолчанию
       builtIn: Встроенный
@@ -803,61 +651,6 @@ options:
       searchPlaceholder: Поиск по id, описанию или шаблону URL
       showMore: Показать ещё
       count: Показано $1 из $2 правил
-  tts:
-    title: Синтез речи
-    voice:
-      language:
-        title: Голос для языка
-        description: Выберите язык, а затем голос, которым он будет читаться. Сброс вернёт голос, который Read Frog подбирает для этого языка.
-      fallback:
-        title: Резервный голос
-        description: Голос для языков, которым вы не назначили собственный.
-    speech:
-      rate:
-        title: Скорость
-        description: Насколько быстрее или медленнее собственного темпа читает голос, от -100 до 100 процентов.
-      pitch:
-        title: Высота
-        description: Насколько выше или ниже собственной высоты звучит голос, от -100 до 100 герц.
-      volume:
-        title: Громкость
-        description: Насколько громче или тише собственного уровня читает голос, от -100 до 100 процентов.
-  videoSubtitles:
-    title: Видео субтитры
-    preference:
-      enable:
-        title: Включить видеосубтитры
-        description: Добавляет кнопку перевода в панель управления плеера на YouTube, X и Netflix.
-      autoStart:
-        title: Переводить сразу при открытии
-        description: Начинать перевод субтитров, как только видео загрузилось, без нажатия кнопки.
-      aiSegmentation:
-        title: Умная сегментация ИИ
-        description: ИИ заново делит субтитры на предложения. Перевод будет появляться дольше. Нужна сильная LLM; слабые модели могут терять или сдвигать строки.
-    aiQuota:
-      title: Лимит ИИ-субтитров
-      description: ИИ распознаёт речь и создаёт точные субтитры для любого видео
-    style:
-      title: Стиль субтитров
-      description: Режим отображения, положение, шрифты, цвета и фон — всё настраивается по живому предпросмотру
-      customCSS:
-        title: Пользовательский CSS
-        description: Дополнительный CSS для строк субтитров, поверх шрифтов и цветов выше
-    customPrompts:
-      title: Пользовательские промпты субтитров
-      description: Шаблоны промптов только для перевода субтитров, отдельно от промптов перевода веб-страниц
-    subtitlesQueue:
-      requestQueueConfig:
-        title: Скорость перевода
-      batchQueueConfig:
-        title: Пакетный перевод
-        description: Настройте лимиты символов и максимальное количество строк субтитров для пакетного перевода (действует только для LLM-перевода)
-    cache:
-      clearCache:
-        title: Очистить кэш ИИ-сегментации
-        description: "Сохранённые результаты сегментации: уже просмотренное видео не разбивается заново"
-side:
-  targetLang: Целевой язык
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -867,20 +660,14 @@ translatePrompt:
   description: Выберите промпт для использования во время перевода. Добавляйте или изменяйте пользовательские промпты на странице настроек.
 noAPIKeyConfig:
   warning: Если вы хотите использовать ИИ-модели, сначала установите API-ключ на странице настроек
-languageDetection:
-  llmFailed: Определение языка через LLM не удалось, выполнен откат к базовому определению
 translation:
   sameLanguage: Исходный и целевой языки должны различаться
   extensionContextInvalidated: Расширение обновлено. Обновите эту страницу и повторите попытку.
-speak:
-  languageDetectionFallback: Используется локальное определение языка
-  languageDetectionSettingsHint: В настройках выберите доступную LLM или локальное определение.
 action:
   copy: Копировать
   copied: Скопировано
   regenerate: Сгенерировать заново
   viewContextDetails: Контекст
-  customizeCustomAction: Настроить действие $1
   contextDetailsTitleLabel: Заголовок
   contextDetailsParagraphsLabel: Абзацы
   translation: Перевод
@@ -898,11 +685,6 @@ hotkey:
   backtick: Обратный апостроф
   clickAndHold: Нажмите и удерживайте
   custom: Своя горячая клавиша
-translationHub:
-  searchLanguages: Поиск языков...
-  noLanguagesFound: Языки не найдены
-  translationFailed: Ошибка перевода
-  translationFailedFallback: Ошибка перевода
 languages:
   eng: Английский
   cmn: Упрощённый китайский
@@ -1083,3 +865,10 @@ languages:
   wls: Уоллисский
   rar: Раротонганский
   hif: Фиджийский хинди
+side:
+  targetLang: Целевой язык
+translationHub:
+  searchLanguages: Поиск языков...
+  noLanguagesFound: Языки не найдены
+  translationFailed: Ошибка перевода
+  translationFailedFallback: Ошибка перевода

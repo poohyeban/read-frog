@@ -5,7 +5,6 @@ import { IconHash, IconTypography } from "@tabler/icons-react"
 // this): a plain React field list that never touches Liquid, the sanitizer or
 // innerHTML, so it renders whatever the layout pipeline could not. Same look as
 // the default layout, which recreates the list custom actions showed before
-// layouts existed. No speak buttons: those need the layout host's shadow root.
 
 interface FallbackFieldListProps {
   outputSchema: SelectionToolbarCustomActionOutputField[]

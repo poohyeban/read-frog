@@ -2,7 +2,6 @@ import type {
   APIProviderTypes,
   DedicatedLLMProviderTypes,
   LLMProviderTypes,
-  NonAPIProviderTypes,
   OpenAICompatibleLLMProviderTypes,
   ProtocolCompatibleLLMProviderTypes,
   TopLevelReasoningProviderTypes,
@@ -79,12 +78,7 @@ const llmProviderConfigSchemaList = [
 
 const apiProviderConfigSchemaList = [...llmProviderConfigSchemaList] as const
 
-export const providerConfigSchemaList = [
-  ...apiProviderConfigSchemaList,
-  baseProviderConfigSchema.extend({
-    provider: z.literal("google-translate"),
-  }),
-] as const
+export const providerConfigSchemaList = [...apiProviderConfigSchemaList] as const
 
 export const llmProviderConfigItemSchema = z.discriminatedUnion(
   "provider",
@@ -125,7 +119,6 @@ export const providersConfigSchema = z
   })
 export type ProvidersConfig = z.infer<typeof providersConfigSchema>
 export type ProviderConfig = ProvidersConfig[number]
-export type NonAPIProviderConfig = Extract<ProviderConfig, { provider: NonAPIProviderTypes }>
 
 export type APIProviderConfig = Extract<ProviderConfig, { provider: APIProviderTypes }>
 

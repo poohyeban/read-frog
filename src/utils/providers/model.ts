@@ -12,7 +12,7 @@ import {
 } from "@/types/config/provider"
 import { getLLMProvidersConfig, getProviderConfigById } from "../config/helpers"
 import { CONFIG_STORAGE_KEY } from "../constants/config"
-import { getProviderHeadersWithOverride } from "./headers"
+import { getProviderHeaders } from "./headers"
 import { resolveModelId } from "./model-id"
 import { ProviderSetupError } from "./provider-setup-error"
 
@@ -23,6 +23,11 @@ const DEDICATED_PROVIDER_FACTORY_BY_TYPE = {
 
   ollama: createOllama,
 } as const satisfies Record<DedicatedLLMProviderTypes, unknown>
+
+// Custom API credentials must stay on the configured endpoint, including when
+// a server responds with a redirect. Extension requests do not need cookies.
+const providerFetch: typeof fetch = (input, init) =>
+  fetch(input, { ...init, credentials: "omit", redirect: "error" })
 
 async function getLanguageModelById(providerId: string) {
   const config = await storage.getItem<Config>(`local:${CONFIG_STORAGE_KEY}`)
@@ -48,11 +53,12 @@ async function getLanguageModelById(providerId: string) {
  * new row while the params derived from the ref came from the old one.
  */
 export function getLanguageModelForConfig(providerConfig: LLMProviderConfig) {
-  const headers = getProviderHeadersWithOverride(providerConfig.provider, providerConfig.headers)
+  const headers = getProviderHeaders(providerConfig.headers)
 
   const provider = match(providerConfig)
     .when(isOpenAICompatibleLLMProviderConfig, (matchedConfig) =>
       createOpenAICompatible({
+        fetch: providerFetch,
         name: matchedConfig.provider,
         baseURL: matchedConfig.baseURL,
         supportsStructuredOutputs: true,
@@ -62,6 +68,7 @@ export function getLanguageModelForConfig(providerConfig: LLMProviderConfig) {
     )
     .when(isDedicatedLLMProviderConfig, (matchedConfig) =>
       DEDICATED_PROVIDER_FACTORY_BY_TYPE[matchedConfig.provider]({
+        fetch: providerFetch,
         ...(matchedConfig.baseURL && { baseURL: matchedConfig.baseURL }),
         ...(matchedConfig.apiKey && { apiKey: matchedConfig.apiKey }),
         ...(headers && { headers }),

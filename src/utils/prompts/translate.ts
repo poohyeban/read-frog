@@ -71,7 +71,7 @@ export function getTranslatePromptFromConfig(
   let { systemPrompt, prompt } = selectedPrompt
 
   // For batch mode, append batch rules to system prompt. The batch block is the
-  // same one subtitles use — the marker appears only in the sentinel rule that
+
   // follows, never inside the format example (see DEFAULT_SENTINEL_TRANSLATE_PROMPT).
   // The sentinel rule is appended ONLY here: batch prompts are built exclusively
   // for the background translation pipeline, whose results all return through

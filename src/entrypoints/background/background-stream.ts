@@ -16,7 +16,6 @@ import type {
   StreamRuntimeOptions,
   ThinkingSnapshot,
 } from "@/types/background-stream"
-import type { TranslateProviderConfig } from "@/types/config/provider"
 import type { ErrorAction } from "@/utils/error-action"
 import { generateText, Output, parsePartialJson, streamText } from "ai"
 import { z } from "zod"
@@ -63,8 +62,7 @@ const streamTextPayloadSchema = baseStreamPayloadSchema
   .refine(({ providerId, providerConfig }) => !providerConfig || providerConfig.id === providerId)
 
 // Transport-level check for BOTH provider kinds, so only the enum comes from
-// the contract; hosted-only constraints (name length, field count) are applied
-// by the contract input schema right before the hosted call.
+
 const structuredObjectFieldSchema = z.object({
   name: z.string().trim().min(1),
   type: z.enum(["string", "number"]),
@@ -143,8 +141,8 @@ function createStreamPortHandler<TSerializablePayload, TResponse>(
           streamRequestId,
         }
         port.postMessage(message)
-      } catch (error) {
-        logger.error("[Background] Stream port post failed", error)
+      } catch {
+        logger.error("[Background] Stream port post failed")
       }
     }
 
@@ -231,7 +229,7 @@ function createStreamPortHandler<TSerializablePayload, TResponse>(
           return
         }
 
-        logger.error("[Background] Stream Function failed", finalError)
+        logger.error("[Background] Stream Function failed")
         safePost({
           type: "error",
           error: {
@@ -306,11 +304,6 @@ function getStreamPartError(part: Record<string, unknown>): unknown {
     ? part.error
     : new BackgroundStreamError("stream_protocol_error", aiStreamProtocolErrorMessage)
 }
-
-/**
- * The server builds this payload `satisfies HostedAiRateLimitErrorData`; the
- * same contract schema parses it back here, so the two ends cannot drift.
- */
 
 // Pinned with `satisfies` so a code renamed in the contract fails this build
 // instead of silently falling through to the generic error path.
@@ -553,28 +546,6 @@ async function createLocalTextPartStream(
   return result.stream
 }
 
-/**
- * One oRPC procedure per hosted text feature: the server derives the billing
- * feature from the route path, so the payload's `hostedFeature` never rides
- * the wire — it explicitly selects which procedure to call. Resolved lazily
- * so importing this module never touches the client proxy.
- */
-
-/**
- * One text generation against either provider kind, collected into a string.
- *
- * Four callers are non-streaming `generateText` calls — the page summary, the
- * video summary, subtitle segmentation, and language detection — and the
- * hosted side has no non-streaming route, because quota reserve/settle, the
- * circuit breaker, and the ledger are stream-shaped end to end. Rather than
- * give each caller its own hosted branch, they all collapse onto this: the
- * hosted path reuses the same part stream and reader as page translation and
- * hands back the accumulated text.
- *
- * Lives here rather than beside its callers because it needs the
- * module-private `createHostedTextPartStream` (contract pre-validation, error
- * normalization, procedure lookup) and `consumeTextPartStream`.
- */
 export async function generateTextForProviderRef(
   payload: BackgroundGenerateTextPayload,
   options: { signal?: AbortSignal } = {},
@@ -590,12 +561,9 @@ export async function generateTextForProviderRef(
   // Google, Microsoft) have no model to prompt. The payload type already says
   // LLM, but the wire is a trust boundary — a pre-update content script can
   // still send a translate-only ref — so re-widen and check for real.
-  const localConfig = providerRef.config as TranslateProviderConfig
+  const localConfig = providerRef.config
   if (!isLLMProviderConfig(localConfig)) {
-    throw new BackgroundStreamError(
-      "invalid_request",
-      `Provider "${localConfig.id}" cannot generate text`,
-    )
+    throw new BackgroundStreamError("invalid_request", "Provider cannot generate text")
   }
 
   // Built from the config the ref carries, not looked up by id: every other

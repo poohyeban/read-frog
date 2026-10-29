@@ -3,7 +3,6 @@ import type {
   APIProviderTypes,
   CustomModelOnlyProviderTypes,
   LLMProviderModels,
-  LLMProviderTypes,
   ProviderConfig,
   ProvidersConfig,
 } from "@/types/config/provider"
@@ -13,15 +12,12 @@ import customProviderLogo from "@/assets/providers/custom-provider.svg?url&no-in
 import {
   API_PROVIDER_TYPES,
   DEDICATED_LLM_PROVIDER_TYPES,
-  NON_API_TRANSLATE_PROVIDERS,
-  NON_API_TRANSLATE_PROVIDERS_MAP,
   PROTOCOL_COMPATIBLE_LLM_PROVIDER_TYPES,
-  PURE_TRANSLATE_PROVIDERS,
   TRANSLATE_PROVIDER_TYPES,
   isAPIProviderConfig,
   isCustomModelOnlyProvider,
 } from "@/types/config/provider"
-import { omit, pick } from "@/types/utils"
+import { pick } from "@/types/utils"
 import { i18n } from "@/utils/i18n"
 
 export const DEFAULT_LLM_PROVIDER_MODELS: LLMProviderModels = {
@@ -65,12 +61,6 @@ export const PROVIDER_ITEMS: Record<
     apiKeyUrl?: string
   }
 > = {
-  "google-translate": {
-    logo: () => customProviderLogo,
-    name: NON_API_TRANSLATE_PROVIDERS_MAP["google-translate"],
-    website: "https://translate.google.com",
-  },
-
   "openai-compatible": {
     logo: () => customProviderLogo,
     name: "Custom Chat Complete",
@@ -97,13 +87,6 @@ export const PROVIDER_ITEMS: Record<
 }
 
 export const DEFAULT_PROVIDER_CONFIG = {
-  "google-translate": {
-    id: "google-translate-default",
-    name: PROVIDER_ITEMS["google-translate"].name,
-    enabled: true,
-    provider: "google-translate",
-  },
-
   "openai-compatible": {
     id: "openai-compatible-default",
     name: PROVIDER_ITEMS["openai-compatible"].name,
@@ -140,7 +123,7 @@ export const DEFAULT_PROVIDER_CONFIG = {
   },
 } as const satisfies Record<AllProviderTypes, ProviderConfig>
 
-export const GOOGLE_TRANSLATE_PROVIDER_ID = DEFAULT_PROVIDER_CONFIG["google-translate"].id
+export const DEFAULT_TRANSLATE_PROVIDER_ID = DEFAULT_PROVIDER_CONFIG.openai.id
 
 /**
  * Headers a provider is always called with, merged over whatever the user set. The user may add
@@ -149,11 +132,6 @@ export const GOOGLE_TRANSLATE_PROVIDER_ID = DEFAULT_PROVIDER_CONFIG["google-tran
  * starts out with belongs in `DEFAULT_PROVIDER_CONFIG[provider].headers` instead, where the user
  * owns it.
  */
-export const FORCED_PROVIDER_HEADERS: Partial<Record<LLMProviderTypes, Record<string, string>>> = {
-  // Anthropic's API refuses direct browser calls without this, so it is not a default the user
-  // can outgrow — it used to sit with the editable ones, where adding any header of your own
-  // dropped it and broke every request.
-}
 
 export const PROVIDER_URL_PLACEHOLDERS: Partial<Record<APIProviderTypes, string>> = {
   "openai-compatible": DEFAULT_PROVIDER_CONFIG["openai-compatible"].baseURL,
@@ -166,7 +144,6 @@ export const PROVIDER_URL_PLACEHOLDERS: Partial<Record<APIProviderTypes, string>
 }
 
 export const DEFAULT_PROVIDER_CONFIG_LIST: ProvidersConfig = [
-  DEFAULT_PROVIDER_CONFIG["google-translate"],
   DEFAULT_PROVIDER_CONFIG.openai,
   DEFAULT_PROVIDER_CONFIG.google,
   DEFAULT_PROVIDER_CONFIG["openai-compatible"],
@@ -197,16 +174,9 @@ export function buildDefaultProviderConfigList(): ProvidersConfig {
   })
 }
 
-export const NON_API_TRANSLATE_PROVIDER_ITEMS = pick(PROVIDER_ITEMS, NON_API_TRANSLATE_PROVIDERS)
-
 export const TRANSLATE_PROVIDER_ITEMS = pick(PROVIDER_ITEMS, TRANSLATE_PROVIDER_TYPES)
 
-export const PURE_TRANSLATE_PROVIDER_ITEMS = pick(
-  TRANSLATE_PROVIDER_ITEMS,
-  PURE_TRANSLATE_PROVIDERS,
-)
-
-export const LLM_PROVIDER_ITEMS = omit(TRANSLATE_PROVIDER_ITEMS, PURE_TRANSLATE_PROVIDERS)
+export const LLM_PROVIDER_ITEMS = TRANSLATE_PROVIDER_ITEMS
 
 export const API_PROVIDER_ITEMS = pick(PROVIDER_ITEMS, API_PROVIDER_TYPES)
 

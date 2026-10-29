@@ -28,11 +28,7 @@ interface LanguageComboboxProps<T extends string> {
   // its guard against it would become a dead comparison.
   value: NoInfer<T>
   onValueChange: (value: NoInfer<T>) => void
-  /**
-   * The rows to offer. Omit for the languages plus `auto`, which is what every
-   * surface beside a page wants; pass your own to offer a different pinned row —
-   * `getGlossaryTargetLanguageItems` is the one caller doing that today.
-   */
+
   items?: LanguageItem<T>[]
   detectedLangCode?: LangCodeISO6393
   /** Offers auto under a fixed name, for callers with no page to detect a language from. */
@@ -56,7 +52,7 @@ export function LanguageCombobox<T extends string = LangCodeISO6393 | "auto">({
   const languageItems = useMemo(() => {
     if (items) return items
     // The rows built here are `LangCodeISO6393 | "auto"`, which is exactly the
-    // default `T`. A caller whose values are anything else — the glossary's
+
     // `all` — has to pass `items`, because there are no rows this branch could
     // build for it.
     return getLanguageItems(detectedLangCode, autoLabel) as LanguageItem<T>[]

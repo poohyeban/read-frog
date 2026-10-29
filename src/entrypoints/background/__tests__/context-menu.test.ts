@@ -106,29 +106,6 @@ describe("background context menu", () => {
     })
   })
 
-  it("creates custom action items inline for enabled custom actions", async () => {
-    const config = createConfig(true)
-    config.selectionToolbar.customActions = [
-      { id: "dictionary", name: "Dictionary", enabled: true },
-      { id: "disabled", name: "Disabled", enabled: false },
-      { id: "rewrite", name: "Rewrite", enabled: true },
-    ] as Config["selectionToolbar"]["customActions"]
-    ensureInitializedConfigMock.mockResolvedValue(config)
-
-    await initializeContextMenu()
-
-    expect(browser.contextMenus.create).toHaveBeenNthCalledWith(3, {
-      id: `${MENU_ID_SELECTION_CUSTOM_ACTION_PREFIX}dictionary`,
-      title: "Dictionary",
-      contexts: ["selection"],
-    })
-    expect(browser.contextMenus.create).toHaveBeenNthCalledWith(4, {
-      id: `${MENU_ID_SELECTION_CUSTOM_ACTION_PREFIX}rewrite`,
-      title: "Rewrite",
-      contexts: ["selection"],
-    })
-  })
-
   it("creates the built-in Dictionary item when it is enabled", async () => {
     const config = createConfig(true)
     config.selectionToolbar.builtInActions.dictionary.enabled = true

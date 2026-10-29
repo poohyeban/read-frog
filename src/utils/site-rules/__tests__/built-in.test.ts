@@ -477,7 +477,7 @@ describe("built-in site rules", () => {
   // SillyTavern renders backtick narration as <p><code>…</code></p>. CODE sits
   // in DONT_WALK_BUT_TRANSLATE_TAGS, so a code-only paragraph never became a
   // translation unit while its text was already included whenever any sibling
-  // text existed. SillyTavern is self-hosted, so the rule keys on localhost;
+
   // LAN-IP/reverse-proxy users add a user rule with the same field.
   // See https://github.com/mengxi-ream/read-frog/issues/1951
   it("un-blocks CODE on localhost for SillyTavern narration (issue #1951)", () => {

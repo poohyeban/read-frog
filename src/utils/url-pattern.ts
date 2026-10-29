@@ -2,19 +2,6 @@ import { MatchPattern } from "@webext-core/match-patterns"
 import { logger } from "@/utils/logger"
 
 /**
- * The one URL matcher in the extension.
- *
- * Every list of websites the product has — auto-translate, never-auto-translate,
- * the site-control black/whitelist, the floating button and selection toolbar
- * opt-outs, iframe injection, site rules, the glossary — resolves through here.
- * There used to be a second, hostname-only matcher (`matchDomainPattern`) behind
- * the user-facing lists, which meant two visually identical pattern tables could
- * match differently. It is gone; the one difference that mattered (a bare host
- * covering its subdomains) was applied once, by a config migration, to the
- * patterns that had been stored under those semantics.
- */
-
-/**
  * Normalize a user/built-in rule pattern into a standard browser match pattern.
  *
  * Accepted shorthands (bare host expands to scheme "*" and path "/*"):
@@ -150,8 +137,8 @@ function getCompiledPattern(rawPattern: string): CompiledPattern | null {
       compiled = needsWildcardHostPattern(normalized)
         ? new WildcardHostPattern(normalized)
         : new MatchPattern(normalized)
-    } catch (error) {
-      logger.warn(`[url-pattern] Invalid URL pattern dropped: "${rawPattern}"`, error)
+    } catch {
+      logger.warn(`[url-pattern] Invalid URL pattern dropped: "${rawPattern}"`)
     }
   }
 

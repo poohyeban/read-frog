@@ -8,7 +8,6 @@ vi.mock("@/utils/message", () => ({
   onMessage: onMessageMock,
 }))
 
-// The local/hosted branch and every model-tuning detail now live in
 // background-stream's generateTextForProviderRef; this module is only the
 // message adapter over it, so that is the boundary worth mocking.
 vi.mock("../background-stream", () => ({
@@ -23,7 +22,7 @@ vi.mock("@/utils/logger", () => ({
 
 const localPayload = {
   providerRef: { kind: "local" as const, config: { id: "openai-default" } as never },
-  hostedFeature: "languageDetection" as const,
+
   instructions: "system",
   prompt: "hello world",
 }

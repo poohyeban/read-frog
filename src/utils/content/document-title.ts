@@ -1,11 +1,5 @@
 declare global {
   interface Window {
-    /**
-     * The tab title page translation last wrote, and the page's own title it
-     * replaced. Kept on the content-script window, not in module state: the
-     * writer (host) and several readers (selection, subtitles) are separate
-     * bundles that share only the extension's isolated world.
-     */
     __READ_FROG_TRANSLATED_DOCUMENT_TITLE__?: { source: string; translated: string }
   }
 }

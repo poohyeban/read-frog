@@ -2,7 +2,6 @@ import { i18n } from "@/utils/i18n"
 import { PageLayout } from "../../components/page-layout"
 import { AIContentAwareConfig } from "./ai-content-aware"
 import { FeatureProvidersConfig } from "./feature-providers"
-import { LanguageDetectionConfig } from "./language-detection"
 import { ProvidersConfig } from "./providers-config"
 
 export function ApiProvidersPage() {
@@ -14,7 +13,7 @@ export function ApiProvidersPage() {
     >
       <ProvidersConfig />
       <FeatureProvidersConfig />
-      <LanguageDetectionConfig />
+      <></>
       <AIContentAwareConfig />
     </PageLayout>
   )

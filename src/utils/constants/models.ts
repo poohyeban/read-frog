@@ -79,16 +79,6 @@ export const LLM_PROVIDER_MODELS = {
   ollama: ["gemma4:e2b", "gemma4:e4b", "gemma3:4b", "llama3.2:3b"],
 } as const
 
-export const NON_API_TRANSLATE_PROVIDERS = ["google-translate"] as const
-export const NON_API_TRANSLATE_PROVIDERS_MAP: Record<
-  (typeof NON_API_TRANSLATE_PROVIDERS)[number],
-  string
-> = {
-  "google-translate": "Google Translate",
-}
-
-export const PURE_TRANSLATE_PROVIDERS = ["google-translate"] as const
-
 const OPENAI_GPT5_REASONING_EFFORT_POLICIES: OpenAIGPT5ReasoningEffortPolicy[] = [
   {
     pattern: /^(?:openai\/)?gpt-6-astra$/i,

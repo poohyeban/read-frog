@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { createDefaultDictionaryAction, DEFAULT_CONFIG } from "@/utils/constants/config"
+import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { configSchema } from "../config"
 
 function getIssuePaths(input: unknown) {
@@ -12,30 +12,6 @@ function getIssuePaths(input: unknown) {
 }
 
 describe("config provider enabled validation", () => {
-  it("fails when a custom action uses a disabled provider", () => {
-    const action = createDefaultDictionaryAction()
-    if (!action) {
-      throw new Error("Dictionary definition missing")
-    }
-    const providersConfig = DEFAULT_CONFIG.providersConfig.map((provider) => {
-      if (provider.id === "openai-default") {
-        return { ...provider, enabled: false }
-      }
-      return provider
-    })
-
-    const issuePaths = getIssuePaths({
-      ...DEFAULT_CONFIG,
-      providersConfig,
-      selectionToolbar: {
-        ...DEFAULT_CONFIG.selectionToolbar,
-        customActions: [{ ...action, id: "custom-action", providerId: "openai-default" }],
-      },
-    })
-
-    expect(issuePaths).toContain("selectionToolbar.customActions.0.providerId")
-  })
-
   it("fails when the built-in Dictionary uses a disabled provider", () => {
     const providersConfig = DEFAULT_CONFIG.providersConfig.map((provider) =>
       provider.id === "openai-default" ? { ...provider, enabled: false } : provider,
@@ -67,28 +43,6 @@ describe("config provider enabled validation", () => {
           translate: {
             ...DEFAULT_CONFIG.selectionToolbar.features.translate,
             providerId: "nonexistent-provider",
-          },
-        },
-      },
-    })
-
-    expect(issuePaths).toContain("selectionToolbar.features.translate.providerId")
-  })
-
-  it("rejects a disabled local provider for selection toolbar translation", () => {
-    const providersConfig = DEFAULT_CONFIG.providersConfig.map((provider) =>
-      provider.id === "google-translate-default" ? { ...provider, enabled: false } : provider,
-    )
-    const issuePaths = getIssuePaths({
-      ...DEFAULT_CONFIG,
-      providersConfig,
-      selectionToolbar: {
-        ...DEFAULT_CONFIG.selectionToolbar,
-        features: {
-          ...DEFAULT_CONFIG.selectionToolbar.features,
-          translate: {
-            ...DEFAULT_CONFIG.selectionToolbar.features.translate,
-            providerId: "google-translate-default",
           },
         },
       },

@@ -26,8 +26,6 @@ const ContextMenuPage = lazy(() =>
   import("./pages/context-menu").then((module) => ({ default: module.ContextMenuPage })),
 )
 
-/** Advanced has no page of its own; its group's only entry is the glossary. */
-
 const CustomCssPage = lazy(() =>
   import("./pages/translation/translation-style/custom-css").then((module) => ({
     default: module.CustomCssPage,

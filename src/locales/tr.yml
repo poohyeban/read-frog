@@ -58,8 +58,6 @@ options:
     leaveDescription: Sorunu düzeltmek için düzenlemeye devam edin veya kaydedilmemiş değişiklikleri iptal edin.
     keepEditing: Düzenlemeye devam et
     discard: Kaydedilmemiş değişiklikleri iptal et
-  batchSavings:
-    savedCost: API maliyetlerinde yaklaşık %$1 tasarruf
   commandPalette:
     placeholder: Ayarları ara...
     noResults: Ayar bulunamadı
@@ -70,8 +68,8 @@ options:
     features: Özellikler
   apiProviders:
     title: API Sağlayıcıları
-    pageDescription: Read Frog'un çağırdığı yapay zekâ servislerini bağlayın ve her özelliğin hangisini kullanacağını seçin.
-    description: Read Frog'un çağırabileceği sağlayıcıları ekleyin. 20'den fazlası yerleşik gelir; ayrıca Chat Completions uyumlu ve Open Responses API'lerini özel olarak ekleyebilirsiniz.
+    pageDescription: Read Frog Lite'un çağırdığı yapay zekâ servislerini bağlayın ve her özelliğin hangisini kullanacağını seçin.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
     configTitle: Sağlayıcı yapılandırması
     addProvider: Sağlayıcı ekle
     setApiKeyWarning:
@@ -140,36 +138,9 @@ options:
         customChatComplete: Özel Chat Complete
       description:
         openai: GPT-4o gibi modeller sağlar
-        azure: Azure dağıtımlarınız üzerinden OpenAI modelleri
-        deepseek: Çin'de kullanım için önerilir
-        openrouter: Kullandıkça öde fiyatlandırmasıyla birden fazla LLM sağlayıcısı için birleşik arayüz
         ollama: Tam gizlilik için büyük dil modellerini makinenizde yerel olarak çalıştırın
         google: Gelişmiş akıl yürütme yeteneklerine sahip Google'ın amiral gemisi AI modelleri
-        anthropic: Güvenlik ve akıl yürütme mükemmelliğiyle tanınan Claude modelleri
-        xai: Gerçek zamanlı veri erişimli Grok modelleri sunan Elon Musk'ın AI şirketi
-        atlascloud: DeepSeek, Kimi, Qwen, Doubao ve GLM gibi yeni modellere OpenAI uyumlu birleşik erişim platformu
-        jalapenocloud: En iyi ekiplerin kullandığı kurumsal düzeyde yapay zekâ, şimdi sizin için!
-        siliconflow: Çin ve uluslararası modeller için yüksek performanslı çıkarım platformu
-        tensdaq: Yüksek maliyetli sabit fiyatlandırmayı ortadan kaldıran pazar odaklı fiyatlandırma ile devrimci açık artırma AI MaaS platformu
         openaiCompatible: OpenAI Chat Completions API ile uyumlu özel bir uç noktaya bağlanın
-        openResponses: Open Responses API ile uyumlu özel bir uç noktaya bağlanın
-        deeplx: Resmi olmayan DeepL API
-        deepl: Resmi DeepL API
-        bedrock: Kurumsal düzeyde temel modeller için AWS yönetilen hizmeti
-        groq: Ultra hızlı LLM çıkarım hızları için özel donanım
-        deepinfra: Popüler açık kaynak modelleri için uygun maliyetli bulut çıkarımı
-        mistral: Verimli çok dilli modellerde uzmanlaşmış Avrupalı AI şirketi
-        togetherai: Açık kaynak modellerini çalıştırma ve ince ayar yapma için işbirlikçi platform
-        cohere: Güçlü çok dilli ve RAG yetenekleriyle kurumsal odaklı AI
-        fireworks: Açık kaynak modelleri için üretime hazır çıkarım platformu
-        cerebras: Hızlı çeviri ve metin analizi için ultra hızlı AI çıkarımı
-        replicate: Özel çeviri görevleri için çeşitli açık kaynak modellere erişim
-        perplexity: Bağlamsal çeviriler ve okuma yardımı için gerçek zamanlı bilgi ile güçlendirilmiş AI
-        volcengine: Çeviri ve okuma için Doubao modelleri sunan ByteDance'ın bulut AI platformu
-        minimax: Gelişmiş MiniMax-M2 modelleri sunan MiniMax AI platformu
-        alibaba: Alibaba Cloud'un Qwen model serisi, gelişmiş muhakeme ve çok dilli yeteneklerle
-        moonshotai: Moonshot AI'ın güçlü muhakeme ve uzun bağlam yeteneklerine sahip Kimi model serisi
-        huggingface: Binlerce açık kaynak modele erişim sağlayan Hugging Face Çıkarım API'si
     apiKey:
       showAPIKey: API anahtarını göster
       getAPIKey: API anahtarı al
@@ -186,28 +157,9 @@ options:
       features:
         pageTranslation: Sayfa çevirisi
         selectionTranslation: Seçim araç çubuğu çevirisi
-        inputTranslation: Giriş çevirisi
-        videoSubtitles: Video altyazıları
-        noteSuggestion: Not önerileri
       descriptions:
         pageTranslation: Sayfanın tamamını iki dilli ya da değiştirme modunda çevirir.
         selectionTranslation: Seçim araç çubuğundan, seçtiğiniz metni çevirir.
-        inputTranslation: Bir metin kutusuna yazdıklarınızı göndermeden önce çevirir.
-        videoSubtitles: Video oynatıcıda görünen altyazıları çevirir.
-        noteSuggestion: Seçim çevirisinden sonra Notebase'inize kaydetmeye değer kelimeler önerir.
-    languageDetection:
-      title: Dil algılama
-      description: Otomatik çeviri dil algılama ve Konuşma ses seçimi doğruluğunu etkiler.
-      mode:
-        basic: Temel
-        llm: LLM
-      provider:
-        label: Algılama sağlayıcısı
-        placeholder: Bir sağlayıcı seçin
-      status:
-        noProviders: Önce bir LLM sağlayıcısı yapılandırın
-        basicRecommend: LLM etkinleştirmesi önerilir
-        llmEnabled: LLM algılama etkin
     aiContentAware:
       title: AI akıllı bağlam çevirisi
       description: Sayfanın ya da videonun bağlamını yapay zekâya vererek çeviriyi daha isabetli hale getirin
@@ -218,15 +170,15 @@ options:
   patterns:
     duplicate: Bu desen zaten listede
     gluedWildcard: '"*" adresin bir bölümünün tamamının yerini almalıdır, örneğin *.example.com veya example.*'
-    unsupported: Read Frog bu adresi eşleştiremiyor. Bağlantı noktaları ile http ve https dışındaki şemalar desteklenmiyor.
+    unsupported: Read Frog Lite bu adresi eşleştiremiyor. Bağlantı noktaları ile http ve https dışındaki şemalar desteklenmiyor.
   preference:
     title: Tercihler
-    pageDescription: Read Frog'un görünümünü, nerede çalışacağını ve yapılandırmanızın nasıl eşitlenip yedekleneceğini ayarlayın.
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: Görünüm ve dil
       theme:
         title: Tema
-        description: Read Frog için bir tema seçin.
+        description: Read Frog Lite için bir tema seçin.
         system: Sistem
         light: Açık
         dark: Koyu
@@ -245,7 +197,7 @@ options:
         description: Sayfaların çevrileceği dil.
     extensionActivation:
       title: Uzantı etkinleştirme
-      description: Read Frog listelediğiniz siteler dışında her yerde mi, yoksa yalnızca listelediğiniz sitelerde mi çalışsın
+      description: Read Frog Lite listelediğiniz siteler dışında her yerde mi, yoksa yalnızca listelediğiniz sitelerde mi çalışsın
       manageSites: Siteleri yönet
       mode:
         title: Etkinleştirme modu
@@ -257,32 +209,19 @@ options:
         urlPattern: URL Deseni
     config:
       title: Yapılandırma
-      googleDrive:
-        title: Google Drive bulut senkronizasyonu
-        description: Uzak daha yeniyse indirir, yerel daha yeniyse yükler. Sözlükleriniz kendi dosyasında taşınır ve tümüyle değiştirilmek yerine terim terim birleştirilir.
       manualSync:
         title: Manuel yapılandırma senkronizasyonu
-        description: Ayarlarınızı elle içe ve dışa aktarın, sözlükleriniz de birlikte gelir
+        description: Import or export your local configuration.
         exportSuccess: Yapılandırma başarıyla dışa aktarıldı
-      backup:
-        title: Yapılandırma yedekleme
-        description: Yapılandırma değiştirilirse otomatik yedeklemeler her saat oluşturulur. Önceki yapılandırmaları buradan geri yükleyebilirsiniz. (Maksimum $1 yedekleme)
       reset:
         title: Yapılandırmayı Sıfırla
-        description: Tüm ayarları varsayılan değerlere sıfırla. Sözlükleriniz etkilenmez.
+        description: Reset local configuration to its defaults.
         dialog:
           title: Yapılandırmayı sıfırla
           trigger: Yapılandırmayı sıfırla
           confirm: Onayla
           cancel: İptal
-          description: Bu işlem tüm özel ayarlarınızı silip varsayılan değerlere döndürür. Sözlükleriniz korunur — silmek için sözlük sayfasını kullanın. Lütfen onaylayın.
-    userExperience:
-      beta:
-        title: Beta deneyimi
-        description: Henüz kararsız olabilecek deneysel özellikleri açın
-      analytics:
-        title: Kullanıcı deneyimini geliştirmemize yardımcı ol
-        description: Hataları bulmamıza, arayüzü iyileştirmemize ve daha fazlasına yardım ederek Read Frog'u geliştirin
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: Kısayollar
     pageDescription: Okurken çeviri, sesli okuma ve AI eylemlerini başlatan tuşları belirleyin.
@@ -296,19 +235,10 @@ options:
     selectionTranslation:
       title: Seçim çevirisi
       description: Seçtiğiniz metni çevirir.
-    subtitlesToggle:
-      title: Altyazı çevirisi
-      description: Videonun çevrilmiş altyazılarını açıp kapatır.
     nodeTranslation:
       title: Üzerine gelme çevirisi
       description: Bir paragrafın üzerine gelin veya uzun basın; yalnızca o paragraf çevrilir.
       customDescription: Bir paragrafın üzerindeyken bu tuşlara basarak o paragrafı çevirin.
-    translationHub:
-      title: Çeviri Merkezi
-      description: Çeviri Merkezini yeni bir sekmede açar.
-    selectionSpeak:
-      title: "Seçimi sesli okuma"
-      description: "Seçili metni sesli okur. Durdurmak için tekrar basın."
     actions:
       title: "AI eylemleri"
       description: "Seçili metin üzerinde bir AI eylemi çalıştırır. Özel eylemlerin, burada atayana kadar kısayolu yoktur."
@@ -316,37 +246,6 @@ options:
     turnOn: "Aç"
     clash: "“$1” ile aynı kısayol. Birini değiştirin."
     taken: "$1 zaten “$2” tarafından kullanılıyor."
-  inputTranslation:
-    title: Giriş Çevirisi
-    trigger:
-      title: Tetikleme
-      enable:
-        description: Herhangi bir giriş alanında boşluk tuşuna hızlıca üç kez basarak yazdıklarınızı çevirin.
-      threshold:
-        title: Tetikleme eşiği
-        description: Basışlar arasında izin verilen süre, milisaniye cinsinden. Çeviri tetiklenmiyorsa artırın, yazarken kendiliğinden tetikleniyorsa azaltın.
-    languages:
-      title: Çeviri dilleri
-      pair:
-        description: Yazdığınız metnin hangi dil olarak okunacağı ve hangi dile çevrileceği. Her iki taraf da sayfaları çevirirken kullandığınız kaynak ve hedef dilleri izleyebilir.
-      cycle:
-        title: Her seferinde yönü değiştir
-        description: Her tetikleme iki dili yer değiştirir; tekrar tetiklediğinizde metin yazdığınız dile geri döner.
-  floatingButton:
-    title: Yüzen Buton
-    enable:
-      title: Yüzen butonu etkinleştir
-      description: Read Frog özelliklerine hızlı erişim için web sayfalarında yüzen butonu görüntüle
-    display:
-      side:
-        title: Düğme tarafı
-        description: Yüzen düğmenin sayfanın hangi kenarına sabitleneceğini seçin
-      disabledSites:
-        title: Devre dışı siteler
-        description: Yüzen butonun devre dışı bırakılması gereken web sitelerini yapılandırın
-    clickAction:
-      title: Tıklama eylemi
-      description: Yüzen butona tıklandığında gerçekleştirilecek eylemi seçin
   selectionToolbar:
     title: Seçim Araç Çubuğu
     pageDescription: Metin seçtiğinizde hangi eylemlerin görüneceğini ve araç çubuğunun nerede çıkacağını belirleyin.
@@ -359,9 +258,6 @@ options:
       translate:
         title: Çeviri
         description: Araç çubuğunda çeviri düğmesini göster
-      noteSuggestion:
-        title: Not önerileri
-        description: Bir yapay zekâ sağlayıcısıyla seçim çevirisinden sonra Notebase'inize kaydedilecek kelimeler önerilir
     display:
       title: Görünüm
       opacity:
@@ -383,17 +279,11 @@ options:
       providerDisabled: Seçilen sağlayıcı devre dışı
       providerUnavailable: Seçilen sağlayıcı kullanılamıyor
     customActions:
-      title: Özel AI Eylemleri
+      title: AI explanations
       description: Seçilen metin için kendi yapılandırılmış AI eylemlerinizi ekleyin
       form:
         selectProvider: Sağlayıcı seçin
         defaultFieldName: sonuç
-        layout:
-          title: Düzen
-          description: Sonucun açılır pencerede nasıl göründüğü. Liquid ile HTML; yanıt akarken alanlar dolar.
-        notebase:
-          title: Notebase bağlantısı
-          description: Bu eylemin yapılandırılmış sonuçlarını uzak bir Notebase'e kaydedin.
       templates:
         dictionary:
           name: "Sözlük"
@@ -547,53 +437,15 @@ options:
           hardLabel: "Zor"
           trunkLabel: "Sadece iskelet"
           slashesLabel: "Duraklar"
-        improveWriting:
-          name: "Yazıyı iyileştir"
-          description: "Bir öğretmen gibi hataları ve doğal olmayan ifadeleri işaretler, metni duruma göre düzeltir"
-          fieldOriginal: "Orijinal metin"
-          fieldSetting: "Bağlam"
-          fieldAnnotations: "İşaretler"
-          fieldImproved: "Düzeltilmiş metin"
-          fieldSummary: "Özet"
-          types:
-            spelling: "Yazım"
-            grammar: "Dil bilgisi"
-            punctuation: "Noktalama"
-            wordChoice: "Sözcük seçimi"
-            logic: "Mantık"
-            unnatural: "Doğal değil"
-            register: "Üslup"
-            clarity: "Açıklık"
-            good: "İyi seçim"
-          tiers:
-            error: "Hata"
-            awkward: "Pürüzlü"
-            good: "İyi"
-          hideFixesLabel: "Düzeltmeleri gizle"
-          hiddenHintLabel: "Önce kendiniz düzeltmeyi deneyin."
-          showImprovedLabel: "Göster"
-          improvedLabel: "Düzeltilmiş metin"
-          copyLabel: "Kopyala"
-          unchangedLabel: "Değiştirilecek bir şey yok"
-          removeLabel: "sil"
         blank:
           prompt: |-
             ## Girdi
             Seçim: {{selection}}
             Paragraflar: {{paragraphs}}
             Hedef dil: {{targetLanguage}}
-  advanced:
-    glossary:
-      title: Terim sözlüğü
-      enable:
-        title: Etkinleştir
-        description: Eşleşen terimleri LLM'ye gönderir, böylece onları istediğiniz gibi çevirir. Terim sözlüğü istemin içinde gönderilir, bu yüzden yalnızca LLM sağlayıcısı üzerinde çalışan özellikler için geçerlidir.
-      library:
-        title: Terim sözlükleriniz
-        description: Her terim sözlüğünün kendi terimleri ve kendi site listesi vardır; böylece iş için hazırladığınız terimler diğer her yerde karşınıza çıkmaz.
   contextMenu:
     title: Bağlam Menüsü
-    pageDescription: Tarayıcının sağ tık menüsündeki Read Frog seçeneklerini yönetin.
+    pageDescription: Tarayıcının sağ tık menüsündeki Read Frog Lite seçeneklerini yönetin.
     demoImageAlt: Bağlam menüsü demosu
     enable:
       title: Bağlam menüsü çevirisini etkinleştir
@@ -670,10 +522,6 @@ options:
       title: Özel sayfa istemleri
       description: Farklı türde Promptları özelleştirmek, çeviri sırasında Prompt türünü kendiniz ayarlamanıza olanak tanır. Prompt, kullanıcının LLM'ye gönderdiği metni temsil eder.
       managePrompts: Promptları yönet
-      communityPrompts: Topluluktan prompt al veya paylaş
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/821
-      variableReference: Değişken başvurusu
-      variableReferenceUrl: https://readfrog.app/tr/docs/page-translation/prompts/variables
       addPrompt: Prompt ekle
       default: Varsayılan
       builtIn: Yerleşik
@@ -803,61 +651,6 @@ options:
       searchPlaceholder: id, açıklama veya URL kalıbına göre ara
       showMore: Daha fazla göster
       count: $2 kuraldan $1 tanesi gösteriliyor
-  tts:
-    title: Metinden Konuşmaya
-    voice:
-      language:
-        title: Dil sesi
-        description: Bir dil seçin, ardından o dili okuyacak sesi belirleyin. Sıfırlamak, Read Frog'un o dil için seçtiği sesi geri getirir.
-      fallback:
-        title: Yedek ses
-        description: Kendine ait bir ses atamadığınız diller bu sesle okunur.
-    speech:
-      rate:
-        title: Hız
-        description: Sesin kendi hızına göre ne kadar hızlı ya da yavaş okuduğu, -100 ile 100 yüzde arasında.
-      pitch:
-        title: Perde
-        description: Sesin kendi perdesine göre ne kadar tiz ya da pes konuştuğu, -100 ile 100 hertz arasında.
-      volume:
-        title: Ses düzeyi
-        description: Sesin kendi düzeyine göre ne kadar yüksek ya da alçak okuduğu, -100 ile 100 yüzde arasında.
-  videoSubtitles:
-    title: Video Altyazıları
-    preference:
-      enable:
-        title: Video altyazılarını aç
-        description: YouTube, X ve Netflix'te oynatıcı kontrollerine bir çeviri düğmesi ekler.
-      autoStart:
-        title: Video açılınca çevir
-        description: Video yüklenir yüklenmez, düğmeye basmadan altyazıları çevirmeye başlar.
-      aiSegmentation:
-        title: AI akıllı bölümlendirme
-        description: Yapay zekâ altyazıları cümlelere yeniden böler. Çeviriler daha geç gelir. Güçlü bir LLM gerekir; zayıf modeller satırları atlayabilir veya kaydırabilir.
-    aiQuota:
-      title: Yapay zekâ altyazı kotası
-      description: Yapay zeka konuşma tanıma ile her video için doğru altyazı üretir
-    style:
-      title: Altyazı stili
-      description: Görüntüleme modu, konum, yazı tipleri, renkler ve arka plan — canlı önizlemeye bakarak ayarlanır
-      customCSS:
-        title: Özel CSS
-        description: Yukarıdaki yazı tipleri ve renklerin üzerine, altyazı satırları için ek CSS
-    customPrompts:
-      title: Özel altyazı istemleri
-      description: Yalnızca altyazı çevirisi için istem şablonları; web sayfası çeviri istemlerinden ayrı tutulur
-    subtitlesQueue:
-      requestQueueConfig:
-        title: Çeviri hızı
-      batchQueueConfig:
-        title: Toplu çeviri
-        description: Toplu çeviri için karakter limitleri ve maksimum altyazı satırı sayısını yapılandırın (yalnızca LLM çevirisi için geçerlidir)
-    cache:
-      clearCache:
-        title: AI bölümlendirme önbelleğini temizle
-        description: Kaydedilmiş bölümlendirme sonuçları; izlediğiniz bir video yeniden bölünmez
-side:
-  targetLang: Hedef Dil
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -867,20 +660,14 @@ translatePrompt:
   description: Çeviri sırasında kullanılacak bir Prompt seçin. Seçenekler sayfasında özel Promptlar ekleyin veya değiştirin.
 noAPIKeyConfig:
   warning: AI modelleri kullanmak istiyorsanız, lütfen önce seçenekler sayfasında API anahtarını ayarlayın
-languageDetection:
-  llmFailed: LLM dil algılama başarısız oldu, temel algılamaya geri dönüldü
 translation:
   sameLanguage: Kaynak ve hedef diller farklı olmalıdır
   extensionContextInvalidated: Uzantı güncellendi. Bu sayfayı yenileyip tekrar deneyin.
-speak:
-  languageDetectionFallback: Yerel dil algılamaya geçildi
-  languageDetectionSettingsHint: Ayarlardan kullanılabilir bir LLM veya yerel algılamayı seçin.
 action:
   copy: Kopyala
   copied: Kopyalandı
   regenerate: Yeniden oluştur
   viewContextDetails: Bağlam
-  customizeCustomAction: $1 eylemini özelleştir
   contextDetailsTitleLabel: Başlık
   contextDetailsParagraphsLabel: Paragraflar
   translation: Çeviri
@@ -898,11 +685,6 @@ hotkey:
   backtick: Ters tırnak
   clickAndHold: Tıkla ve basılı tut
   custom: Özel kısayol
-translationHub:
-  searchLanguages: Dil ara...
-  noLanguagesFound: Dil bulunamadı
-  translationFailed: Çeviri Başarısız
-  translationFailedFallback: Çeviri başarısız
 languages:
   eng: İngilizce
   cmn: Basitleştirilmiş Çince
@@ -1083,3 +865,10 @@ languages:
   wls: Wallis Dili
   rar: Rarotongan
   hif: Fiji Hintçesi
+side:
+  targetLang: Hedef Dil
+translationHub:
+  searchLanguages: Dil ara...
+  noLanguagesFound: Dil bulunamadı
+  translationFailed: Çeviri Başarısız
+  translationFailedFallback: Çeviri başarısız

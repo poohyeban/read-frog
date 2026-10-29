@@ -75,9 +75,9 @@ export async function bootstrapHostContent(
   let translationEnabled = false
   try {
     translationEnabled = await sendMessage("getEnablePageTranslationFromContentScript", undefined)
-  } catch (error) {
+  } catch {
     // Extension context may be invalidated during update, proceed without auto-start
-    logger.error("Failed to check translation state:", error)
+    logger.error("Failed to check translation state:")
   }
   if (translationEnabled) {
     void manager.start()

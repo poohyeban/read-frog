@@ -126,7 +126,7 @@ export function createPageTranslationRequest(
         throw error
       }
 
-      logger.warn("HTML attribute placeholders were not preserved; retrying full HTML", error)
+      logger.warn("HTML attribute placeholders were not preserved; retrying full HTML")
       return translateLegacyHtml()
     }
   }

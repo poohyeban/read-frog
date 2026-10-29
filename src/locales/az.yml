@@ -58,8 +58,6 @@ options:
     leaveDescription: Problemi həll etmək üçün redaktəyə davam edin və ya yadda saxlanmamış dəyişikliklərdən imtina edin.
     keepEditing: Redaktəyə davam et
     discard: Saxlanmamış dəyişiklikləri ləğv et
-  batchSavings:
-    savedCost: API xərclərinə təxminən $1% qənaət edilib
   commandPalette:
     placeholder: Parametrləri axtar...
     noResults: Parametr tapılmadı
@@ -70,8 +68,8 @@ options:
     features: Funksiyalar
   apiProviders:
     title: API provayderləri
-    pageDescription: Read Frog genişlənməsinin istifadə etdiyi süni intellekt xidmətlərini qoşun, sonra hər funksiyanı hansı xidmətin icra edəcəyini seçin.
-    description: Read Frog genişlənməsinin müraciət edə biləcəyi provayderləri əlavə edin. 20-dən çox hazır seçim, həmçinin Chat Completions ilə uyğun API-lər və Open Responses API-ləri üçün fərdi qoşulma dəstəyi var.
+    pageDescription: Read Frog Lite genişlənməsinin istifadə etdiyi süni intellekt xidmətlərini qoşun, sonra hər funksiyanı hansı xidmətin icra edəcəyini seçin.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
     configTitle: Provayder konfiqurasiyası
     addProvider: Provayder əlavə et
     setApiKeyWarning:
@@ -141,36 +139,9 @@ options:
         customChatComplete: Fərdi Chat Complete
       description:
         openai: GPT-4o kimi modellər təqdim edir
-        azure: Azure üzərində yerləşdirdiyiniz OpenAI modelləri
-        deepseek: Çində istifadə üçün tövsiyə olunur
-        openrouter: İstifadəyə görə ödənişlə bir neçə LLM provayderi üçün vahid interfeys
         ollama: Tam məxfilik üçün böyük dil modellərini öz kompüterinizdə işlədin
         google: Təkmil mühakimə imkanlarına malik aparıcı Google süni intellekt modelləri
-        anthropic: Təhlükəsizliyi və güclü mühakimə qabiliyyəti ilə tanınan Claude modelləri
-        xai: Real vaxt məlumatlarına çıxışı olan Grok modellərini təqdim edən, Elon Musk tərəfindən qurulmuş süni intellekt şirkəti
-        atlascloud: Yeni DeepSeek, Kimi, Qwen, Doubao, GLM və digər modellərə OpenAI ilə uyğun vahid çıxış
-        jalapenocloud: Aparıcı komandaların istifadə etdiyi korporativ səviyyəli süni intellekt indi sizin üçün də əlçatandır!
-        siliconflow: Çin və beynəlxalq modellər üçün yüksək məhsuldarlıqlı model icrası platforması
-        tensdaq: Bazar əsasında qiymət qoyan, baha sabit tarifləri aradan qaldıran yenilikçi hərrac əsaslı süni intellekt MaaS platforması
         openaiCompatible: OpenAI Chat Completions API ilə uyğun fərdi xidmət ünvanına qoşulun
-        openResponses: Open Responses API ilə uyğun fərdi xidmət ünvanına qoşulun
-        deeplx: Qeyri-rəsmi DeepL API
-        deepl: Rəsmi DeepL API
-        bedrock: Korporativ səviyyəli təməl modellər üçün AWS tərəfindən idarə olunan xidmət
-        groq: LLM modellərini son dərəcə sürətli işlətmək üçün xüsusi avadanlıq
-        deepinfra: Məşhur açıq mənbəli modellərin buludda sərfəli icrası
-        mistral: Səmərəli çoxdilli modellər üzrə ixtisaslaşmış Avropa süni intellekt şirkəti
-        togetherai: Açıq mənbəli modelləri işlətmək və əlavə təlimlə uyğunlaşdırmaq üçün əməkdaşlıq platforması
-        cohere: Güclü çoxdilli və RAG imkanlarına malik korporativ süni intellekt
-        fireworks: Açıq mənbəli modellər üçün real istifadəyə hazır model icrası platforması
-        cerebras: Sürətli tərcümə və mətn təhlili üçün son dərəcə sürətli süni intellekt icrası
-        replicate: Xüsusi tərcümə tapşırıqları üçün müxtəlif açıq mənbəli modellərə çıxış
-        perplexity: Kontekstə uyğun tərcümə və oxu dəstəyi üçün real vaxt bilikləri ilə zənginləşdirilmiş süni intellekt
-        volcengine: Tərcümə və oxu üçün Doubao modellərini təqdim edən ByteDance bulud süni intellekt platforması
-        minimax: Mətn yaratmaq üçün təkmil MiniMax-M2 modellərini təqdim edən MiniMax süni intellekt platforması
-        alibaba: Təkmil mühakimə və çoxdilli imkanları olan Alibaba Cloud Qwen model seriyası
-        moonshotai: Güclü mühakimə və uzun kontekst imkanları olan Moonshot AI Kimi model seriyası
-        huggingface: Minlərlə açıq mənbəli modelə çıxış verən Hugging Face Inference API
     apiKey:
       showAPIKey: API açarını göstər
       getAPIKey: API açarı əldə et
@@ -187,28 +158,9 @@ options:
       features:
         pageTranslation: Səhifə tərcüməsi
         selectionTranslation: Seçim alətlər panelində tərcümə
-        inputTranslation: Daxil edilən mətnin tərcüməsi
-        videoSubtitles: Video subtitrləri
-        noteSuggestion: Qeyd təklifləri
       descriptions:
         pageTranslation: Bütün səhifəni ikidilli və ya əvəzetmə rejimində tərcümə edir.
         selectionTranslation: Seçdiyiniz mətni seçim alətlər paneli vasitəsilə tərcümə edir.
-        inputTranslation: Mətn sahəsinə yazdığınızı göndərməzdən əvvəl tərcümə edir.
-        videoSubtitles: Subtitrləri video pleyerdə göründükcə tərcümə edir.
-        noteSuggestion: Seçilmiş mətn tərcümə edildikdən sonra Notebase daxilində saxlamağa dəyər sözlər təklif edir.
-    languageDetection:
-      title: Dilin aşkarlanması
-      description: Avtomatik tərcümədə dilin aşkarlanmasına və səsləndirmə üçün səs seçiminin dəqiqliyinə təsir edir.
-      mode:
-        basic: Əsas
-        llm: Böyük dil modeli (LLM)
-      provider:
-        label: Dil aşkarlama provayderi
-        placeholder: Provayder seçin
-      status:
-        noProviders: Əvvəlcə LLM provayderini tənzimləyin
-        basicRecommend: LLM ilə aşkarlamanın aktivləşdirilməsi tövsiyə olunur
-        llmEnabled: LLM ilə aşkarlama aktivdir
     aiContentAware:
       title: Süni intellektlə kontekstə uyğun tərcümə
       description: Daha dəqiq tərcümə üçün süni intellektə səhifə və ya video kontekstini təqdim edin
@@ -219,15 +171,15 @@ options:
   patterns:
     duplicate: Bu şablon artıq siyahıdadır
     gluedWildcard: '"*" ünvanın bütöv bir hissəsini əvəz etməlidir, məsələn *.example.com və ya example.*'
-    unsupported: Read Frog bu ünvanı uyğunlaşdıra bilmir. Portlar və http ilə https xaricindəki sxemlər dəstəklənmir.
+    unsupported: Read Frog Lite bu ünvanı uyğunlaşdıra bilmir. Portlar və http ilə https xaricindəki sxemlər dəstəklənmir.
   preference:
     title: Ümumi parametrlər
-    pageDescription: Read Frog genişlənməsinin görünüşünü, harada işləyəcəyini, konfiqurasiyanın necə sinxronlaşdırılacağını və ehtiyat nüsxəsinin necə yaradılacağını təyin edin.
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: Görünüş və dil
       theme:
         title: Mövzu
-        description: Read Frog üçün mövzu seçin.
+        description: Read Frog Lite üçün mövzu seçin.
         system: Sistem
         light: Açıq
         dark: Tünd
@@ -246,7 +198,7 @@ options:
         description: Səhifələrin tərcümə edildiyi dil.
     extensionActivation:
       title: Genişlənmənin aktivliyi
-      description: Read Frog genişlənməsinin sadaladığınız saytlardan başqa hər yerdə, yoxsa yalnız sadaladığınız saytlarda işləyəcəyini seçin
+      description: Read Frog Lite genişlənməsinin sadaladığınız saytlardan başqa hər yerdə, yoxsa yalnız sadaladığınız saytlarda işləyəcəyini seçin
       manageSites: Saytları idarə et
       mode:
         title: Aktivləşdirmə rejimi
@@ -258,32 +210,19 @@ options:
         urlPattern: URL şablonu
     config:
       title: Konfiqurasiya
-      googleDrive:
-        title: Google Drive ilə bulud sinxronlaşdırması
-        description: Uzaqdakı konfiqurasiya daha yenidirsə endirir, yerli konfiqurasiya daha yenidirsə yükləyir. Lüğətləriniz ayrıca faylda daşınır və bütövlükdə əvəz olunmaq yerinə termin-termin birləşdirilir.
       manualSync:
         title: Konfiqurasiyanın əl ilə sinxronlaşdırılması
-        description: Ayarlarınızı əl ilə idxal və ixrac edin, lüğətləriniz də birlikdə gəlir
+        description: Import or export your local configuration.
         exportSuccess: Konfiqurasiya uğurla ixrac edildi
-      backup:
-        title: Konfiqurasiyanın ehtiyat nüsxəsi
-        description: Konfiqurasiya dəyişibsə, hər saat avtomatik ehtiyat nüsxə yaradılır. Əvvəlki konfiqurasiyaları burada bərpa edə bilərsiniz. (Ən çox $1 ehtiyat nüsxə)
       reset:
         title: Konfiqurasiyanın sıfırlanması
-        description: Bütün parametrləri ilkin dəyərlərə sıfırla. Lüğətlərinizə toxunulmur.
+        description: Reset local configuration to its defaults.
         dialog:
           title: Konfiqurasiyanın sıfırlanması
           trigger: Konfiqurasiyanı sıfırla
           confirm: Təsdiqlə
           cancel: Ləğv et
-          description: Bu əməliyyat bütün fərdi parametrlərinizi silib ilkin dəyərlərə qaytaracaq. Lüğətləriniz saxlanılır — silmək üçün lüğət səhifəsindən istifadə edin. Zəhmət olmasa təsdiqləyin.
-    userExperience:
-      beta:
-        title: Beta imkanları
-        description: Hələ qeyri-sabit ola biləcək sınaq funksiyalarını aktiv edin
-      analytics:
-        title: İstifadəçi təcrübəsini yaxşılaşdırmağa kömək et
-        description: Xətaları tapmaqda, görünüşü təkmilləşdirməkdə və digər işlərdə bizə kömək edərək Read Frog təcrübəsini yaxşılaşdırın
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: Qısayollar
     pageDescription: Oxuyarkən tərcümə, səsləndirmə və süni intellekt əməliyyatlarını başladan düymələri təyin edin.
@@ -297,19 +236,10 @@ options:
     selectionTranslation:
       title: Seçilmiş mətnin tərcüməsi
       description: Seçdiyiniz mətni tərcümə edin.
-    subtitlesToggle:
-      title: Subtitr tərcüməsi
-      description: Tərcümə edilmiş video subtitrlərini aktiv və ya deaktiv edin.
     nodeTranslation:
       title: Kursorla tərcümə
       description: Yalnız bir abzası tərcümə etmək üçün kursoru üzərinə gətirin və ya basıb saxlayın.
       customDescription: Abzası tərcümə etmək üçün kursor onun üzərində olarkən bu düymələri basın.
-    translationHub:
-      title: Tərcümə mərkəzi
-      description: Tərcümə mərkəzini yeni vərəqdə açın.
-    selectionSpeak:
-      title: "Seçilmiş mətnin səsləndirilməsi"
-      description: "Seçilmiş mətni ucadan oxuyun. Dayandırmaq üçün yenidən basın."
     actions:
       title: "Süni intellekt əməliyyatları"
       description: "Seçilmiş mətn üzərində süni intellekt əməliyyatı işə salın. Fərdi əməliyyatların burada təyin edənə qədər qısayolu olmur."
@@ -317,37 +247,6 @@ options:
     turnOn: "Aktiv et"
     clash: "“$1” ilə eyni qısayol. Birini dəyişin."
     taken: "$1 artıq “$2” tərəfindən istifadə olunur."
-  inputTranslation:
-    title: Daxil edilən mətnin tərcüməsi
-    trigger:
-      title: İşə salma
-      enable:
-        description: İstənilən mətn sahəsində yazdığınızı tərcümə etmək üçün boşluq düyməsini sürətlə üç dəfə basın.
-      threshold:
-        title: İşə salma həddi
-        description: Düyməyə ardıcıl basmalar arasında icazə verilən ən uzun fasilə (millisaniyə ilə). Tərcümə başlamırsa, dəyəri artırın; hələ yazarkən başlayırsa, azaldın.
-    languages:
-      title: Tərcümə dilləri
-      pair:
-        description: Yazılmış mətnin mənbə dili və tərcümə olunacağı dil. Hər biri üçün səhifə tərcüməsindəki müvafiq mənbə və hədəf dilindən istifadə edə bilərsiniz.
-      cycle:
-        title: Hər dəfə istiqaməti dəyiş
-        description: Hər işə salma iki dilin yerini dəyişir, beləliklə yenidən işə saldıqda mətn yazdığınız dilə qayıdır.
-  floatingButton:
-    title: Üzən düymə
-    enable:
-      title: Üzən düyməni aktiv et
-      description: Read Frog funksiyalarına sürətli çıxış üçün veb səhifələrdə üzən düyməni göstərin
-    display:
-      side:
-        title: Düymənin tərəfi
-        description: Üzən düymənin səhifənin hansı tərəfinə bərkidildiyini seçin
-      disabledSites:
-        title: Deaktiv olduğu saytlar
-        description: Üzən düymənin deaktiv olacağı saytları təyin edin
-    clickAction:
-      title: Klik əməliyyatı
-      description: Üzən düyməyə kliklədikdə icra ediləcək əməliyyatı seçin
   selectionToolbar:
     title: Seçim alətlər paneli
     pageDescription: Mətn seçdikdə hansı əməliyyatların göründüyünü və alətlər panelinin harada açıldığını təyin edin.
@@ -360,9 +259,6 @@ options:
       translate:
         title: Tərcümə et
         description: Alətlər panelində tərcümə düyməsini göstərin
-      noteSuggestion:
-        title: Qeyd təklifləri
-        description: Seçilmiş mətn süni intellekt provayderi ilə tərcümə edildikdən sonra Notebase daxilində saxlamaq üçün sözlər təklif edin
     display:
       title: Görünüş
       opacity:
@@ -384,17 +280,11 @@ options:
       providerDisabled: Seçilmiş provayder deaktivdir
       providerUnavailable: Seçilmiş provayder əlçatan deyil
     customActions:
-      title: Fərdi süni intellekt əməliyyatları
+      title: AI explanations
       description: Seçilmiş mətn üçün strukturlaşdırılmış fərdi süni intellekt əməliyyatları əlavə edin
       form:
         selectProvider: Provayder seçin
         defaultFieldName: Nəticə
-        layout:
-          title: Tərtibat
-          description: Nəticənin açılan pəncərədə necə göründüyü. Liquid ilə HTML; cavab axdıqca sahələr doldurulur.
-        notebase:
-          title: Notebase qoşulması
-          description: Bu əməliyyatın strukturlaşdırılmış nəticələrini uzaqdakı Notebase daxilində saxlayın.
       templates:
         dialogTitle: Şablon seçin
         dialogDescription: Yeni süni intellekt əməliyyatını sürətlə yaratmaq üçün şablon seçin və ya sıfırdan başlayın.
@@ -550,35 +440,6 @@ options:
           hardLabel: "Çətin"
           trunkLabel: "Yalnız əsas"
           slashesLabel: "Fasilələr"
-        improveWriting:
-          name: "Yazını təkmilləşdir"
-          description: "Müəllim kimi səhvləri və qeyri-təbii ifadələri işarələyir, mətni vəziyyətə uyğun düzəldir"
-          fieldOriginal: "Orijinal mətn"
-          fieldSetting: "Kontekst"
-          fieldAnnotations: "Qeydlər"
-          fieldImproved: "Düzəldilmiş mətn"
-          fieldSummary: "Xülasə"
-          types:
-            spelling: "Orfoqrafiya"
-            grammar: "Qrammatika"
-            punctuation: "Durğu işarələri"
-            wordChoice: "Söz seçimi"
-            logic: "Məntiq"
-            unnatural: "Qeyri-təbii"
-            register: "Üslub"
-            clarity: "Aydınlıq"
-            good: "Uğurlu seçim"
-          tiers:
-            error: "Səhv"
-            awkward: "Qüsurlu"
-            good: "Uğurlu"
-          hideFixesLabel: "Düzəlişləri gizlət"
-          hiddenHintLabel: "Əvvəlcə özünüz düzəltməyə çalışın."
-          showImprovedLabel: "Göstər"
-          improvedLabel: "Düzəldilmiş mətn"
-          copyLabel: "Kopyala"
-          unchangedLabel: "Dəyişəcək heç nə yoxdur"
-          removeLabel: "sil"
         blank:
           name: Boş
           description: Boş əməliyyatla sıfırdan başlayın
@@ -587,18 +448,9 @@ options:
             Seçim: {{selection}}
             Abzaslar: {{paragraphs}}
             Hədəf dili: {{targetLanguage}}
-  advanced:
-    glossary:
-      title: Terminlər lüğəti
-      enable:
-        title: Aktiv et
-        description: Uyğun gələn terminləri LLM-ə göndərir ki, onları istədiyiniz kimi tərcümə etsin. Lüğət sorğunun içində göndərilir, ona görə də yalnız LLM provayderi üzərində işləyən funksiyalara tətbiq olunur.
-      library:
-        title: Lüğətləriniz
-        description: Hər lüğətin öz terminləri və öz sayt siyahısı var, ona görə də iş üçün nəzərdə tutulmuş terminlər dəsti sizinlə birlikdə hər yerə keçmir.
   contextMenu:
     title: Kontekst menyusu
-    pageDescription: Brauzerin sağ klik menyusundakı Read Frog elementlərini idarə edin.
+    pageDescription: Brauzerin sağ klik menyusundakı Read Frog Lite elementlərini idarə edin.
     demoImageAlt: Kontekst menyusu nümunəsi
     enable:
       title: Kontekst menyusunda tərcüməni aktiv et
@@ -675,10 +527,6 @@ options:
       title: Səhifə təlimatlarını fərdiləşdir
       description: Müxtəlif təlimat növlərini fərdiləşdirməklə tərcümə zamanı istifadə ediləcək təlimatı özünüz seçə bilərsiniz. Təlimat istifadəçinin LLM modelinə göndərdiyi mətndir.
       managePrompts: Təlimatları idarə et
-      communityPrompts: İcmadan təlimat əldə et və ya icma ilə paylaş
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/821
-      variableReference: Dəyişənlər arayışı
-      variableReferenceUrl: https://readfrog.app/en/docs/page-translation/prompts/variables
       addPrompt: Təlimat əlavə et
       default: Standart
       builtIn: Daxili
@@ -808,61 +656,6 @@ options:
       searchPlaceholder: İdentifikator, təsvir və ya URL şablonuna görə axtar
       showMore: Daha çox göstər
       count: $1 qayda göstərilir, cəmi $2 qayda var
-  tts:
-    title: Mətnin səsləndirilməsi
-    voice:
-      language:
-        title: Dil üçün səs
-        description: Əvvəl dili, sonra onu səsləndirəcək səsi seçin. Sıfırlama Read Frog genişlənməsinin həmin dil üçün seçdiyi səsi bərpa edir.
-      fallback:
-        title: Ehtiyat səs
-        description: Ayrıca səs təyin etmədiyiniz dillər üçün istifadə olunan səs.
-    speech:
-      rate:
-        title: Sürət
-        description: Səsləndirmənin normal tempdən nə qədər sürətli və ya yavaş olacağını -100 ilə 100 faiz arasında təyin edin.
-      pitch:
-        title: Səsin yüksəkliyi
-        description: Səsin normal tonundan nə qədər yüksək və ya alçaq olacağını -100 ilə 100 hers arasında təyin edin.
-      volume:
-        title: Səs səviyyəsi
-        description: Səsin normal səviyyədən nə qədər gur və ya zəif olacağını -100 ilə 100 faiz arasında təyin edin.
-  videoSubtitles:
-    title: Video subtitrləri
-    preference:
-      enable:
-        title: Video subtitrlərini aktiv et
-        description: YouTube, X və Netflix-də video pleyerin idarəetmə panelinə tərcümə düyməsi əlavə edir.
-      autoStart:
-        title: Açılan kimi tərcümə et
-        description: Düyməyə basmadan video yüklənən kimi tərcüməyə başlayın.
-      aiSegmentation:
-        title: Süni intellektlə ağıllı seqmentləşdirmə
-        description: Süni intellekt subtitrləri cümlələrə yenidən bölür. Tərcümələr daha gec gəlir. Güclü LLM tələb olunur; zəif modellər sətirləri buraxa və ya sürüşdürə bilər.
-    aiQuota:
-      title: Süni intellekt subtitrlərinin kvotası
-      description: Süni intellektlə nitqin tanınması istənilən video üçün dəqiq subtitrlər yaradır
-    style:
-      title: Subtitr üslubu
-      description: Canlı önbaxışla göstərilmə rejimini, mövqeyi, şriftləri, rəngləri və fonu təyin edin
-      customCSS:
-        title: Fərdi CSS
-        description: Yuxarıdakı şrift və rənglərə əlavə olaraq subtitr sətirləri üçün CSS
-    customPrompts:
-      title: Fərdi subtitr təlimatları
-      description: Veb səhifə tərcüməsi təlimatlarından ayrı saxlanılan subtitr tərcüməsi şablonları
-    subtitlesQueue:
-      requestQueueConfig:
-        title: Tərcümə sürəti
-      batchQueueConfig:
-        title: Toplu tərcümə
-        description: Toplu tərcümə üçün simvol hədlərini və maksimum subtitr sətri sayını təyin edin (yalnız LLM tərcüməsinə təsir edir)
-    cache:
-      clearCache:
-        title: Süni intellekt seqmentləşdirmə keşini təmizlə
-        description: Əvvəl izlədiyiniz videonun yenidən bölünməməsi üçün saxlanılan seqmentləşdirmə nəticələri
-side:
-  targetLang: Hədəf dili
 translateService:
   builtInModels: Daxili modellər
   llmModels: LLM modelləri
@@ -872,20 +665,14 @@ translatePrompt:
   description: Tərcümə zamanı istifadə ediləcək təlimatı seçin. Parametrlər səhifəsində fərdi təlimatlar əlavə edin və ya dəyişin.
 noAPIKeyConfig:
   warning: Süni intellekt modellərindən istifadə etmək istəyirsinizsə, əvvəlcə parametrlər səhifəsində API açarını təyin edin
-languageDetection:
-  llmFailed: LLM ilə dilin aşkarlanması alınmadı, əsas aşkarlama üsuluna qayıdıldı
 translation:
   sameLanguage: Mənbə və hədəf dilləri fərqli olmalıdır
   extensionContextInvalidated: Genişlənmə yeniləndi. Bu səhifəni yeniləyib yenidən cəhd edin.
-speak:
-  languageDetectionFallback: Yerli dil aşkarlanmasına keçildi
-  languageDetectionSettingsHint: Ayarlarda işlək LLM seçin və ya yerli aşkarlamaya keçin.
 action:
   copy: Köçür
   copied: Köçürüldü
   regenerate: Yenidən yarat
   viewContextDetails: Kontekst
-  customizeCustomAction: $1 əməliyyatını fərdiləşdir
   contextDetailsTitleLabel: Başlıq
   contextDetailsParagraphsLabel: Abzaslar
   translation: Tərcümə
@@ -903,11 +690,6 @@ hotkey:
   backtick: Tərs apostrof
   clickAndHold: Kliklə və saxla
   custom: Fərdi qısayol
-translationHub:
-  searchLanguages: Dilləri axtar...
-  noLanguagesFound: Dil tapılmadı
-  translationFailed: Tərcümə alınmadı
-  translationFailedFallback: Tərcümə alınmadı
 languages:
   eng: İngilis dili
   cmn: Sadələşdirilmiş çin dili
@@ -1088,3 +870,10 @@ languages:
   wls: Uollis dili
   rar: Rarotonqa dili
   hif: Fici hindi dili
+side:
+  targetLang: Hədəf dili
+translationHub:
+  searchLanguages: Dilləri axtar...
+  noLanguagesFound: Dil tapılmadı
+  translationFailed: Tərcümə alınmadı
+  translationFailedFallback: Tərcümə alınmadı

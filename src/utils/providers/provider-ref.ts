@@ -43,15 +43,8 @@ export function canResolvedProviderRefGenerateText(
 ): ref is ResolvedProviderRef<LLMProviderConfig> {
   return isLLMProviderConfig(ref.config)
 }
-export async function serializeProviderRef<T extends TranslateProviderConfig>(
+export function serializeProviderRef<T extends TranslateProviderConfig>(
   provider: ResolvedProviderRef<T>,
-  _route?: string,
-): Promise<{ kind: "local"; config: T }> {
+): { kind: "local"; config: T } {
   return { kind: "local", config: provider.config }
-}
-export async function checkProviderAvailability<T extends TranslateProviderConfig>(
-  provider: ResolvedProviderRef<T>,
-  route?: string,
-) {
-  return { available: true as const, providerRef: await serializeProviderRef(provider, route) }
 }

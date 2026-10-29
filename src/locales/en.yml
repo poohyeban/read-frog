@@ -58,8 +58,6 @@ options:
     leaveDescription: Continue editing to fix the problem, or discard the changes that have not been saved.
     keepEditing: Continue editing
     discard: Discard unsaved changes
-  batchSavings:
-    savedCost: Saved approx. $1% on API costs
   commandPalette:
     placeholder: Search settings...
     noResults: No settings found
@@ -70,8 +68,8 @@ options:
     features: Features
   apiProviders:
     title: API Providers
-    pageDescription: Connect the AI services Read Frog calls, then choose which one runs each feature.
-    description: Add the providers Read Frog can call. Over 20 are built in, with custom support for Chat Completions-compatible and Open Responses APIs.
+    pageDescription: Connect the AI services Read Frog Lite calls, then choose which one runs each feature.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
     configTitle: Provider config
     addProvider: Add provider
     setApiKeyWarning:
@@ -141,36 +139,9 @@ options:
         customChatComplete: Custom Chat Complete
       description:
         openai: Provides models like GPT-4o
-        azure: Azure-hosted OpenAI models through your deployments
-        deepseek: Recommend to use in China
-        openrouter: Unified interface for multiple LLM providers with pay-per-use pricing
         ollama: Run large language models locally on your machine for complete privacy
         google: Google's flagship AI models with advanced reasoning capabilities
-        anthropic: Claude models known for safety and reasoning excellence
-        xai: Elon Musk's AI company offering Grok models with real-time data access
-        atlascloud: Unified OpenAI-compatible access to newer DeepSeek, Kimi, Qwen, Doubao, GLM, and other models
-        jalapenocloud: Enterprise-grade AI used by top teams — now made for you!
-        siliconflow: High-performance inference platform for Chinese and international models
-        tensdaq: Revolutionary bidding AI MaaS platform with market-driven pricing, eliminating high-cost fixed pricing
         openaiCompatible: Connect to a custom endpoint compatible with the OpenAI Chat Completions API
-        openResponses: Connect to a custom endpoint compatible with the Open Responses API
-        deeplx: Unofficial DeepL API
-        deepl: Official DeepL API
-        bedrock: AWS managed service for enterprise-grade foundation models
-        groq: Specialized hardware for ultra-fast LLM inference speeds
-        deepinfra: Cost-effective cloud inference for popular open-source models
-        mistral: European AI company specializing in efficient multilingual models
-        togetherai: Collaborative platform for running and fine-tuning open-source models
-        cohere: Enterprise-focused AI with strong multilingual and RAG capabilities
-        fireworks: Production-ready inference platform for open-source models
-        cerebras: Ultra-fast AI inference for rapid translation and text analysis
-        replicate: Access to diverse open-source models for specialized translation tasks
-        perplexity: Real-time knowledge-enhanced AI for contextual translations and reading assistance
-        volcengine: ByteDance's cloud AI platform offering Doubao models for translation and reading
-        minimax: MiniMax AI platform offering advanced MiniMax-M2 models for text generation
-        alibaba: Alibaba Cloud's Qwen model series with advanced reasoning and multilingual capabilities
-        moonshotai: Moonshot AI's Kimi model series with strong reasoning and long-context capabilities
-        huggingface: Hugging Face Inference API providing access to thousands of open-source models
     apiKey:
       showAPIKey: Show API key
       getAPIKey: Get API key
@@ -187,28 +158,9 @@ options:
       features:
         pageTranslation: Page translation
         selectionTranslation: Selection toolbar translation
-        inputTranslation: Input translation
-        videoSubtitles: Video subtitles
-        noteSuggestion: Note suggestions
       descriptions:
         pageTranslation: Translates the whole page in bilingual or replace mode.
         selectionTranslation: Translates the text you select from the selection toolbar.
-        inputTranslation: Translates what you type into an input box before you send it.
-        videoSubtitles: Translates subtitles as they appear in a video player.
-        noteSuggestion: Suggests words worth saving to your Notebase after a selection translation.
-    languageDetection:
-      title: Language detection
-      description: Affects auto-translate language detection and Speaking voice selection accuracy.
-      mode:
-        basic: Basic
-        llm: LLM
-      provider:
-        label: Detection provider
-        placeholder: Select a provider
-      status:
-        noProviders: Configure an LLM provider first
-        basicRecommend: Recommend enabling LLM
-        llmEnabled: LLM detection enabled
     aiContentAware:
       title: AI smart context translation
       description: Give the AI context from the page or video so it translates more accurately
@@ -219,15 +171,15 @@ options:
   patterns:
     duplicate: This pattern is already in the list
     gluedWildcard: A "*" has to stand for a whole part of the address, like *.example.com or example.*
-    unsupported: Read Frog cannot match this address. Ports and schemes other than http and https are not supported.
+    unsupported: Read Frog Lite cannot match this address. Ports and schemes other than http and https are not supported.
   preference:
     title: Preferences
-    pageDescription: Set how Read Frog looks, where it runs, and how your config is synced and backed up.
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: Appearance & language
       theme:
         title: Theme
-        description: Choose a theme for Read Frog.
+        description: Choose a theme for Read Frog Lite.
         system: System
         light: Light
         dark: Dark
@@ -246,7 +198,7 @@ options:
         description: The language pages are translated into.
     extensionActivation:
       title: Extension activation
-      description: Whether Read Frog runs everywhere except the sites you list, or only on the sites you list
+      description: Whether Read Frog Lite runs everywhere except the sites you list, or only on the sites you list
       manageSites: Manage sites
       mode:
         title: Activation mode
@@ -258,32 +210,19 @@ options:
         urlPattern: URL Pattern
     config:
       title: Config
-      googleDrive:
-        title: Google Drive cloud sync
-        description: Downloads config when remote is newer, uploads config when local is newer. Your glossaries travel in a file of their own, merged term by term rather than replaced.
       manualSync:
         title: Manual config sync
-        description: Manually import and export your configuration settings, and your glossaries with them
+        description: Import or export your local configuration.
         exportSuccess: Config exported successfully
-      backup:
-        title: Config backup
-        description: Automatic backups are created every hour if the config is changed. You can restore previous configurations here. (Maximum $1 backups)
       reset:
         title: Reset config
-        description: Reset all config to default value. Your glossaries are not affected.
+        description: Reset local configuration to its defaults.
         dialog:
           title: Reset config
           trigger: Reset config
           confirm: Confirm
           cancel: Cancel
-          description: This operation will clear all your custom configurations and reset them to default values. Your glossaries are kept — delete those from the glossary page. Please confirm.
-    userExperience:
-      beta:
-        title: Beta experience
-        description: Turn on experimental features that may still be unstable
-      analytics:
-        title: Help improve user experience
-        description: Improve Read Frog by helping us locate bugs, refine layouts, and more
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: Shortcuts
     pageDescription: Set the keys that translate, read aloud and run AI actions while you read.
@@ -297,19 +236,10 @@ options:
     selectionTranslation:
       title: Selection translation
       description: Translate the text you selected.
-    subtitlesToggle:
-      title: Subtitle translation
-      description: Turn translated video subtitles on or off.
     nodeTranslation:
       title: Hover translation
       description: Hover or long-press a paragraph to translate just that one.
       customDescription: Press these keys while hovering over a paragraph to translate it.
-    translationHub:
-      title: Translation Hub
-      description: Open the Translation Hub in a new tab.
-    selectionSpeak:
-      title: "Read aloud"
-      description: "Read the text you selected aloud. Press again to stop."
     actions:
       title: "AI actions"
       description: "Run an AI action on the text you selected. Custom actions have no key until you set one here."
@@ -317,37 +247,6 @@ options:
     turnOn: "Turn on"
     clash: "Same key as “$1”. Change one of them."
     taken: "$1 is already used by “$2”."
-  inputTranslation:
-    title: Input Translation
-    trigger:
-      title: Trigger
-      enable:
-        description: Press the space bar three times quickly in any input box to translate what you typed there.
-      threshold:
-        title: Trigger threshold
-        description: How long the presses may be apart, in milliseconds. Raise it if the trigger keeps missing, lower it if it fires while you are still typing.
-    languages:
-      title: Translation languages
-      pair:
-        description: What the typed text is read as, and what it is translated into. Either side can follow the source and target languages you translate pages with.
-      cycle:
-        title: Swap direction each time
-        description: Every trigger swaps the two languages, so triggering again brings the text back to the language you typed in.
-  floatingButton:
-    title: Floating Button
-    enable:
-      title: Enable floating button
-      description: Display the floating button on web pages for quick access to Read Frog features
-    display:
-      side:
-        title: Button side
-        description: Choose which side of the page the floating button is docked to
-      disabledSites:
-        title: Disabled sites
-        description: Configure websites where the floating button should be disabled
-    clickAction:
-      title: Click action
-      description: Choose the action when clicking the floating button
   selectionToolbar:
     title: Selection Toolbar
     pageDescription: Set which actions appear when you select text, and where the toolbar shows up.
@@ -360,9 +259,6 @@ options:
       translate:
         title: Translate
         description: Show the translate button in the toolbar
-      noteSuggestion:
-        title: Note suggestions
-        description: After selection translation with an AI provider, suggest words to save to your Notebase
     display:
       title: Display
       opacity:
@@ -384,17 +280,11 @@ options:
       providerDisabled: Selected provider is disabled
       providerUnavailable: Selected provider is unavailable
     customActions:
-      title: Custom AI Actions
+      title: AI explanations
       description: Add your own structured AI actions for selected text
       form:
         selectProvider: Select a provider
         defaultFieldName: Result
-        layout:
-          title: Layout
-          description: How the result shows in the popup. HTML with Liquid; fields fill in as the answer streams.
-        notebase:
-          title: Notebase connection
-          description: Save this action's structured results to a remote notebase.
       templates:
         dialogTitle: Choose a template
         dialogDescription: Select a template to quickly create a new AI action, or start from scratch.
@@ -605,117 +495,6 @@ options:
           hardLabel: "Difficult"
           trunkLabel: "Skeleton"
           slashesLabel: "Breaks"
-        improveWriting:
-          name: "Improve Writing"
-          description: "Mark mistakes and awkward phrasing like a teacher, and fix them for the setting"
-          systemPrompt: |-
-            You are a writing teacher. Judge the setting of the Selection first, then mark what a native writer would change for that setting, and give the Selection back corrected.
-
-            Write the $1, every "tag" and "note", and the $4 in {{targetLanguage}}, even when the Selection is in another language; write every "fix" and the $3 in the Selection's own language.
-
-            ## $1
-            How formal the setting is and what the text is, in {{targetLanguage}}: "<formality> · <what it is>", at most 16 characters, where the formality is formal, neutral or casual (e.g. "Formal · email to a professor", "Casual · tweet"). Judge it from the Page title, the Page URL, the Paragraphs and the Selection itself. Everything below is judged against this setting: what is natural in a group chat is not natural in a weekly report, and the other way round.
-
-            ## $2
-            Each annotation quotes one span of the Selection, with these keys only:
-            - "text": the span, copied character for character from the Selection: the same words in the same order, with nothing left out, added or replaced (no "…"), and no spaces at either end. When the change touches one short word, or adds a missing one, quote a neighboring word too (quote "to beach" to add "the"), so the span can be found.
-            - "fix": the span as it should read, in the Selection's language; "" deletes it. Leave it out only for "good".
-            - "type": exactly one of
-              - wrong in any setting: spelling, grammar, punctuation, word-choice, logic;
-              - not what a native writer would write in this setting: unnatural (a literal translation, a stiff or wordy phrase), register (too casual or too formal, impolite, wrong honorifics), clarity (ambiguous or confusing);
-              - worth keeping: good.
-            - "tag": optional, at most 6 characters in {{targetLanguage}}: the short name of the rule (a tense, an article, a particle, honorifics, too formal).
-            - "note": at most 20 words in {{targetLanguage}}. For an error, the rule; otherwise, what a native writer would write here and why.
-            - "occurrence": only when the same text appears more than once in the Selection: 1 for the first appearance, 2 for the second, and so on.
-            Leave out every optional key that does not apply; never add a key of your own.
-
-            ## What to mark
-            1. Everything wrong, then what a native writer would not write in this setting. Nothing else: never an upgrade to fancier words or more complex sentences, and never a change of formality the setting does not call for.
-            2. At most 8 annotations. When several problems touch the same words, merge them into one annotation, typed by the most serious. Annotations never overlap; list them in the order they appear.
-            3. At most one "good", for a choice genuinely worth keeping.
-            4. Never mark names, brands, code, URLs, @mentions, #tags or emoji; slang, abbreviations or mixed languages the setting allows; accepted expressions ("Long time no see"); the language's own conventions (a space before "!" in French).
-            5. When nothing needs changing, $2 is "[]".
-
-            ## $3
-            The whole Selection as a native writer would write it in this setting, in the Selection's language, keeping the writer's meaning and voice. Apply every fix, and change nothing the setting does not call for. Identical to the Selection when nothing needs changing.
-
-            ## $4
-            One sentence in {{targetLanguage}}: what works, and the one thing to work on.
-
-            ## Format
-            The $2 value is a STRING holding a compact JSON array; escape its inner double quotes as \". Do not wrap it in markdown.
-
-            ## Examples
-            Selection: I very like this movie, it make me feel very touching.
-            Page title: Official Trailer - YouTube
-            Target language: Simplified Chinese
-            $1: 随意 · 视频评论
-            $2: "[{\"text\":\"I very like\",\"fix\":\"I really like\",\"type\":\"grammar\",\"tag\":\"副词位置\",\"note\":\"very 不能直接修饰动词，用 really like\"},{\"text\":\"movie, it\",\"fix\":\"movie. It\",\"type\":\"punctuation\",\"tag\":\"逗号连句\",\"note\":\"两个完整的句子不能只用逗号连接\"},{\"text\":\"make me feel very touching\",\"fix\":\"was so moving\",\"type\":\"grammar\",\"tag\":\"-ing/-ed\",\"note\":\"touching 指令人感动的事物，人被感动用 moved；it 后要用 makes\"}]"
-            $3: I really like this movie. It was so moving.
-            $4: 意思清楚，问题在中文句式直译：very 修饰动词、逗号连句。
-
-            Selection: pls check the attached file and give me ur feedback asap. thx!
-            Paragraphs: Dear Professor Smith, pls check the attached file and give me ur feedback asap. thx!
-            Page title: Draft - Gmail
-            Target language: English
-            $1: Formal · email to a professor
-            $2: "[{\"text\":\"pls check\",\"fix\":\"Could you please take a look at\",\"type\":\"register\",\"tag\":\"tone\",\"note\":\"Sounds like an order to a professor; pls is chat shorthand\"},{\"text\":\"give me ur feedback asap.\",\"fix\":\"share your feedback when you have a chance?\",\"type\":\"register\",\"note\":\"asap sounds pushy here, and ur is chat shorthand\"},{\"text\":\"thx!\",\"fix\":\"Thank you!\",\"type\":\"register\",\"note\":\"Too casual for this email\"}]"
-            $3: Could you please take a look at the attached file and share your feedback when you have a chance? Thank you!
-            $4: The request is clear, but the shorthand and the orders sound rude to a professor.
-
-            Selection: pls check the attached file and give me ur feedback asap. thx!
-            Paragraphs: hey, report's done. pls check the attached file and give me ur feedback asap. thx!
-            Page title: Tom (DM) - Slack
-            Target language: English
-            $1: Casual · message to a teammate
-            $2: "[]"
-            $3: pls check the attached file and give me ur feedback asap. thx!
-            $4: Natural for a quick message to a teammate: nothing to change.
-
-            Selection: 部長がおっしゃられたように、会議は延期するになりました。
-            Page title: 受信トレイ - Outlook
-            Target language: Simplified Chinese
-            $1: 正式 · 写给上级的邮件
-            $2: "[{\"text\":\"おっしゃられた\",\"fix\":\"おっしゃった\",\"type\":\"register\",\"tag\":\"二重敬语\",\"note\":\"おっしゃる已是尊敬语，再加られる成了二重敬语\"},{\"text\":\"延期するになりました\",\"fix\":\"延期することになりました\",\"type\":\"grammar\",\"tag\":\"ことになる\",\"note\":\"动词接になる要先名词化：〜することになる\"}]"
-            $3: 部長がおっしゃったように、会議は延期することになりました。
-            $4: 语法只错一处，另有一处二重敬语。
-          prompt: |-
-            ## Input
-            Selection: {{selection}}
-            Paragraphs: {{paragraphs}}
-            Page title: {{webTitle}}
-            Page URL: {{webUrl}}
-            Target language: {{targetLanguage}}
-          fieldOriginal: "Original"
-          fieldSetting: "Setting"
-          fieldSettingDescription: 'How formal the setting is and what the text is, in {{targetLanguage}}: "<formality> · <what it is>", at most 16 characters.'
-          fieldAnnotations: "Annotations"
-          fieldAnnotationsDescription: 'A compact JSON array serialized as a string. Each item has "text", "type" and "note", "fix" unless the type is "good", and only the optional keys that apply ("tag", "occurrence").'
-          fieldImproved: "Improved"
-          fieldImprovedDescription: "The whole Selection as a native writer would write it in this setting, in the Selection's language."
-          fieldSummary: "Summary"
-          fieldSummaryDescription: "One sentence in {{targetLanguage}}: what works, and the one thing to work on."
-          types:
-            spelling: "Spelling"
-            grammar: "Grammar"
-            punctuation: "Punctuation"
-            wordChoice: "Word choice"
-            logic: "Logic"
-            unnatural: "Unidiomatic"
-            register: "Register"
-            clarity: "Clarity"
-            good: "Nice"
-          tiers:
-            error: "Error"
-            awkward: "Awkward"
-            good: "Nice"
-          hideFixesLabel: "Hide fixes"
-          hiddenHintLabel: "Try fixing it yourself first."
-          showImprovedLabel: "Show improved"
-          improvedLabel: "Improved"
-          copyLabel: "Copy"
-          unchangedLabel: "Nothing to change"
-          removeLabel: "delete"
         blank:
           name: Blank
           description: Start from scratch with an empty action
@@ -724,18 +503,9 @@ options:
             Selection: {{selection}}
             Paragraphs: {{paragraphs}}
             Target language: {{targetLanguage}}
-  advanced:
-    glossary:
-      title: Glossary
-      enable:
-        title: Enable
-        description: Send matching terms to the LLM so it renders them your way. The glossary travels in the prompt, so it only applies to features running on an LLM provider.
-      library:
-        title: Your glossaries
-        description: Each glossary has its own terms and its own list of websites, so a set of terms for work does not follow you onto everything else.
   contextMenu:
     title: Context Menu
-    pageDescription: Control the Read Frog entries in the browser's right-click menu.
+    pageDescription: Control the Read Frog Lite entries in the browser's right-click menu.
     demoImageAlt: Context menu demo
     enable:
       title: Enable context menu translate
@@ -812,10 +582,6 @@ options:
       title: Customize page prompts
       description: Customizing different types of Prompts allows you to adjust the Prompt type yourself during translation. A Prompt represents the text that the user sends to the LLM.
       managePrompts: Manage prompts
-      communityPrompts: Get or share prompts from community
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/821
-      variableReference: Variable reference
-      variableReferenceUrl: https://readfrog.app/en/docs/page-translation/prompts/variables
       addPrompt: Add prompt
       default: Default
       builtIn: Built-in
@@ -945,61 +711,6 @@ options:
       searchPlaceholder: Search by id, description, or URL pattern
       showMore: Show more
       count: Showing $1 of $2 rules
-  tts:
-    title: Text to Speech
-    voice:
-      language:
-        title: Language voice
-        description: Pick a language, then the voice that reads it aloud. Reset puts back the voice Read Frog picks for that language.
-      fallback:
-        title: Fallback voice
-        description: The voice for any language you have not given one of its own.
-    speech:
-      rate:
-        title: Rate
-        description: How much faster or slower the voice reads than its own pace, from -100 to 100 percent.
-      pitch:
-        title: Pitch
-        description: How much higher or lower the voice speaks than its own pitch, from -100 to 100 hertz.
-      volume:
-        title: Volume
-        description: How much louder or quieter the voice reads than its own level, from -100 to 100 percent.
-  videoSubtitles:
-    title: Video Subtitles
-    preference:
-      enable:
-        title: Enable video subtitles
-        description: Puts a translate button in the video player's controls on YouTube, X and Netflix.
-      autoStart:
-        title: Translate on open
-        description: Start translating as soon as a video loads, without pressing the button.
-      aiSegmentation:
-        title: AI smart segmentation
-        description: Lets AI re-cut the subtitles into sentences. Translations take longer. Needs a strong LLM; weaker models may drop or misalign lines.
-    aiQuota:
-      title: AI subtitles quota
-      description: AI speech recognition gets you accurate subtitles for any video
-    style:
-      title: Subtitle style
-      description: Display mode, position, fonts, colors and background, set against a live preview
-      customCSS:
-        title: Custom CSS
-        description: Extra CSS for the subtitle lines, on top of the fonts and colors above
-    customPrompts:
-      title: Custom subtitle prompts
-      description: Prompt templates for subtitle translation, kept apart from the webpage translation ones
-    subtitlesQueue:
-      requestQueueConfig:
-        title: Translation rate
-      batchQueueConfig:
-        title: Batch translation
-        description: Configure character limits and maximum subtitle line count for batch translation (only effective for LLM translation)
-    cache:
-      clearCache:
-        title: Clear AI segmentation cache
-        description: Segmentation results kept so a video you have already watched is not cut again
-side:
-  targetLang: Target Language
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -1009,20 +720,14 @@ translatePrompt:
   description: Select a Prompt to use during translation. Add or modify custom Prompts on the options page.
 noAPIKeyConfig:
   warning: If you want to use AI models, please set API key on the options page first
-languageDetection:
-  llmFailed: LLM language detection failed, fell back to basic detection
 translation:
   sameLanguage: Source and target languages must be different
   extensionContextInvalidated: The extension was updated. Refresh this page and try again.
-speak:
-  languageDetectionFallback: Using local language detection
-  languageDetectionSettingsHint: In Settings, choose an available LLM or switch to local detection.
 action:
   copy: Copy
   copied: Copied
   regenerate: Regenerate
   viewContextDetails: Context
-  customizeCustomAction: Customize $1 action
   contextDetailsTitleLabel: Title
   contextDetailsParagraphsLabel: Paragraphs
   translation: Translation
@@ -1040,11 +745,6 @@ hotkey:
   backtick: Backtick
   clickAndHold: Click and hold
   custom: Custom shortcut
-translationHub:
-  searchLanguages: Search languages...
-  noLanguagesFound: No languages found
-  translationFailed: Translation Failed
-  translationFailedFallback: Translation failed
 languages:
   eng: English
   cmn: Simplified Chinese
@@ -1225,3 +925,10 @@ languages:
   wls: Wallisian
   rar: Rarotongan
   hif: Fiji Hindi
+side:
+  targetLang: Target Language
+translationHub:
+  searchLanguages: Search languages...
+  noLanguagesFound: No languages found
+  translationFailed: Translation Failed
+  translationFailedFallback: Translation failed

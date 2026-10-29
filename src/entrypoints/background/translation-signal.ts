@@ -21,14 +21,14 @@ import {
 } from "./page-translation-state"
 
 function notifyPageTranslationStateChanged(tabId: number, enabled: boolean) {
-  void sendMessage("notifyTranslationStateChanged", { enabled }, tabId).catch((error) =>
-    logger.warn("Failed to notify page translation state change", error),
+  void sendMessage("notifyTranslationStateChanged", { enabled }, tabId).catch(() =>
+    logger.warn("Failed to notify page translation state change"),
   )
 }
 
 function requestManagerToTogglePageTranslation(tabId: number, enabled: boolean) {
-  void sendMessage("askManagerToTogglePageTranslation", { enabled }, tabId).catch((error) =>
-    logger.warn("Failed to ask page translation manager to toggle", error),
+  void sendMessage("askManagerToTogglePageTranslation", { enabled }, tabId).catch(() =>
+    logger.warn("Failed to ask page translation manager to toggle"),
   )
 }
 
@@ -57,8 +57,8 @@ async function publishCachedDetectedCodeForTab(tabId: number): Promise<void> {
 }
 
 function requestDetectedPageLanguageRefresh(tabId: number) {
-  void sendMessage("refreshDetectedPageLanguage", undefined, tabId).catch((error) =>
-    logger.warn("Failed to refresh detected page language", error),
+  void sendMessage("refreshDetectedPageLanguage", undefined, tabId).catch(() =>
+    logger.warn("Failed to refresh detected page language"),
   )
 }
 

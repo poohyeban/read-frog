@@ -1,20 +1,12 @@
 import type { Config } from "@/types/config/config"
-import type { LanguageDetectionMode } from "@/types/config/language-detection"
 import type {
   APIProviderConfig,
   LLMProviderConfig,
-  NonAPIProviderConfig,
   ProviderConfig,
   ProvidersConfig,
-  TranslateProviderConfig,
 } from "@/types/config/provider"
 import type { FeatureKey } from "@/utils/constants/feature-providers"
-import {
-  isAPIProviderConfig,
-  isLLMProviderConfig,
-  isNonAPIProviderConfig,
-  isTranslateProviderConfig,
-} from "@/types/config/provider"
+import { isAPIProviderConfig, isLLMProviderConfig } from "@/types/config/provider"
 import { FEATURE_KEYS, FEATURE_PROVIDER_DEFS } from "@/utils/constants/feature-providers"
 import { getSelectionToolbarActions, patchSelectionToolbarAction } from "@/utils/custom-actions"
 import { getProviderIdsForCapability } from "@/utils/providers/provider-registry"
@@ -34,81 +26,8 @@ export function getAPIProvidersConfig(providersConfig: ProvidersConfig): APIProv
   return providersConfig.filter(isAPIProviderConfig)
 }
 
-export function getNonAPIProvidersConfig(providersConfig: ProvidersConfig): NonAPIProviderConfig[] {
-  return providersConfig.filter(isNonAPIProviderConfig)
-}
-
-export function getTranslateProvidersConfig(
-  providersConfig: ProvidersConfig,
-): TranslateProviderConfig[] {
-  return providersConfig.filter(isTranslateProviderConfig)
-}
-
 export function filterEnabledProvidersConfig(providersConfig: ProvidersConfig): ProvidersConfig {
   return providersConfig.filter((p) => p.enabled)
-}
-
-export function getEnabledLLMProvidersConfig(
-  providersConfig: ProvidersConfig,
-): LLMProviderConfig[] {
-  return filterEnabledProvidersConfig(providersConfig).filter(isLLMProviderConfig)
-}
-
-export function getProviderKeyByName(
-  providersConfig: ProvidersConfig,
-  providerId: string,
-): string | undefined {
-  const provider = getProviderConfigById(providersConfig, providerId)
-  return provider?.provider
-}
-
-export function getProviderModelConfig(config: Config, providerId: string) {
-  const providerConfig = getProviderConfigById(config.providersConfig, providerId)
-  if (providerConfig && isLLMProviderConfig(providerConfig)) {
-    return providerConfig.model
-  }
-  return undefined
-}
-
-export function getProviderApiKey(
-  providersConfig: ProvidersConfig,
-  providerId: string,
-): string | undefined {
-  const providerConfig = getProviderConfigById(providersConfig, providerId)
-  if (providerConfig && isAPIProviderConfig(providerConfig)) {
-    return providerConfig.apiKey
-  }
-  return undefined
-}
-
-export function resolveLanguageDetectionConfigForModeChange(
-  currentConfig: Config["languageDetection"],
-  nextMode: LanguageDetectionMode,
-  providersConfig: ProvidersConfig,
-): Partial<Config["languageDetection"]> | null {
-  if (nextMode === "basic") {
-    return { mode: "basic" }
-  }
-
-  // Capability-based, not providersConfig-based: Built-in AI is synthesized by
-  // the registry and never a row in providersConfig, so a plain filter there
-  // would report "no LLM available" on a fresh profile that can in fact run
-  // hosted detection. Filtered by usability, because the built-ins are in that
-  // list for every account — arming LLM mode against a tier the plan does not
-  // fund produces a green "enabled" indicator over a path that never runs.
-  const availableIds = getProviderIdsForCapability("languageDetection", providersConfig, {
-    requireEnable: true,
-  })
-  if (availableIds.length === 0) {
-    return null
-  }
-
-  const hasSelectedProvider =
-    currentConfig.providerId !== undefined && availableIds.includes(currentConfig.providerId)
-  return {
-    mode: "llm",
-    providerId: hasSelectedProvider ? currentConfig.providerId : availableIds[0]!,
-  }
 }
 
 /**
@@ -155,22 +74,11 @@ export function computeProviderFallbacksAfterDeletion(
  * pointing at a provider that no longer exists at all, which resolves to null
  * the moment the feature is switched back on.
  */
-export function findFeatureMissingProvider(
-  remainingProviders: ProvidersConfig,
-  config?: Config,
-): FeatureKey | "languageDetection" | null {
+export function findFeatureMissingProvider(remainingProviders: ProvidersConfig): FeatureKey | null {
   for (const key of FEATURE_KEYS) {
     if (!getProviderIdsForCapability(key, remainingProviders, { requireEnable: true })[0]) {
       return key
     }
-  }
-
-  if (
-    config?.languageDetection.mode === "llm" &&
-    getProviderIdsForCapability("languageDetection", remainingProviders, { requireEnable: true })
-      .length === 0
-  ) {
-    return "languageDetection"
   }
 
   return null
@@ -216,18 +124,3 @@ export function computeSelectionToolbarCustomActionFallbacksAfterDeletion(
  * Returns the new providerId (first enabled LLM), or undefined if none available.
  * Returns null when no change is needed.
  */
-export function computeLanguageDetectionFallbackAfterDeletion(
-  deletedProviderId: string,
-  config: Config,
-  remainingProviders: ProvidersConfig,
-): string | undefined | null {
-  if (config.languageDetection.mode !== "llm") return null
-  if (config.languageDetection.providerId !== deletedProviderId) return null
-
-  // Built-in AI is always in the capability list, but only counts here when the
-  // account can actually run it: handing detection to a walled-off tier is what
-  // produced a green "LLM detection enabled" card over a path that never ran.
-  return getProviderIdsForCapability("languageDetection", remainingProviders, {
-    requireEnable: true,
-  })[0]
-}

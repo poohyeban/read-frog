@@ -228,9 +228,6 @@ describe("getOrCreateWebPageContext", () => {
     const result = await getOrCreateWebPageContext()
 
     expect(result?.webContent).toBe("Fallback body text")
-    expect(mockWarn).toHaveBeenCalledWith(
-      "Defuddle parsing failed, falling back to body text:",
-      expect.any(Error),
-    )
+    expect(mockWarn).toHaveBeenCalledWith("Defuddle parsing failed, falling back to body text:")
   })
 })

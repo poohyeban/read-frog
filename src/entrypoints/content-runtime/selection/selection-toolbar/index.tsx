@@ -13,7 +13,7 @@ import {
   SELECTION_CONTENT_OVERLAY_LAYERS,
   SELECTION_CONTENT_OVERLAY_ROOT_ATTRIBUTE,
 } from "@/utils/constants/selection-overlay-layers"
-import { getSelectionToolbarItems } from "@/utils/selection-toolbar-items"
+import { getSelectionToolbarActions } from "@/utils/custom-actions"
 import { cn } from "@/utils/styles/utils"
 import { urlMatchesPattern } from "@/utils/url-pattern"
 import { buildContextSnapshot, readSelectionSnapshot } from "../utils"
@@ -217,9 +217,10 @@ export function SelectionToolbar() {
   )
   // With nothing pinned the toolbar still shows its "more" menu; with nothing
   // enabled there is nothing to show.
-  const enabledItems = getSelectionToolbarItems(selectionToolbar).filter((item) => item.enabled)
-  const hasAnyEnabledItem = enabledItems.length > 0
-  const hasAnyPinnedItem = enabledItems.some((item) => item.pinned)
+  const hasAnyEnabledItem =
+    selectionToolbar.features.translate.enabled ||
+    getSelectionToolbarActions(selectionToolbar).some((action) => action.enabled !== false)
+  const hasAnyPinnedItem = hasAnyEnabledItem
   const isSelectionToolbarVisible =
     isSelectionToolbarOpen && selectionToolbar.enabled && !isSiteDisabled && hasAnyEnabledItem
   const dropdownOpenRef = useRef(false)
@@ -532,10 +533,6 @@ export function SelectionToolbar() {
     window.addEventListener(DropEvent, handler)
     return () => window.removeEventListener(DropEvent, handler)
   }, [])
-
-  // External selections (e.g. the readfrog.app ebook reader) relay in-book
-  // selections that never touch this frame's Selection API, so they enter
-  // through CustomEvents and reuse the same state mutations as handleMouseUp
 
   return (
     <div

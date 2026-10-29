@@ -17,7 +17,7 @@ export function setupLLMGenerateTextMessageHandlers() {
     try {
       return await runGenerateTextInBackground(message.data)
     } catch (error) {
-      logger.error("[Background] backgroundGenerateText failed", error)
+      logger.error("[Background] backgroundGenerateText failed")
       throw error
     }
   })

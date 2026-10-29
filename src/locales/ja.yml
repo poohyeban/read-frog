@@ -58,8 +58,6 @@ options:
     leaveDescription: 編集を続けて問題を修正するか、未保存の変更を破棄してください。
     keepEditing: 編集を続ける
     discard: 未保存の変更を破棄
-  batchSavings:
-    savedCost: API コストを約 $1% 削減
   commandPalette:
     placeholder: 設定を検索...
     noResults: 設定が見つかりません
@@ -70,8 +68,8 @@ options:
     features: 機能
   apiProviders:
     title: APIプロバイダー
-    pageDescription: Read Frog が呼び出す AI サービスを接続し、各機能で使うものを選びます。
-    description: Read Frog が呼び出せるプロバイダーを追加します。20 以上を内蔵し、Chat Completions 互換 API と Open Responses API をカスタム追加できます。
+    pageDescription: Read Frog Lite が呼び出す AI サービスを接続し、各機能で使うものを選びます。
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
     configTitle: プロバイダー設定
     addProvider: プロバイダーを追加
     setApiKeyWarning:
@@ -140,36 +138,9 @@ options:
         customChatComplete: カスタム Chat Complete
       description:
         openai: GPT-4oなどのモデルを提供
-        azure: Azure のデプロイ経由で OpenAI モデルを利用
-        deepseek: 中国国内での使用を推奨
-        openrouter: 複数のLLMプロバイダの統合インターフェース、従量課金制
         ollama: ローカル大規模言語モデルサービス
         google: 高度な推論能力を持つGoogleの主力AIモデル
-        anthropic: 安全性と推論能力に優れたClaudeモデル
-        xai: リアルタイムデータアクセス可能なGrokモデルを提供するイーロン・マスクのAI企業
-        atlascloud: DeepSeek、Kimi、Qwen、Doubao、GLMなどの新しめのモデルにOpenAI互換でアクセスできる統合プラットフォーム
-        jalapenocloud: トップチームが使うエンタープライズ級 AI を、あなたにも！
-        siliconflow: 中国および国際モデル向けの高性能推論プラットフォーム
-        tensdaq: 革命的入札型AI MaaSプラットフォーム、市場の需給で価格が決まり高コスト固定料金を排除
         openaiCompatible: OpenAI Chat Completions API 互換のカスタムエンドポイントに接続
-        openResponses: Open Responses API 互換のカスタムエンドポイントに接続
-        deeplx: 非公式 DeepL API
-        deepl: 公式 DeepL API
-        bedrock: エンタープライズグレードの基盤モデル向けAWSマネージドサービス
-        groq: 超高速LLM推論速度に特化したハードウェア
-        deepinfra: 人気のオープンソースモデル向けコスト効率的なクラウド推論
-        mistral: 効率的な多言語モデルに特化したヨーロッパのAI企業
-        togetherai: オープンソースモデルの実行とファインチューニングのための協働プラットフォーム
-        cohere: 強力な多言語およびRAG機能を持つエンタープライズ向けAI
-        fireworks: オープンソースモデル向けプロダクション対応推論プラットフォーム
-        cerebras: 高速翻訳とテキスト分析に最適な超高速AI推論
-        replicate: 専門的な翻訳タスクのための多様なオープンソースモデルへのアクセス
-        perplexity: 文脈的翻訳と読解支援のためのリアルタイム知識強化AI
-        volcengine: ByteDanceのクラウドAIプラットフォーム、Doubaoモデルを提供
-        minimax: MiniMax AIプラットフォーム、先進的なMiniMax-M2モデルを提供
-        alibaba: アリババクラウドのQwenモデルシリーズ、高度な推論と多言語機能を備える
-        moonshotai: Moonshot AIのKimiモデルシリーズ、優れた推論と長コンテキスト能力
-        huggingface: Hugging Face推論API、数千のオープンソースモデルへのアクセスを提供
     apiKey:
       showAPIKey: APIキーを表示
       getAPIKey: APIキーを取得
@@ -186,28 +157,9 @@ options:
       features:
         pageTranslation: ページ翻訳
         selectionTranslation: 選択ツールバー翻訳
-        inputTranslation: 入力翻訳
-        videoSubtitles: 動画字幕
-        noteSuggestion: ノートの提案
       descriptions:
         pageTranslation: ページ全体を対訳または置き換えで翻訳します。
         selectionTranslation: 選択ツールバーから、選択したテキストを翻訳します。
-        inputTranslation: 入力欄に書いた文章を、送信する前に翻訳します。
-        videoSubtitles: 動画プレーヤーに表示される字幕を翻訳します。
-        noteSuggestion: 選択テキストを翻訳した後、Notebase に保存する価値のある単語を提案します。
-    languageDetection:
-      title: 言語検出
-      description: 自動翻訳の言語検出と読み上げの音声選択精度に影響します。
-      mode:
-        basic: 基本
-        llm: LLM
-      provider:
-        label: 検出プロバイダー
-        placeholder: プロバイダーを選択
-      status:
-        noProviders: LLMプロバイダーを設定してください
-        basicRecommend: LLM有効化を推奨
-        llmEnabled: LLM検出が有効
     aiContentAware:
       title: AI スマートコンテキスト翻訳
       description: ページや動画の文脈を AI に渡して、翻訳の精度を上げます
@@ -221,12 +173,12 @@ options:
     unsupported: このアドレスは照合できません。ポート指定と、http・https 以外のスキームには対応していません。
   preference:
     title: 環境設定
-    pageDescription: Read Frog の外観、動作する範囲、設定の同期とバックアップ方法を指定します。
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: 外観と言語
       theme:
         title: テーマ
-        description: Read Frog のテーマを選択します。
+        description: Read Frog Lite のテーマを選択します。
         system: システム
         light: ライト
         dark: ダーク
@@ -257,32 +209,19 @@ options:
         urlPattern: URLパターン
     config:
       title: 設定
-      googleDrive:
-        title: Google Driveクラウド同期
-        description: リモートが新しい場合はダウンロード、ローカルが新しい場合はアップロード。用語集は専用のファイルで同期され、まるごと置き換えではなく用語ごとに統合されます。
       manualSync:
         title: 手動設定同期
-        description: 設定を手動でインポート・エクスポートします。用語集も一緒に含まれます
+        description: Import or export your local configuration.
         exportSuccess: 設定のエクスポートが完了しました
-      backup:
-        title: 設定のバックアップ
-        description: 設定が変更された場合、1時間ごとに自動的にバックアップが作成されます。以前の設定をここで復元できます。（最大 $1 個のバックアップ）
       reset:
         title: 設定をリセット
-        description: すべての設定を既定値に戻します。用語集は影響を受けません
+        description: Reset local configuration to its defaults.
         dialog:
           title: 設定をリセット
           trigger: 設定をリセット
           confirm: 確認
           cancel: キャンセル
-          description: この操作はすべてのカスタム設定を消去し、既定値に戻します。用語集は保持されます — 削除する場合は用語集ページから行ってください。確認してください。
-    userExperience:
-      beta:
-        title: Beta 体験
-        description: まだ不安定な可能性がある実験的機能を有効にします
-      analytics:
-        title: ユーザー体験の改善に協力する
-        description: バグの特定や UI レイアウトの改善などを通じて Read Frog をより良くします
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: ショートカット
     pageDescription: 読みながら翻訳・読み上げ・AI アクションを実行するキーを設定します。
@@ -296,19 +235,10 @@ options:
     selectionTranslation:
       title: 選択範囲の翻訳
       description: 選択したテキストを翻訳します。
-    subtitlesToggle:
-      title: 字幕翻訳
-      description: 動画の翻訳字幕をオンまたはオフにします。
     nodeTranslation:
       title: ホバー翻訳
       description: 段落にホバーまたは長押しすると、その段落だけ翻訳します。
       customDescription: 段落にホバーしたままこのキーを押すと、その段落を翻訳します。
-    translationHub:
-      title: 翻訳ハブ
-      description: 翻訳ハブを新しいタブで開きます。
-    selectionSpeak:
-      title: "選択範囲の読み上げ"
-      description: "選択したテキストを読み上げます。もう一度押すと停止します。"
     actions:
       title: "AI アクション"
       description: "選択したテキストに AI アクションを実行します。カスタムアクションには最初はショートカットがないので、ここで設定してください。"
@@ -316,37 +246,6 @@ options:
     turnOn: "オンにする"
     clash: "「$1」と同じキーです。どちらかを変更してください。"
     taken: "$1 はすでに「$2」で使われています。"
-  inputTranslation:
-    title: 入力翻訳
-    trigger:
-      title: トリガー
-      enable:
-        description: 任意の入力欄でスペースキーを素早く3回押すと、入力した内容を翻訳します。
-      threshold:
-        title: トリガーしきい値
-        description: 連続する押下の間隔として許される長さ（ミリ秒）です。反応しないときは大きく、入力中に誤って動くときは小さくします。
-    languages:
-      title: 翻訳言語
-      pair:
-        description: 入力した文章をどの言語として読み取り、どの言語に翻訳するかを決めます。どちらもページ翻訳で使うソース言語・ターゲット言語に合わせられます。
-      cycle:
-        title: 毎回方向を切り替え
-        description: トリガーのたびに2つの言語が入れ替わるため、もう一度実行すると入力した言語に戻ります。
-  floatingButton:
-    title: フローティングボタン
-    enable:
-      title: フローティングボタンを有効化
-      description: ウェブページにフローティングボタンを表示し、Read Frog機能に素早くアクセス
-    display:
-      side:
-        title: ボタンの位置
-        description: フローティングボタンをページのどちら側に固定するかを選択します
-      disabledSites:
-        title: 無効化サイト
-        description: フローティングボタンを無効化するウェブサイトを設定します
-    clickAction:
-      title: クリック動作
-      description: フローティングボタンをクリックしたときの動作を選択
   selectionToolbar:
     title: 選択ツールバー
     pageDescription: テキストを選択したときに表示するアクションと、ツールバーを表示するサイトを設定します。
@@ -359,9 +258,6 @@ options:
       translate:
         title: 翻訳
         description: ツールバーに翻訳ボタンを表示します
-      noteSuggestion:
-        title: ノートの提案
-        description: AI プロバイダーで選択テキストを翻訳した後、Notebase に保存する単語を提案します
     display:
       title: 表示
       opacity:
@@ -383,17 +279,11 @@ options:
       providerDisabled: 選択したプロバイダーは無効です
       providerUnavailable: 選択したプロバイダーは利用できません
     customActions:
-      title: カスタム AI アクション
+      title: AI explanations
       description: 選択テキスト向けに独自の構造化 AI アクションを追加
       form:
         selectProvider: プロバイダーを選択
         defaultFieldName: 結果
-        layout:
-          title: レイアウト
-          description: ポップアップでの結果の表示方法です。HTML と Liquid で記述し、回答のストリーミングに合わせてフィールドが埋まります。
-        notebase:
-          title: Notebase 接続
-          description: このアクションの構造化された結果をリモート Notebase に保存します。
       templates:
         dictionary:
           name: "辞書"
@@ -547,53 +437,15 @@ options:
           hardLabel: "難所"
           trunkLabel: "骨組みだけ"
           slashesLabel: "スラッシュ"
-        improveWriting:
-          name: "文章添削"
-          description: "先生のように添削：誤りや不自然な表現に印をつけ、場面に合った文に直します"
-          fieldOriginal: "修正前"
-          fieldSetting: "場面"
-          fieldAnnotations: "添削"
-          fieldImproved: "修正後"
-          fieldSummary: "総評"
-          types:
-            spelling: "表記"
-            grammar: "文法"
-            punctuation: "句読点"
-            wordChoice: "語彙"
-            logic: "論理"
-            unnatural: "不自然"
-            register: "文体"
-            clarity: "明確さ"
-            good: "好表現"
-          tiers:
-            error: "誤り"
-            awkward: "要改善"
-            good: "好表現"
-          hideFixesLabel: "答えを隠す"
-          hiddenHintLabel: "まず自分で直してみましょう。"
-          showImprovedLabel: "修正後を表示"
-          improvedLabel: "修正後"
-          copyLabel: "コピー"
-          unchangedLabel: "直すところはありません"
-          removeLabel: "削除"
         blank:
           prompt: |-
             ## 入力
             選択テキスト：{{selection}}
             段落：{{paragraphs}}
             ターゲット言語：{{targetLanguage}}
-  advanced:
-    glossary:
-      title: 用語集
-      enable:
-        title: 有効にする
-        description: 一致した用語を LLM に渡し、指定どおりの訳語で出力させます。用語集はプロンプトに含めて送られるため、LLM プロバイダーで動作する機能にのみ適用されます。
-      library:
-        title: 登録した用語集
-        description: 用語集ごとに用語とウェブサイトの一覧を個別に持てるため、仕事用の用語がほかのすべてのページにまで付いて回ることはありません。
   contextMenu:
     title: コンテキストメニュー
-    pageDescription: ブラウザーの右クリックメニューに表示される Read Frog の項目を設定します。
+    pageDescription: ブラウザーの右クリックメニューに表示される Read Frog Lite の項目を設定します。
     demoImageAlt: コンテキストメニューデモ
     enable:
       title: 右クリック翻訳を有効化
@@ -670,10 +522,6 @@ options:
       title: カスタムページプロンプト
       description: 異なるタイプのプロンプトをカスタマイズすることで、翻訳時にプロンプトタイプを自ら調整できます。プロンプトとは、ユーザーがLLMに送信するテキストを指します。
       managePrompts: プロンプトを管理
-      communityPrompts: コミュニティからプロンプトを取得・共有
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/821
-      variableReference: 変数リファレンス
-      variableReferenceUrl: https://readfrog.app/ja/docs/page-translation/prompts/variables
       addPrompt: プロンプトを追加
       default: デフォルト
       builtIn: 組み込み
@@ -803,61 +651,6 @@ options:
       searchPlaceholder: id、説明、URL パターンで検索
       showMore: さらに表示
       count: $2 件中 $1 件のルールを表示
-  tts:
-    title: テキスト読み上げ
-    voice:
-      language:
-        title: 言語別ボイス
-        description: 言語を選び、その言語を読み上げるボイスを指定します。リセットすると Read Frog がその言語に選ぶボイスに戻ります。
-      fallback:
-        title: フォールバックボイス
-        description: 個別にボイスを指定していない言語は、このボイスで読み上げます。
-    speech:
-      rate:
-        title: 速度
-        description: ボイス本来の速さからどれだけ速く、または遅く読むか。-100 から 100 パーセント。
-      pitch:
-        title: ピッチ
-        description: ボイス本来のピッチからどれだけ高く、または低く話すか。-100 から 100 ヘルツ。
-      volume:
-        title: 音量
-        description: ボイス本来の大きさからどれだけ大きく、または小さく読むか。-100 から 100 パーセント。
-  videoSubtitles:
-    title: 動画字幕
-    preference:
-      enable:
-        title: 動画字幕を有効にする
-        description: YouTube、X、Netflix の動画プレーヤーのコントロールバーに翻訳ボタンを表示します。
-      autoStart:
-        title: 動画を開いたら翻訳する
-        description: 動画の読み込みが終わり次第、ボタンを押さなくても字幕の翻訳を始めます。
-      aiSegmentation:
-        title: AI スマート区切り
-        description: AI が字幕を文単位に切り直します。翻訳の応答が遅くなります。高性能な LLM が必要です。性能の低いモデルでは字幕の欠落やずれが起きることがあります。
-    aiQuota:
-      title: AI字幕の利用枠
-      description: AIの音声認識で、どんな動画にも正確な字幕を生成します
-    style:
-      title: 字幕スタイル
-      description: 表示モード・位置・フォント・色・背景を、プレビューを見ながら設定します
-      customCSS:
-        title: カスタム CSS
-        description: 上のフォントや色に加えて、字幕行に CSS を追加します
-    customPrompts:
-      title: カスタム字幕プロンプト
-      description: 字幕翻訳専用のプロンプトテンプレート。ウェブページ翻訳のプロンプトとは別に管理します
-    subtitlesQueue:
-      requestQueueConfig:
-        title: 翻訳速度
-      batchQueueConfig:
-        title: バッチ翻訳
-        description: バッチ翻訳時の文字数制限と最大字幕行数を設定（大規模言語モデル翻訳でのみ有効）
-    cache:
-      clearCache:
-        title: AI区切りキャッシュをクリア
-        description: 保存された区切り結果。一度見た動画は処理し直しになりません
-side:
-  targetLang: 翻訳言語
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -867,20 +660,14 @@ translatePrompt:
   description: 翻訳時に使用するプロンプトを選択できます。オプションページでカスタムプロンプトを追加または変更できます
 noAPIKeyConfig:
   warning: AIモデルを使用するには、まずオプションページでAPIキーを設定してください
-languageDetection:
-  llmFailed: LLM言語検出に失敗しました。基本検出にフォールバックしました
 translation:
   sameLanguage: ソース言語とターゲット言語は異なる必要があります
   extensionContextInvalidated: 拡張機能が更新されました。このページを再読み込みしてからもう一度お試しください。
-speak:
-  languageDetectionFallback: ローカルの言語検出に切り替えました
-  languageDetectionSettingsHint: 設定で利用可能なLLMに変更するか、ローカル検出を選んでください。
 action:
   copy: コピー
   copied: コピー済み
   regenerate: 再生成
   viewContextDetails: コンテキスト
-  customizeCustomAction: $1 アクションをカスタマイズ
   contextDetailsTitleLabel: タイトル
   contextDetailsParagraphsLabel: 段落内容
   translation: 翻訳
@@ -898,11 +685,6 @@ hotkey:
   backtick: バッククォート
   clickAndHold: クリックして長押し
   custom: カスタムショートカット
-translationHub:
-  searchLanguages: 言語を検索...
-  noLanguagesFound: 言語が見つかりません
-  translationFailed: 翻訳に失敗しました
-  translationFailedFallback: 翻訳に失敗しました
 languages:
   eng: 英語
   cmn: 簡体字中国語
@@ -1083,3 +865,10 @@ languages:
   wls: ウォリス語
   rar: ラロトンガ語
   hif: フィジー・ヒンディー語
+side:
+  targetLang: 翻訳言語
+translationHub:
+  searchLanguages: 言語を検索...
+  noLanguagesFound: 言語が見つかりません
+  translationFailed: 翻訳に失敗しました
+  translationFailedFallback: 翻訳に失敗しました

@@ -6,7 +6,6 @@ import type {
 import type { BuiltInActionId } from "@/utils/constants/custom-action"
 import {
   createDefaultDictionaryAction,
-  createDefaultImproveWritingAction,
   createDefaultSentenceAnalysisAction,
 } from "@/utils/constants/config"
 import {
@@ -14,23 +13,19 @@ import {
   BUILT_IN_ACTION_IDS,
   BUILT_IN_ACTION_KEYS,
   BUILT_IN_DICTIONARY_ACTION_ID,
-  BUILT_IN_IMPROVE_WRITING_ACTION_ID,
   BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID,
   isBuiltInActionId,
 } from "@/utils/constants/custom-action"
-import { getRandomUUID } from "@/utils/crypto-polyfill"
-import { getUniqueName } from "@/utils/name"
 
 type SelectionToolbarConfig = Config["selectionToolbar"]
 
 const BUILT_IN_ACTION_DEFINITIONS: Record<BuiltInActionId, () => SelectionToolbarCustomAction> = {
   [BUILT_IN_DICTIONARY_ACTION_ID]: createDefaultDictionaryAction,
   [BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID]: createDefaultSentenceAnalysisAction,
-  [BUILT_IN_IMPROVE_WRITING_ACTION_ID]: createDefaultImproveWritingAction,
 }
 
 // A built-in action as it reads: its code-owned definition in the current UI
-// language, with the persisted enabled/provider/Notebase/shortcut state merged
+
 // on. A state without a shortcut has the action's default key.
 export function getBuiltInAction(
   selectionToolbar: SelectionToolbarConfig,
@@ -64,7 +59,7 @@ export function getBuiltInActions(
 export function getSelectionToolbarActions(
   selectionToolbar: SelectionToolbarConfig,
 ): SelectionToolbarCustomAction[] {
-  return [...getBuiltInActions(selectionToolbar), ...selectionToolbar.customActions]
+  return getBuiltInActions(selectionToolbar)
 }
 
 export function findSelectionToolbarAction(
@@ -74,13 +69,8 @@ export function findSelectionToolbarAction(
   if (isBuiltInActionId(actionId)) {
     return getBuiltInAction(selectionToolbar, actionId)
   }
-  return selectionToolbar.customActions.find((action) => action.id === actionId)
+  return undefined
 }
-
-/**
- * The action a click on a subtitle word runs: the one picked in settings, or
- * the built-in Dictionary once that one is turned off or deleted.
- */
 
 // A state without a key reads as the action's default key, and is written
 // back without one while the key is still that default: a UI context that
@@ -115,12 +105,7 @@ export function replaceSelectionToolbarAction(
     }
   }
 
-  return {
-    ...selectionToolbar,
-    customActions: selectionToolbar.customActions.map((current) =>
-      current.id === action.id ? action : current,
-    ),
-  }
+  return selectionToolbar
 }
 
 export function patchSelectionToolbarAction(
@@ -137,14 +122,3 @@ export function patchSelectionToolbarAction(
 }
 
 // A copy starts without a key: one key runs one action.
-export function duplicateSelectionToolbarAction(
-  action: SelectionToolbarCustomAction,
-  allActions: SelectionToolbarCustomAction[],
-): SelectionToolbarCustomAction {
-  const { shortcut: _shortcut, ...copy } = structuredClone(action)
-  return {
-    ...copy,
-    id: getRandomUUID(),
-    name: getUniqueName(action.name, new Set(allActions.map((candidate) => candidate.name))),
-  }
-}

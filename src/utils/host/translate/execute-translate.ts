@@ -2,12 +2,10 @@ import type { PromptResolver } from "./api/ai"
 import type { Config } from "@/types/config/config"
 import type { ProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
-import { ISO6393_TO_6391, LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
-import { isLLMProviderConfig, isNonAPIProvider } from "@/types/config/provider"
+import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
+import { isLLMProviderConfig } from "@/types/config/provider"
 import { aiTranslate } from "./api/ai"
-import { googleTranslate } from "./api/google"
 import { prepareTranslationText } from "./text-preparation"
-import { normalizeTranslationOutput } from "./translation-output-normalization"
 
 export async function executeTranslate<TContext>(
   text: string,
@@ -31,23 +29,9 @@ export async function executeTranslate<TContext>(
   }
 
   const { provider } = providerConfig
-  let translatedText = ""
+  let translatedText: string
 
-  if (isNonAPIProvider(provider)) {
-    const sourceLang =
-      langConfig.sourceCode === "auto" ? "auto" : (ISO6393_TO_6391[langConfig.sourceCode] ?? "auto")
-    const targetLang = ISO6393_TO_6391[langConfig.targetCode]
-    if (!targetLang) {
-      throw new Error(`Invalid target language code: ${langConfig.targetCode}`)
-    }
-    if (provider === "google-translate") {
-      translatedText = await googleTranslate(preparedText, sourceLang, targetLang, {
-        textFormat: options?.textFormat,
-        preserveLineBreaks: options?.preserveLineBreaks,
-        signal: options?.signal,
-      })
-    }
-  } else if (isLLMProviderConfig(providerConfig)) {
+  if (isLLMProviderConfig(providerConfig)) {
     const targetLangName = LANG_CODE_TO_EN_NAME[langConfig.targetCode]
     translatedText = await aiTranslate(
       preparedText,
@@ -60,5 +44,5 @@ export async function executeTranslate<TContext>(
     throw new Error(`Unknown provider: ${provider}`)
   }
 
-  return normalizeTranslationOutput(providerConfig, translatedText).trim()
+  return translatedText.trim()
 }

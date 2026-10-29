@@ -33,10 +33,6 @@ vi.mock("@/utils/content/summary", () => ({
   generateArticleSummary: generateArticleSummaryMock,
 }))
 
-vi.mock("@/utils/batch-request-record", () => ({
-  putBatchRequestRecord: putBatchRequestRecordMock,
-}))
-
 vi.mock("@/utils/db/dexie/db", () => ({
   db: {
     articleSummaryCache: {
@@ -56,8 +52,6 @@ vi.mock("../background-stream", () => ({
   generateTextForProviderRef: generateTextForProviderRefMock,
 }))
 
-// Partial: the subtitles prompt builder pulls resolvePromptReplacementValue
-// from this module, and the hosted path runs the real builder.
 vi.mock("@/utils/prompts/translate", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/utils/prompts/translate")>()),
   getTranslatePrompt: getTranslatePromptMock,
@@ -93,10 +87,12 @@ const llmProvider: ProviderConfig = {
 }
 
 const googleProvider: ProviderConfig = {
-  id: "google-translate-default",
-  name: "Google Translate",
-  provider: "google-translate",
+  id: "openai-test",
+  name: "OpenAI",
   enabled: true,
+  provider: "openai" as const,
+  apiKey: "test-key",
+  model: { model: "gpt-5-mini" as const, isCustomModel: false, customModel: null },
 }
 
 describe("translation queue helpers", () => {
@@ -688,7 +684,7 @@ describe("translation queue helpers", () => {
     )
   })
 
-  it("forwards the textFormat to executeTranslate for non-batch providers", async () => {
+  it("preserves HTML content when dispatching an LLM batch", async () => {
     const { setupPageTranslationHandlers } = await import("../page-translation")
     setupPageTranslationHandlers()
 
@@ -709,7 +705,7 @@ describe("translation queue helpers", () => {
       DEFAULT_CONFIG.language,
       googleProvider,
       expect.any(Function),
-      { textFormat: "html", signal: expect.any(AbortSignal) },
+      expect.objectContaining({ isBatch: true, signal: expect.any(AbortSignal) }),
     )
   })
 

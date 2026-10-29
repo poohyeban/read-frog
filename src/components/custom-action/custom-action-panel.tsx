@@ -14,19 +14,12 @@ import {
 } from "@/utils/providers/provider-registry"
 import { customActionRequestAtom } from "./atoms"
 import { CustomActionContent } from "./custom-action-content"
-import { CustomActionToolButton } from "./custom-action-tool-button"
 import {
   buildCustomActionExecutionPlan,
   useCustomActionExecution,
   useCustomActionWebPageContext,
 } from "./use-custom-action-execution"
 
-/**
- * Keeps the hosted-status hook inside SelectionPopover.Content, which stays
- * unmounted until the popover first opens — the selection app mounts on every
- * page, and merely loading a page must not fire hosted-AI session/status
- * requests.
- */
 function CustomActionFooterContent({
   providers,
   ...props
@@ -99,7 +92,7 @@ export function CustomActionPanel() {
   const isRunning = webPageContext === undefined || (executionContext ? execution.isRunning : false)
   const status = isRunning ? "streaming" : error ? "error" : "done"
   const titleText = (webPageContext?.webTitle ?? getSourceDocumentTitle()) || null
-  // Speech and Notebase saves count the card by where it sits: on video subtitles, or by a
+
   // selection, however the selection's card was opened.
 
   return (
@@ -134,11 +127,7 @@ export function CustomActionPanel() {
         onProviderChange={changeProvider}
         onRegenerate={regenerate}
       >
-        {action && (
-          <>
-            <CustomActionToolButton action={action} />
-          </>
-        )}
+        {action && <></>}
       </CustomActionFooterContent>
     </>
   )

@@ -51,7 +51,6 @@ import { translateTextForPageTitle } from "@/utils/host/translate/translate-vari
 import {
   beginPageTranslationSession,
   endPageTranslationSession,
-  setPageTranslationSessionProviderRef,
 } from "@/utils/host/translate/translation-session"
 import { cleanupNodeSiteRuleCSSIfUnused } from "@/utils/host/translate/ui/node-site-rule-css"
 import { cancelSpinnerAnimation } from "@/utils/host/translate/ui/spinner"
@@ -61,7 +60,6 @@ import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
 import {
   canResolvedProviderRefGenerateText,
-  checkProviderAvailability,
   resolvePageTranslationProvider,
   resolvePageTranslationProviderOrNull,
 } from "@/utils/providers/provider-ref"
@@ -379,7 +377,6 @@ export class PageTranslationManager implements IPageTranslationManager {
     // explicit guard for type-safety and for malformed storage snapshots.
     if (!requestedProviderConfig) return
 
-    const availability = await checkProviderAvailability(requestedProviderConfig, "pageTranslation")
     if (this.pendingStart !== startToken) {
       return
     }
@@ -396,7 +393,6 @@ export class PageTranslationManager implements IPageTranslationManager {
     const sessionVersion = this.translationSessionVersion
 
     beginPageTranslationSession()
-    setPageTranslationSessionProviderRef(availability.providerRef)
 
     try {
       await sendMessage("setAndNotifyPageTranslationStateChangedByManager", {
@@ -422,8 +418,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
 
     // Same predicate `getWebPagePromptContext` uses to decide whether it
-    // needs the context at all. Excluding system providers was right while
-    // hosted runs sent no context; now that they do, skipping the warm-up
+
     // only moves the Defuddle full-document parse out of setup and into the
     // first translation call, where it blocks the first visible paragraph
     // and janks the main thread on a long page.
@@ -551,13 +546,13 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
 
     // Drain this session's queued/in-flight requests in the background —
-    // without this, a long page keeps burning network/CPU/quota for minutes
+
     // after the user cancels (#1881). Fire-and-forget: the synchronous DOM
     // cleanup below finishes long before any rejection lands.
     const endedSessionId = endPageTranslationSession()
     if (endedSessionId) {
-      void sendMessage("cancelPageTranslationRequests", { sessionId: endedSessionId }).catch(
-        (error) => logger.warn("Failed to cancel pending translation requests", error),
+      void sendMessage("cancelPageTranslationRequests", { sessionId: endedSessionId }).catch(() =>
+        logger.warn("Failed to cancel pending translation requests"),
       )
     }
 
@@ -659,8 +654,8 @@ export class PageTranslationManager implements IPageTranslationManager {
 
     try {
       await getOrCreateWebPageContext()
-    } catch (error) {
-      logger.warn("Failed to prime webpage context before translating document title:", error)
+    } catch {
+      logger.warn("Failed to prime webpage context before translating document title:")
     }
   }
 
@@ -768,7 +763,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       // A cancelled session's title request rejecting is expected, not noise.
       if (isTranslationCancelledError(error)) return
       if (requestVersion === this.titleRequestVersion) {
-        logger.warn("Failed to translate document title:", error)
+        logger.warn("Failed to translate document title:")
       }
     }
   }
@@ -968,15 +963,6 @@ export class PageTranslationManager implements IPageTranslationManager {
     return this.boxlessUnitObserver
   }
 
-  /**
-   * The pending box-less units an intersecting box speaks for: those it renders
-   * part of (its ancestors) and those laid out inside it (its descendants; a
-   * layout box is only watched when what it lays out fits a split-sized unit).
-   * Both are read from the live DOM, through shadow roots, rather than from a
-   * box→unit map recorded at observe time, so the answer stays right after the
-   * site moves nodes or the walk re-registers one as a unit of its own.
-   * delete() lets each unit go once.
-   */
   private takePendingUnitsAt(box: Element): HTMLElement[] {
     const units: HTMLElement[] = []
     const take = (element: Element) => {

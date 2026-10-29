@@ -68,8 +68,8 @@ async function extractWebpageContent(): Promise<string> {
     if (result.content) {
       return createMarkdownContent(prepareMarkdownSource(result.content), window.location.href)
     }
-  } catch (error) {
-    logger.warn("Defuddle parsing failed, falling back to body text:", error)
+  } catch {
+    logger.warn("Defuddle parsing failed, falling back to body text:")
   }
   return document.body?.textContent || ""
 }

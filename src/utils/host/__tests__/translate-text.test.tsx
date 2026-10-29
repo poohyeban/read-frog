@@ -27,10 +27,6 @@ vi.mock("@/utils/message", () => ({
   sendMessage: vi.fn<(...args: any[]) => any>(),
 }))
 
-vi.mock("@/utils/host/translate/api/google", () => ({
-  googleTranslate: vi.fn<(...args: any[]) => any>(),
-}))
-
 vi.mock("@/utils/host/translate/api/deepl", () => ({
   deeplTranslate: vi.fn<(...args: any[]) => any>(),
 }))
@@ -56,7 +52,6 @@ vi.mock("@/utils/host/translate/webpage-summary", () => ({
 }))
 
 let mockSendMessage: any
-let mockGoogleTranslate: any
 
 let mockGetConfigFromStorage: any
 let mockGetTranslatePrompt: any
@@ -70,9 +65,6 @@ describe("translate-text", () => {
     document.title = "Document Title"
     document.body.innerHTML = "<main>Body content</main>"
     mockSendMessage = vi.mocked((await import("@/utils/message")).sendMessage)
-    mockGoogleTranslate = vi.mocked(
-      (await import("@/utils/host/translate/api/google")).googleTranslate,
-    )
 
     mockGetConfigFromStorage = vi.mocked((await import("@/utils/config/storage")).getLocalConfig)
     mockGetTranslatePrompt = vi.mocked(
@@ -113,7 +105,7 @@ describe("translate-text", () => {
       const result = await translateTextForPage("test text")
 
       expect(result).toBe("translated text")
-      const googleProvider = DEFAULT_CONFIG.providersConfig.find(
+      const selectedProvider = DEFAULT_CONFIG.providersConfig.find(
         (provider) => provider.id === DEFAULT_CONFIG.pageTranslation.providerId,
       )!
       expect(mockSendMessage).toHaveBeenCalledWith(
@@ -121,19 +113,21 @@ describe("translate-text", () => {
         expect.objectContaining({
           text: "test text",
           langConfig: DEFAULT_CONFIG.language,
-          providerRef: { kind: "local", config: googleProvider },
+          providerRef: { kind: "local", config: selectedProvider },
           scheduleAt: expect.any(Number),
-          // Preserve the pre-system-provider local cache identity exactly.
+          // LLM cache identity includes the actual prompts and context setting.
           hash: Sha256Hex(
             "test text",
-            JSON.stringify(googleProvider),
+            JSON.stringify(selectedProvider),
             DEFAULT_CONFIG.language.sourceCode,
             DEFAULT_CONFIG.language.targetCode,
-            "textFormat:plain",
+            "Translate to {{targetLang}}",
+            "{{input}}",
+            "enableAIContentAware=false",
           ),
         }),
       )
-      expect(mockGetOrCreateWebPageContext).not.toHaveBeenCalled()
+      expect(mockGetOrCreateWebPageContext).toHaveBeenCalled()
       expect(mockGetOrGenerateWebPageSummary).not.toHaveBeenCalled()
     })
 
@@ -159,7 +153,7 @@ describe("translate-text", () => {
       const result = await translateTextForPage("test text")
 
       expect(result).toBe("")
-      // One TRANSLATION request; the page also asks for the glossary snapshot.
+
       expect(
         mockSendMessage.mock.calls.filter(([type]: [string]) => type === "enqueueTranslateRequest"),
       ).toHaveLength(1)
@@ -182,9 +176,7 @@ describe("translate-text", () => {
       const result = await translateTextForPage(targetLanguageText)
 
       expect(result).toBe("")
-      expect(mockDetectLanguage).toHaveBeenCalledWith(targetLanguageText, {
-        enableLLM: false,
-      })
+      expect(mockDetectLanguage).toHaveBeenCalledWith(targetLanguageText, {})
       expect(mockSendMessage).not.toHaveBeenCalled()
     })
 
@@ -238,7 +230,6 @@ describe("translate-text", () => {
       expect(result).toBe("")
       expect(mockDetectLanguage).toHaveBeenCalledWith(japaneseText, {
         minLength: MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION,
-        enableLLM: false,
       })
       expect(mockSendMessage).not.toHaveBeenCalled()
     })
@@ -418,10 +409,12 @@ describe("translate-text", () => {
     }
 
     const providerConfig = {
-      id: "google-default",
+      id: "openai-test",
+      name: "OpenAI",
       enabled: true,
-      name: "Google Translate",
-      provider: "google-translate" as const,
+      provider: "openai" as const,
+      apiKey: "test-key",
+      model: { model: "gpt-5-mini" as const, isCustomModel: false, customModel: null },
     }
 
     it("should return empty string for empty/whitespace input", async () => {
@@ -434,71 +427,6 @@ describe("translate-text", () => {
       expect(await executeTranslate(" \n \t", langConfig, providerConfig, getTranslatePrompt)).toBe(
         "",
       )
-    })
-
-    it("should handle zero-width spaces correctly", async () => {
-      // Only zero-width spaces should return empty
-      expect(
-        await executeTranslate("\u200B\u200B", langConfig, providerConfig, getTranslatePrompt),
-      ).toBe("")
-
-      // Mixed invisible + whitespace should return empty
-      expect(
-        await executeTranslate("\u200B \u200B", langConfig, providerConfig, getTranslatePrompt),
-      ).toBe("")
-
-      // Should translate valid content after removing zero-width spaces
-      mockGoogleTranslate.mockResolvedValue("你好")
-      const result = await executeTranslate(
-        "\u200B hello \u200B",
-        langConfig,
-        providerConfig,
-        getTranslatePrompt,
-      )
-      expect(result).toBe("你好")
-      // Shared translation core should send minimally prepared text to the provider
-      expect(mockGoogleTranslate).toHaveBeenCalledWith("hello", "en", "zh", {
-        textFormat: undefined,
-        preserveLineBreaks: undefined,
-        signal: undefined,
-      })
-    })
-
-    it("should trim translation result", async () => {
-      mockGoogleTranslate.mockResolvedValue("  测试结果  ")
-
-      const result = await executeTranslate(
-        "test input",
-        langConfig,
-        providerConfig,
-        getTranslatePrompt,
-      )
-
-      expect(result).toBe("测试结果")
-    })
-
-    it("should decode Google translateHtml entities", async () => {
-      const googleProviderConfig = {
-        id: "google-translate-default",
-        enabled: true,
-        name: "Google Translate",
-        provider: "google-translate" as const,
-      }
-      mockGoogleTranslate.mockResolvedValue(
-        " L&#39;Iran chiama &quot;Dichiarazione&quot; AT&amp;T &lt;span&gt; ",
-      )
-
-      const result = await executeTranslate(
-        "test input",
-        langConfig,
-        googleProviderConfig,
-        getTranslatePrompt,
-      )
-
-      expect(result).toBe('L\'Iran chiama "Dichiarazione" AT&T <span>')
-      expect(mockGoogleTranslate).toHaveBeenCalledWith("test input", "en", "zh", {
-        textFormat: undefined,
-      })
     })
   })
 })

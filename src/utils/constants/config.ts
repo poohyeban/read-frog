@@ -3,14 +3,11 @@ import type { SelectionToolbarCustomAction } from "@/types/config/selection-tool
 import type { PageTranslateRange } from "@/types/config/translate"
 import {
   BUILT_IN_ACTION_DEFAULT_SHORTCUTS,
-  BUILT_IN_ACTION_IDS,
   BUILT_IN_DICTIONARY_ACTION_ID,
-  BUILT_IN_IMPROVE_WRITING_ACTION_ID,
   BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID,
 } from "./custom-action"
 import {
   createDictionaryDefinition,
-  createImproveWritingDefinition,
   createSentenceAnalysisDefinition,
 } from "./custom-action-templates"
 import { DEFAULT_NODE_TRANSLATION_SHORTCUT_KEY } from "./hotkeys"
@@ -19,9 +16,9 @@ import {
   buildDefaultProviderConfigList,
   DEFAULT_PROVIDER_CONFIG,
   DEFAULT_PROVIDER_CONFIG_LIST,
-  GOOGLE_TRANSLATE_PROVIDER_ID,
+  DEFAULT_TRANSLATE_PROVIDER_ID,
 } from "./providers"
-import { DEFAULT_SELECTION_OVERLAY_OPACITY, SELECTION_TOOLBAR_FEATURE_IDS } from "./selection"
+import { DEFAULT_SELECTION_OVERLAY_OPACITY } from "./selection"
 import {
   DEFAULT_AUTO_TRANSLATE_SHORTCUT_KEY,
   DEFAULT_BATCH_CONFIG,
@@ -47,12 +44,6 @@ export const CONFIG_SCHEMA_VERSION = 1
 // words of their own (the sentence analysis card's come from ctx), so nothing
 // else about the language or the names goes into one.
 
-/**
- * Build the code-owned Dictionary action definition in the current UI locale.
- * Only enabled/provider/Notebase state is persisted; callers merge those mutable
- * fields onto this definition at read time. The layout is generated here too
- * (never persisted), so it always follows the current locale's field names.
- */
 export function createDefaultDictionaryAction(): SelectionToolbarCustomAction {
   const action = createDictionaryDefinition(DEFAULT_PROVIDER_CONFIG.openai.id)
   const outputSchema = action.outputSchema.map((field) => ({
@@ -71,11 +62,6 @@ export function createDefaultDictionaryAction(): SelectionToolbarCustomAction {
   }
 }
 
-/**
- * The code-owned Sentence Analysis action, built like the Dictionary: from its
- * preset, with `default-` field ids, in the current UI locale, and only its
- * enabled/provider/Notebase state persisted.
- */
 export function createDefaultSentenceAnalysisAction(): SelectionToolbarCustomAction {
   const action = createSentenceAnalysisDefinition(DEFAULT_PROVIDER_CONFIG.openai.id)
   const outputSchema = action.outputSchema.map((field) => ({
@@ -89,26 +75,6 @@ export function createDefaultSentenceAnalysisAction(): SelectionToolbarCustomAct
   }
 }
 
-/**
- * The code-owned Improve Writing action, built like Sentence Analysis. Unlike
- * the other built-in actions it starts off the toolbar itself (see
- * `selectionToolbar.unpinned`): it waits in the toolbar's "more" menu. A
- * config without its state reads it as off, as the schema does.
- */
-export function createDefaultImproveWritingAction(): SelectionToolbarCustomAction {
-  const action = createImproveWritingDefinition(DEFAULT_PROVIDER_CONFIG.openai.id)
-  const outputSchema = action.outputSchema.map((field) => ({
-    ...field,
-    id: `default-${field.id}`,
-  }))
-  return {
-    ...action,
-    id: BUILT_IN_IMPROVE_WRITING_ACTION_ID,
-    enabled: false,
-    outputSchema,
-  }
-}
-
 export const DEFAULT_CONFIG: Config = {
   language: {
     sourceCode: "auto",
@@ -117,7 +83,7 @@ export const DEFAULT_CONFIG: Config = {
   },
   providersConfig: DEFAULT_PROVIDER_CONFIG_LIST,
   pageTranslation: {
-    providerId: GOOGLE_TRANSLATE_PROVIDER_ID,
+    providerId: DEFAULT_TRANSLATE_PROVIDER_ID,
     mode: "bilingual",
     modeShortcut: DEFAULT_TRANSLATION_MODE_SHORTCUT_KEY,
     node: {
@@ -129,7 +95,7 @@ export const DEFAULT_CONFIG: Config = {
     page: {
       range: "all",
       translateTitle: true,
-      autoTranslatePatterns: ["*.news.ycombinator.com"],
+      autoTranslatePatterns: [],
       neverAutoTranslatePatterns: [],
       autoTranslateLanguages: [],
       shortcut: DEFAULT_AUTO_TRANSLATE_SHORTCUT_KEY,
@@ -158,9 +124,6 @@ export const DEFAULT_CONFIG: Config = {
       customCSS: null,
     },
   },
-  languageDetection: {
-    mode: "basic",
-  },
 
   selectionToolbar: {
     enabled: true,
@@ -169,7 +132,7 @@ export const DEFAULT_CONFIG: Config = {
     features: {
       translate: {
         enabled: true,
-        providerId: GOOGLE_TRANSLATE_PROVIDER_ID,
+        providerId: DEFAULT_TRANSLATE_PROVIDER_ID,
         shortcut: DEFAULT_SELECTION_TRANSLATION_SHORTCUT_KEY,
       },
     },
@@ -184,15 +147,7 @@ export const DEFAULT_CONFIG: Config = {
         providerId: DEFAULT_PROVIDER_CONFIG.openai.id,
         shortcut: BUILT_IN_ACTION_DEFAULT_SHORTCUTS[BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID],
       },
-      improveWriting: {
-        enabled: true,
-        providerId: DEFAULT_PROVIDER_CONFIG.openai.id,
-        shortcut: BUILT_IN_ACTION_DEFAULT_SHORTCUTS[BUILT_IN_IMPROVE_WRITING_ACTION_ID],
-      },
     },
-    customActions: [],
-    order: [...SELECTION_TOOLBAR_FEATURE_IDS, ...BUILT_IN_ACTION_IDS],
-    unpinned: [BUILT_IN_IMPROVE_WRITING_ACTION_ID],
   },
 
   contextMenu: {
@@ -211,11 +166,6 @@ export const DEFAULT_CONFIG: Config = {
   uiLanguage: "auto",
 }
 
-/**
- * Translate features start on Microsoft Translate, which is reachable everywhere; a fresh
- * install is moved onto Google Translate afterwards where that endpoint answers — see
- * `selectFreshTranslateProviders`.
- */
 export function buildFreshDefaultConfig(): Config {
   return {
     ...DEFAULT_CONFIG,
@@ -231,12 +181,7 @@ export function buildFreshDefaultConfig(): Config {
           enabled: true,
           providerId: DEFAULT_PROVIDER_CONFIG.openai.id,
         },
-        improveWriting: {
-          enabled: true,
-          providerId: DEFAULT_PROVIDER_CONFIG.openai.id,
-        },
       },
-      customActions: [],
     },
   }
 }

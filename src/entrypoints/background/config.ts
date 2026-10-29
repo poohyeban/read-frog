@@ -19,9 +19,3 @@ export async function ensureInitializedConfig() {
  * Whether the config was created from defaults in this run, rather than loaded from storage.
  * Shares the memoized initialization above, so it never triggers a second init.
  */
-export async function isFreshInstalledConfig() {
-  if (!configPromise) {
-    configPromise = initializeConfig()
-  }
-  return (await configPromise).isFreshInstall
-}

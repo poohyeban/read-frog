@@ -86,11 +86,6 @@ export const PRECISION_REWRITE_TRANSLATE_PROMPT = `Translate to ${getTokenCellTe
 
 ${getTokenCellText(INPUT)}`
 
-/**
- * Stable persisted ids for code-owned translation prompts. `default` describes
- * product behavior, not an experiment cohort: it is a real stored selection for
- * both page and subtitle translation.
- */
 export const DEFAULT_TRANSLATE_PROMPT_ID = "default"
 export const PRECISION_REWRITE_TRANSLATE_PROMPT_ID = "precision-rewrite"
 
@@ -116,13 +111,6 @@ export const DEFAULT_TRANSLATE_PROMPTS_CONFIG = {
   patterns: [],
 }
 
-/**
- * Shared by the webpage and subtitles batch pipelines. The worked example below
- * must keep a real translation in every output slot: demonstrating
- * NO_TRANSLATION_SENTINEL in one of them taught models a ~1-in-3 base rate for
- * the marker and silently dropped paragraphs that needed translating. See
- * DEFAULT_SENTINEL_TRANSLATE_PROMPT for the measurements.
- */
 export const DEFAULT_BATCH_TRANSLATE_PROMPT = `## Multi-paragraph Translation Rules
 1. If input contains a standalone line containing only ${BATCH_SEPARATOR}, use a standalone ${BATCH_SEPARATOR} line in your output. If input has no standalone ${BATCH_SEPARATOR} line, don't use ${BATCH_SEPARATOR} in your output.
 2. **CRITICAL**: Treat ${BATCH_SEPARATOR} as a separator only when it appears on its own line. Do not treat ${BATCH_SEPARATOR} as a separator when it appears inside normal text, code, quotes, or punctuation.
@@ -178,5 +166,3 @@ Direct translation without separators
  */
 export const DEFAULT_SENTINEL_TRANSLATE_PROMPT = `## Already-translated Input Rule
 Output only ${NO_TRANSLATION_SENTINEL} when only non-translatable names, brands, handles, URLs, numbers, or code differ from ${getTokenCellText(TARGET_LANGUAGE)}. A foreign-language phrase or clause must be translated.`
-
-// === Subtitles Segmentation Prompts ===

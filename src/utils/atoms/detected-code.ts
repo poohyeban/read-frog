@@ -21,8 +21,8 @@ baseDetectedCodeAtom.onMount = (setAtom: (newValue: LangCodeISO6393) => void) =>
   const refreshDetectedCode = () => {
     void sendMessage("getDetectedCode", undefined)
       .then((detectedCode) => setAtom(normalizeDetectedCode(detectedCode)))
-      .catch((error) => {
-        logger.warn("Failed to refresh active tab detected language", error)
+      .catch(() => {
+        logger.warn("Failed to refresh active tab detected language")
         setAtom(DEFAULT_DETECTED_CODE)
       })
   }

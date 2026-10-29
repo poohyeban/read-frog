@@ -1,4 +1,4 @@
-import type { ProviderRequestRouting } from "@/types/hosted-request"
+import type { ProviderRequestRouting } from "@/types/provider-request"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import type { RequestQueue } from "@/utils/request/request-queue"
 import { generateArticleSummary } from "@/utils/content/summary"
@@ -9,10 +9,6 @@ import { logger } from "@/utils/logger"
 import { getProviderCacheIdentity } from "@/utils/providers/provider-ref"
 import { generateTextForProviderRef } from "./background-stream"
 
-/**
- * Cached summaries used as context by webpage and subtitle translation.
- * The caller supplies its feature queue and cache identity.
- */
 export async function getOrGenerateTranslationContextSummary(
   args: ProviderRequestRouting<PromptableProviderRef> & {
     title: string
@@ -23,10 +19,7 @@ export async function getOrGenerateTranslationContextSummary(
 ): Promise<string | null> {
   const { title, textContent, providerRef, cacheKeyParts, requestQueue } = args
 
-  const routing: ProviderRequestRouting<PromptableProviderRef> =
-    args.hostedFeature === undefined
-      ? { providerRef: args.providerRef }
-      : { providerRef: args.providerRef, hostedFeature: args.hostedFeature }
+  const routing: ProviderRequestRouting<PromptableProviderRef> = { providerRef: args.providerRef }
   const preparedText = cleanText(textContent)
   if (!preparedText) {
     return null
@@ -42,8 +35,6 @@ export async function getOrGenerateTranslationContextSummary(
 
   // Stable for this queue task, mirroring the translation batches: automatic
   // RequestQueue retries must reuse the idempotency key because the first
-  // hosted response may have been lost after billing.
-  const hostedRequestId = undefined
 
   const thunk = async (signal?: AbortSignal) => {
     const cachedAgain = await db.articleSummaryCache.get(cacheKey)
@@ -53,8 +44,7 @@ export async function getOrGenerateTranslationContextSummary(
 
     const summary = await generateArticleSummary(title, textContent, routing, {
       signal,
-      generate: (payload, runOptions) =>
-        generateTextForProviderRef({ ...payload, requestId: hostedRequestId }, runOptions),
+      generate: (payload, runOptions) => generateTextForProviderRef({ ...payload }, runOptions),
     })
     if (!summary) {
       return ""
@@ -73,8 +63,8 @@ export async function getOrGenerateTranslationContextSummary(
   try {
     const summary = await requestQueue.enqueue(thunk, Date.now(), cacheKey)
     return summary || null
-  } catch (error) {
-    logger.warn("Failed to get/generate summary:", error)
+  } catch {
+    logger.warn("Failed to get/generate summary:")
     return null
   }
 }

@@ -46,6 +46,8 @@ export function ModelSuggestionButton({
       }
 
       const response = await fetch(getProviderModelsURL(providerConfig), {
+        credentials: "omit",
+        redirect: "error",
         headers: { Authorization: `Bearer ${apiKey}` },
       })
       if (!response.ok) {

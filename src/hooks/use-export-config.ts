@@ -10,16 +10,6 @@ import { i18n } from "@/utils/i18n"
 interface UseExportConfigOptions {
   config: Config
   schemaVersion: number
-  /**
-   * Whether to put the glossaries in the file alongside the settings.
-   *
-   * True wherever the export means "everything I have right now", because the
-   * glossaries are the only thing in the product the user typed and cannot get
-   * back any other way. False when the export is of a PAST config — a stored
-   * backup — where attaching today's glossaries would describe a moment that
-   * never existed.
-   */
-  includeGlossary?: boolean
 }
 
 export function useExportConfig({ config, schemaVersion }: UseExportConfigOptions) {

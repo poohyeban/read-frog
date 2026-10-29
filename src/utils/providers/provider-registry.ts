@@ -3,7 +3,7 @@ import type { FeatureKey } from "@/utils/constants/feature-providers"
 import type { ProviderSelectorOption } from "@/utils/providers/provider-display"
 import { isLLMProviderConfig, isTranslateProviderConfig } from "@/types/config/provider"
 
-export type ProviderCapability = FeatureKey | "customAction" | "languageDetection"
+export type ProviderCapability = FeatureKey | "customAction"
 
 type ProviderConfigPredicate<T extends ProviderConfig = ProviderConfig> = (
   provider: ProviderConfig,
@@ -24,7 +24,6 @@ const LOCAL_PROVIDER_CAPABILITY_PREDICATES = {
   selectionTranslation: isTranslateProviderConfig,
 
   customAction: isLLMProviderConfig,
-  languageDetection: isLLMProviderConfig,
 } as const satisfies Record<ProviderCapability, ProviderConfigPredicate>
 
 export type ProviderConfigForCapability<C extends ProviderCapability> =

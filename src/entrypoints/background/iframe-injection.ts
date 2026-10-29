@@ -204,11 +204,8 @@ async function injectHostContentIntoFrame(
       if (!siteControlUrl || !isSiteEnabled(siteControlUrl, config)) {
         return
       }
-    } catch (error) {
-      logger.error(
-        "[Background][IframeInjection] Failed to resolve iframe injection prerequisites",
-        error,
-      )
+    } catch {
+      logger.error("[Background][IframeInjection] Failed to resolve iframe injection prerequisites")
       return
     }
 
@@ -238,8 +235,8 @@ async function injectHostContentIntoFrame(
           documentKey,
         )
       }
-    } catch (error) {
-      logger.warn("[Background][IframeInjection] Failed to inject iframe content scripts", error)
+    } catch {
+      logger.warn("[Background][IframeInjection] Failed to inject iframe content scripts")
     }
   } finally {
     for (const part of partsToInject) {
@@ -260,8 +257,8 @@ export async function injectHostContentIntoTabIframes(
       undefined,
       options,
     ))
-  } catch (error) {
-    logger.warn("[Background][IframeInjection] Failed to resolve iframe injection state", error)
+  } catch {
+    logger.warn("[Background][IframeInjection] Failed to resolve iframe injection state")
     return
   }
 
@@ -270,10 +267,9 @@ export async function injectHostContentIntoTabIframes(
   let frames: FrameInfoForSiteControl[]
   try {
     frames = await getFrameSnapshot(tabId)
-  } catch (error) {
+  } catch {
     logger.error(
       "[Background][IframeInjection] Failed to resolve tab iframe injection prerequisites",
-      error,
     )
     return
   }
@@ -355,11 +351,8 @@ export function setupIframeInjection() {
             getDocumentInjectionKey(details) ||
           pendingScriptDocumentKeys.has(getScriptDocumentInjectionKey(details, part)),
       )
-    } catch (error) {
-      logger.warn(
-        "[Background][IframeInjection] Failed to activate same-origin selection runtime",
-        error,
-      )
+    } catch {
+      logger.warn("[Background][IframeInjection] Failed to activate same-origin selection runtime")
       return false
     }
   })
@@ -410,8 +403,8 @@ export function setupIframeInjection() {
       if (!shouldInject) return
 
       await injectHostContentIntoFrame(details, undefined, config)
-    } catch (error) {
-      logger.warn("[Background][IframeInjection] Failed to resolve iframe injection state", error)
+    } catch {
+      logger.warn("[Background][IframeInjection] Failed to resolve iframe injection state")
     }
   })
 }

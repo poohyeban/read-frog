@@ -93,7 +93,7 @@ function ProviderOptionsFieldHarness({
             setProviderConfig(
               updateProviderConfig(providerConfig, {
                 providerOptions: externalProviderOptions,
-              }) as APIProviderConfig,
+              }),
             )
           }}
         >

@@ -19,7 +19,6 @@ import {
 import { setupIframeInjection } from "./iframe-injection"
 import { setupLLMGenerateTextMessageHandlers } from "./llm-generate-text"
 import { setupPageTranslationHandlers } from "./page-translation"
-import { proxyFetch } from "./proxy-fetch"
 import { translationMessage } from "./translation-signal"
 
 export default defineBackground({
@@ -76,8 +75,6 @@ export default defineBackground({
       currentUiLanguage = config?.uiLanguage ?? "auto"
       await initI18n(currentUiLanguage)
     })()
-
-    proxyFetch()
 
     setupLLMGenerateTextMessageHandlers()
 

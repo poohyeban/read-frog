@@ -31,19 +31,10 @@ describe("getOrGenerateWebPageSummary", () => {
     vi.mocked(sendMessage).mockClear()
 
     const { getOrGenerateWebPageSummary } = await import("../webpage-summary")
+    await expect(getOrGenerateWebPageSummary(webPageContext, localRef, false)).resolves.toBeNull()
+    await expect(getOrGenerateWebPageSummary(null, localRef, true)).resolves.toBeNull()
     await expect(
-      getOrGenerateWebPageSummary(webPageContext, localRef, false, "pageTranslation"),
-    ).resolves.toBeNull()
-    await expect(
-      getOrGenerateWebPageSummary(null, localRef, true, "pageTranslation"),
-    ).resolves.toBeNull()
-    await expect(
-      getOrGenerateWebPageSummary(
-        { ...webPageContext, webContent: "  " },
-        localRef,
-        true,
-        "pageTranslation",
-      ),
+      getOrGenerateWebPageSummary({ ...webPageContext, webContent: "  " }, localRef, true),
     ).resolves.toBeNull()
 
     expect(sendMessage).not.toHaveBeenCalled()

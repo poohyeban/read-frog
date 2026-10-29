@@ -110,6 +110,7 @@ describe("getModelById", () => {
     expect(result).toBe("ollama-model")
     expect(createOllamaMock).toHaveBeenCalledWith({
       baseURL: "http://127.0.0.1:11434/",
+      fetch: expect.any(Function),
     })
     expect(ollamaLanguageModelMock).toHaveBeenCalledWith("gemma3:4b", { think: false })
   })

@@ -820,26 +820,6 @@ describe("selectionPopover", () => {
     expect(screen.getByText("Second content")).toBeInTheDocument()
   })
 
-  it("restarts the same popover session when clicking the same trigger again while unpinned", () => {
-    render(<ReopenablePopoverHarness />)
-
-    const trigger = screen.getByRole("button", { name: "Open popover" })
-    vi.spyOn(trigger, "getBoundingClientRect").mockReturnValue(buildTriggerRect())
-
-    fireEvent.click(trigger)
-    flushRaf()
-
-    expect(screen.getByText("First selection")).toBeInTheDocument()
-
-    const firstElement = screen.getByTestId("mock-rnd")
-
-    fireEvent.click(trigger)
-    flushRaf()
-
-    expect(screen.getByText("First selection")).toBeInTheDocument()
-    expect(screen.getByTestId("mock-rnd")).not.toBe(firstElement)
-  })
-
   it("reuses a pinned popover in place when clicking the same trigger again", () => {
     const onReuseRequestSpy = vi.fn<(...args: any[]) => any>()
     render(<ReopenablePopoverHarness onReuseRequestSpy={onReuseRequestSpy} />)
@@ -913,33 +893,6 @@ describe("selectionPopover", () => {
     })
 
     expect(onOpenChangeSpy).toHaveBeenLastCalledWith(true)
-    expect(screen.getByTestId("mock-rnd")).toBeInTheDocument()
-  })
-
-  it("restarts an unpinned popover through actionsRef.requestOpen", () => {
-    const actionsRef = React.createRef<{
-      requestOpen: (anchor?: { x: number; y: number } | null) => void
-    }>()
-    const onReuseRequestSpy = vi.fn<(...args: any[]) => any>()
-    render(<ActionsPopoverHarness actionsRef={actionsRef} onReuseRequest={onReuseRequestSpy} />)
-
-    act(() => {
-      actionsRef.current?.requestOpen({ x: 200, y: 160 })
-    })
-    flushRaf()
-
-    onOpenChangeSpy.mockReset()
-
-    act(() => {
-      actionsRef.current?.requestOpen({ x: 400, y: 320 })
-    })
-
-    expect(onOpenChangeSpy).toHaveBeenLastCalledWith(false)
-
-    flushRaf()
-
-    expect(onOpenChangeSpy).toHaveBeenLastCalledWith(true)
-    expect(onReuseRequestSpy).not.toHaveBeenCalled()
     expect(screen.getByTestId("mock-rnd")).toBeInTheDocument()
   })
 

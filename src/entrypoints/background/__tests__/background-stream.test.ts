@@ -203,11 +203,11 @@ describe("background-stream", () => {
 
   // Denials arrive two ways and they are normalized by different code. Failing
   // to open the stream lands in each path's own `catch` around
-  // `normalizeHostedAiError` — four independent call sites, so covering one
+
   // says nothing about the others. Failing mid-stream lands in the shared
-  // `normalizeHostedPartStreamErrors`. The case above only exercises the
+
   // second; this covers both for the text path, which is what page
-  // translation, selection translation, subtitles and input translation run
+
   // on. Either one coming back retryable makes the queue burn its whole
   // backoff budget on a pricing wall that never moves.
 

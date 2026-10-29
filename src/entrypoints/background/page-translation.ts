@@ -45,7 +45,7 @@ async function getValidatedCachedTranslation(
     if (!isHtmlAttributeMarkerIntegrityError(error)) throw error
 
     await db.translationCache.delete(hash)
-    logger.warn("Deleted cached translation with invalid HTML attribute markers", error)
+    logger.warn("Deleted cached translation with invalid HTML attribute markers")
     return undefined
   }
 }
@@ -118,7 +118,6 @@ export function setupPageTranslationHandlers(): void {
         scheduleAt,
         context,
         // Kept off `context`, which is part of the batch key — see
-        // `mergeBatchGlossaryTerms`.
 
         scope,
       }
@@ -179,7 +178,7 @@ export function setupPageTranslationHandlers(): void {
 
     // The payload type forces senders to narrow, but the wire is a trust
     // boundary (a pre-update content script can send a translate-only ref).
-    // Refuse like the subtitle summary handlers do: a queue task for a
+
     // provider with no model to prompt can only ever throw, after burning
     // its retries.
     if (!canProviderRefGenerateText(providerRef)) {

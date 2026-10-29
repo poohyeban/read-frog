@@ -31,7 +31,6 @@ import {
 } from "@/utils/constants/custom-action"
 import { streamBackgroundStructuredObject } from "@/utils/content-script/background-stream-client"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
-import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { truncateContextTextForCustomAction } from "@/utils/custom-action-prompt"
 import {
   buildSelectionToolbarCustomActionSystemPrompt,
@@ -70,7 +69,7 @@ interface ResolvedWebPageContext {
 interface CustomActionExecutionRequest {
   key: string
   // Each selection field's value: the run's selection, put into every answer
-  // so the result shows it and "save to notebase" keeps it.
+
   selectionValues: Record<string, string>
   payload: {
     outputSchema: Array<{
@@ -375,7 +374,6 @@ export function useCustomActionExecution({
         const finalResult = await streamBackgroundStructuredObject(
           {
             ...request.payload,
-            requestId: getRandomUUID(),
           },
           {
             signal: abortController.signal,

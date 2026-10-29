@@ -65,7 +65,7 @@ interface ProviderEditorContextValue {
   }
   actions: {
     assignFeature: (featureKey: FeatureKey) => Promise<void>
-    assignLanguageDetection: () => Promise<void>
+
     assignCustomAction: (actionId: string) => Promise<void>
     duplicate?: () => Promise<void>
     delete?: () => Promise<void>
@@ -136,15 +136,7 @@ function useProviderEditorValue({
           ...getAssignmentProvidersPatch(),
         })
       },
-      assignLanguageDetection: async () => {
-        await setConfig({
-          languageDetection: {
-            mode: "llm",
-            providerId,
-          },
-          ...getAssignmentProvidersPatch(),
-        })
-      },
+
       assignCustomAction: async (actionId) => {
         await setConfig({
           selectionToolbar: patchSelectionToolbarAction(config.selectionToolbar, actionId, {
@@ -406,49 +398,6 @@ function CompatibleFeatureAssignments() {
   })
 }
 
-function LanguageDetectionAssignment({
-  disabled = false,
-}: {
-  disabled?: boolean
-} = {}) {
-  const {
-    state: {
-      assignmentTarget: { providerId, providerType },
-    },
-    actions,
-  } = useProviderEditor()
-  const config = useAtomValue(configAtom)
-
-  // Built-in providers have no local providerType, but declare this capability
-  // in the provider registry. Local non-LLM providers still cannot take it.
-  if (providerType && !isLLMProvider(providerType)) {
-    return null
-  }
-
-  const isAssigned =
-    config.languageDetection.mode === "llm" && config.languageDetection.providerId === providerId
-
-  return (
-    <AssignmentRow
-      checked={isAssigned}
-      disabled={disabled}
-
-      onCheckedChange={(checked) => {
-        if (checked) void actions.assignLanguageDetection()
-      }}
-    >
-      {i18n.t("options.apiProviders.languageDetection.title")}
-    </AssignmentRow>
-  )
-}
-
-/**
- * A single feature row (from FEATURE_KEYS) for the built-in provider editors.
- * Local API providers keep using CompatibleFeatureAssignments; this row exists
- * so the built-in editors can offer their hosted-capable features without
- * pretending to a providerType. `upgradeTo` is the plan this account lacks for
- * it (badged), `disabled` the viewer's actual access.
- */
 function FeatureAssignment({
   featureKey,
   disabled = false,
@@ -565,7 +514,7 @@ export const ProviderEditor = {
   AssignmentRow,
   CompatibleFeatureAssignments,
   FeatureAssignment,
-  LanguageDetectionAssignment,
+
   CustomActionAssignments,
   DuplicateButton,
   DeleteButton,

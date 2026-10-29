@@ -58,8 +58,6 @@ options:
     leaveDescription: 你可以继续编辑并修正问题，或放弃尚未保存的修改。
     keepEditing: 继续编辑
     discard: 放弃未保存修改
-  batchSavings:
-    savedCost: 约省 $1% API 费用
   commandPalette:
     placeholder: 搜索设置...
     noResults: 未找到设置
@@ -70,8 +68,8 @@ options:
     features: 功能
   apiProviders:
     title: API 提供商
-    pageDescription: 接入 Read Frog 调用的 AI 服务，并为每项功能指定使用哪一个。
-    description: 添加 Read Frog 可以调用的提供商。内置 20 多个，也可以添加兼容 Chat Completions 的自定义 API 和 Open Responses 自定义 API。
+    pageDescription: 接入 Read Frog Lite 调用的 AI 服务，并为每项功能指定使用哪一个。
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
     configTitle: 提供商配置
     addProvider: 添加提供商
     setApiKeyWarning:
@@ -141,36 +139,9 @@ options:
         customChatComplete: 自定义 Chat Complete
       description:
         openai: 提供 GPT-4o 等模型
-        azure: 通过 Azure 部署使用 OpenAI 模型
-        deepseek: 推荐在中国使用
-        openrouter: 多个 LLM 提供商的统一接口，按使用量付费
         ollama: 在本地机器上运行大语言模型，确保完全隐私
         google: 具有先进推理能力的谷歌旗舰 AI 模型
-        anthropic: 以安全性和推理能力著称的 Claude 模型
-        xai: 马斯克的 AI 公司，提供具有实时数据访问能力的 Grok 模型
-        atlascloud: 统一的 OpenAI 兼容模型平台，提供 DeepSeek、Kimi、Qwen、豆包、GLM 等较新模型
-        jalapenocloud: 顶尖团队都在用的企业级 AI，现在为你而来！
-        siliconflow: 面向中国和国际模型的高性能推理平台
-        tensdaq: 革命性竞价 AI MaaS 平台，价格由市场供需决定，告别高成本固定定价
         openaiCompatible: 连接兼容 OpenAI Chat Completions API 的自定义端点
-        openResponses: 连接兼容 Open Responses API 的自定义端点
-        deeplx: 非官方 DeepL API
-        deepl: 官方 DeepL API
-        bedrock: 面向企业级基础模型的 AWS 托管服务
-        groq: 专注于超高速 LLM 推理速度的专用硬件
-        deepinfra: 面向热门开源模型的经济高效云推理
-        mistral: 专注于高效多语言模型的欧洲 AI 公司
-        togetherai: 用于运行和微调开源模型的协作平台
-        cohere: 具有强大多语言和 RAG 能力的企业级 AI
-        fireworks: 面向开源模型的生产就绪推理平台
-        cerebras: 超快速 AI 推理，适合快速翻译和文本分析
-        replicate: 访问多样化开源模型，适合专业翻译任务
-        perplexity: 实时知识增强 AI，提供语境化翻译和阅读辅助
-        volcengine: 字节跳动旗下云平台，提供豆包系列大模型
-        minimax: MiniMax AI平台，提供先进的MiniMax-M2系列大模型
-        alibaba: 阿里云通义千问系列模型，具备先进的推理和多语言能力
-        moonshotai: 月之暗面Kimi系列模型，具备强大的推理和长上下文能力
-        huggingface: Hugging Face推理API，提供数千种开源模型访问
     apiKey:
       showAPIKey: 显示 API Key
       getAPIKey: 获取 API Key
@@ -187,28 +158,9 @@ options:
       features:
         pageTranslation: 网页翻译
         selectionTranslation: 划词翻译
-        inputTranslation: 输入翻译
-        videoSubtitles: 视频字幕
-        noteSuggestion: 猜你想存
       descriptions:
         pageTranslation: 翻译整个网页，双语对照或直接替换原文。
         selectionTranslation: 通过划词工具栏翻译你选中的文本。
-        inputTranslation: 在发送前翻译你写在输入框里的内容。
-        videoSubtitles: 翻译视频播放器中随播放出现的字幕。
-        noteSuggestion: 划词翻译后，推荐值得存入笔记库的词条。
-    languageDetection:
-      title: 语言检测
-      description: 影响自动翻译语言检测和朗读语音选择的准确性。
-      mode:
-        basic: 基础
-        llm: LLM
-      provider:
-        label: 检测提供商
-        placeholder: 选择提供商
-      status:
-        noProviders: 请先配置 LLM 提供商
-        basicRecommend: 建议启用 LLM
-        llmEnabled: LLM 检测已启用
     aiContentAware:
       title: AI 智能上下文翻译
       description: 把网页或视频的上下文提供给 AI，让翻译更准确
@@ -222,7 +174,7 @@ options:
     unsupported: 无法匹配这个地址。不支持端口，也不支持 http 和 https 以外的协议。
   preference:
     title: 偏好设置
-    pageDescription: 设置陪读蛙的外观与生效范围，以及配置的同步与备份方式。
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: 外观与语言
       theme:
@@ -258,32 +210,19 @@ options:
         urlPattern: URL 模式
     config:
       title: 配置
-      googleDrive:
-        title: Google Drive 云端同步
-        description: 远端配置较新时下载，本地配置较新时上传；术语库走单独一个文件，按条合并而不是整份覆盖。
       manualSync:
         title: 手动配置同步
-        description: 手动导入导出你的配置，术语库也一并带走
+        description: Import or export your local configuration.
         exportSuccess: 配置导出成功
-      backup:
-        title: 配置备份
-        description: 如果配置发生变化，每小时会自动创建备份。您可以在这里恢复之前的配置。（最多 $1 个备份）
       reset:
         title: 恢复默认配置
-        description: 将所有配置重置为默认，术语库不受影响
+        description: Reset local configuration to its defaults.
         dialog:
           title: 恢复默认配置
           trigger: 重置配置
           confirm: 确认
           cancel: 取消
-          description: 该操作将清空您的所有自定义配置，并将其重置为默认值。术语库会保留 — 如需删除请到术语库页面操作。请确认是否清除。
-    userExperience:
-      beta:
-        title: Beta 体验
-        description: 开启可能还不稳定的实验性功能
-      analytics:
-        title: 帮助改进用户体验
-        description: 通过帮助我们定位 bug、优化界面布局等改善 Read Frog
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: 快捷键
     pageDescription: 设置阅读时触发翻译、朗读和 AI 指令的按键。
@@ -297,19 +236,10 @@ options:
     selectionTranslation:
       title: 划词翻译
       description: 翻译选中的文本。
-    subtitlesToggle:
-      title: 字幕翻译
-      description: 打开或关闭视频的翻译字幕。
     nodeTranslation:
       title: 悬停翻译
       description: 悬停或长按段落，只翻译这一段。
       customDescription: 悬停在段落上时按下这组按键，即可翻译这一段。
-    translationHub:
-      title: 翻译中心
-      description: 在新标签页中打开翻译中心。
-    selectionSpeak:
-      title: "划词朗读"
-      description: "朗读选中的文本，再按一次停止。"
     actions:
       title: "AI 指令"
       description: "对选中的文本运行 AI 指令。自定义指令默认没有快捷键，在这里设置即可。"
@@ -317,37 +247,6 @@ options:
     turnOn: "去开启"
     clash: "与「$1」的快捷键相同，请修改其中一个。"
     taken: "$1 已被「$2」使用。"
-  inputTranslation:
-    title: 输入翻译
-    trigger:
-      title: 触发方式
-      enable:
-        description: 在任意输入框中快速连按 3 次空格键，即可翻译你输入的内容。
-      threshold:
-        title: 触发阈值
-        description: 相邻两次按键之间最多可以间隔多少毫秒。经常触发不了就调大，打字时误触发就调小。
-    languages:
-      title: 翻译语言
-      pair:
-        description: 输入的文字按哪种语言识别，又翻译成哪种语言。两侧都可以跟随你翻译网页时使用的源语言和目标语言。
-      cycle:
-        title: 每次翻译时交换方向
-        description: 每次触发都会交换这两种语言，再触发一次就能把文字换回你输入时的语言。
-  floatingButton:
-    title: 悬浮按钮
-    enable:
-      title: 启用悬浮按钮
-      description: 在网页上显示悬浮按钮，快速访问陪读蛙功能
-    display:
-      side:
-        title: 按钮位置
-        description: 选择悬浮按钮停靠在页面的哪一侧
-      disabledSites:
-        title: 禁用网站
-        description: 配置需要禁用悬浮按钮的网站
-    clickAction:
-      title: 点击行为
-      description: 选择点击悬浮按钮时执行的操作
   selectionToolbar:
     title: 选择工具栏
     pageDescription: 设置选中文本时出现哪些操作，以及工具栏在哪些网站显示。
@@ -360,9 +259,6 @@ options:
       translate:
         title: 翻译
         description: 在工具栏中显示翻译按钮
-      noteSuggestion:
-        title: 猜你想存
-        description: 使用 AI 提供商进行划词翻译后，推荐可存入笔记库的词条
     display:
       title: 显示
       opacity:
@@ -384,17 +280,11 @@ options:
       providerDisabled: 所选提供商已被禁用
       providerUnavailable: 所选提供商不可用
     customActions:
-      title: 自定义 AI 指令
+      title: AI explanations
       description: 为划词添加你自己的结构化 AI 操作
       form:
         selectProvider: 选择提供商
         defaultFieldName: 结果
-        layout:
-          title: 版式
-          description: 结果在弹窗中的显示方式。使用 HTML + Liquid，字段会随回答流式填入。
-        notebase:
-          title: 笔记库连接
-          description: 将这个指令的结构化结果保存到远程笔记库。
       templates:
         dialogTitle: 选择模板
         dialogDescription: 选择模板快速创建新的 AI 指令，或从空白开始。
@@ -550,35 +440,6 @@ options:
           hardLabel: "难点"
           trunkLabel: "只看主干"
           slashesLabel: "断句"
-        improveWriting:
-          name: "写作改进"
-          description: "像老师一样批改：标出错误和不地道的表达，按场合给出改后版本"
-          fieldOriginal: "原文"
-          fieldSetting: "场合"
-          fieldAnnotations: "标注"
-          fieldImproved: "改后"
-          fieldSummary: "总评"
-          types:
-            spelling: "拼写"
-            grammar: "语法"
-            punctuation: "标点"
-            wordChoice: "用词"
-            logic: "逻辑"
-            unnatural: "不地道"
-            register: "得体"
-            clarity: "清晰"
-            good: "亮点"
-          tiers:
-            error: "错误"
-            awkward: "欠妥"
-            good: "亮点"
-          hideFixesLabel: "藏答案"
-          hiddenHintLabel: "先自己想想怎么改，再看答案。"
-          showImprovedLabel: "显示改后版本"
-          improvedLabel: "改后"
-          copyLabel: "复制"
-          unchangedLabel: "与原文相同，无需修改"
-          removeLabel: "删掉"
         blank:
           name: 空白
           description: 从空白模板开始创建指令
@@ -587,18 +448,9 @@ options:
             选中文本：{{selection}}
             段落内容：{{paragraphs}}
             目标语言：{{targetLanguage}}
-  advanced:
-    glossary:
-      title: 术语库
-      enable:
-        title: 启用
-        description: 把命中的术语一并发给 LLM，让它按你的写法翻译。术语库是随提示词一起发送的，所以只对运行在 LLM 提供商上的功能生效。
-      library:
-        title: 你的术语库
-        description: 每份术语库都有各自的术语和各自的网站列表，所以为工作准备的一组术语不会跟着你出现在其他所有地方。
   contextMenu:
     title: 右键菜单
-    pageDescription: 控制浏览器右键菜单里的 Read Frog 选项。
+    pageDescription: 控制浏览器右键菜单里的 Read Frog Lite 选项。
     demoImageAlt: 右键菜单演示
     enable:
       title: 启用右键翻译
@@ -675,10 +527,6 @@ options:
       title: 自定义网页提示词
       description: 自定义不同类型的 Prompt，可以在翻译时自行调整 Prompt 类型。Prompt 表示以用户身份发送给 LLM 的文本。
       managePrompts: 管理 Prompt
-      communityPrompts: 获取或分享社区 Prompt
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/820
-      variableReference: 变量详解
-      variableReferenceUrl: https://readfrog.app/zh/docs/page-translation/prompts/variables
       addPrompt: 添加 Prompt
       default: 通用
       builtIn: 内置
@@ -808,61 +656,6 @@ options:
       searchPlaceholder: 按 id、描述或网址模式搜索
       showMore: 显示更多
       count: 显示 $1 / $2 条规则
-  tts:
-    title: 文本转语音
-    voice:
-      language:
-        title: 语言语音
-        description: 先选择一种语言，再挑选朗读它时使用的语音。重置会换回陪读蛙为该语言选定的语音。
-      fallback:
-        title: 兜底语音
-        description: 你还没有单独指定语音的语言，都用这个语音朗读。
-    speech:
-      rate:
-        title: 语速
-        description: 相对语音本身的语速快多少或慢多少，取值 -100 到 100 个百分点。
-      pitch:
-        title: 音高
-        description: 相对语音本身的音高高多少或低多少，取值 -100 到 100 赫兹。
-      volume:
-        title: 音量
-        description: 相对语音本身的音量大多少或小多少，取值 -100 到 100 个百分点。
-  videoSubtitles:
-    title: 视频字幕
-    preference:
-      enable:
-        title: 开启视频字幕
-        description: 在 YouTube、X 和 Netflix 的视频播放器控制栏加上翻译按钮。
-      autoStart:
-        title: 打开视频就翻译
-        description: 视频加载完成后自动开始翻译字幕，不用再点按钮。
-      aiSegmentation:
-        title: AI 智能断句
-        description: 让 AI 把字幕重新切成完整句子，会增加翻译响应时间。需要较强的 LLM，弱模型可能漏句或错位。
-    aiQuota:
-      title: AI 字幕额度
-      description: AI 利用语音转文字技术获取任何视频的准确字幕
-    style:
-      title: 字幕样式
-      description: 显示模式、位置、字体、颜色和背景，都对着预览调
-      customCSS:
-        title: 自定义 CSS
-        description: 在上面的字体和颜色之上，为字幕行追加 CSS
-    customPrompts:
-      title: 自定义字幕提示词
-      description: 字幕翻译专用的提示词模板，与网页翻译提示词分开
-    subtitlesQueue:
-      requestQueueConfig:
-        title: 翻译速率
-      batchQueueConfig:
-        title: 批量翻译
-        description: 配置批量翻译时的字符数限制和最大字幕条数（仅对大语言模型翻译有效）
-    cache:
-      clearCache:
-        title: 清除 AI 断句缓存
-        description: 已保存的断句结果，看过的视频不用重新断句
-side:
-  targetLang: 目标语言
 translateService:
   builtInModels: 内建模型
   llmModels: 大语言模型
@@ -872,20 +665,14 @@ translatePrompt:
   description: 选择在翻译时使用的 Prompt，可在选项页新增或修改自定义 Prompt
 noAPIKeyConfig:
   warning: 如果想要使用 AI 模型，请先在选项页设置 API Key
-languageDetection:
-  llmFailed: LLM 语言检测失败，已回退到基础检测
 translation:
   sameLanguage: 源语言和目标语言必须不同
   extensionContextInvalidated: 扩展已更新，请刷新此页面后重试。
-speak:
-  languageDetectionFallback: 已改用本地语言检测
-  languageDetectionSettingsHint: 可在设置中更换可用的大模型，或选择本地检测。
 action:
   copy: 复制
   copied: 已复制
   regenerate: 重新生成
   viewContextDetails: 上下文
-  customizeCustomAction: 定制“$1”动作
   contextDetailsTitleLabel: 标题
   contextDetailsParagraphsLabel: 段落内容
   translation: 翻译
@@ -903,11 +690,6 @@ hotkey:
   backtick: 反引号
   clickAndHold: 点击并按住
   custom: 自定义快捷键
-translationHub:
-  searchLanguages: 搜索语言...
-  noLanguagesFound: 未找到语言
-  translationFailed: 翻译失败
-  translationFailedFallback: 翻译失败
 languages:
   eng: 英语
   cmn: 简体中文
@@ -1088,3 +870,10 @@ languages:
   wls: 瓦利斯语
   rar: 拉罗汤加语
   hif: 斐济印地语
+side:
+  targetLang: 目标语言
+translationHub:
+  searchLanguages: 搜索语言...
+  noLanguagesFound: 未找到语言
+  translationFailed: 翻译失败
+  translationFailedFallback: 翻译失败

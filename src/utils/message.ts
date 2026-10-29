@@ -5,8 +5,7 @@ import type {
 } from "@/types/background-generate-text"
 import type { Config } from "@/types/config/config"
 import type { TranslationTextFormat } from "@/types/config/translate"
-import type { ProviderRequestRouting } from "@/types/hosted-request"
-import type { ProxyRequest, ProxyResponse } from "@/types/proxy-fetch"
+import type { ProviderRequestRouting } from "@/types/provider-request"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
@@ -62,11 +61,10 @@ interface ProtocolMap {
       // (input/selection translation), which are never cancellable.
       sessionId?: string
       forceRetranslation?: boolean
-      // Glossary terms the SENDER found in `text`. Resolved where the page URL
-      // is known, so a glossary scoped to this site reaches the prompt and one
+
       // scoped elsewhere does not — the background serves every tab and cannot
       // tell them apart. Passing `[]` means "nothing matched"
-      // Which glossary revision `glossaryTerms` was read from. A batch can hold
+
       // requests resolved either side of an edit made while the page was still
       // translating; without this the background would settle a disagreement by
       // message arrival order
@@ -83,7 +81,7 @@ interface ProtocolMap {
   backgroundGenerateText: (
     data: BackgroundGenerateTextPayload,
   ) => Promise<BackgroundGenerateTextResponse>
-  backgroundFetch: (data: ProxyRequest) => Promise<ProxyResponse>
+
   clearAllTranslationRelatedCache: () => Promise<void>
 }
 

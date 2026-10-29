@@ -10,13 +10,8 @@ import {
   doesProviderSupportsCapability,
   getProviderIdsForCapability,
 } from "@/utils/providers/provider-registry"
-import { normalizeSelectionToolbarLists } from "@/utils/selection-toolbar-order"
-import { languageDetectionConfigSchema } from "./language-detection"
 import { providersConfigSchema } from "./provider"
-import {
-  selectionToolbarBuiltInActionsSchema,
-  selectionToolbarCustomActionsSchema,
-} from "./selection-toolbar"
+import { selectionToolbarBuiltInActionsSchema } from "./selection-toolbar"
 import { shortcutSchema } from "./shortcut"
 import { siteRulesConfigSchema } from "./site-rules"
 import { translateConfigSchema } from "./translate"
@@ -35,22 +30,15 @@ const selectionToolbarFeatureSchema = z.object({
 })
 
 // Text selection toolbar schema
-const selectionToolbarSchema = z
-  .object({
-    enabled: z.boolean(),
-    disabledSelectionToolbarPatterns: z.array(z.string()),
-    opacity: z.number().min(MIN_SELECTION_OVERLAY_OPACITY).max(MAX_SELECTION_OVERLAY_OPACITY),
-    features: z.object({
-      translate: selectionToolbarFeatureSchema,
-    }),
-    builtInActions: selectionToolbarBuiltInActionsSchema,
-    customActions: selectionToolbarCustomActionsSchema,
-    order: z.array(z.string().min(1)).default([]),
-    unpinned: z.array(z.string().min(1)).default([]),
-  })
-  // Every parse brings `order` and `unpinned` in step with the actions there
-  // are, so adding or deleting an action never has to update them itself.
-  .transform((selectionToolbar) => normalizeSelectionToolbarLists(selectionToolbar))
+const selectionToolbarSchema = z.object({
+  enabled: z.boolean(),
+  disabledSelectionToolbarPatterns: z.array(z.string()),
+  opacity: z.number().min(MIN_SELECTION_OVERLAY_OPACITY).max(MAX_SELECTION_OVERLAY_OPACITY),
+  features: z.object({
+    translate: selectionToolbarFeatureSchema,
+  }),
+  builtInActions: selectionToolbarBuiltInActionsSchema,
+})
 
 // side content schema
 
@@ -67,16 +55,10 @@ const contextMenuSchema = z.object({
 })
 
 // input translation language selector: 'sourceCode', 'targetCode', or fixed language code
-const inputTranslationLangSchema = z.union([
-  z.literal("sourceCode"),
-  z.literal("targetCode"),
-  langCodeISO6393Schema,
-])
 
 // input translation schema (triple-space trigger)
 
 // Export types for use in components
-export type InputTranslationLang = z.infer<typeof inputTranslationLangSchema>
 
 // site control schema
 const siteControlSchema = z.object({
@@ -102,7 +84,6 @@ export const configSchema = z
     language: languageSchema,
     providersConfig: providersConfigSchema,
     pageTranslation: translateConfigSchema,
-    languageDetection: languageDetectionConfigSchema,
 
     selectionToolbar: selectionToolbarSchema,
 
@@ -135,33 +116,6 @@ export const configSchema = z
     }
 
     // Validate languageDetection: when mode is "llm", providerId must be a valid enabled LLM provider
-    if (data.languageDetection.mode === "llm") {
-      const ldProviderId = data.languageDetection.providerId
-      if (!ldProviderId) {
-        ctx.addIssue({
-          code: "custom",
-          message: `Language detection mode is "llm" but no providerId is configured.`,
-          path: ["languageDetection", "providerId"],
-        })
-      } else if (
-        // Capability-based, like the FEATURE_KEYS loop above, rather than a
-        // providersConfig lookup: Built-in AI is never a row in
-        // providersConfig, so requiring one there is what used to make a
-        // hosted provider fail validation and reset the whole config.
-        !doesProviderSupportsCapability("languageDetection", data.providersConfig, ldProviderId, {
-          requireEnable: true,
-        })
-      ) {
-        ctx.addIssue({
-          code: "invalid_value",
-          values: getProviderIdsForCapability("languageDetection", data.providersConfig, {
-            requireEnable: true,
-          }),
-          message: `Invalid provider id "${ldProviderId}".`,
-          path: ["languageDetection", "providerId"],
-        })
-      }
-    }
 
     const actionProviderEntries = [
       ...BUILT_IN_ACTION_IDS.map((id) => {
@@ -171,10 +125,6 @@ export const configSchema = z
           path: ["selectionToolbar", "builtInActions", key, "providerId"] as const,
         }
       }),
-      ...data.selectionToolbar.customActions.map((action, index) => ({
-        providerId: action.providerId,
-        path: ["selectionToolbar", "customActions", index, "providerId"] as const,
-      })),
     ]
 
     actionProviderEntries.forEach(({ providerId, path }) => {

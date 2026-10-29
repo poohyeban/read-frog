@@ -1,4 +1,3 @@
-import type { PartialDeep } from "type-fest"
 import type { ProviderConfig } from "@/types/config/provider"
 import { createStore } from "jotai"
 import { describe, expect, it } from "vitest"
@@ -47,16 +46,6 @@ describe("provider config updates", () => {
     expect(result.headers).toEqual({ "X-Test": "1" })
     expect(result.model).toEqual(DEFAULT_PROVIDER_CONFIG.openai.model)
     expect(result.provider).toBe("openai")
-  })
-
-  it("rejects merged configs that no longer match the provider schema", () => {
-    const invalidUpdates = {
-      provider: "openai",
-    } as PartialDeep<ProviderConfig>
-
-    expect(() =>
-      updateProviderConfig(DEFAULT_PROVIDER_CONFIG["google-translate"], invalidUpdates),
-    ).toThrow(/Invalid/)
   })
 })
 

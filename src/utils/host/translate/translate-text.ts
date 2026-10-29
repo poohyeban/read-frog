@@ -1,14 +1,13 @@
 import type { LangCodeISO6393, LangLevel } from "@read-frog/definitions"
-import type { HostedAiTextStreamRoute } from "@/types/background-stream"
 import type { Config } from "@/types/config/config"
-import type { LLMProviderConfig, TranslateProviderConfig } from "@/types/config/provider"
+import type { TranslateProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { WebPagePromptContext } from "@/types/content"
-import type { PromptableProviderRef, SerializableProviderRef } from "@/utils/providers/provider-ref"
+import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
 import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { toastManager } from "@/components/ui/base-ui/toast"
-import { isAPIProviderConfig, isLLMProviderConfig } from "@/types/config/provider"
+import { isAPIProviderConfig } from "@/types/config/provider"
 import { isNoTranslationSentinel } from "@/utils/constants/prompt"
 import { detectLanguage } from "@/utils/content/language"
 import { i18n } from "@/utils/i18n"
@@ -37,27 +36,12 @@ import { getPageTranslationSessionId } from "./translation-session"
  */
 export const MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION = 10
 
-/**
- * Check if text should be skipped based on language detection.
- *
- * Deliberately franc-only. This runs once per paragraph, so routing it through
- * an LLM cost one hosted call per paragraph — hundreds per article, against the
- * same weekly pool that funds page translation and subtitles, and against a
- * BYOK user's own budget. The whole-page source language is detected once and
- * cached; this second, uncached, per-paragraph pass existed only for pages that
- * mix languages, and the value of a right answer here (avoid one redundant
- * translation) never justified the per-paragraph price of getting it.
- *
- * `languageDetection.mode` still governs the once-per-page source detection,
- * where a wrong answer corrupts the prompt for every paragraph.
- */
 export async function shouldSkipByLanguage(
   text: string,
   skipLanguages: LangCodeISO6393[],
 ): Promise<boolean> {
   const detectedLang = await detectLanguage(text, {
     minLength: MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION,
-    enableLLM: false,
   })
 
   if (!detectedLang) {
@@ -103,7 +87,7 @@ async function buildWebPageHashComponents(
 ): Promise<string[]> {
   const preparedText = prepareTranslationText(text)
   const normalizedWebPageContext = normalizeWebPagePromptContext(webPageContext)
-  const providerConfig = providerRef.config
+
   const providerHashIdentity = providerRef.config
   const hashComponents = [
     preparedText,
@@ -111,23 +95,6 @@ async function buildWebPageHashComponents(
     partialLangConfig.sourceCode,
     partialLangConfig.targetCode,
   ]
-
-  if (providerConfig && !isLLMProviderConfig(providerConfig)) {
-    // The provider request depends on the text format (escaping / textType), so
-    // cache entries must too. This component also orphans entries cached before
-    // the format-aware pipeline existed, which could hold corrupted output.
-    hashComponents.push(`textFormat:${textFormat}`)
-    // Pushed only when the flag actually changes the provider request —
-    // today that is Google alone — so cache entries written before the flag
-    // existed stay valid and identical Microsoft/DeepL requests are not
-    // fragmented. Flagged Google requests get fresh entries (any old
-    // collapsed-line output for the same text is orphaned rather than
-    // reused).
-    if (preserveLineBreaks && providerConfig.provider === "google-translate") {
-      hashComponents.push("preserveLineBreaks:true")
-    }
-    return hashComponents
-  }
 
   const targetLangName = LANG_CODE_TO_EN_NAME[partialLangConfig.targetCode]
   // The terms are passed in rather than resolved here, so the prompt this hash
@@ -175,34 +142,6 @@ async function buildWebPageHashComponents(
  * ping-pong.
  */
 
-/**
- * Resolve the transport ref for the requested provider. Snapshot misses do
- * happen off the happy path — a mid-session provider/tier switch, node
- * translation without an active session — and each translation unit resolves
- * independently, so without coalescing a dense batch would fan out one
- * hosted-status fetch per paragraph. Concurrent misses for the same system
- * provider share one serialization (per-key, so interleaved keys cannot evict
- * each other's in-flight fetch), and an active session adopts the result so
- * later paragraphs skip the network entirely.
- */
-export async function resolvePageProviderRef(
-  provider: ResolvedProviderRef<LLMProviderConfig>,
-  sessionId: string | undefined,
-  feature: HostedAiTextStreamRoute,
-): Promise<PromptableProviderRef>
-export async function resolvePageProviderRef(
-  provider: ResolvedProviderRef<TranslateProviderConfig>,
-  sessionId: string | undefined,
-  feature: HostedAiTextStreamRoute,
-): Promise<SerializableProviderRef>
-export async function resolvePageProviderRef(
-  provider: ResolvedProviderRef<TranslateProviderConfig>,
-  sessionId: string | undefined,
-  feature: HostedAiTextStreamRoute,
-): Promise<SerializableProviderRef> {
-  return serializeProviderRef(provider, feature)
-}
-
 export interface TranslateTextOptions {
   text: string
   langConfig: {
@@ -221,16 +160,6 @@ export interface TranslateTextOptions {
   // NOT part of the cache hash — cache identity must not vary per session.
   sessionId?: string
   forceRetranslation?: boolean
-  /**
-   * Whether the user's glossary is switched on. Supplied by the caller, which
-   * already holds the config
-  /**
-   * Which hosted route a system provider bills against; local providers
-   * ignore it. Required so every entry point states its route where the
-   * function is named — a defaulted route once let page translation gate on
-   * and bill against the wrong quota.
-   */
-  hostedFeature: HostedAiTextStreamRoute
 }
 
 /**
@@ -242,6 +171,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     text,
     langConfig,
     providerConfig,
+
     enableAIContentAware = false,
     extraHashTags = [],
     webPageContext,
@@ -249,8 +179,6 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     preserveLineBreaks = false,
     sessionId,
     forceRetranslation = false,
-
-    hostedFeature,
   } = options
 
   const preparedText = prepareTranslationText(text)
@@ -259,16 +187,15 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
   }
 
   // Early cancellation gate: a session stopped while this paragraph was still
-  // preparing must not fire a post-cancel hosted-status fetch below just to
+
   // throw at the final gate.
   if (sessionId !== undefined && getPageTranslationSessionId() !== sessionId) {
     throw new TranslationCancelledError(sessionId)
   }
 
   const normalizedWebPageContext = normalizeWebPagePromptContext(webPageContext)
-  const providerRef = await resolvePageProviderRef(providerConfig, sessionId, hostedFeature)
+  const providerRef = serializeProviderRef(providerConfig)
 
-  // Resolved ONCE, here, where `location.href` says which glossaries apply.
   // The same list feeds the cache hash and travels with the request, so the
   // prompt the hash describes is the prompt the background builds — it serves
   // every tab at once and could not scope this by itself.
@@ -276,10 +203,9 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
   // The revision travels with it because a batch can hold paragraphs resolved
   // either side of an edit made while this page was still translating, and it
   // is the only thing that tells the background which wording is the newer one
-  // (see `mergeBatchGlossaryTerms`).
 
   // Covers page, input and pure-translate-provider selection runs, which all
-  // enter here; the two prompt-building selection paths and subtitles resolve
+
   // their own terms and report at their own resolve sites.
 
   const hashComponents = await buildWebPageHashComponents(
@@ -340,8 +266,6 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     webSummary: normalizedWebPageContext?.webSummary,
     sessionId,
     forceRetranslation,
-
-    hostedFeature,
   })
   if (sessionId !== undefined) {
     // Raw result, sentinel included, so a "no translation needed" verdict is

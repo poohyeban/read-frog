@@ -10,11 +10,3 @@ export function getLanguageName(code: LangCodeISO6393) {
 export function getLanguageLabel(code: LangCodeISO6393) {
   return `${getLanguageName(code)} (${LANG_CODE_TO_LOCALE_NAME[code]})`
 }
-
-/**
- * A glossary term's target language as the user reads it.
- *
- * Lives beside the other two because the question is the same one — how a
- * language value becomes text on screen — and because keeping the branch here
- * is what lets every call site render `term.targetLang` without one.
- */

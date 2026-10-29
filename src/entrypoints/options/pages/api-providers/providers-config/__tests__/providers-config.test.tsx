@@ -38,7 +38,6 @@ const providerConfig = {
 }
 
 const config = {
-  languageDetection: { mode: "basic", providerId: undefined as string | undefined },
   providersConfig: [providerConfig],
   selectionToolbar: { customActions: [] },
 }
@@ -144,15 +143,13 @@ vi.mock("@/utils/constants/feature-providers", () => ({
 }))
 
 // The built-in panel gates Ultra assignment rows on the live plan; tests set
-// hostedAiState.value per case (default: settled error, i.e. status unknown).
+
 const { hostedAiState } = vi.hoisted(() => {
   const state: { value: { status: unknown; isPending: boolean; isError: boolean } } = {
     value: { status: undefined, isPending: false, isError: true },
   }
   return { hostedAiState: state }
 })
-
-/** Must mirror the built-in hosted assignment rows, except dynamic custom actions. */
 
 vi.mock("@/utils/i18n", () => ({
   i18n: {
@@ -207,7 +204,7 @@ describe("ProvidersConfig", () => {
     setProviderConfigMock.mockReset()
     writeConfigMock.mockReset()
     testState.selectedProviderId = providerConfig.id
-    config.languageDetection = { mode: "basic", providerId: undefined }
+
     hostedAiState.value = { status: undefined, isPending: false, isError: true }
   })
 

@@ -28,7 +28,7 @@ export function isSingleKeyHotkey(hotkey: NodeHotkey): hotkey is SingleKeyHotkey
 }
 
 // The combination `custom` starts with. A bare Alt+<letter>, like the other reading shortcuts
-// (page translation has E, selection translation T, subtitles C), and Q because the hand off the
+
 // mouse reaches it and no browser keeps it: Chrome and Edge have Alt+D, E and F, and Firefox
 // opens its menus with Alt and their initials (A is "Affichage" and "Ansicht").
 export const DEFAULT_NODE_TRANSLATION_SHORTCUT_KEY = "Alt+Q"

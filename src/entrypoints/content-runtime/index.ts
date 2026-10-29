@@ -33,8 +33,8 @@ async function runContentParts(parts: readonly ContentRuntimePart[]) {
           // Each part keeps the context name it had as its own content script,
           // so stopping old scripts and invalidation behave as before.
           await RUNNERS[part](new ContentScriptContext(part, { cssInjectionMode: "manual" }))
-        } catch (error) {
-          logger.error(`[content-runtime] "${part}" crashed on startup`, error)
+        } catch {
+          logger.error(`[content-runtime] "${part}" crashed on startup`)
         }
       }),
   )

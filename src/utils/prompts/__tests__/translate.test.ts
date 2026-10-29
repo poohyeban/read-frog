@@ -317,7 +317,7 @@ describe("no-translation sentinel", () => {
     expect(result.systemPrompt).toContain("Translation B")
     expect(result.systemPrompt).not.toContain(`${NO_TRANSLATION_SENTINEL}\n\n%%`)
     expect(result.systemPrompt).not.toContain("this one is already written in")
-    // The page batch block is byte-identical to the one subtitles use.
+
     expect(result.systemPrompt).toContain(DEFAULT_BATCH_TRANSLATE_PROMPT)
   })
 

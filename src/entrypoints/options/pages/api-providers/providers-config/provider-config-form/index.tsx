@@ -8,17 +8,11 @@ import {
 } from "@/components/form/autosave-navigation"
 import { toAutosaveSession } from "@/components/form/use-autosave"
 import { toastManager } from "@/components/ui/base-ui/toast"
-import {
-  isAPIProviderConfig,
-  isLLMProvider,
-  isNonAPIProvider,
-  isTranslateProvider,
-} from "@/types/config/provider"
+import { isAPIProviderConfig, isLLMProvider, isTranslateProvider } from "@/types/config/provider"
 import { configAtom, configFieldsAtomMap, writeConfigAtom } from "@/utils/atoms/config"
 import { patchProviderConfigAtom } from "@/utils/atoms/entity-config"
 import { providerConfigAtom } from "@/utils/atoms/provider"
 import {
-  computeLanguageDetectionFallbackAfterDeletion,
   computeProviderFallbacksAfterDeletion,
   computeSelectionToolbarCustomActionFallbacksAfterDeletion,
   findFeatureMissingProvider,
@@ -86,10 +80,7 @@ function EditableProviderConfig({ providerConfig }: { providerConfig: APIProvide
     )
   }, [currentProviderConfig, autosave])
 
-  const chooseNextProviderConfig = (providersConfig: ProvidersConfig) => {
-    const firstProvider = providersConfig.find((provider) => !isNonAPIProvider(provider.provider))
-    return firstProvider ?? providersConfig[0]
-  }
+  const chooseNextProviderConfig = (providersConfig: ProvidersConfig) => providersConfig[0]
 
   const handleDuplicate = async () => {
     await requestNavigation(async () => {
@@ -110,7 +101,7 @@ function EditableProviderConfig({ providerConfig }: { providerConfig: APIProvide
       .get(configFieldsAtomMap.providersConfig)
       .filter((provider) => provider.id !== providerConfig.id)
 
-    const unsatisfied = findFeatureMissingProvider(updatedAllProviders, config)
+    const unsatisfied = findFeatureMissingProvider(updatedAllProviders)
     if (unsatisfied) {
       // Name the feature. The block is worth nothing if the user cannot tell
       // which slot it is protecting — and it fires for switched-off features
@@ -118,9 +109,7 @@ function EditableProviderConfig({ providerConfig }: { providerConfig: APIProvide
       toastManager.add({
         type: "error",
         title: i18n.t("options.apiProviders.form.featureWouldLoseProvider", [
-          unsatisfied === "languageDetection"
-            ? i18n.t("options.apiProviders.languageDetection.title")
-            : i18n.t(getFeatureLabelI18nKey(unsatisfied)),
+          i18n.t(getFeatureLabelI18nKey(unsatisfied)),
         ]),
       })
       return
@@ -153,21 +142,6 @@ function EditableProviderConfig({ providerConfig }: { providerConfig: APIProvide
       patch = {
         ...patch,
         selectionToolbar: updatedSelectionToolbar,
-      }
-    }
-
-    const languageDetectionFallback = computeLanguageDetectionFallbackAfterDeletion(
-      providerConfig.id,
-      config,
-      updatedAllProviders,
-    )
-    if (languageDetectionFallback !== null) {
-      patch = {
-        ...patch,
-        languageDetection: {
-          ...config.languageDetection,
-          providerId: languageDetectionFallback,
-        },
       }
     }
 
@@ -209,7 +183,7 @@ function EditableProviderConfig({ providerConfig }: { providerConfig: APIProvide
               {hasAssignments && (
                 <ProviderEditor.Assignments>
                   <ProviderEditor.CompatibleFeatureAssignments />
-                  <ProviderEditor.LanguageDetectionAssignment />
+                  <></>
                   <ProviderEditor.CustomActionAssignments />
                 </ProviderEditor.Assignments>
               )}

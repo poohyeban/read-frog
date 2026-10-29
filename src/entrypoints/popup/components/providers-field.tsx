@@ -76,7 +76,7 @@ function ProviderAvatarSummary({ slots }: { slots: SelectedProviderSlot[] }) {
         // Same treatment and the same predicate as the dropdowns this button
         // opens: dimmed on durable account facts only, so a row the user could
         // fix by signing in or upgrading reads differently from one that is
-        // merely out of quota. Otherwise these logos say "five features
+
         // configured" to an account that can run none of them.
 
         return (

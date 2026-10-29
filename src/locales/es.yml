@@ -58,8 +58,6 @@ options:
     leaveDescription: Puedes seguir editando para corregir el problema o descartar los cambios sin guardar.
     keepEditing: Seguir editando
     discard: Descartar cambios sin guardar
-  batchSavings:
-    savedCost: Ahorro aprox. del $1% en costes de API
   commandPalette:
     placeholder: Buscar configuración...
     noResults: No se encontró configuración
@@ -70,8 +68,8 @@ options:
     features: Funciones
   apiProviders:
     title: Proveedores de API
-    pageDescription: Conecta los servicios de IA que usa Read Frog y elige cuál se encarga de cada función.
-    description: Añade los proveedores que Read Frog puede llamar. Más de 20 vienen integrados y puedes añadir API personalizadas compatibles con Chat Completions u Open Responses.
+    pageDescription: Conecta los servicios de IA que usa Read Frog Lite y elige cuál se encarga de cada función.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
     configTitle: Configuración de proveedores
     addProvider: Añadir proveedor
     setApiKeyWarning:
@@ -141,36 +139,9 @@ options:
         customChatComplete: Personalizado Chat Complete
       description:
         openai: Proporciona modelos como GPT-4o
-        azure: Modelos OpenAI hospedados en Azure mediante tus implementaciones
-        deepseek: Recomendado para usar en China
-        openrouter: Interfaz unificada para varios proveedores LLM con precios de pago por uso
         ollama: Ejecuta modelos de lenguaje grandes localmente en tu equipo con privacidad completa
         google: Modelos AI principales de Google con capacidades avanzadas de razonamiento
-        anthropic: Modelos Claude conocidos por su seguridad y excelente razonamiento
-        xai: Empresa de AI de Elon Musk que ofrece modelos Grok con acceso a datos en tiempo real
-        atlascloud: Plataforma unificada compatible con OpenAI para modelos recientes como DeepSeek, Kimi, Qwen, Doubao y GLM
-        jalapenocloud: IA de nivel empresarial que utilizan los mejores equipos, ¡ahora para ti!
-        siliconflow: Plataforma de inferencia de alto rendimiento para modelos chinos e internacionales
-        tensdaq: Plataforma revolucionaria de pujas AI MaaS con precios impulsados por el mercado, que elimina los altos precios fijos
         openaiCompatible: Conecta un endpoint personalizado compatible con la API Chat Completions de OpenAI
-        openResponses: Conecta un endpoint personalizado compatible con la API Open Responses
-        deeplx: API de DeepL no oficial
-        deepl: API oficial de DeepL
-        bedrock: Servicio administrado de AWS para modelos fundacionales de nivel empresarial
-        groq: Hardware especializado para inferencia LLM ultrarrápida
-        deepinfra: Inferencia en la nube rentable para modelos populares de código abierto
-        mistral: Empresa europea de AI especializada en modelos multilingües eficientes
-        togetherai: Plataforma colaborativa para ejecutar y ajustar modelos de código abierto
-        cohere: AI enfocada en empresas con sólidas capacidades multilingües y RAG
-        fireworks: Plataforma de inferencia lista para producción para modelos de código abierto
-        cerebras: Inferencia AI ultrarrápida para traducción y análisis de texto rápidos
-        replicate: Acceso a diversos modelos de código abierto para tareas de traducción especializadas
-        perplexity: AI mejorada con conocimiento en tiempo real para traducciones contextuales y asistencia de lectura
-        volcengine: Plataforma cloud AI de ByteDance que ofrece modelos Doubao para traducción y lectura
-        minimax: Plataforma MiniMax AI que ofrece modelos avanzados MiniMax-M2 para generación de texto
-        alibaba: Serie de modelos Qwen de Alibaba Cloud con razonamiento avanzado y capacidades multilingües
-        moonshotai: Serie de modelos Kimi de Moonshot AI con razonamiento sólido y capacidades de contexto largo
-        huggingface: API de inferencia de Hugging Face que proporciona acceso a miles de modelos de código abierto
     apiKey:
       showAPIKey: Mostrar clave API
       getAPIKey: Obtener clave API
@@ -187,28 +158,9 @@ options:
       features:
         pageTranslation: Traducción de página
         selectionTranslation: Traducción de la barra de selección
-        inputTranslation: Traducción de entrada
-        videoSubtitles: Subtítulos de video
-        noteSuggestion: Sugerencias de notas
       descriptions:
         pageTranslation: Traduce la página completa en modo bilingüe o de reemplazo.
         selectionTranslation: Traduce el texto que seleccionas desde la barra de selección.
-        inputTranslation: Traduce lo que escribes en un campo de texto antes de enviarlo.
-        videoSubtitles: Traduce los subtítulos que aparecen en el reproductor de video.
-        noteSuggestion: Sugiere palabras que vale la pena guardar en tu Notebase después de traducir una selección.
-    languageDetection:
-      title: Detección de idioma
-      description: Afecta la detección de idioma para traducción automática y la precisión de selección de voz.
-      mode:
-        basic: Básica
-        llm: LLM
-      provider:
-        label: Proveedor de detección
-        placeholder: Selecciona un proveedor
-      status:
-        noProviders: Configura primero un proveedor LLM
-        basicRecommend: Se recomienda activar LLM
-        llmEnabled: Detección LLM activada
     aiContentAware:
       title: Traducción con contexto inteligente de IA
       description: Da a la IA contexto de la página o el video para que traduzca con más precisión
@@ -219,15 +171,15 @@ options:
   patterns:
     duplicate: Este patrón ya está en la lista
     gluedWildcard: Un "*" debe sustituir una parte completa de la dirección, como *.example.com o example.*
-    unsupported: Read Frog no puede hacer coincidir esta dirección. No se admiten los puertos ni los esquemas distintos de http y https.
+    unsupported: Read Frog Lite no puede hacer coincidir esta dirección. No se admiten los puertos ni los esquemas distintos de http y https.
   preference:
     title: Preferencias
-    pageDescription: Define la apariencia de Read Frog, dónde se ejecuta y cómo se sincroniza y respalda tu configuración.
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: Apariencia e idioma
       theme:
         title: Tema
-        description: Elige un tema para Read Frog.
+        description: Elige un tema para Read Frog Lite.
         system: Sistema
         light: Claro
         dark: Oscuro
@@ -246,7 +198,7 @@ options:
         description: El idioma al que se traducen las páginas.
     extensionActivation:
       title: Activación de la extensión
-      description: Si Read Frog se ejecuta en todas partes salvo en los sitios que indiques, o solo en los sitios que indiques
+      description: Si Read Frog Lite se ejecuta en todas partes salvo en los sitios que indiques, o solo en los sitios que indiques
       manageSites: Gestionar sitios
       mode:
         title: Modo de activación
@@ -258,32 +210,19 @@ options:
         urlPattern: Patrón de URL
     config:
       title: Configuración
-      googleDrive:
-        title: Sincronización cloud con Google Drive
-        description: Descarga la configuración cuando la remota es más reciente, sube la configuración cuando la local es más reciente. Tus glosarios viajan en un archivo propio y se fusionan término a término en vez de reemplazarse.
       manualSync:
         title: Sincronización manual de configuración
-        description: Importa y exporta tu configuración manualmente, con tus glosarios incluidos
+        description: Import or export your local configuration.
         exportSuccess: Configuración exportada correctamente
-      backup:
-        title: Copia de seguridad de configuración
-        description: Se crean copias de seguridad automáticas cada hora si la configuración cambia. Puedes restaurar configuraciones anteriores aquí. (Máximo $1 copias de seguridad)
       reset:
         title: Restablecer configuración
-        description: Restablecer toda la configuración a sus valores por defecto. Tus glosarios no se ven afectados.
+        description: Reset local configuration to its defaults.
         dialog:
           title: Restablecer configuración
           trigger: Restablecer configuración
           confirm: Confirmar
           cancel: Cancelar
-          description: Esta operación borrará toda tu configuración personalizada y la restablecerá a los valores por defecto. Tus glosarios se conservan; elimínalos desde la página de glosarios. Confirma, por favor.
-    userExperience:
-      beta:
-        title: Experiencia beta
-        description: Activa funciones experimentales que todavía pueden ser inestables
-      analytics:
-        title: Ayuda a mejorar la experiencia de usuario
-        description: Mejora Read Frog ayudándonos a localizar errores, pulir la interfaz y más
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: Atajos
     pageDescription: Define las teclas que traducen, leen en voz alta y ejecutan acciones AI mientras lees.
@@ -297,19 +236,10 @@ options:
     selectionTranslation:
       title: Traducción de la selección
       description: Traduce el texto que seleccionaste.
-    subtitlesToggle:
-      title: Traducción de subtítulos
-      description: Activa o desactiva los subtítulos traducidos del vídeo.
     nodeTranslation:
       title: Traducción al pasar el cursor
       description: Pasa el cursor o mantén pulsado un párrafo para traducir solo ese.
       customDescription: Pulsa estas teclas con el cursor sobre un párrafo para traducirlo.
-    translationHub:
-      title: Centro de traducción
-      description: Abre el Centro de traducción en una pestaña nueva.
-    selectionSpeak:
-      title: "Leer la selección en voz alta"
-      description: "Lee en voz alta el texto seleccionado. Vuelve a pulsar para detener."
     actions:
       title: "Acciones AI"
       description: "Ejecuta una acción AI sobre el texto seleccionado. Las acciones personalizadas no tienen atajo hasta que les asignes uno aquí."
@@ -317,37 +247,6 @@ options:
     turnOn: "Activar"
     clash: "Mismo atajo que «$1». Cambia uno de ellos."
     taken: "«$2» ya usa $1."
-  inputTranslation:
-    title: Traducción de entrada
-    trigger:
-      title: Activación
-      enable:
-        description: Pulsa la barra espaciadora tres veces seguidas en cualquier campo de entrada para traducir lo que has escrito.
-      threshold:
-        title: Umbral de activación
-        description: Cuánto pueden separarse las pulsaciones, en milisegundos. Auméntalo si la traducción no llega a activarse; redúcelo si salta mientras escribes.
-    languages:
-      title: Idiomas de traducción
-      pair:
-        description: En qué idioma se lee el texto que escribes y a cuál se traduce. Ambos lados pueden seguir los idiomas de origen y destino con los que traduces páginas.
-      cycle:
-        title: Intercambiar dirección cada vez
-        description: Cada activación intercambia los dos idiomas, así que la siguiente devuelve el texto al idioma en el que escribiste.
-  floatingButton:
-    title: Botón flotante
-    enable:
-      title: Activar botón flotante
-      description: Muestra el botón flotante en páginas web para acceder rápidamente a las funciones de Read Frog
-    display:
-      side:
-        title: Lado del botón
-        description: Elige en qué lado de la página se fija el botón flotante
-      disabledSites:
-        title: Sitios desactivados
-        description: Configura los sitios web donde se debe desactivar el botón flotante
-    clickAction:
-      title: Acción al hacer clic
-      description: Elige la acción al hacer clic en el botón flotante
   selectionToolbar:
     title: Barra de selección
     pageDescription: Define qué acciones aparecen al seleccionar texto y dónde se muestra la barra.
@@ -360,9 +259,6 @@ options:
       translate:
         title: Traducir
         description: Muestra el botón de traducción en la barra de herramientas
-      noteSuggestion:
-        title: Sugerencias de notas
-        description: Después de traducir una selección con un proveedor de IA, sugerir palabras para guardar en tu Notebase
     display:
       title: Visualización
       opacity:
@@ -384,17 +280,11 @@ options:
       providerDisabled: El proveedor seleccionado está desactivado
       providerUnavailable: El proveedor seleccionado no está disponible
     customActions:
-      title: Acciones AI personalizadas
+      title: AI explanations
       description: Añade tus propias acciones AI estructuradas para texto seleccionado
       form:
         selectProvider: Selecciona un proveedor
         defaultFieldName: Resultado
-        layout:
-          title: Diseño
-          description: Cómo se muestra el resultado en la ventana emergente. HTML con Liquid; los campos se rellenan a medida que llega la respuesta.
-        notebase:
-          title: Conexión de Notebase
-          description: Guarda los resultados estructurados de esta acción en una Notebase remota.
       templates:
         dialogTitle: Elegir una plantilla
         dialogDescription: Selecciona una plantilla para crear rápidamente una nueva acción AI, o empieza desde cero.
@@ -550,35 +440,6 @@ options:
           hardLabel: "Difícil"
           trunkLabel: "Esqueleto"
           slashesLabel: "Pausas"
-        improveWriting:
-          name: "Mejorar escritura"
-          description: "Marca errores y expresiones poco naturales como un profesor, y los corrige según la situación"
-          fieldOriginal: "Versión original"
-          fieldSetting: "Contexto"
-          fieldAnnotations: "Anotaciones"
-          fieldImproved: "Versión mejorada"
-          fieldSummary: "Resumen"
-          types:
-            spelling: "Ortografía"
-            grammar: "Gramática"
-            punctuation: "Puntuación"
-            wordChoice: "Léxico"
-            logic: "Lógica"
-            unnatural: "Poco natural"
-            register: "Registro"
-            clarity: "Claridad"
-            good: "Acierto"
-          tiers:
-            error: "Error"
-            awkward: "Mejorable"
-            good: "Acierto"
-          hideFixesLabel: "Ocultar correcciones"
-          hiddenHintLabel: "Primero intenta corregirlo tú."
-          showImprovedLabel: "Mostrar versión mejorada"
-          improvedLabel: "Versión mejorada"
-          copyLabel: "Copiar"
-          unchangedLabel: "No hay nada que cambiar"
-          removeLabel: "eliminar"
         blank:
           name: En blanco
           description: Empieza desde cero con una acción vacía
@@ -587,18 +448,9 @@ options:
             Selección: {{selection}}
             Párrafos: {{paragraphs}}
             Idioma de destino: {{targetLanguage}}
-  advanced:
-    glossary:
-      title: Glosario
-      enable:
-        title: Activar
-        description: Envía los términos coincidentes al LLM para que los traduzca a tu manera. El glosario viaja dentro del prompt, así que solo se aplica a las funciones que usan un proveedor LLM.
-      library:
-        title: Tus glosarios
-        description: Cada glosario tiene sus propios términos y su propia lista de sitios web, así que un conjunto de términos para el trabajo no te acompaña en todo lo demás.
   contextMenu:
     title: Menú contextual
-    pageDescription: Controla las opciones de Read Frog en el menú contextual del navegador.
+    pageDescription: Controla las opciones de Read Frog Lite en el menú contextual del navegador.
     demoImageAlt: Demostración del menú contextual
     enable:
       title: Activar traducción en menú contextual
@@ -675,10 +527,6 @@ options:
       title: Prompts personalizados de página
       description: Personalizar distintos tipos de Prompts te permite ajustar tú mismo el tipo de Prompt durante la traducción. Un Prompt representa el texto que el usuario envía al LLM.
       managePrompts: Gestionar prompts
-      communityPrompts: Obtener o compartir prompts de la comunidad
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/821
-      variableReference: Referencia de variables
-      variableReferenceUrl: https://readfrog.app/es/docs/page-translation/prompts/variables
       addPrompt: Añadir Prompt
       default: Predeterminado
       builtIn: Integrado
@@ -808,61 +656,6 @@ options:
       searchPlaceholder: Buscar por id, descripción o patrón de URL
       showMore: Mostrar más
       count: Mostrando $1 de $2 reglas
-  tts:
-    title: Texto a voz
-    voice:
-      language:
-        title: Voz por idioma
-        description: Elige un idioma y luego la voz que lo lee en voz alta. Restablecer devuelve la voz que Read Frog elige para ese idioma.
-      fallback:
-        title: Voz alternativa
-        description: La voz para cualquier idioma al que no le hayas asignado una propia.
-    speech:
-      rate:
-        title: Velocidad
-        description: Cuánto más rápido o más lento lee la voz respecto a su propio ritmo, de -100 a 100 por ciento.
-      pitch:
-        title: Tono
-        description: Cuánto más agudo o más grave habla la voz respecto a su propio tono, de -100 a 100 hercios.
-      volume:
-        title: Volumen
-        description: Cuánto más fuerte o más suave lee la voz respecto a su propio nivel, de -100 a 100 por ciento.
-  videoSubtitles:
-    title: Subtítulos de video
-    preference:
-      enable:
-        title: Activar subtítulos de video
-        description: Añade un botón de traducción a los controles del reproductor en YouTube, X y Netflix.
-      autoStart:
-        title: Traducir al abrir el video
-        description: Empieza a traducir en cuanto se carga el video, sin pulsar el botón.
-      aiSegmentation:
-        title: Segmentación inteligente de IA
-        description: La IA vuelve a cortar los subtítulos en frases. Las traducciones tardan más. Requiere un LLM potente; los modelos más débiles pueden omitir o desalinear líneas.
-    aiQuota:
-      title: Cuota de subtítulos con IA
-      description: El reconocimiento de voz con IA te da subtítulos precisos para cualquier vídeo
-    style:
-      title: Estilo de subtítulos
-      description: Modo de visualización, posición, fuentes, colores y fondo, ajustados sobre una vista previa en vivo
-      customCSS:
-        title: CSS personalizado
-        description: CSS adicional para las líneas de subtítulos, además de las fuentes y colores de arriba
-    customPrompts:
-      title: Prompts personalizados de subtítulos
-      description: Plantillas de prompts solo para la traducción de subtítulos, separadas de las de traducción de páginas web
-    subtitlesQueue:
-      requestQueueConfig:
-        title: Tasa de traducción
-      batchQueueConfig:
-        title: Traducción por lotes
-        description: Configura límites de caracteres y recuento máximo de líneas de subtítulos para la traducción por lotes (solo efectivo para traducción LLM)
-    cache:
-      clearCache:
-        title: Borrar caché de segmentación de IA
-        description: Resultados de segmentación guardados para no volver a cortar un video que ya has visto
-side:
-  targetLang: Idioma de destino
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -872,20 +665,14 @@ translatePrompt:
   description: Selecciona un Prompt para usar durante la traducción. Añade o modifica Prompts personalizados en la página de opciones.
 noAPIKeyConfig:
   warning: Si quieres usar modelos AI, primero configura la clave API en la página de opciones
-languageDetection:
-  llmFailed: Falló la detección de idioma LLM; se recurrió a la detección básica
 translation:
   sameLanguage: Los idiomas de origen y destino deben ser diferentes
   extensionContextInvalidated: La extensión se actualizó. Actualiza esta página e inténtalo de nuevo.
-speak:
-  languageDetectionFallback: Se usa la detección local de idioma
-  languageDetectionSettingsHint: En Ajustes, elige un LLM disponible o la detección local.
 action:
   copy: Copiar
   copied: Copiado
   regenerate: Regenerar
   viewContextDetails: Contexto
-  customizeCustomAction: Personalizar la acción $1
   contextDetailsTitleLabel: Título
   contextDetailsParagraphsLabel: Párrafos
   translation: Traducción
@@ -903,11 +690,6 @@ hotkey:
   backtick: Acento grave
   clickAndHold: Hacer clic y mantener
   custom: Atajo personalizado
-translationHub:
-  searchLanguages: Buscar idiomas...
-  noLanguagesFound: No se encontraron idiomas
-  translationFailed: Falló la traducción
-  translationFailedFallback: Falló la traducción
 languages:
   eng: Inglés
   cmn: Chino simplificado
@@ -1088,3 +870,10 @@ languages:
   wls: Wallisiano
   rar: Rarotongano
   hif: Hindi de Fiyi
+side:
+  targetLang: Idioma de destino
+translationHub:
+  searchLanguages: Buscar idiomas...
+  noLanguagesFound: No se encontraron idiomas
+  translationFailed: Falló la traducción
+  translationFailedFallback: Falló la traducción

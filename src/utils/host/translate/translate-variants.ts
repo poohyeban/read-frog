@@ -1,9 +1,9 @@
-import type { HostedAiTextStreamRoute } from "@/types/background-stream"
 import type { Config } from "@/types/config/config"
 import type { TranslateProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
 import { logger } from "@/utils/logger"
+import { serializeProviderRef } from "@/utils/providers/provider-ref"
 import {
   canResolvedProviderRefGenerateText,
   resolvePageTranslationProvider,
@@ -13,7 +13,6 @@ import { shouldSkipAsTargetLanguage } from "./target-language-skip"
 import { prepareTranslationText } from "./text-preparation"
 import {
   MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION,
-  resolvePageProviderRef,
   shouldSkipByLanguage,
   translateTextCore,
 } from "./translate-text"
@@ -33,12 +32,11 @@ async function getWebPagePromptContext(
   providerConfig: ResolvedProviderRef<TranslateProviderConfig>,
   enableAIContentAware: boolean,
   includeSummary: boolean,
-  hostedFeature: HostedAiTextStreamRoute,
 ): Promise<
   { webTitle: string; webDescription?: string; webContent: string; webSummary?: string } | undefined
 > {
   // Pure translate providers (Google, Microsoft, DeepLX) take no prompt
-  // context. Built-in AI does, and generates its summary hosted.
+
   if (!canResolvedProviderRefGenerateText(providerConfig)) {
     return undefined
   }
@@ -48,26 +46,22 @@ async function getWebPagePromptContext(
     return undefined
   }
 
-  // Reuse the page run's provider-ref resolution so a hosted summary and the
-  // paragraphs that follow it share one hostedAi.status fetch. Resolve only
   // when a summary will actually be requested — with smart context off, a
-  // hosted ref must not cost a status round trip just to be discarded.
+
   let webSummary: string | null | undefined
   if (includeSummary && enableAIContentAware) {
     try {
       webSummary = await getOrGenerateWebPageSummary(
         webPageContext,
-        await resolvePageProviderRef(providerConfig, undefined, hostedFeature),
+        serializeProviderRef(providerConfig),
         enableAIContentAware,
-        hostedFeature,
       )
-    } catch (error) {
-      // The summary is optional context, so a hosted denial must not abort the
+    } catch {
       // run from inside it. Routes with no page-translation session (input
       // translation) always resolve here first, so rethrowing would kill the
       // request before the translation itself — which resolves the same ref —
       // could surface the error against the feature the user actually invoked.
-      logger.warn("Optional page summary failed", error)
+      logger.warn("Optional page summary failed")
       webSummary = undefined
     }
   }
@@ -130,7 +124,7 @@ async function translateTextUsingPageConfig(
     text: preparedText,
     langConfig: config.language,
     providerConfig,
-    hostedFeature: "pageTranslation",
+
     enableAIContentAware: config.pageTranslation.enableAIContentAware,
 
     extraHashTags: options.extraHashTags,
@@ -167,7 +161,6 @@ export async function translateTextForPage(
     providerConfig,
     config.pageTranslation.enableAIContentAware,
     true,
-    "pageTranslation",
   )
 
   return translateTextUsingPageConfig(config, text, {
@@ -188,7 +181,7 @@ export async function translateTextForPageTitle(text: string): Promise<string> {
   const config = await getConfigOrThrow()
   const providerConfig = resolvePageTranslationProvider(config)
   const webPageContext = config.pageTranslation.enableAIContentAware
-    ? await getWebPagePromptContext(providerConfig, true, false, "pageTranslation")
+    ? await getWebPagePromptContext(providerConfig, true, false)
     : undefined
 
   return translateTextUsingPageConfig(config, text, {
