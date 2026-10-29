@@ -28,6 +28,7 @@ jobs:
       - name: Unit and local protocol tests
         run: pnpm test --maxWorkers=4
       - name: Chromium production ZIP
+        id: build
         run: pnpm zip
       - name: Upload unpackable MV3 extension
         uses: actions/upload-artifact@v4
@@ -36,9 +37,13 @@ jobs:
           path: .output/*-chrome.zip
           if-no-files-found: error
           retention-days: 30
+          include-hidden-files: true
       - name: Install Chromium for real extension tests
+        id: browser-install
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: pnpm exec playwright install --with-deps chromium
       - name: Extension browser regression
+        if: ${{ !cancelled() && steps.browser-install.outcome == 'success' }}
         run: xvfb-run --auto-servernum pnpm test:e2e
       - name: Upload browser test report
         if: always()
