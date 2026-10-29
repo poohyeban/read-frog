@@ -4,7 +4,7 @@
 
 普通使用者可以直接下载扩展安装包，**不需要下载源码或在个人电脑编译**。翻译、语音合成和语音转录服务均由用户选择；扩展不提供内置免费额度，也不通过 Read Frog 官方服务器中转请求。
 
-[下载已验证安装包](https://github.com/poohyeban/read-frog/actions/runs/40827815730/artifacts/12877487270) · [完整验收 CI](https://github.com/poohyeban/read-frog/actions/runs/40827815730) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
+[直接下载 v0.2.0 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.0/read-frog-lite-0.2.0-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [完整验收 CI](https://github.com/poohyeban/read-frog/actions/runs/40827815730) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
 
 ## 目录
 
@@ -45,11 +45,13 @@
 
 ### 首次安装：无需编译
 
-1. 下载上方的已验证 Artifact，或进入本 Fork 的 [Actions](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml)，选择包含所需代码且检查成功的运行记录。
-2. 下载 `read-frog-lite-chromium-<commit>` Artifact。GitHub 下载 Artifact 可能要求登录 GitHub；这与扩展运行无关，扩展不需要 Read Frog 账户。
-3. 解压下载的 Artifact ZIP，再解压其中的 `read-frog-lite-0.2.0-chrome.zip`。将扩展目录保存在固定位置。
+1. 打开本 Fork 的 [Releases](https://github.com/poohyeban/read-frog/releases)，选择所需版本，或使用上方的直接下载链接。
+2. 下载 Assets 中的 **`read-frog-lite-0.2.0-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
+3. 解压扩展 ZIP，将扩展目录保存在固定位置。Release 下载不受 Actions Artifact 的 30 天保留期限制。
 4. Chrome 打开 `chrome://extensions`，Edge 打开 `edge://extensions`，开启开发者模式，选择“加载已解压的扩展程序”。
 5. 选择**直接包含 `manifest.json` 的目录**，确认名称为 Read Frog Lite。打开扩展设置配置服务，再刷新要翻译的网页。
+
+开发中的未发布版本仍可从 [Actions](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) 下载 `read-frog-lite-chromium-<commit>` Artifact。Artifact 需要先解压外层，再解压里面的扩展 ZIP；GitHub 可能要求登录才能下载 Artifact，扩展本身不需要 Read Frog 账户。请确认该运行的全部检查通过。
 
 当前以 Chromium MV3 为目标；没有在本轮验证 Firefox。浏览器内置页、扩展商店等受保护页面不能像普通网页一样注入翻译脚本。
 
@@ -274,7 +276,7 @@ pnpm licenses list --prod --json | node scripts/generate-notices.mjs
 4. 安装 Chromium，在 Xvfb 中执行真实扩展 E2E。
 5. 上传浏览器报告及 trace。
 
-**产物先于 E2E 上传，所以能下载 ZIP 不等于全部测试通过。** 安装包保留 30 天，测试报告 14 天。上方固定安装包来自已经通过完整 CI 的生产代码提交 `d27511df`；Artifact 名称可能使用 PR 的 merge SHA，可在运行记录核对 head commit。固定链接过期后，选择新的成功运行或通过 Actions 的手动运行重新构建所需分支。
+**CI 产物先于 E2E 上传，所以能下载 Artifact 不等于全部测试通过。** Actions 安装包 Artifact 保留 30 天，测试报告 14 天；已上传的 Release 附件不受该保留期影响。0.2.0 Release 使用已通过完整 CI 的生产代码产物，未重新编译。Artifact 名称可能使用 PR 的 merge SHA，可在运行记录核对 head commit。
 
 目前自动触发范围是对 `main` 的 PR，以及 `codex/read-frog-independent` 分支推送；另有 `workflow_dispatch`。新开发分支应开 PR 触发 CI，或手动运行。**直接提交 README 到 main 不会触发这条构建工作流。** 不要假设每次 main push 都自动产出新 ZIP。
 
@@ -283,7 +285,25 @@ pnpm licenses list --prod --json | node scripts/generate-notices.mjs
 1. 修改 `package.json` 版本，并更新 README 的版本、已验证能力和限制；版本号由 WXT 用于 manifest / ZIP。
 2. 代码或依赖变化完成检查，手动验收关键路径，在 CI 生成 ZIP。
 3. 记录来源 Commit、CI 链接、构建指标 / 校验值和兼容性变化。涉及数据格式时先说明升级 / 回退方法。
-4. 只分发自己 Fork 的产物。商店发布、正式 Release、签名和部署不是现有工作流的自动步骤。
+4. 需要对外提供稳定下载时，按下一节发布 Release；只分发自己 Fork 的产物，不发布到上游。商店发布、签名和部署仍不在工作流内。
+
+### 发布 Release：复用已验证产物
+
+[`.github/workflows/release.yml`](.github/workflows/release.yml) 在推送 `v*` tag 时发布，也支持在 Actions 中手动选择已有 tag。它不会重新安装依赖、编译或跑全量测试，而是：
+
+- 检查 tag 与 `package.json` 版本一致，且存在 `docs/restore/RELEASE-<版本>.md`。
+- 从成功的完整 CI 中选取尚未过期的 Artifact，要求其 head 是待发布提交的祖先；其后仅允许 README、docs 和发布工作流自身有差异，生产代码必须一致。
+- 检查 ZIP 完整性、manifest、许可证和 `docs/restore/final-metrics.json` 中记录的 SHA256，生成 `SHA256SUMS.txt`。
+- 将 ZIP 与校验文件上传为草稿，再正式发布到本 Fork 的 Releases。
+
+维护者发布步骤：先完成 CI 和版本说明，记录实际 ZIP 校验值，提交后创建并推送版本 tag，例如：
+
+```sh
+git tag v0.2.0 <已确认的发布提交>
+git push origin v0.2.0
+```
+
+`v0.2.0` 已用于本次版本，后续版本使用新的 tag，不移动已发布 tag，不覆盖已发布附件。没有匹配的成功 CI、Artifact 已过期或校验值不符时，发布会失败，应补齐对应验证 / 产物记录。工作流只对显式 tag 或手动发布生效，普通 main / README 提交不会发布 Release。
 
 0.2.0 参考指标：源码 992 文件，直接依赖 runtime 55 / dev 37，生产目录 14,543,554 字节，扩展 ZIP 4,598,062 字节；精确 bundle 大小和 ZIP SHA256 见 [`final-metrics.json`](docs/restore/final-metrics.json)。这些是该版本实测数据，后续代码变化需重新记录，不能沿用旧指标。
 
@@ -291,7 +311,7 @@ pnpm licenses list --prod --json | node scripts/generate-notices.mjs
 
 | 现象                   | 先检查什么                                                                      |
 | ---------------------- | ------------------------------------------------------------------------------- |
-| 找不到 `manifest.json` | 是否只解压了 Artifact 外层；加载目录应是扩展 ZIP 解压后的目录                   |
+| 找不到 `manifest.json` | 是否误下载 Source code，或只解压了 Artifact 外层；应加载扩展 ZIP 解压后的目录   |
 | 页面无响应             | 是否是受保护页面、站点被禁用、扩展刚更新但网页未刷新、快捷键被其他应用占用      |
 | 提示未配置服务         | Provider 是否启用、该功能是否选择了它、模型是否填写；Speech 还需 Voice          |
 | `401` / `403`          | Key、目标端点、服务自身权限；扩展没有 Read Frog 订阅验证                        |
