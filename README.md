@@ -1,12 +1,12 @@
 # Read Frog Lite
 
-**Read Frog Lite 0.2.3 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
+**Read Frog Lite 0.2.4 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
 
 普通使用者可以直接下载扩展安装包，**不需要下载源码或在个人电脑编译**。翻译、语音合成和语音转录服务均由用户选择；扩展不提供内置免费额度，也不通过 Read Frog 官方服务器中转请求。
 
-[直接下载 v0.2.3 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.3/read-frog-lite-0.2.3-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
+[直接下载 v0.2.4 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.4/read-frog-lite-0.2.4-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
 
-0.2.3 修复长字幕在拖动进度后漏译、扩展重载后字幕层未清理，以及切回标签页时主题读取产生的未捕获异常。AI 智能断句会核对原字幕的文本顺序和时间边界，错位结果回退本地断句，旧错位缓存也会失效。保留 0.2.2 的内置 DeepSeek、专用适配器和本地图标。详见[本版说明](docs/restore/RELEASE-0.2.3.md)。
+0.2.4 修复 YouTube 网站 Service Worker 与扩展动态模块加载产生的资源报错、没有接收端时的后台消息错误，并补齐字幕启动期间的失效处理。保留 0.2.3 的长字幕翻译和 AI 断句时间轴修复，以及内置 DeepSeek 和本地图标。详见[本版说明](docs/restore/RELEASE-0.2.4.md)。
 
 ## 目录
 
@@ -48,7 +48,7 @@
 ### 首次安装：无需编译
 
 1. 打开本 Fork 的 [Releases](https://github.com/poohyeban/read-frog/releases)，选择所需版本，或使用上方的直接下载链接。
-2. 下载 Assets 中的 **`read-frog-lite-0.2.3-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
+2. 下载 Assets 中的 **`read-frog-lite-0.2.4-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
 3. 解压扩展 ZIP，将扩展目录保存在固定位置。Release 下载不受 Actions Artifact 的 30 天保留期限制。
 4. Chrome 打开 `chrome://extensions`，Edge 打开 `edge://extensions`，开启开发者模式，选择“加载已解压的扩展程序”。
 5. 选择**直接包含 `manifest.json` 的目录**，确认名称为 Read Frog Lite。打开扩展设置配置服务，再刷新要翻译的网页。
@@ -199,6 +199,10 @@ xvfb-run --auto-servernum pnpm test:e2e
 
 ## 代码目录与调用关系
 
+0.2.4 将 `content-runtime/runtime.ts` 连同网页 / 划词 / 浮动工具打包进 `content-scripts/loader.js`，由浏览器直接注入。源码中的相对 `import()` 会被 WXT 内联，不会从网页发起 JavaScript 模块请求。不要恢复 `import(browser.runtime.getURL(...))` 或把运行代码重新公开为 ES 模块：真实 YouTube 的网站 Service Worker 会介入这条加载路径并触发 `Unsafe attempt to load URL`。禁用站点时仍会在模块初始化前退出；浏览器仍需注入并解析脚本。
+
+`patches/@webext-core__messaging@4.0.0.patch` 修复消息库 `tabs.sendMessage` 回调没有读取 `runtime.lastError` 的问题，由 `pnpm-workspace.yaml` 声明、锁文件校验并在安装时自动应用。升级该依赖时先检查上游是否已修复，再更新或删除补丁；同时运行内部标签页切换的浏览器回归，不能只删除补丁来通过安装。补丁只改当前使用的 ESM 入口，保留原协议和类型。
+
 | 路径                                                                                         | 主要职责                                                                     |
 | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | `src/entrypoints/background/`                                                                | MV3 Service Worker；初始化、消息、翻译队列、缓存、术语表、音频请求及播放协调 |
@@ -348,7 +352,7 @@ git push origin v0.2.0
 
 从 0.2.1 起，Action 的运行错误只在开发者控制台记录，不在面板显示红色错误框；缺少 Provider 等配置提示仍会显示。失败后可以切换服务或点击重试。
 
-1. 更新已加载的扩展目录，在 `chrome://extensions` 点击重新加载，确认版本为 0.2.3，然后刷新 YouTube 或普通网页。
+1. 更新已加载的扩展目录，在 `chrome://extensions` 点击重新加载，确认版本为 0.2.4，然后刷新 YouTube 或普通网页。
 2. 在出问题的网页按 F12，打开 **Console**，开启 **Preserve log**。确认没有启用会隐藏扩展消息的 **Selected context only**，过滤 `[Read Frog Lite][stream]`。
 3. 重新选词，打开词典或长难句分析。复制该前缀后的 JSON，附上触发操作及浏览器版本即可。
 4. 如果页面没有该日志，在 `chrome://extensions` 打开 Read Frog Lite 的 **Service worker → Inspect**，保持窗口打开再复现，复制同一前缀日志。
@@ -359,13 +363,17 @@ git push origin v0.2.0
 
 ### 字幕等待、AI 断句与扩展更新
 
+- **`Unsafe attempt … content-runtime.js`**：0.2.3 在真实 YouTube 网站 Service Worker 开启时可复现，关闭网站 Service Worker 的对照组没有报错。0.2.4 删除这条动态模块加载路径，不需要用户关闭网站 Service Worker。
+
 - **“翻译中”之后能出现结果**：通常是模型排队、请求耗时或首次预取。AI 断句还会增加一次请求；本版没有缩短原请求超时，也不能保证第三方模型的响应速度。
 - **拖到长字幕中段一直等待**：0.2.3 按字幕结束时间判断待翻译范围，避免一条仍在显示的字幕因为开始时间较早而被漏出队列。
 - **AI 断句不同步**：模型只能按顺序合并完整原片段、补标点，开始 / 结束必须来自对应原片段；相对时间、秒与毫秒混用、遗漏或改写文本等会触发原时间轴上的本地回退。已有错位缓存会在读取时删除并重新生成，无需清空所有本地配置。原始平台字幕本身的时间错误不在此校验的修复范围内。
-- **`Extension context invalidated`**：更新或重载扩展会让旧网页脚本失效。0.2.3 在视频更新 / 标签页可见性事件中清理旧字幕层并恢复原生字幕，同时处理主题存储读取的失败。升级后仍应刷新已打开的视频页，让浏览器注入新版本脚本；本版不自动刷新用户网页。
-- **`Receiving end does not exist`**：这是另一条后台消息错误。已用 0.2.2 生产包确认，切到浏览器内置页或扩展更新后的旧页时，语言检测消息可能找不到内容脚本；上游消息库的回调也没有读取 `runtime.lastError`。本次按原要求只定位此项，没有顺带修改后台消息库。它不等同于模型 API 请求失败。
+- **`Extension context invalidated`**：更新或重载扩展会让旧网页脚本失效。0.2.3 在视频更新 / 标签页可见性事件中清理旧字幕层并恢复原生字幕，同时处理主题存储读取的失败；0.2.4 进一步在字幕启动、配置读取和模块初始化阶段检查失效并停止后续工作。升级后仍应刷新已打开的视频页，让浏览器注入新版本脚本；本版不自动刷新用户网页。
+- **`Receiving end does not exist`**：这是另一条后台消息错误。已用 0.2.2 生产包确认，切到浏览器内置页或扩展更新后的旧页时，语言检测消息可能找不到内容脚本；上游消息库的回调也没有读取 `runtime.lastError`。0.2.4 使用可追踪的 pnpm 补丁读取回调中的错误，并将它交给现有 Promise 错误处理。它不等同于模型 API 请求失败。
 
 开发回归入口：`e2e/subtitles.spec.mjs` 运行真实生产扩展，使用可控 YouTube 播放器 / 字幕及本地 HTTP 模型响应，覆盖跨批次翻译、长字幕跳转、扩展重载、刷新恢复，以及正确 / 错位 AI 断句结果。该测试不消耗用户 API 额度，也不代表已验证 YouTube 当前线上播放器或用户的 DeepSeek 账户。
+
+`e2e/runtime.spec.mjs` 另行覆盖本地网站 Service Worker、浏览器内置页消息与字幕启动中重载扩展。需要核对真实 YouTube 的模块加载时，运行 `RUN_LIVE_YOUTUBE=true pnpm test:e2e e2e/runtime.spec.mjs`（Linux 有界面测试环境可加 `xvfb-run --auto-servernum`）。此模式访问公开 YouTube 页面，保留其 Service Worker，不调用翻译 API；网络 / 地区 / 网站变化可能影响结果，应与本地确定性回归区分。输出在 `test-results/runtime-evidence/`，不要提交包含用户账户数据的浏览器配置或日志。
 
 ## 来源、许可证与工程记录
 
