@@ -15,22 +15,29 @@ export interface TranscriptLine {
 export function buildTranscript(
   source: SubtitlesFragment[],
   translated: SubtitlesFragment[],
+  previous: TranscriptLine[] = [],
 ): TranscriptLine[] {
   const translationByStart = new Map(
     translated.filter((cue) => cue.translation).map((cue) => [cue.start, cue.translation!]),
   )
 
-  return source.map((cue) => {
+  const lines = source.map((cue, index) => {
     const translation = translationByStart.get(cue.start)
-    return {
-      start: cue.start,
-      end: cue.end,
-      text: cue.text,
-      // Passthrough and the error fallback copy the source into `translation`,
-      // which would print the line twice.
-      translation: translation === cue.text ? undefined : translation,
-    }
+    const normalized = translation === cue.text ? undefined : translation
+    const old = previous[index]
+    if (
+      old &&
+      old.start === cue.start &&
+      old.end === cue.end &&
+      old.text === cue.text &&
+      old.translation === normalized
+    )
+      return old
+    return { start: cue.start, end: cue.end, text: cue.text, translation: normalized }
   })
+  return lines.length === previous.length && lines.every((line, index) => line === previous[index])
+    ? previous
+    : lines
 }
 
 /**

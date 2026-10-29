@@ -15,6 +15,19 @@ describe("buildTranscript", () => {
     expect(lines.map((l) => l.translation)).toEqual([undefined, "二", undefined])
   })
 
+  it("preserves unchanged row identity without retaining a stale translation", () => {
+    const first = buildTranscript(SOURCE, [])
+    const next = buildTranscript(SOURCE, [cue("two", 2000, 3000, "二")], first)
+    expect(next[0]).toBe(first[0])
+    expect(next[2]).toBe(first[2])
+    expect(next[1]).not.toBe(first[1])
+    expect(next[1]?.translation).toBe("二")
+    expect(buildTranscript([...SOURCE], [cue("two", 2000, 3000, "二")], next)).toBe(next)
+    const removed = buildTranscript(SOURCE, [], next)
+    expect(removed[1]?.translation).toBeUndefined()
+    expect(removed[0]).toBe(next[0])
+  })
+
   it("keeps every source line when nothing is translated yet", () => {
     const lines = buildTranscript(SOURCE, [])
 
