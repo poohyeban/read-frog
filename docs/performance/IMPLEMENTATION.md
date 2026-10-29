@@ -39,3 +39,7 @@ Each functional unit is independently revertible. Preserve correctness commits w
 | 8: evidence/CI               | `2012c176`, `c77cee3b` and documentation commits           | Raw samples, source/build fingerprints and report-only workflow. Local functional suite passes; browser acceptance is explicitly outstanding.                                                                                                        | Disable observation job or revert harness independently; keep correctness and boundary assertions.                       |
 
 The final validation outcome and exact production byte counts are in [VALIDATION.md](VALIDATION.md). [ARCHITECTURE.md](ARCHITECTURE.md) records scope and remaining acceptance; [PERFORMANCE.md](PERFORMANCE.md) separates measurements from limitations. No claim is made that all production performance acceptance conditions are complete.
+
+## Subsequent CI acceptance
+
+The local-browser limitations above describe the original local runs. GitHub CI subsequently passed all three automated production extension regressions and rebuilt the fixed baseline for paired/reverse-order UI observations. See [CI_BROWSER.md](CI_BROWSER.md). Runtime code remains unchanged since `265fa035`; later commits add CI and evidence only. Production navigation gains remain unproven, and frame-scale regressions need further characterization before release. Browser long-duration heap/real-provider and manual visual acceptance remain outstanding.

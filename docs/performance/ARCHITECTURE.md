@@ -24,7 +24,7 @@ The existing glossary matcher, priority heap, routing lazy loads, 50-row glossar
 
 ## Audit limits and remaining acceptance
 
-- Managed Chromium blocks installation of this extension. Production extension UI/CPU/heap profiles, full browser regression and a faithful visual demo cannot be completed locally. Existing YouTube Service Worker, context-invalid, protocol and data-compatibility checks remain in the regression suite and PR workflow.
+- Managed Chromium blocks installation of this extension. Production extension UI/CPU/heap profiles, full browser regression and a faithful visual demo cannot be completed locally. Subsequent GitHub CI passed all three automated production browser scenarios; see VALIDATION.md. Existing YouTube Service Worker, context-invalid, protocol and data-compatibility checks remain in the regression suite and PR workflow.
 - The 30-minute resource measurement covers the Node queue only. It is not evidence of 30-minute browser DOM, ShadowRoot, subtitle, TTS or offscreen heap stability. Repeated lifecycle tests cover deterministic cleanup, not GC reachability under real browser load.
 - Production scenarios still requiring permitted-browser acceptance include large-page long tasks, SPA/focus/keyboard behavior, route switching, large glossary interaction, sustained subtitle following, and audio/offscreen navigation cycles. Do not infer their P95 from JSDOM.
 - Nonliteral dynamic imports and generated WXT modules are reported/validated through build and tests, not fully resolved by the import checker.
