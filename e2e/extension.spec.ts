@@ -29,7 +29,8 @@ test("unpacked MV3: translation, DeepSeek actions, diagnostics, images and crede
       response.writeHead(204).end()
       return
     }
-    if (request.url === "/article") {
+    // SPA navigation keeps query parameters when later checks reload the page.
+    if (new URL(request.url ?? "/", "http://localhost").pathname === "/article") {
       response.setHeader("Content-Type", "text/html")
       response.end(
         `<!doctype html><html lang="en"><head><title>Local regression fixture</title></head><body><main><p id="article">${original}</p><textarea aria-label="Editor"></textarea></main></body></html>`,
