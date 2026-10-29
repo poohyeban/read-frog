@@ -1,10 +1,11 @@
 import type { Config } from "@/types/config/config"
 import type { ProviderConfig } from "@/types/config/provider"
 import type { BatchQueueConfig, RequestQueueConfig } from "@/types/config/translate"
-import type { WebPagePromptContext } from "@/types/content"
+import type { SubtitlePromptContext, WebPagePromptContext } from "@/types/content"
 import type { ProviderRequestRouting } from "@/types/provider-request"
 import type { MatchedTerm } from "@/utils/glossary/types"
 import type { PromptResolver } from "@/utils/host/translate/api/ai"
+import type { TranslationSnapshot } from "@/utils/prompts/request-identity"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import { storage } from "#imports"
 import { isLLMProviderConfig } from "@/types/config/provider"
@@ -18,8 +19,12 @@ import {
 import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { logger } from "@/utils/logger"
-import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
-import { getTranslatePrompt } from "@/utils/prompts/translate"
+import { getTranslationBatchIdentity } from "@/utils/prompts/request-identity"
+import {
+  getSubtitlesTranslatePrompt,
+  getSubtitlesTranslatePromptFromTemplate,
+} from "@/utils/prompts/subtitles"
+import { getTranslatePrompt, getTranslatePromptFromTemplate } from "@/utils/prompts/translate"
 import { BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
 import { RequestQueue } from "@/utils/request/request-queue"
@@ -27,7 +32,10 @@ import { ensureInitializedConfig } from "./config"
 
 type QueuedTranslationProvider = ProviderConfig | SerializableProviderRef
 
-type QueuedTranslationRouting = { provider: QueuedTranslationProvider }
+type QueuedTranslationRouting = {
+  provider: QueuedTranslationProvider
+  snapshot?: TranslationSnapshot
+}
 
 export function getQueuedTranslationRouting(
   request: ProviderRequestRouting,
@@ -39,8 +47,23 @@ export function getLocalProviderConfig(provider: QueuedTranslationProvider): Pro
   return "kind" in provider ? provider.config : provider
 }
 
-function getQueuedProviderId(provider: QueuedTranslationProvider): string {
-  return getLocalProviderConfig(provider).id
+function capturedPromptResolver<TContext>(
+  snapshot: TranslationSnapshot | undefined,
+  fallback: PromptResolver<TContext>,
+): PromptResolver<TContext> {
+  // Direct queue helpers may supply a resolver. All wire requests are validated
+  // before cache access and always carry a snapshot.
+  if (!snapshot) return fallback
+  return async (targetLang, input, options) =>
+    snapshot.kind === "page"
+      ? getTranslatePromptFromTemplate(snapshot.template, targetLang, input, {
+          ...options,
+          context: options?.context as WebPagePromptContext | undefined,
+        })
+      : getSubtitlesTranslatePromptFromTemplate(snapshot.template, targetLang, input, {
+          ...options,
+          context: options?.context as SubtitlePromptContext | undefined,
+        })
 }
 
 async function executeQueuedTranslation<TContext>(
@@ -62,7 +85,7 @@ async function executeQueuedTranslation<TContext>(
     text,
     langConfig,
     getLocalProviderConfig(routing.provider),
-    promptResolver,
+    capturedPromptResolver(routing.snapshot, promptResolver),
     options,
   )
 }
@@ -110,9 +133,8 @@ export function shouldUseBatchQueue(provider: QueuedTranslationProvider): boolea
  * so it means the stamp is not trustworthy for that key — `readSnapshot` reads
  * the revision and the entries separately while a writer commits its rows before
  * bumping, leaving a sub-millisecond window where post-edit entries come back
- * under a pre-edit revision. There the term is DROPPED rather than guessed at:
- * sending no instruction costs the user the wording once, whereas guessing sends
- * a wording that is wrong half the time and then caches it.
+ * under a pre-edit revision. A conflicting union now rejects the batch before
+ * execution, so no result is cached under instructions it did not receive.
  */
 function mergeBatchGlossaryTerms<TContext>(
   dataList: readonly TranslateBatchData<TContext>[],
@@ -150,7 +172,15 @@ function mergeBatchGlossaryTerms<TContext>(
     }
   }
 
-  for (const matchKey of unresolvable) byMatchKey.delete(matchKey)
+  // A conflicting union would execute instructions different from each item's
+  // cache identity. Refuse without writing either result; do not silently drop
+  // the term and cache a translation produced without it.
+  if (unresolvable.size > 0) {
+    throw Object.assign(
+      new Error("Translation glossary snapshot is inconsistent. Retry the translation."),
+      { isRetryable: false },
+    )
+  }
 
   return [...byMatchKey.values()]
     .map(({ term }) => term)
@@ -271,20 +301,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     // slot, pending batches keep filling to maxItems/maxChars instead of
     // flushing tiny every batchDelay (they'd only freeze in the queue).
     dispatchGate: { nextDispatchEtaMs: () => requestQueue.nextDispatchEtaMs() },
-    getBatchKey: (data) => {
-      return Sha256Hex(
-        `${data.langConfig.sourceCode}-${data.langConfig.targetCode}-${getQueuedProviderId(data.provider)}`,
-        data.context ? JSON.stringify(data.context) : "",
-
-        // Not the terms — the REVISION. The terms differ per paragraph and
-        // keying on them would end batching for glossary users; the revision is
-        // one global counter that every paragraph of a page carries alike, so
-        // this component is inert except across an edit. What it buys is that a
-        // batch can only ever hold one glossary state, which is the only way to
-        // represent a REMOVAL: see `mergeBatchGlossaryTerms`.
-        `glossaryRevision:${data.glossaryRevision ?? 0}`,
-      )
-    },
+    getBatchKey: getTranslationBatchIdentity,
     getCharacters: (data) => data.text.length,
     getDedupKey: (data) => data.hash,
     getScope: (data) => data.scope,
@@ -316,6 +333,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
 
       const thunk = async (signal?: AbortSignal) => {
         return executeQueuedTranslation(text, langConfig, data, promptResolver, {
+          isBatch: true,
           context,
           signal,
 
@@ -333,7 +351,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       const errorType = context.isFallback ? "Individual request" : "Batch request"
       logger.error(
         `${errorType} failed (batchKey: ${context.batchKey}, retry: ${context.retryCount}):`,
-        error.message,
+        error.name,
       )
     },
   })

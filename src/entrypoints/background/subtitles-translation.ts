@@ -3,8 +3,9 @@ import { cleanText } from "@/utils/content/utils"
 import { db } from "@/utils/db/dexie/db"
 import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
-import { normalizePromptContextValue } from "@/utils/host/translate/translate-text"
 import { onMessage } from "@/utils/message"
+import { normalizePromptContextValue } from "@/utils/prompts/context"
+import { assertTranslationRequestIdentity } from "@/utils/prompts/request-identity"
 import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { getOrGenerateTranslationContextSummary } from "./translation-context-summary"
@@ -19,6 +20,7 @@ export function setupSubtitlesTranslationHandlers(): void {
   const queuesPromise = createSubtitlesTranslationQueues()
 
   onMessage("enqueueSubtitlesTranslateRequest", async (message) => {
+    assertTranslationRequestIdentity(message.data, "subtitles")
     const { requestQueue, batchQueue } = await queuesPromise
     const {
       data: {
@@ -32,6 +34,7 @@ export function setupSubtitlesTranslationHandlers(): void {
         summary,
         glossaryTerms,
         glossaryRevision,
+        snapshot,
       },
     } = message
 
@@ -62,6 +65,7 @@ export function setupSubtitlesTranslationHandlers(): void {
         // `mergeBatchGlossaryTerms`.
         glossaryTerms,
         glossaryRevision,
+        snapshot,
       }
       result = await batchQueue.enqueue(data)
     } else {

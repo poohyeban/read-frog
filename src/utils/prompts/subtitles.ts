@@ -1,4 +1,5 @@
 import type { TranslatePromptOptions, TranslatePromptResult } from "./translate"
+import type { Config } from "@/types/config/config"
 import type { SubtitlePromptContext } from "@/types/content"
 import { getLocalConfig } from "@/utils/config/storage"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
@@ -17,28 +18,13 @@ import {
 } from "../constants/prompt"
 import { resolvePromptReplacementValue } from "./translate"
 
-export async function getSubtitlesTranslatePrompt(
+export function getSubtitlesTranslatePromptFromTemplate(
+  template: TranslatePromptResult,
   targetLang: string,
   input: string,
   options?: TranslatePromptOptions<SubtitlePromptContext>,
-): Promise<TranslatePromptResult> {
-  const config = (await getLocalConfig()) ?? DEFAULT_CONFIG
-  const customPromptsConfig = config.videoSubtitles.customPromptsConfig
-  const { patterns, promptId } = customPromptsConfig
-
-  const resolvedPromptId = promptId || DEFAULT_TRANSLATE_PROMPT_ID
-  const builtInPrompt = Object.hasOwn(BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS, resolvedPromptId)
-    ? BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS[
-        resolvedPromptId as keyof typeof BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS
-      ]
-    : undefined
-  const customPrompt = patterns.find((pattern) => pattern.id === resolvedPromptId)
-  const selectedPrompt =
-    builtInPrompt ??
-    customPrompt ??
-    BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS[DEFAULT_TRANSLATE_PROMPT_ID]
-
-  let { systemPrompt, prompt } = selectedPrompt
+): TranslatePromptResult {
+  let { systemPrompt, prompt } = template
 
   // For batch mode, append batch rules to system prompt
   if (options?.isBatch) {
@@ -73,11 +59,46 @@ ${DEFAULT_BATCH_TRANSLATE_PROMPT}`
   // their cache key (subtitles/processor/translator.ts:143) — stays identical
   // for a user whose glossary missed this cue.
   const resolvedSystemPrompt = replaceTokens(systemPrompt)
-  const glossaryTerms =
-    options?.glossaryTerms ??
-    (await resolveGlossaryTerms(input, config.glossary.enabled, config.language.targetCode)).terms
+  const glossaryTerms = options?.glossaryTerms ?? []
   return {
     systemPrompt: appendGlossaryToSystemPrompt(resolvedSystemPrompt, glossaryTerms),
     prompt: replaceTokens(prompt),
   }
+}
+
+export function selectSubtitlePrompt(
+  translateConfig: Pick<Config["videoSubtitles"], "customPromptsConfig">,
+): TranslatePromptResult {
+  const customPromptsConfig = translateConfig.customPromptsConfig
+  const { patterns, promptId } = customPromptsConfig
+
+  const resolvedPromptId = promptId || DEFAULT_TRANSLATE_PROMPT_ID
+  const builtInPrompt = Object.hasOwn(BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS, resolvedPromptId)
+    ? BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS[
+        resolvedPromptId as keyof typeof BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS
+      ]
+    : undefined
+  const customPrompt = patterns.find((pattern) => pattern.id === resolvedPromptId)
+  return (
+    builtInPrompt ??
+    customPrompt ??
+    BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS[DEFAULT_TRANSLATE_PROMPT_ID]
+  )
+}
+
+export async function getSubtitlesTranslatePrompt(
+  targetLang: string,
+  input: string,
+  options?: TranslatePromptOptions<SubtitlePromptContext>,
+): Promise<TranslatePromptResult> {
+  const config = (await getLocalConfig()) ?? DEFAULT_CONFIG
+  const glossaryTerms =
+    options?.glossaryTerms ??
+    (await resolveGlossaryTerms(input, config.glossary.enabled, config.language.targetCode)).terms
+  return getSubtitlesTranslatePromptFromTemplate(
+    selectSubtitlePrompt(config.videoSubtitles),
+    targetLang,
+    input,
+    { ...options, glossaryTerms },
+  )
 }

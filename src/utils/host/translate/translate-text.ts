@@ -2,23 +2,23 @@ import type { Config } from "@/types/config/config"
 import type { TranslateProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { WebPagePromptContext } from "@/types/content"
-import type { MatchedTerm } from "@/utils/glossary/types"
 import type { LangCodeISO6393, LangLevel } from "@/utils/languages"
-import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
+import type { TranslatePromptResult } from "@/utils/prompts/translate"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
 import { toastManager } from "@/components/ui/base-ui/toast"
-import { isAPIProviderConfig } from "@/types/config/provider"
+import { isAPIProviderConfig, isLLMProviderConfig } from "@/types/config/provider"
+import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { isNoTranslationSentinel } from "@/utils/constants/prompt"
 import { detectLanguage } from "@/utils/content/language"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
 import { i18n } from "@/utils/i18n"
-import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { logger } from "@/utils/logger"
-import { getTranslatePrompt } from "@/utils/prompts/translate"
+import { normalizePromptContextValue } from "@/utils/prompts/context"
+import { getTranslationRequestHash } from "@/utils/prompts/request-identity"
+import { selectPagePrompt } from "@/utils/prompts/translate"
 import { serializeProviderRef } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
-import { Sha256Hex } from "../../hash"
 import { sendMessage } from "../../message"
 import { getInMemoryTranslation, storeInMemoryTranslation } from "./in-memory-translation-cache"
 import { prepareTranslationText } from "./text-preparation"
@@ -53,14 +53,7 @@ export async function shouldSkipByLanguage(
   return skipLanguages.includes(detectedLang)
 }
 
-export function normalizePromptContextValue(
-  value: string | null | undefined,
-): string | null | undefined {
-  if (value === null || value === undefined) {
-    return value
-  }
-  return value.trim() === "" ? null : value
-}
+export { normalizePromptContextValue } from "@/utils/prompts/context"
 
 function normalizeWebPagePromptContext(
   webPageContext?: WebPagePromptContext,
@@ -77,75 +70,8 @@ function normalizeWebPagePromptContext(
   }
 }
 
-async function buildWebPageHashComponents(
-  text: string,
-  providerRef: SerializableProviderRef,
-  partialLangConfig: { sourceCode: LangCodeISO6393 | "auto"; targetCode: LangCodeISO6393 },
-  enableAIContentAware: boolean,
-  textFormat: TranslationTextFormat,
-  preserveLineBreaks: boolean,
-  glossaryTerms: readonly MatchedTerm[],
-  webPageContext?: WebPagePromptContext,
-): Promise<string[]> {
-  const preparedText = prepareTranslationText(text)
-  const normalizedWebPageContext = normalizeWebPagePromptContext(webPageContext)
-
-  const providerHashIdentity = providerRef.config
-  const hashComponents = [
-    preparedText,
-    JSON.stringify(providerHashIdentity),
-    partialLangConfig.sourceCode,
-    partialLangConfig.targetCode,
-  ]
-
-  const targetLangName = LANG_CODE_TO_EN_NAME[partialLangConfig.targetCode]
-  // The terms are passed in rather than resolved here, so the prompt this hash
-  // is taken over is built from exactly the terms the request will carry.
-  const { systemPrompt, prompt } = await getTranslatePrompt(targetLangName, preparedText, {
-    isBatch: true,
-    context: normalizedWebPageContext,
-    glossaryTerms,
-  })
-  hashComponents.push(systemPrompt, prompt)
-  hashComponents.push(
-    enableAIContentAware ? "enableAIContentAware=true" : "enableAIContentAware=false",
-  )
-
-  if (enableAIContentAware && normalizedWebPageContext) {
-    if (normalizedWebPageContext.webTitle) {
-      hashComponents.push(`webTitle:${normalizedWebPageContext.webTitle}`)
-    }
-    if (normalizedWebPageContext.webDescription) {
-      hashComponents.push(`webDescription:${normalizedWebPageContext.webDescription}`)
-    }
-    if (normalizedWebPageContext.webContent) {
-      // Use a substring hash to avoid huge hash inputs while still differentiating contexts.
-      hashComponents.push(`webContent:${normalizedWebPageContext.webContent.slice(0, 1000)}`)
-    }
-    if (normalizedWebPageContext.webSummary) {
-      hashComponents.push(`webSummary:${normalizedWebPageContext.webSummary}`)
-    }
-  }
-
-  return hashComponents
-}
-
-/**
- * Reuse the session's resolved system-provider ref when it matches the
- * requested provider, so every paragraph of a page-translation session runs
- * on one status snapshot: no per-paragraph status fetches, and a mid-session
- * status blip cannot fail in-flight paragraphs.
- */
-
-/**
- * Most recently requested system-provider key. Stale stragglers — paragraphs
- * that captured the previous provider from config before a mid-session switch
- * and resolve late — must not adopt their ref back over the snapshot the
- * newer paragraphs converged on, which would evict it and force refetch
- * ping-pong.
- */
-
 export interface TranslateTextOptions {
+  promptTemplate?: TranslatePromptResult
   text: string
   langConfig: {
     sourceCode: LangCodeISO6393 | "auto"
@@ -188,6 +114,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     sessionId,
     forceRetranslation = false,
     glossaryEnabled = false,
+    promptTemplate = selectPagePrompt(DEFAULT_CONFIG.pageTranslation),
   } = options
 
   const preparedText = prepareTranslationText(text)
@@ -223,19 +150,29 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
   // enter here; the two prompt-building selection paths and subtitles resolve
   // their own terms and report at their own resolve sites.
 
-  const hashComponents = await buildWebPageHashComponents(
-    preparedText,
+  const request = {
+    text: preparedText,
+    langConfig,
     providerRef,
-    { sourceCode: langConfig.sourceCode, targetCode: langConfig.targetCode },
-    enableAIContentAware,
+    snapshot: {
+      version: 2 as const,
+      kind: "page" as const,
+      template: isLLMProviderConfig(providerRef.config)
+        ? { ...promptTemplate }
+        : { systemPrompt: "", prompt: "" },
+      glossaryEnabled,
+      contentAware: enableAIContentAware,
+      cacheTags: extraHashTags,
+    },
     textFormat,
     preserveLineBreaks,
+    webTitle: normalizedWebPageContext?.webTitle,
+    webDescription: normalizedWebPageContext?.webDescription,
+    webContent: normalizedWebPageContext?.webContent,
+    webSummary: normalizedWebPageContext?.webSummary,
     glossaryTerms,
-    normalizedWebPageContext,
-  )
-
-  // Add extra hash tags for cache differentiation
-  hashComponents.push(...extraHashTags)
+    glossaryRevision,
+  }
 
   // Final gate before dispatch: if the page-translation session that owned
   // this request has ended (or been replaced) while we were preparing it,
@@ -250,7 +187,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     throw new TranslationCancelledError(sessionId)
   }
 
-  const hash = Sha256Hex(...hashComponents)
+  const hash = getTranslationRequestHash(request)
 
   // In-tab memory tier over the background cache, same hash identity.
   // Virtualized pages (X articles/timelines) destroy and recreate paragraph
@@ -268,21 +205,11 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
   }
 
   const result = await sendMessage("enqueueTranslateRequest", {
-    text: preparedText,
-    langConfig,
-    providerRef,
+    ...request,
     scheduleAt: Date.now(),
     hash,
-    textFormat,
-    preserveLineBreaks,
-    webTitle: normalizedWebPageContext?.webTitle,
-    webDescription: normalizedWebPageContext?.webDescription,
-    webContent: normalizedWebPageContext?.webContent,
-    webSummary: normalizedWebPageContext?.webSummary,
     sessionId,
     forceRetranslation,
-    glossaryTerms,
-    glossaryRevision,
   })
   if (sessionId !== undefined) {
     // Raw result, sentinel included, so a "no translation needed" verdict is

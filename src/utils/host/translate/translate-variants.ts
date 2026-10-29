@@ -6,6 +6,7 @@ import type { LangCodeISO6393 } from "@/utils/languages"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
 import { getDetectedCodeFromStorage, getFinalSourceCode } from "@/utils/config/languages"
 import { logger } from "@/utils/logger"
+import { selectPagePrompt } from "@/utils/prompts/translate"
 import { serializeProviderRef } from "@/utils/providers/provider-ref"
 import {
   canResolvedProviderRefGenerateText,
@@ -106,9 +107,7 @@ async function translateTextUsingPageConfig(
   // Backstop only: the page modes hoist this check before DOM insertion, but
   // other callers (e.g. the page title) still rely on it here.
   if (await shouldSkipAsTargetLanguage(preparedText, config)) {
-    logger.info(
-      `translateTextForPage: skipping translation because text is already in target language. text: ${preparedText}`,
-    )
+    logger.info("translateTextForPage: skipped target language")
     return ""
   }
 
@@ -117,14 +116,13 @@ async function translateTextUsingPageConfig(
   if (skipLanguages.length > 0 && preparedText.length >= MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION) {
     const shouldSkip = await shouldSkipByLanguage(preparedText, skipLanguages)
     if (shouldSkip) {
-      logger.info(
-        `translateTextForPage: skipping translation because text is in skip language list. text: ${preparedText}`,
-      )
+      logger.info("translateTextForPage: skipped configured language")
       return ""
     }
   }
 
   return translateTextCore({
+    promptTemplate: selectPagePrompt(config.pageTranslation),
     text: preparedText,
     langConfig: config.language,
     providerConfig,
@@ -256,6 +254,7 @@ export async function translateTextForInput(
   )
 
   return translateTextCore({
+    promptTemplate: selectPagePrompt(config.pageTranslation),
     text,
     langConfig: {
       sourceCode: resolvedFromLang,

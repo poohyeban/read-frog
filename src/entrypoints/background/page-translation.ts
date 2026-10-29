@@ -14,9 +14,10 @@ import {
   auditInlineAtomTokens,
   hasInlineAtomTokens,
 } from "@/utils/host/translate/inline-atom-tokens"
-import { normalizePromptContextValue } from "@/utils/host/translate/translate-text"
 import { logger } from "@/utils/logger"
 import { onMessage } from "@/utils/message"
+import { normalizePromptContextValue } from "@/utils/prompts/context"
+import { assertTranslationRequestIdentity } from "@/utils/prompts/request-identity"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
@@ -55,6 +56,7 @@ export function setupPageTranslationHandlers(): void {
   const { queuesPromise, cancelledScopes } = createWebPageTranslationQueues()
 
   onMessage("enqueueTranslateRequest", async (message) => {
+    assertTranslationRequestIdentity(message.data, "page")
     const routing = getQueuedTranslationRouting(message.data)
     const { requestQueue, batchQueue } = await queuesPromise
     const {
@@ -74,6 +76,7 @@ export function setupPageTranslationHandlers(): void {
         forceRetranslation = false,
         glossaryTerms,
         glossaryRevision,
+        snapshot,
       },
     } = message
     const scope = buildTranslationScopeKey(message.sender, sessionId)
@@ -123,6 +126,7 @@ export function setupPageTranslationHandlers(): void {
         // `mergeBatchGlossaryTerms`.
         glossaryTerms,
         glossaryRevision,
+        snapshot,
         scope,
       }
       result = await batchQueue.enqueue(data)

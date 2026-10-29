@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { NO_TRANSLATION_SENTINEL } from "@/utils/constants/prompt"
 import { detectLanguage } from "@/utils/content/language"
-import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION } from "@/utils/host/translate/translate-text"
 import {
@@ -15,6 +14,7 @@ import {
   beginPageTranslationSession,
   endPageTranslationSession,
 } from "@/utils/host/translate/translation-session"
+import { assertTranslationRequestIdentity } from "@/utils/prompts/request-identity"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
 import { isTranslationCancelledError } from "@/utils/request/cancellation"
 
@@ -35,7 +35,8 @@ vi.mock("@/utils/host/translate/api/deeplx", () => ({
   deeplxTranslate: vi.fn<(...args: any[]) => any>(),
 }))
 
-vi.mock("@/utils/prompts/translate", () => ({
+vi.mock("@/utils/prompts/translate", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/prompts/translate")>()),
   getTranslatePrompt: vi.fn<(...args: any[]) => any>(),
 }))
 
@@ -116,17 +117,13 @@ describe("translate-text", () => {
           providerRef: { kind: "local", config: selectedProvider },
           scheduleAt: expect.any(Number),
           // LLM cache identity includes the actual prompts and context setting.
-          hash: Sha256Hex(
-            "test text",
-            JSON.stringify(selectedProvider),
-            DEFAULT_CONFIG.language.sourceCode,
-            DEFAULT_CONFIG.language.targetCode,
-            "Translate to {{targetLang}}",
-            "{{input}}",
-            "enableAIContentAware=false",
-          ),
+          hash: expect.stringMatching(/^translation:v2:/),
         }),
       )
+      const request = mockSendMessage.mock.calls.find(
+        ([name]: [string]) => name === "enqueueTranslateRequest",
+      )[1]
+      expect(() => assertTranslationRequestIdentity(request, "page")).not.toThrow()
       expect(mockGetOrCreateWebPageContext).toHaveBeenCalled()
       expect(mockGetOrGenerateWebPageSummary).not.toHaveBeenCalled()
     })

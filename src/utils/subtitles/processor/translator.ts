@@ -1,7 +1,7 @@
 import type { SubtitlesFragment } from "../types"
 import type { Config } from "@/types/config/config"
 import type { SubtitlePromptContext } from "@/types/content"
-import type { MatchedTerm } from "@/utils/glossary/types"
+import type { TranslatePromptResult } from "@/utils/prompts/translate"
 import type { PromptableProviderRef, SerializableProviderRef } from "@/utils/providers/provider-ref"
 import { APICallError } from "ai"
 import { isLLMProviderConfig } from "@/types/config/provider"
@@ -10,12 +10,12 @@ import { cleanText } from "@/utils/content/utils"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
 import { Sha256Hex } from "@/utils/hash"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
-import { normalizePromptContextValue } from "@/utils/host/translate/translate-text"
 import { i18n } from "@/utils/i18n"
-import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
-import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
+import { normalizePromptContextValue } from "@/utils/prompts/context"
+import { getTranslationRequestHash } from "@/utils/prompts/request-identity"
+import { selectSubtitlePrompt } from "@/utils/prompts/subtitles"
 import {
   canResolvedProviderRefGenerateText,
   getProviderCacheIdentity,
@@ -99,67 +99,6 @@ function normalizeSubtitlePromptContext(
   }
 }
 
-async function buildSubtitleHashComponents(
-  text: string,
-  providerRef: SerializableProviderRef,
-  partialLangConfig: {
-    sourceCode: Config["language"]["sourceCode"]
-    targetCode: Config["language"]["targetCode"]
-  },
-  enableAIContentAware: boolean,
-  subtitlePromptContext: SubtitlePromptContext,
-  subtitlesTextContent: string,
-  glossaryTerms: readonly MatchedTerm[],
-): Promise<string[]> {
-  const preparedText = prepareTranslationText(text)
-  const normalizedSubtitlesTextContent = normalizePromptContextValue(subtitlesTextContent)
-  const hashComponents = [
-    preparedText,
-    getProviderCacheIdentity(providerRef),
-    partialLangConfig.sourceCode,
-    partialLangConfig.targetCode,
-  ]
-
-  // Pure translate providers take no prompt; Built-in AI does, and so do local
-  // LLMs, so both contribute the prompt to the cache key.
-  if (providerRef.kind === "local" && !isLLMProviderConfig(providerRef.config)) {
-    return hashComponents
-  }
-
-  const targetLangName = LANG_CODE_TO_EN_NAME[partialLangConfig.targetCode]
-  const promptContext = enableAIContentAware
-    ? subtitlePromptContext
-    : { ...subtitlePromptContext, videoSummary: undefined }
-  // Passed in rather than resolved here, so the prompt this hash is taken over
-  // is built from exactly the terms the request will carry.
-  const { systemPrompt, prompt } = await getSubtitlesTranslatePrompt(targetLangName, preparedText, {
-    isBatch: true,
-    context: promptContext,
-    glossaryTerms,
-  })
-  hashComponents.push(systemPrompt, prompt)
-  hashComponents.push(
-    enableAIContentAware ? "enableAIContentAware=true" : "enableAIContentAware=false",
-  )
-
-  if (subtitlePromptContext.webTitle) {
-    hashComponents.push(`webTitle:${subtitlePromptContext.webTitle}`)
-  }
-  if (subtitlePromptContext.webDescription) {
-    hashComponents.push(`webDescription:${subtitlePromptContext.webDescription}`)
-  }
-  if (enableAIContentAware) {
-    if (normalizedSubtitlesTextContent) {
-      hashComponents.push(`subtitlesTextContent:${normalizedSubtitlesTextContent.slice(0, 1000)}`)
-    }
-    if (subtitlePromptContext.videoSummary) {
-      hashComponents.push(`videoSummary:${subtitlePromptContext.videoSummary}`)
-    }
-  }
-
-  return hashComponents
-}
-
 async function translateSingleSubtitle(
   text: string,
   langConfig: Config["language"],
@@ -167,6 +106,7 @@ async function translateSingleSubtitle(
   enableAIContentAware: boolean,
   glossaryEnabled: boolean,
   videoContext: SubtitlesVideoContext,
+  promptTemplate: TranslatePromptResult,
 ): Promise<string> {
   const subtitlePromptContext = normalizeSubtitlePromptContext(videoContext)
   // Resolved once on the page, where the URL says which glossaries apply, and
@@ -177,32 +117,29 @@ async function translateSingleSubtitle(
     langConfig.targetCode,
   )
 
-  const hashComponents = await buildSubtitleHashComponents(
-    text,
-    providerRef,
-    { sourceCode: langConfig.sourceCode, targetCode: langConfig.targetCode },
-    enableAIContentAware,
-    subtitlePromptContext,
-    videoContext.subtitlesTextContent,
-    glossaryTerms,
-  )
-
-  if (enableAIContentAware) {
-    const summary = subtitlePromptContext.videoSummary
-    hashComponents.push(summary ? "subtitleSummary=ready" : "subtitleSummary=missing")
-  }
-
-  return await sendMessage("enqueueSubtitlesTranslateRequest", {
-    text,
+  const request = {
+    text: prepareTranslationText(text),
     langConfig,
     providerRef,
-    scheduleAt: Date.now(),
-    hash: Sha256Hex(...hashComponents),
+    snapshot: {
+      version: 2 as const,
+      kind: "subtitles" as const,
+      template: isLLMProviderConfig(providerRef.config)
+        ? { ...promptTemplate }
+        : { systemPrompt: "", prompt: "" },
+      glossaryEnabled,
+      contentAware: enableAIContentAware,
+    },
     webTitle: subtitlePromptContext.webTitle,
     webDescription: subtitlePromptContext.webDescription,
     summary: enableAIContentAware ? subtitlePromptContext.videoSummary : undefined,
     glossaryTerms,
     glossaryRevision,
+  }
+  return await sendMessage("enqueueSubtitlesTranslateRequest", {
+    ...request,
+    scheduleAt: Date.now(),
+    hash: getTranslationRequestHash(request),
   })
 }
 
@@ -335,6 +272,7 @@ export async function translateSubtitles(
       enableAIContentAware,
       config.glossary.enabled,
       videoContext,
+      selectSubtitlePrompt(config.videoSubtitles),
     ),
   )
 

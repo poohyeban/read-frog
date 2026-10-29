@@ -14,7 +14,8 @@ vi.mock("@/utils/message", () => ({
   sendMessage: sendMessageMock,
 }))
 
-vi.mock("@/utils/prompts/subtitles", () => ({
+vi.mock("@/utils/prompts/subtitles", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/prompts/subtitles")>()),
   getSubtitlesTranslatePrompt: getSubtitlesTranslatePromptMock,
 }))
 
@@ -196,17 +197,8 @@ describe("subtitles translator", () => {
     expect(request.webTitle).toBe("Video title")
     expect(request.webDescription).toBe("Video description")
     expect(request.summary).toBeUndefined()
-    expect(getSubtitlesTranslatePromptMock).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(String),
-      expect.objectContaining({
-        context: {
-          webTitle: "Video title",
-          webDescription: "Video description",
-          videoSummary: undefined,
-        },
-      }),
-    )
+    expect(request.snapshot).toMatchObject({ version: 2, kind: "subtitles", contentAware: false })
+    expect(getSubtitlesTranslatePromptMock).not.toHaveBeenCalled()
   })
 
   it("uses an explicit config snapshot without reading current settings again", async () => {

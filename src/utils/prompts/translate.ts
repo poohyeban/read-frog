@@ -66,6 +66,17 @@ export function getTranslatePromptFromConfig(
   input: string,
   options?: TranslatePromptOptions<WebPagePromptContext>,
 ): TranslatePromptResult {
+  return getTranslatePromptFromTemplate(
+    selectPagePrompt(translateConfig),
+    targetLang,
+    input,
+    options,
+  )
+}
+
+export function selectPagePrompt(
+  translateConfig: Pick<Config["pageTranslation"], "customPromptsConfig">,
+): TranslatePromptResult {
   const customPromptsConfig = translateConfig.customPromptsConfig
   const { patterns, promptId } = customPromptsConfig
 
@@ -76,10 +87,19 @@ export function getTranslatePromptFromConfig(
       ]
     : undefined
   const customPrompt = patterns.find((pattern) => pattern.id === resolvedPromptId)
-  const selectedPrompt =
+  return (
     builtInPrompt ?? customPrompt ?? BUILT_IN_PAGE_TRANSLATE_PROMPTS[DEFAULT_TRANSLATE_PROMPT_ID]
+  )
+}
 
-  let { systemPrompt, prompt } = selectedPrompt
+/** Pure execution path: never consult storage after request preparation. */
+export function getTranslatePromptFromTemplate(
+  template: TranslatePromptResult,
+  targetLang: string,
+  input: string,
+  options?: TranslatePromptOptions<WebPagePromptContext>,
+): TranslatePromptResult {
+  let { systemPrompt, prompt } = template
 
   // For batch mode, append batch rules to system prompt. The batch block is the
   // same one subtitles use — the marker appears only in the sentinel rule that

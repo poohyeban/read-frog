@@ -1,8 +1,10 @@
 import type { ProviderConfig } from "@/types/config/provider"
 import type { MatchedTerm } from "@/utils/glossary/types"
+import type { TranslationIdentityInput } from "@/utils/prompts/request-identity"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { BATCH_SEPARATOR, NO_TRANSLATION_SENTINEL } from "@/utils/constants/prompt"
+import { getTranslationRequestHash } from "@/utils/prompts/request-identity"
 
 const onMessageMock = vi.fn<(...args: any[]) => any>()
 const ensureInitializedConfigMock = vi.fn<(...args: any[]) => any>()
@@ -58,6 +60,8 @@ vi.mock("@/utils/prompts/translate", async (importOriginal) => ({
   getTranslatePrompt: getTranslatePromptMock,
 }))
 
+const requestHashes = new Map<string, string>()
+
 function getRegisteredMessageHandler(name: string) {
   const registration = onMessageMock.mock.calls.find((call) => call[0] === name)
   if (!registration) {
@@ -71,7 +75,29 @@ function getRegisteredMessageHandler(name: string) {
   return async (message: {
     data: Record<string, unknown>
     sender?: { tab?: { id?: number } }
-  }): Promise<unknown> => await handler(message)
+  }): Promise<unknown> => {
+    if (name === "enqueueTranslateRequest" || name === "enqueueSubtitlesTranslateRequest") {
+      // Upgrade synthetic wire fixtures to v2; separate stale-message tests
+      // deliberately bypass this fixture builder.
+      message.data = {
+        ...message.data,
+        glossaryTerms: message.data.glossaryTerms ?? [],
+        snapshot: message.data.snapshot ?? {
+          version: 2,
+          kind: name === "enqueueTranslateRequest" ? "page" : "subtitles",
+          template: { systemPrompt: "system", prompt: "{{input}}" },
+          glossaryEnabled: true,
+          contentAware: true,
+        },
+      }
+      const oldHash = String(message.data.hash)
+      message.data.hash = getTranslationRequestHash(
+        message.data as unknown as TranslationIdentityInput,
+      )
+      requestHashes.set(oldHash, String(message.data.hash))
+    }
+    return await handler(message)
+  }
 }
 
 function localProviderRef(config: ProviderConfig) {
@@ -100,6 +126,7 @@ describe("translation queue helpers", () => {
   beforeEach(() => {
     vi.resetModules()
     vi.clearAllMocks()
+    requestHashes.clear()
 
     ensureInitializedConfigMock.mockResolvedValue({
       ...DEFAULT_CONFIG,
@@ -211,9 +238,84 @@ describe("translation queue helpers", () => {
     expect(executeTranslateMock.mock.calls[0]![0]).toBe("hello")
   })
 
+  it.each(["page", "subtitles"] as const)(
+    "rejects legacy %s messages before reading or writing cache",
+    async (kind) => {
+      if (kind === "page") (await import("../page-translation")).setupPageTranslationHandlers()
+      else (await import("../subtitles-translation")).setupSubtitlesTranslationHandlers()
+      const name = kind === "page" ? "enqueueTranslateRequest" : "enqueueSubtitlesTranslateRequest"
+      const handler = onMessageMock.mock.calls.find(([registered]) => registered === name)![1]
+      await expect(
+        handler({
+          data: {
+            text: "hello",
+            hash: "old",
+            providerRef: localProviderRef(llmProvider),
+            langConfig: DEFAULT_CONFIG.language,
+          },
+        }),
+      ).rejects.toThrow(/stale/)
+      expect(translationCacheGetMock).not.toHaveBeenCalled()
+      expect(translationCachePutMock).not.toHaveBeenCalled()
+      expect(executeTranslateMock).not.toHaveBeenCalled()
+    },
+  )
+
+  it.each(["page", "subtitles"] as const)(
+    "keeps %s prompt and provider stable across dispatch and retry",
+    async (kind) => {
+      const captured: { systemPrompt: string; prompt: string }[] = []
+      executeTranslateMock.mockImplementation(
+        async (text, _language, provider, resolver, options) => {
+          expect(provider).toEqual(llmProvider)
+          captured.push(await resolver("Chinese", text, options))
+          if (captured.length === 1)
+            throw Object.assign(new Error("retry"), { statusCode: 503, isRetryable: true })
+          return "translated"
+        },
+      )
+      if (kind === "page") (await import("../page-translation")).setupPageTranslationHandlers()
+      else (await import("../subtitles-translation")).setupSubtitlesTranslationHandlers()
+      const handler = getRegisteredMessageHandler(
+        kind === "page" ? "enqueueTranslateRequest" : "enqueueSubtitlesTranslateRequest",
+      )
+      const pending = handler({
+        data: {
+          text: "hello",
+          langConfig: DEFAULT_CONFIG.language,
+          providerRef: localProviderRef(llmProvider),
+          scheduleAt: Date.now(),
+          hash: "race",
+          snapshot: {
+            version: 2,
+            kind,
+            template: { systemPrompt: "captured instructions", prompt: "{{input}}" },
+            glossaryEnabled: false,
+            contentAware: false,
+          },
+        },
+      })
+      // Represents storage changing after the sender computed its cache identity.
+      getTranslatePromptMock.mockResolvedValue({
+        systemPrompt: "edited instructions",
+        prompt: "changed input",
+      })
+      ensureInitializedConfigMock.mockResolvedValue({ ...DEFAULT_CONFIG, providersConfig: [] })
+      await expect(pending).resolves.toBe("translated")
+      expect(captured).toHaveLength(2)
+      expect(captured[0]).toEqual(captured[1])
+      expect(captured[0]!.systemPrompt).toContain("captured instructions")
+      expect(captured[0]!.systemPrompt).not.toContain("edited instructions")
+      expect(getTranslatePromptMock).not.toHaveBeenCalled()
+      expect(translationCachePutMock).toHaveBeenCalledWith(
+        expect.objectContaining({ key: requestHashes.get("race"), translation: "translated" }),
+      )
+    },
+  )
+
   it("returns a cached LLM translation without calling the provider", async () => {
     translationCacheGetMock.mockResolvedValueOnce({
-      key: "llm-cache-hit",
+      key: requestHashes.get("llm-cache-hit") ?? "llm-cache-hit",
       translation: "cached translation",
     })
     const { setupPageTranslationHandlers } = await import("../page-translation")
@@ -279,7 +381,7 @@ describe("translation queue helpers", () => {
   // re-introduced decode call fails these tests.
   it("returns cached Google translations verbatim without re-decoding", async () => {
     translationCacheGetMock.mockResolvedValueOnce({
-      key: "webpage-hash",
+      key: requestHashes.get("webpage-hash") ?? "webpage-hash",
       translation: "Tom &amp; Jerry — It's on https://example.com/?page=1&copy=true <span>",
     })
 
@@ -304,7 +406,7 @@ describe("translation queue helpers", () => {
 
   it("bypasses a cached value and replaces the same key after forced translation succeeds", async () => {
     translationCacheGetMock.mockResolvedValue({
-      key: "webpage-hash",
+      key: requestHashes.get("webpage-hash") ?? "webpage-hash",
       translation: "stale translation",
     })
     executeTranslateMock.mockResolvedValue("fresh translation")
@@ -330,7 +432,7 @@ describe("translation queue helpers", () => {
     expect(executeTranslateMock).toHaveBeenCalledTimes(1)
     expect(translationCachePutMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        key: "webpage-hash",
+        key: requestHashes.get("webpage-hash") ?? "webpage-hash",
         translation: "fresh translation",
       }),
     )
@@ -338,7 +440,7 @@ describe("translation queue helpers", () => {
 
   it("preserves the previous cache entry when forced translation fails", async () => {
     translationCacheGetMock.mockResolvedValue({
-      key: "webpage-hash",
+      key: requestHashes.get("webpage-hash") ?? "webpage-hash",
       translation: "still usable",
     })
     executeTranslateMock.mockReset().mockRejectedValue(new Error("provider unavailable"))
@@ -385,7 +487,7 @@ describe("translation queue helpers", () => {
     expect(result).toBe("write &amp; for ampersand — It's fine")
     expect(translationCachePutMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        key: "webpage-hash",
+        key: requestHashes.get("webpage-hash") ?? "webpage-hash",
         translation: "write &amp; for ampersand — It's fine",
       }),
     )
@@ -410,7 +512,10 @@ describe("translation queue helpers", () => {
 
     expect(result).toBe("设 {{1}} 大于 {{0}}。")
     expect(translationCachePutMock).toHaveBeenCalledWith(
-      expect.objectContaining({ key: "atom-hash", translation: "设 {{1}} 大于 {{0}}。" }),
+      expect.objectContaining({
+        key: requestHashes.get("atom-hash") ?? "atom-hash",
+        translation: "设 {{1}} 大于 {{0}}。",
+      }),
     )
   })
 
@@ -457,13 +562,16 @@ describe("translation queue helpers", () => {
 
     expect(result).toBe(NO_TRANSLATION_SENTINEL)
     expect(translationCachePutMock).toHaveBeenCalledWith(
-      expect.objectContaining({ key: "atom-hash", translation: NO_TRANSLATION_SENTINEL }),
+      expect.objectContaining({
+        key: requestHashes.get("atom-hash") ?? "atom-hash",
+        translation: NO_TRANSLATION_SENTINEL,
+      }),
     )
   })
 
   it("uses cached HTML translations when all attribute markers remain on their tags", async () => {
     translationCacheGetMock.mockResolvedValueOnce({
-      key: "webpage-hash",
+      key: requestHashes.get("webpage-hash") ?? "webpage-hash",
       translation: `<a data-rf-attr="1">Lire</a><span data-rf-attr="0">Bonjour</span>`,
     })
 
@@ -489,7 +597,7 @@ describe("translation queue helpers", () => {
 
   it("deletes an invalid cached HTML translation and replaces it with a valid fresh result", async () => {
     translationCacheGetMock.mockResolvedValueOnce({
-      key: "webpage-hash",
+      key: requestHashes.get("webpage-hash") ?? "webpage-hash",
       translation: `<span>Bonjour</span>`,
     })
     executeTranslateMock.mockResolvedValueOnce(`<span data-rf-attr="0">Bonjour</span>`)
@@ -510,11 +618,11 @@ describe("translation queue helpers", () => {
     })
 
     expect(result).toBe(`<span data-rf-attr="0">Bonjour</span>`)
-    expect(translationCacheDeleteMock).toHaveBeenCalledWith("webpage-hash")
+    expect(translationCacheDeleteMock).toHaveBeenCalledWith(requestHashes.get("webpage-hash"))
     expect(executeTranslateMock).toHaveBeenCalledTimes(1)
     expect(translationCachePutMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        key: "webpage-hash",
+        key: requestHashes.get("webpage-hash") ?? "webpage-hash",
         translation: `<span data-rf-attr="0">Bonjour</span>`,
       }),
     )
@@ -522,7 +630,7 @@ describe("translation queue helpers", () => {
 
   it("validates escaped page-marker fallback results before using or caching them", async () => {
     translationCacheGetMock.mockResolvedValueOnce({
-      key: "legacy-marker-hash",
+      key: requestHashes.get("legacy-marker-hash") ?? "legacy-marker-hash",
       translation: `<span>Cached without the protected page attribute</span>`,
     })
     executeTranslateMock.mockResolvedValueOnce(
@@ -545,10 +653,10 @@ describe("translation queue helpers", () => {
     })
 
     expect(result).toBe(`<span data-rf-attr="rf-page-0">Fresh translation</span>`)
-    expect(translationCacheDeleteMock).toHaveBeenCalledWith("legacy-marker-hash")
+    expect(translationCacheDeleteMock).toHaveBeenCalledWith(requestHashes.get("legacy-marker-hash"))
     expect(translationCachePutMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        key: "legacy-marker-hash",
+        key: requestHashes.get("legacy-marker-hash") ?? "legacy-marker-hash",
         translation: `<span data-rf-attr="rf-page-0">Fresh translation</span>`,
       }),
     )
@@ -651,7 +759,7 @@ describe("translation queue helpers", () => {
     expect(result).toBe("translated plain text")
     expect(translationCachePutMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        key: "plain-marker-shaped-text",
+        key: requestHashes.get("plain-marker-shaped-text") ?? "plain-marker-shaped-text",
         translation: "translated plain text",
       }),
     )
@@ -679,7 +787,7 @@ describe("translation queue helpers", () => {
     expect(result).toBe(NO_TRANSLATION_SENTINEL)
     expect(translationCachePutMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        key: "sentinel-hash",
+        key: requestHashes.get("sentinel-hash") ?? "sentinel-hash",
         translation: NO_TRANSLATION_SENTINEL,
       }),
     )
@@ -817,7 +925,7 @@ describe("translation queue helpers", () => {
       ).resolves.toEqual([revisioned])
     })
 
-    it("drops a term two members disagree on at the same revision", async () => {
+    it("rejects a batch with conflicting wording at the same revision", async () => {
       // One glossary state cannot hold two wordings for one key, so equal
       // revisions carrying different ones means the stamp is untrustworthy for
       // that key. Sending nothing costs the wording once; guessing sends the
@@ -831,7 +939,7 @@ describe("translation queue helpers", () => {
           batchMember("first", { terms: [oneWording, untouched], revision: 4 }),
           batchMember("second", { terms: [otherWording], revision: 4 }),
         ]),
-      ).resolves.toEqual([untouched])
+      ).rejects.toThrow(/glossary snapshot is inconsistent/)
     })
 
     it("keeps a term both members agree on at the same revision", async () => {
@@ -975,7 +1083,7 @@ describe("translation queue helpers", () => {
       // over a prompt that had the terms in it.
       expect(optionsFor("alpha").glossaryTerms).toEqual([apiTerm])
       expect(optionsFor("beta").glossaryTerms).toEqual([queueTerm])
-      expect(optionsFor("alpha").isBatch).toBeUndefined()
+      expect(optionsFor("alpha").isBatch).toBe(true)
     }, 15_000)
   })
 
