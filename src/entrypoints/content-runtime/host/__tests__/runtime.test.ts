@@ -165,6 +165,7 @@ describe("bootstrapHostContent URL changes", () => {
     expect(mockRegisterNodeTranslationTriggers.mock.results[0]!.value).toHaveBeenCalledOnce()
     expect(lateCleanup).toHaveBeenCalledOnce()
     expect(managerInstances[0]!.start).not.toHaveBeenCalled()
+    expect(managerInstances[0]!.stop).toHaveBeenCalledWith({ notify: false })
     expect(mockSendMessage).not.toHaveBeenCalledWith(
       "getEnablePageTranslationFromContentScript",
       undefined,

@@ -482,8 +482,8 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
   }
 
-  stop(options?: { userInitiated?: boolean }): void {
-    this.stopInternal({ notify: true, userInitiated: options?.userInitiated })
+  stop(options?: { userInitiated?: boolean; notify?: boolean }): void {
+    this.stopInternal({ notify: options?.notify ?? true, userInitiated: options?.userInitiated })
   }
 
   setTitleTranslationEnabled(enabled: boolean): void {

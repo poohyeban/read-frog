@@ -61,7 +61,7 @@ export async function bootstrapHostContent(
       (url) => (detectedPageLanguage?.url === url ? detectedPageLanguage.code : undefined),
     )
 
-    own(() => manager.stop())
+    own(() => manager.stop({ notify: false }))
     own(manager.registerPageTranslationTriggers())
 
     // The tab-title switch applies to an already-translated page at once. Only
