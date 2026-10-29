@@ -1,13 +1,13 @@
 import type { ThemeMode } from "@/types/config/theme"
 import { atom } from "jotai"
 import { DEFAULT_THEME_MODE, themeModeSchema } from "@/types/config/theme"
+import { storageAdapter } from "../config/storage-adapter"
 import { THEME_STORAGE_KEY } from "../constants/config"
 import {
   isExtensionContextAlive,
   isExtensionContextInvalidatedError,
 } from "../error/extension-context"
 import { logger } from "../logger"
-import { storageAdapter } from "./storage-adapter"
 
 // Private base atom. Only export this for top-level hydration before ThemeProvider mounts.
 export const baseThemeModeAtom = atom<ThemeMode>(DEFAULT_THEME_MODE)

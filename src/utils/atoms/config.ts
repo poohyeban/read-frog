@@ -4,15 +4,13 @@ import { dequal } from "dequal"
 import { atom } from "jotai"
 import { selectAtom } from "jotai/utils"
 import { configSchema } from "@/types/config/config"
+import { mergeWithArrayOverwrite } from "../config/merge"
+import { storageAdapter } from "../config/storage-adapter"
 import { CONFIG_STORAGE_KEY, DEFAULT_CONFIG } from "../constants/config"
-import { storageAdapter } from "./storage-adapter"
 
 export const configAtom = atom<Config>(DEFAULT_CONFIG)
 
-export const mergeWithArrayOverwrite = deepmergeCustom({
-  // Use the last (source) array
-  mergeArrays: (values) => values[values.length - 1],
-})
+export { mergeWithArrayOverwrite } from "../config/merge"
 
 // Updaters deliberately use undefined to clear optional fields. Keep legacy
 // object-patch semantics unchanged for the other configuration consumers.

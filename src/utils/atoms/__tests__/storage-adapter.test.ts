@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { browser, storage } from "#imports"
-import { storageAdapter } from "../storage-adapter"
+import { storageAdapter } from "../../config/storage-adapter"
 
 const liveRuntimeId = browser.runtime.id
 

@@ -4,12 +4,12 @@ import type { Config } from "@/types/config/config"
 import { createStore } from "jotai"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
+import { storageAdapter } from "../../config/storage-adapter"
 import { configAtom, writeConfigAtom } from "../config"
 import { patchProviderConfigAtom } from "../entity-config"
-import { storageAdapter } from "../storage-adapter"
 
 const storage = vi.hoisted(() => ({ value: {} as Config, watchers: new Set<() => void>() }))
-vi.mock("../storage-adapter", () => ({
+vi.mock("../../config/storage-adapter", () => ({
   storageAdapter: {
     get: vi.fn<() => Promise<Config>>(async () => structuredClone(storage.value)),
     set: vi.fn<(key: string, value: Config) => Promise<void>>(async (_key, value) => {

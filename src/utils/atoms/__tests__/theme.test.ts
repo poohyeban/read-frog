@@ -8,7 +8,9 @@ const mocks = vi.hoisted(() => ({
   get: vi.fn<() => Promise<ThemeMode>>(),
   alive: true,
 }))
-vi.mock("../storage-adapter", () => ({ storageAdapter: { get: mocks.get, watch: () => () => {} } }))
+vi.mock("../../config/storage-adapter", () => ({
+  storageAdapter: { get: mocks.get, watch: () => () => {} },
+}))
 vi.mock("@/utils/error/extension-context", () => ({
   isExtensionContextAlive: () => mocks.alive,
   isExtensionContextInvalidatedError: () => !mocks.alive,

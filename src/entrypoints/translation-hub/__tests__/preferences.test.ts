@@ -5,7 +5,7 @@ import type { Config } from "@/types/config/config"
 import { createStore } from "jotai"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { configAtom } from "@/utils/atoms/config"
-import { storageAdapter } from "@/utils/atoms/storage-adapter"
+import { storageAdapter } from "@/utils/config/storage-adapter"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import {
   exchangeLangCodesAtom,
@@ -16,7 +16,7 @@ import {
 
 const persisted = vi.hoisted(() => ({ value: {} as Config }))
 
-vi.mock("@/utils/atoms/storage-adapter", () => ({
+vi.mock("@/utils/config/storage-adapter", () => ({
   storageAdapter: {
     get: vi.fn<() => Promise<Config>>(async () => structuredClone(persisted.value)),
     set: vi.fn<(key: string, config: Config) => Promise<void>>(async (_key, config) => {

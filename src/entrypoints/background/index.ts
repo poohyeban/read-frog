@@ -1,7 +1,7 @@
 import "@/utils/zod-config"
 import type { Config, UiLanguage } from "@/types/config/config"
 import { browser, defineBackground } from "#imports"
-import { storageAdapter } from "@/utils/atoms/storage-adapter"
+import { storageAdapter } from "@/utils/config/storage-adapter"
 import { CONFIG_STORAGE_KEY } from "@/utils/constants/config"
 import { initI18n, setUiLanguage } from "@/utils/i18n"
 import { logger } from "@/utils/logger"

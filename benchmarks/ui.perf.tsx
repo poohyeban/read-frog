@@ -19,7 +19,7 @@ import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { percentiles, report } from "./report"
 
 vi.mock("@/components/providers/theme-provider", () => ({ useTheme: () => ({ theme: "light" }) }))
-vi.mock("@/utils/atoms/storage-adapter", () => ({
+vi.mock("@/utils/config/storage-adapter", () => ({
   storageAdapter: {
     get: async () => structuredClone(DEFAULT_CONFIG),
     watch: () => () => {},
