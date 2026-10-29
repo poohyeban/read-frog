@@ -33,6 +33,18 @@ describe("yieldToMain", () => {
     await expect(yieldToMain()).resolves.toBeUndefined()
   })
 
+  it("closes both MessageChannel ports after each yield", async () => {
+    vi.stubGlobal("scheduler", undefined)
+    const close = vi.fn<() => void>()
+    class Channel {
+      port1 = { close, onmessage: () => {} }
+      port2 = { close, postMessage: () => queueMicrotask(() => this.port1.onmessage()) }
+    }
+    vi.stubGlobal("MessageChannel", Channel)
+    for (let index = 0; index < 20; index++) await yieldToMain()
+    expect(close).toHaveBeenCalledTimes(40)
+  })
+
   it("falls back to setTimeout when MessageChannel is unavailable", async () => {
     vi.stubGlobal("scheduler", undefined)
     vi.stubGlobal("MessageChannel", undefined)
