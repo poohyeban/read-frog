@@ -8,7 +8,6 @@ import { getDetectedCodeFromStorage, getFinalSourceCode } from "@/utils/config/l
 import { logger } from "@/utils/logger"
 import {
   canResolvedProviderRefGenerateText,
-  HostedAiProviderUnavailableError,
   resolvePageTranslationProvider,
 } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
@@ -71,9 +70,7 @@ async function getWebPagePromptContext(
       // translation) always resolve here first, so rethrowing would kill the
       // request before the translation itself — which resolves the same ref —
       // could surface the error against the feature the user actually invoked.
-      if (!(error instanceof HostedAiProviderUnavailableError)) {
-        throw error
-      }
+      logger.warn("Optional page summary failed", error)
       webSummary = undefined
     }
   }

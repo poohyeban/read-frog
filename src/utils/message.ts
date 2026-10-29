@@ -1,5 +1,4 @@
 import type { LangCodeISO6393 } from "@read-frog/definitions"
-import type { GuideDictionaryNotebaseCompletionInput } from "./guide/dictionary-notebase"
 import type { FeatureUsageContext, FeatureUsedEventProperties } from "@/types/analytics"
 import type {
   BackgroundGenerateTextPayload,
@@ -21,13 +20,11 @@ import type {
 } from "@/types/tts-playback"
 import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
 import type { MatchedTerm } from "@/utils/glossary/types"
-import type { HostedAiStatus } from "@/utils/hosted-ai/types"
-import type { PromptableProviderRef, SerializableProviderRef } from "@/utils/providers/provider-ref"
+import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import type { EdgeTTSVoice } from "@/utils/server/edge-tts/types"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
 interface ProtocolMap {
-  // navigation
   openPage: (data: { url: string; active?: boolean }) => void
   openOptionsPage: (data?: { route?: `/${string}` }) => void
   toggleSidePanel: (data?: { source?: "content-script" | "extension-user-action" }) => Promise<
@@ -41,17 +38,11 @@ interface ProtocolMap {
           | "requires-extension-user-action"
       }
   >
-  // config
   getInitialConfig: () => Config | null
-  // glossary — the terms live in IndexedDB, which a content script cannot open,
-  // so it asks the background once per page and compiles a matcher locally.
-  // `url` says which page is asking; glossaries scoped to other sites are left
-  // out of the answer rather than filtered on arrival.
   getGlossarySnapshot: (data: {
     url: string | undefined
     targetLang: LangCodeISO6393
   }) => Promise<GlossarySnapshot>
-  // translation state
   getEnablePageTranslationByTabId: (data: { tabId: number }) => boolean | undefined
   getEnablePageTranslationFromContentScript: () => Promise<boolean>
   tryToSetEnablePageTranslationByTabId: (data: {
@@ -79,7 +70,6 @@ interface ProtocolMap {
   refreshDetectedPageLanguage: () => void
   getDetectedCode: () => LangCodeISO6393
   detectedPageLanguageChanged: (data: { detectedCode: LangCodeISO6393 }) => void
-  // ask host to start page translation
   askManagerToTogglePageTranslation: (data: {
     enabled: boolean
     analyticsContext?: FeatureUsageContext<"page_translation">
@@ -90,15 +80,7 @@ interface ProtocolMap {
     selectionText: string
   }) => void
   readAloudSelectionFromContextMenu: (data: { selectionText: string }) => void
-  // analytics
   trackFeatureUsedEvent: (data: FeatureUsedEventProperties) => void
-  // user guide
-  pinStateChanged: (data: { isPinned: boolean }) => void
-  getPinState: () => boolean
-  returnPinState: (data: { isPinned: boolean }) => void
-  guideDictionaryNotebaseStateChanged: (data: { completed: boolean }) => void
-  completeGuideDictionaryNotebase: (data: GuideDictionaryNotebaseCompletionInput) => void
-  // request
   enqueueTranslateRequest: (
     data: ProviderRequestRouting & {
       text: string
@@ -133,9 +115,6 @@ interface ProtocolMap {
       glossaryRevision?: number
     },
   ) => Promise<string>
-  // Drain queued/in-flight page-translation requests of one session (#1881).
-  // The background composes the scope as `${sender.tab.id}:${sessionId}`, so a
-  // tab can only ever cancel its own requests.
   cancelPageTranslationRequests: (data: { sessionId: string }) => void
   getOrGenerateWebPageSummary: (
     data: ProviderRequestRouting<PromptableProviderRef> & {
@@ -143,19 +122,6 @@ interface ProtocolMap {
       webContent: string
     },
   ) => Promise<string | null>
-  enqueueSubtitlesTranslateRequest: (data: {
-    text: string
-    langConfig: Config["language"]
-    providerRef: SerializableProviderRef
-    scheduleAt: number
-    hash: string
-    webTitle?: string | null
-    webDescription?: string | null
-    summary?: string | null
-    // See `enqueueTranslateRequest`.
-    glossaryTerms?: MatchedTerm[]
-    glossaryRevision?: number
-  }) => Promise<string>
   getSubtitlesSummary: (data: {
     videoTitle: string
     subtitlesContext: string
@@ -175,35 +141,14 @@ interface ProtocolMap {
   backgroundGenerateText: (
     data: BackgroundGenerateTextPayload,
   ) => Promise<BackgroundGenerateTextResponse>
-  // AI subtitle segmentation
-  aiSegmentSubtitles: (data: {
-    jsonContent: string
-    providerRef: PromptableProviderRef
-  }) => Promise<string>
-  // Hosted AI availability. Owned by the background because one response covers
-  // every feature and tier — so it can be cached and shared across tabs — and
-  // because content scripts cannot read the session storage that cache lives in.
-  // Null means "no verdict" (fetch failed); callers fail open on it.
-  getHostedAiStatus: () => Promise<HostedAiStatus | null>
-  // network proxy
   backgroundFetch: (data: ProxyRequest) => Promise<ProxyResponse>
-  // cache management
   clearAllTranslationRelatedCache: () => Promise<void>
-  clearAiSegmentationCache: () => Promise<void>
-  // Drops the cached session verdict. Granting a host permission changes no
-  // cookie, so the background's cookie listener never fires — without this the
-  // "signed out" entry cached while the permission was missing would outlive
-  // the grant. Awaiting it before refetching keeps the two ordered.
-  invalidateAuthCache: () => Promise<void>
-  // edge tts
   edgeTtsSynthesize: (data: EdgeTTSSynthesizeRequest) => Promise<EdgeTTSSynthesizeWireResponse>
   edgeTtsListVoices: () => Promise<EdgeTTSVoice[]>
   edgeTtsHealthCheck: () => Promise<EdgeTTSHealthStatus>
-  // tts playback
   ttsPlaybackPrepare: () => Promise<{ ok: true }>
   ttsPlaybackStart: (data: TTSPlaybackStartRequest) => Promise<TTSPlaybackStartResponse>
   ttsPlaybackStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
-  // offscreen internal
   ttsOffscreenPlay: (data: TTSPlaybackStartRequest) => Promise<TTSPlaybackStartResponse>
   ttsOffscreenStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
 }

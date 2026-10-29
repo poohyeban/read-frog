@@ -10,7 +10,6 @@ import type {
 import type { Config } from "@/types/config/config"
 import type { AISDKReasoning } from "@/types/config/provider"
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
-import type { HostedAiModelTier } from "@/utils/constants/provider-ids"
 import type { CachedWebPageContext } from "@/utils/host/translate/webpage-context"
 import type { CustomActionProviderRef } from "@/utils/providers/provider-registry"
 
@@ -90,7 +89,6 @@ interface CustomActionExecutionRequest {
     }>
     prompt: string
     providerId: string
-    modelTier?: HostedAiModelTier
     providerOptions?: Record<string, Record<string, JSONValue>>
     reasoning?: AISDKReasoning
     instructions: string
@@ -268,20 +266,17 @@ function buildCustomActionExecutionRequest({
   )
   const prompt = replaceSelectionToolbarCustomActionPromptTokens(action.prompt, promptTokens)
   const outputSchema = modelFields.map(({ name, type }) => ({ name, type }))
-  const providerKey = provider.kind === "local" ? provider.config.provider : provider.id
-  const model = provider.kind === "local" ? provider.config.model : undefined
-  const modelName = provider.kind === "local" ? (resolveModelId(provider.config.model) ?? "") : ""
-  const reasoning = provider.kind === "local" ? getTopLevelReasoning(provider.config) : undefined
-  const providerOptions =
-    provider.kind === "local"
-      ? getProviderOptionsWithOverride(
-          modelName,
-          provider.config.provider,
-          provider.config.providerOptions,
-          reasoning,
-        )
-      : undefined
-  const temperature = provider.kind === "local" ? provider.config.temperature : undefined
+  const providerKey = provider.config.provider
+  const model = provider.config.model
+  const modelName = resolveModelId(provider.config.model) ?? ""
+  const reasoning = getTopLevelReasoning(provider.config)
+  const providerOptions = getProviderOptionsWithOverride(
+    modelName,
+    provider.config.provider,
+    provider.config.providerOptions,
+    reasoning,
+  )
+  const temperature = provider.config.temperature
 
   return {
     analytics: {
@@ -314,7 +309,6 @@ function buildCustomActionExecutionRequest({
     selectionValues: getSelectionOutputValues(action.outputSchema, promptTokens.selection),
     payload: {
       providerId: provider.id,
-      modelTier: provider.kind === "system" ? provider.modelTier : undefined,
       instructions: systemPrompt,
       prompt,
       outputSchema,

@@ -53,3 +53,9 @@ flowchart LR
 - `SKIP_FREE_API=true WXT_SKIP_ENV_VALIDATION=true vitest run`：411 文件通过、1 文件跳过；4370 测试通过、4 跳过；123.91 秒。跳过的免费翻译真实外网测试遵循 AGENTS.md。
 - Vitest 初次因沙箱禁止 localhost 端口启动失败，允许测试所需网络后通过，不是代码缺陷。
 - 原版已有 PostHog sourcemap 警告和 jsdom navigation 未实现提示。
+
+## Phase 1
+
+移除账户 UI、Better Auth 客户端、官方 oRPC、Hosted AI Registry/流式分支、额度/套餐选择与 Cookie 监听。因依赖同一账户链，云笔记、复习入口、字幕与转录、引导、Hub、Drive 同步一起删除；自定义 Actions 编辑器也删除，已有划词解释执行/渲染保留。Lite 使用独立配置键 `readFrogLiteConfig` 和 schema v1，不导入上游配置，删除 115 版迁移链。恢复界面的本地配置导出保留。
+
+必要回归：DOM/翻译核心/请求队列与新装 Provider 配置测试 24 文件、360 测试通过。生产构建 13.43 MB（阶段中间结果），类型/Lint 检查后提交。专属 Hosted/Notebase/字幕测试删除，混合测试仅移除已删除功能的用例；最终阶段继续运行全量剩余测试。

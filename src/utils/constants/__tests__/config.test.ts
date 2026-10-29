@@ -130,33 +130,6 @@ describe("dEFAULT_CONFIG", () => {
     expect(result.data.pageTranslation.node.forceRetranslation).toBe(false)
     expect(result.data.language.targetCode).toBe("jpn")
   })
-
-  it("rebuilds schema-valid built-in action state for persistence", async () => {
-    const { buildFreshDefaultConfig, createDefaultDictionaryAction, DEFAULT_CONFIG } =
-      await import("../config")
-    const { configSchema } = await import("@/types/config/config")
-
-    const config = buildFreshDefaultConfig()
-
-    expect(config).not.toBe(DEFAULT_CONFIG)
-    expect(config.selectionToolbar.customActions).not.toBe(
-      DEFAULT_CONFIG.selectionToolbar.customActions,
-    )
-    expect(config.selectionToolbar.builtInActions.dictionary).toEqual({
-      enabled: true,
-      providerId: "read-frog-free-ai",
-    })
-    expect(config.selectionToolbar.customActions).toEqual([])
-    expect(createDefaultDictionaryAction()).toEqual(
-      expect.objectContaining({
-        id: "default-dictionary",
-        name: expect.any(String),
-        systemPrompt: expect.any(String),
-        prompt: expect.any(String),
-      }),
-    )
-    expect(configSchema.safeParse(config).success).toBe(true)
-  })
 })
 
 describe("createDefaultDictionaryAction layout", () => {

@@ -1,10 +1,6 @@
 import { langCodeISO6393Schema, langLevel } from "@read-frog/definitions"
 import { z } from "zod"
-import {
-  BUILT_IN_ACTION_IDS,
-  BUILT_IN_ACTION_KEYS,
-  isBuiltInActionId,
-} from "@/utils/constants/custom-action"
+import { BUILT_IN_ACTION_IDS, BUILT_IN_ACTION_KEYS } from "@/utils/constants/custom-action"
 import { FEATURE_KEYS, FEATURE_PROVIDER_DEFS } from "@/utils/constants/feature-providers"
 import {
   MAX_SELECTION_OVERLAY_OPACITY,
@@ -65,34 +61,8 @@ const selectionToolbarSchema = z
     }),
     builtInActions: selectionToolbarBuiltInActionsSchema,
     customActions: selectionToolbarCustomActionsSchema,
-    // The order of every toolbar item (translate, speak and the actions), by
-    // id. Kept in step with the items by the transform below. `.default([])`
-    // lets a config stored before this field parse in UI contexts that load
-    // ahead of the background migration.
     order: z.array(z.string().min(1)).default([]),
-    // Ids of the items kept off the toolbar itself, in its "more" menu only.
-    // Every other item is pinned. Independent of an item's enabled switch,
-    // so a pin survives the item being turned off and on.
     unpinned: z.array(z.string().min(1)).default([]),
-    noteSuggestion: z.object({
-      enabled: z.boolean(),
-      actionId: z.string().nonempty(),
-      providerId: z.string().nonempty(),
-    }),
-  })
-  .superRefine((selectionToolbar, ctx) => {
-    const actionId = selectionToolbar.noteSuggestion.actionId
-    const actionExists =
-      isBuiltInActionId(actionId) ||
-      selectionToolbar.customActions.some((action) => action.id === actionId)
-
-    if (!actionExists) {
-      ctx.addIssue({
-        code: "custom",
-        message: `Note suggestion action "${actionId}" not found.`,
-        path: ["noteSuggestion", "actionId"],
-      })
-    }
   })
   // Every parse brings `order` and `unpinned` in step with the actions there
   // are, so adding or deleting an action never has to update them itself.

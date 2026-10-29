@@ -46,7 +46,6 @@ export function getBuiltInAction(
     enabled: state.enabled,
     providerId: state.providerId,
     shortcut: state.shortcut ?? BUILT_IN_ACTION_DEFAULT_SHORTCUTS[id],
-    ...(state.notebaseConnection ? { notebaseConnection: state.notebaseConnection } : {}),
   }
 }
 
@@ -82,28 +81,6 @@ export function findSelectionToolbarAction(
  * The action a click on a subtitle word runs: the one picked in settings, or
  * the built-in Dictionary once that one is turned off or deleted.
  */
-export function resolveWordLookupAction(config: Config): SelectionToolbarCustomAction {
-  const action = findSelectionToolbarAction(
-    config.selectionToolbar,
-    config.videoSubtitles.wordLookupActionId,
-  )
-  return action && action.enabled !== false
-    ? action
-    : getBuiltInDictionaryAction(config.selectionToolbar)
-}
-
-export function resolveNoteSuggestionAction(
-  selectionToolbar: SelectionToolbarConfig,
-): SelectionToolbarCustomAction {
-  const actionId = selectionToolbar.noteSuggestion.actionId
-  const action = findSelectionToolbarAction(selectionToolbar, actionId)
-  if (!action) {
-    throw new Error(
-      `Note suggestion action "${actionId}" is missing from the validated configuration.`,
-    )
-  }
-  return action
-}
 
 // A state without a key reads as the action's default key, and is written
 // back without one while the key is still that default: a UI context that
@@ -119,12 +96,6 @@ function toBuiltInState(
   return {
     enabled: action.enabled !== false,
     providerId: action.providerId,
-    // Written whole: an update merges into the stored connection key by key,
-    // so a list this one leaves out would outlive the Notebase it was for.
-    notebaseConnection: action.notebaseConnection && {
-      skippedFieldIds: undefined,
-      ...action.notebaseConnection,
-    },
     ...(keepsDefaultKey ? {} : { shortcut: action.shortcut }),
   }
 }
@@ -155,9 +126,7 @@ export function replaceSelectionToolbarAction(
 export function patchSelectionToolbarAction(
   selectionToolbar: SelectionToolbarConfig,
   actionId: string,
-  patch: Partial<
-    Pick<SelectionToolbarCustomAction, "enabled" | "providerId" | "notebaseConnection" | "shortcut">
-  >,
+  patch: Partial<Pick<SelectionToolbarCustomAction, "enabled" | "providerId" | "shortcut">>,
 ): SelectionToolbarConfig {
   const action = findSelectionToolbarAction(selectionToolbar, actionId)
   if (!action) {

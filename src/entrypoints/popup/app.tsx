@@ -1,5 +1,4 @@
 import { Icon } from "@iconify/react"
-import { UserAccountMenuPopup } from "@/components/user-account-menu"
 import { i18n } from "@/utils/i18n"
 import { openOptionsPage } from "@/utils/navigation"
 import { version } from "../../../package.json"
@@ -15,7 +14,6 @@ import { SiteControlToggle } from "./components/site-control-toggle"
 import { StoreReviewPrompt } from "./components/store-review-prompt"
 import TranslateButton from "./components/translate-button"
 import TranslatePromptSelector from "./components/translate-prompt-selector"
-import { TranslationHubButton } from "./components/translation-hub-button"
 import TranslationModeSelector from "./components/translation-mode-selector"
 
 function App() {
@@ -27,9 +25,7 @@ function App() {
               whatever is left of the 320px popup is its width, and a long display
               name ellipses inside that instead of pushing the icons off. */}
           <div className="flex items-center justify-between gap-2">
-            <UserAccountMenuPopup />
             <div className="flex shrink-0 items-center">
-              <TranslationHubButton />
               <DiscordButton />
               <BlogNotification />
             </div>

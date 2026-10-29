@@ -1,10 +1,7 @@
 import type { ContextSnapshot, SelectionSnapshot } from "../utils"
 import type { SelectionToolbarCustomActionRequestSlice } from "@/components/custom-action/use-custom-action-execution"
 import type { Config } from "@/types/config/config"
-import type {
-  ProviderRefForCapability,
-  SelectionTranslationProviderRef,
-} from "@/utils/providers/provider-registry"
+import type { SelectionTranslationProviderRef } from "@/utils/providers/provider-registry"
 import { dequal } from "dequal"
 import { atom } from "jotai"
 import { atomFamily } from "jotai-family"
@@ -138,24 +135,12 @@ function createSelectionToolbarCustomActionRequestSliceAtom(actionId: string) {
 export const selectionToolbarTranslateRequestAtom =
   createSelectionToolbarTranslateRequestSliceAtom()
 
-export type NoteSuggestionProviderRef = ProviderRefForCapability<"noteSuggestion">
-
 /**
  * Deliberately separate from the translate request slice: the translate slice's
  * JSON stringification keys translation re-runs, so folding the suggestion
  * provider in would retranslate the selection whenever only the suggestion
  * provider changes.
  */
-export const noteSuggestionProviderAtom = selectAtom(
-  configAtom,
-  (config): NoteSuggestionProviderRef | null =>
-    resolveProviderRefForCapability(
-      "noteSuggestion",
-      config.providersConfig,
-      config.selectionToolbar.noteSuggestion.providerId,
-    ),
-  dequal,
-)
 
 export const selectionToolbarCustomActionRequestAtomFamily = atomFamily((actionId: string) =>
   createSelectionToolbarCustomActionRequestSliceAtom(actionId),

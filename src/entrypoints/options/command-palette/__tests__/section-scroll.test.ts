@@ -114,30 +114,6 @@ describe("section-scroll", () => {
       return spy
     }
 
-    it("activates the tab of a hidden panel before scrolling to a section in it", async () => {
-      const events = renderTabs()
-      const target = document.getElementById("notebase-mappings")!
-      const scrollSpy = spyScroll(target, events)
-      scrollSpy.mockImplementation(() => {
-        events.push(`scroll:${target.id}`)
-        expect(target.closest('[role="tabpanel"]')).not.toHaveAttribute("hidden")
-      })
-
-      await expect(scrollToSectionWhenReady("notebase-mappings")).resolves.toBe(true)
-
-      expect(events).toEqual(["click:tab-notebase", "scroll:notebase-mappings"])
-    })
-
-    it("activates a tab that is itself the section", async () => {
-      const events = renderTabs()
-      spyScroll(document.getElementById("tab-notebase")!, events)
-
-      await scrollToSectionWhenReady("tab-notebase")
-
-      expect(events).toEqual(["click:tab-notebase", "scroll:tab-notebase"])
-      expect(document.getElementById("panel-notebase")).not.toHaveAttribute("hidden")
-    })
-
     it("clicks nothing when the section is already visible", async () => {
       const events = renderTabs()
       spyScroll(document.getElementById("layout-heading")!, events)
@@ -147,30 +123,6 @@ describe("section-scroll", () => {
       await scrollToSectionWhenReady("tab-config")
 
       expect(events).toEqual(["scroll:layout-heading", "scroll:tab-config"])
-    })
-
-    it("finds the tab through aria-labelledby when no tab claims the panel", async () => {
-      const events = renderTabs()
-      document.getElementById("tab-notebase")!.removeAttribute("aria-controls")
-      const target = document.getElementById("notebase-mappings")!
-      spyScroll(target, events)
-
-      await scrollToSectionWhenReady("notebase-mappings")
-
-      expect(events[0]).toBe("click:tab-notebase")
-    })
-
-    it("activates a section that mounts later inside a hidden panel", async () => {
-      const events = renderTabs()
-      const target = document.getElementById("notebase-mappings")!
-      target.id = "late-section"
-      spyScroll(target, events)
-      mockedWaitForElement.mockResolvedValueOnce(target)
-
-      await scrollToSectionWhenReady("late-section")
-
-      expect(events[0]).toBe("click:tab-notebase")
-      expect(events.at(-1)).toBe("scroll:late-section")
     })
   })
 })

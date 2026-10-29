@@ -3,10 +3,8 @@ import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import type { RequestQueue } from "@/utils/request/request-queue"
 import { generateArticleSummary } from "@/utils/content/summary"
 import { cleanText } from "@/utils/content/utils"
-import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { db } from "@/utils/db/dexie/db"
 import { Sha256Hex } from "@/utils/hash"
-import { validateProviderHostedFeature } from "@/utils/hosted-ai/routing"
 import { logger } from "@/utils/logger"
 import { getProviderCacheIdentity } from "@/utils/providers/provider-ref"
 import { generateTextForProviderRef } from "./background-stream"
@@ -23,8 +21,8 @@ export async function getOrGenerateTranslationContextSummary(
     requestQueue: RequestQueue
   },
 ): Promise<string | null> {
-  const { title, textContent, providerRef, hostedFeature, cacheKeyParts, requestQueue } = args
-  validateProviderHostedFeature(providerRef, hostedFeature)
+  const { title, textContent, providerRef, cacheKeyParts, requestQueue } = args
+
   const routing: ProviderRequestRouting<PromptableProviderRef> =
     args.hostedFeature === undefined
       ? { providerRef: args.providerRef }
@@ -45,7 +43,7 @@ export async function getOrGenerateTranslationContextSummary(
   // Stable for this queue task, mirroring the translation batches: automatic
   // RequestQueue retries must reuse the idempotency key because the first
   // hosted response may have been lost after billing.
-  const hostedRequestId = providerRef.kind === "system" ? getRandomUUID() : undefined
+  const hostedRequestId = undefined
 
   const thunk = async (signal?: AbortSignal) => {
     const cachedAgain = await db.articleSummaryCache.get(cacheKey)

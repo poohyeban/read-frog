@@ -3,9 +3,7 @@ export const ROUTE_DEFS = [
   { path: "/preference" },
   { path: "/shortcuts" },
   { path: "/api-providers" },
-  { path: "/custom-actions" },
   { path: "/page-translation" },
-  { path: "/video-subtitles" },
   { path: "/floating-button" },
   { path: "/selection-toolbar" },
   { path: "/context-menu" },
@@ -20,7 +18,6 @@ export const ROUTE_DEFS = [
   // sidebar lists its links itself — but route exactly like any other page.
   { path: "/advanced/glossary" },
   { path: "/advanced/glossary/:glossaryId" },
-  { path: "/preference/config-backup" },
   { path: "/preference/extension-activation" },
   { path: "/page-translation/custom-css" },
   { path: "/page-translation/prompts" },
@@ -29,9 +26,4 @@ export const ROUTE_DEFS = [
   { path: "/page-translation/translation-control/never-auto-translate-websites" },
   { path: "/page-translation/translation-control/site-rules" },
   { path: "/page-translation/translation-queue" },
-  { path: "/video-subtitles/auto-start" },
-  { path: "/video-subtitles/style" },
-  { path: "/video-subtitles/style/custom-css" },
-  { path: "/video-subtitles/prompts" },
-  { path: "/video-subtitles/subtitles-queue" },
 ] as const

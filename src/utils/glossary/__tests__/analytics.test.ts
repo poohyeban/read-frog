@@ -120,13 +120,6 @@ describe("trackGlossaryUsed", () => {
     expect(sendMessageMock).toHaveBeenCalledTimes(1)
   })
 
-  it("ignores hosted routes that build no glossary-bearing prompt of their own", () => {
-    trackGlossaryUsed("videoSubtitlesSegmentation", [term], "cmn")
-    trackGlossaryUsed("languageDetection", [term], "cmn")
-
-    expect(sendMessageMock).not.toHaveBeenCalled()
-  })
-
   it("falls back to the unknown provider rather than dropping the event", () => {
     trackGlossaryUsed("pageTranslation", [term], "cmn")
 

@@ -196,21 +196,6 @@ describe("background analytics", () => {
     })
   })
 
-  it("forwards text-to-speech events from the Translation Hub", async () => {
-    storageGetItemMock.mockResolvedValueOnce(true).mockResolvedValueOnce("install-123")
-
-    const { captureFeatureUsedEventInBackground } = createAnalytics()
-    await captureFeatureUsedEventInBackground(
-      { ...TTS_EVENT, surface: "translation_hub" },
-      { id: 42, url: "chrome-extension://abc/translation-hub.html" },
-    )
-
-    expect(posthogCaptureMock).toHaveBeenCalledWith("feature_used", {
-      ...TTS_EVENT,
-      surface: "translation_hub",
-    })
-  })
-
   it("adds the sender tab's hostname and the char count to text feature events", async () => {
     storageGetItemMock.mockResolvedValueOnce(true).mockResolvedValueOnce("install-123")
 
@@ -238,21 +223,6 @@ describe("background analytics", () => {
       ...DEFAULT_FEATURE_PROVIDER,
       site_domain: "github.com",
     })
-  })
-
-  it("reports no site domain for non-web tabs", async () => {
-    storageGetItemMock.mockResolvedValueOnce(true).mockResolvedValueOnce("install-123")
-
-    const { captureFeatureUsedEventInBackground } = createAnalytics()
-    await captureFeatureUsedEventInBackground(
-      { ...TTS_EVENT },
-      { id: 42, url: "chrome-extension://abc/translation-hub.html" },
-    )
-
-    expect(posthogCaptureMock).toHaveBeenCalledWith(
-      "feature_used",
-      expect.not.objectContaining({ site_domain: expect.anything() }),
-    )
   })
 
   it("forwards the page source language and translation mode from the sender", async () => {

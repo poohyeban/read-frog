@@ -1,9 +1,7 @@
 import type { ComponentProps } from "react"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { useEffect, useMemo, useRef } from "react"
-import { useHostedAiProviderOptions } from "@/components/llm-providers/use-hosted-ai-provider-options"
 import { SelectionPopover } from "@/components/ui/selection-popover"
-import { ReviewDueTab } from "@/components/ui/selection-popover/review-due-tab"
 import { SelectionToolbarErrorAlert } from "@/components/ui/selection-popover/selection-toolbar-error-alert"
 import { SelectionToolbarFooterContent } from "@/components/ui/selection-popover/selection-toolbar-footer-content"
 import { SelectionToolbarTitleContent } from "@/components/ui/selection-popover/selection-toolbar-title-content"
@@ -20,7 +18,6 @@ import {
 import { customActionRequestAtom } from "./atoms"
 import { CustomActionContent } from "./custom-action-content"
 import { CustomActionToolButton } from "./custom-action-tool-button"
-import { SaveToNotebaseButton } from "./save-to-notebase-button"
 import {
   buildCustomActionExecutionPlan,
   useCustomActionExecution,
@@ -37,7 +34,7 @@ function CustomActionFooterContent({
   providers,
   ...props
 }: ComponentProps<typeof SelectionToolbarFooterContent>) {
-  const customActionProviders = useHostedAiProviderOptions("customAction", providers)
+  const customActionProviders = providers
   return <SelectionToolbarFooterContent providers={customActionProviders} {...props} />
 }
 
@@ -163,7 +160,7 @@ export function CustomActionPanel() {
         />
         <SelectionToolbarErrorAlert error={error} />
       </SelectionPopover.Body>
-      <ReviewDueTab source="extension_custom_ai_action" />
+
       <CustomActionFooterContent
         paragraphsText={request.contextText}
         providers={providers}
@@ -174,13 +171,6 @@ export function CustomActionPanel() {
       >
         {action && (
           <>
-            <SaveToNotebaseButton
-              action={action}
-              failed={!!error}
-              isRunning={isRunning}
-              result={result}
-              surface={cardSurface}
-            />
             <CustomActionToolButton action={action} />
           </>
         )}

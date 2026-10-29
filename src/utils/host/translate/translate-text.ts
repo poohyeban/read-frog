@@ -25,11 +25,7 @@ import { Sha256Hex } from "../../hash"
 import { sendMessage } from "../../message"
 import { getInMemoryTranslation, storeInMemoryTranslation } from "./in-memory-translation-cache"
 import { prepareTranslationText } from "./text-preparation"
-import {
-  getPageTranslationSessionId,
-  getPageTranslationSessionProviderRef,
-  setPageTranslationSessionProviderRef,
-} from "./translation-session"
+import { getPageTranslationSessionId } from "./translation-session"
 
 /**
  * Minimum text length before a skip decision is attempted at all. Deliberately
@@ -111,14 +107,8 @@ async function buildWebPageHashComponents(
 ): Promise<string[]> {
   const preparedText = prepareTranslationText(text)
   const normalizedWebPageContext = normalizeWebPagePromptContext(webPageContext)
-  const providerConfig = providerRef.kind === "local" ? providerRef.config : null
-  const providerHashIdentity =
-    providerRef.kind === "local"
-      ? providerRef.config
-      : {
-          providerId: providerRef.providerId,
-          modelRevision: providerRef.modelRevision,
-        }
+  const providerConfig = providerRef.config
+  const providerHashIdentity = providerRef.config
   const hashComponents = [
     preparedText,
     JSON.stringify(providerHashIdentity),
@@ -181,24 +171,7 @@ async function buildWebPageHashComponents(
  * on one status snapshot: no per-paragraph status fetches, and a mid-session
  * status blip cannot fail in-flight paragraphs.
  */
-function getSessionProviderRefFor(
-  provider: ResolvedProviderRef<TranslateProviderConfig>,
-): SerializableProviderRef | null {
-  if (provider.kind !== "system") {
-    return null
-  }
-  const sessionRef = getPageTranslationSessionProviderRef()
-  if (
-    sessionRef?.kind !== "system" ||
-    sessionRef.providerId !== provider.id ||
-    sessionRef.modelTier !== provider.modelTier
-  ) {
-    return null
-  }
-  return sessionRef
-}
 
-const pendingSystemSerializes = new Map<string, Promise<SerializableProviderRef>>()
 /**
  * Most recently requested system-provider key. Stale stragglers — paragraphs
  * that captured the previous provider from config before a mid-session switch
@@ -206,7 +179,6 @@ const pendingSystemSerializes = new Map<string, Promise<SerializableProviderRef>
  * newer paragraphs converged on, which would evict it and force refetch
  * ping-pong.
  */
-let lastRequestedSystemKey: string | null = null
 
 /**
  * Resolve the transport ref for the requested provider. Snapshot misses do
@@ -233,46 +205,7 @@ export async function resolvePageProviderRef(
   sessionId: string | undefined,
   feature: HostedAiTextStreamRoute,
 ): Promise<SerializableProviderRef> {
-  if (provider.kind === "local") {
-    return serializeProviderRef(provider, feature)
-  }
-
-  // The feature is part of the key: two features on the same provider and tier
-  // gate on different tier statuses, so they must not share an in-flight fetch.
-  const key = `${provider.id}:${provider.modelTier}:${feature}`
-  lastRequestedSystemKey = key
-
-  // The session snapshot belongs to the page-translation run; other features
-  // must not adopt it, and must not overwrite it below.
-  const sessionRef = feature === "pageTranslation" ? getSessionProviderRefFor(provider) : null
-  if (sessionRef) {
-    return sessionRef
-  }
-
-  let promise = pendingSystemSerializes.get(key)
-  if (!promise) {
-    const created = serializeProviderRef(provider, feature)
-    promise = created
-    pendingSystemSerializes.set(key, created)
-    void created
-      .catch(() => undefined)
-      .finally(() => {
-        if (pendingSystemSerializes.get(key) === created) {
-          pendingSystemSerializes.delete(key)
-        }
-      })
-  }
-
-  const providerRef = await promise
-  if (
-    feature === "pageTranslation" &&
-    sessionId !== undefined &&
-    getPageTranslationSessionId() === sessionId &&
-    key === lastRequestedSystemKey
-  ) {
-    setPageTranslationSessionProviderRef(providerRef)
-  }
-  return providerRef
+  return serializeProviderRef(provider, feature)
 }
 
 export interface TranslateTextOptions {

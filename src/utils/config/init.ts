@@ -2,7 +2,6 @@ import type { Config } from "@/types/config/config"
 import type { ConfigMeta } from "@/types/config/meta"
 import { storage } from "#imports"
 import { configSchema } from "@/types/config/config"
-import { isAPIProviderConfig } from "@/types/config/provider"
 import { initI18n } from "@/utils/i18n"
 import {
   buildFreshDefaultConfig,
@@ -11,7 +10,6 @@ import {
   DEFAULT_CONFIG,
 } from "../constants/config"
 import { logger } from "../logger"
-import { runMigration } from "./migration"
 
 export interface InitializeConfigResult {
   /**
@@ -49,18 +47,6 @@ export async function initializeConfig(): Promise<InitializeConfigResult> {
     currentVersion = configMeta?.schemaVersion ?? 1
   }
 
-  while (currentVersion < CONFIG_SCHEMA_VERSION) {
-    const nextVersion = currentVersion + 1
-    try {
-      config = await runMigration(nextVersion, config)
-      didConfigChange = true
-      currentVersion = nextVersion
-    } catch (error) {
-      console.error(`Migration to version ${nextVersion} failed:`, error)
-      currentVersion = nextVersion
-    }
-  }
-
   const parsedConfig = configSchema.safeParse(config)
   if (parsedConfig.success) {
     // Stored as every reader gets it: defaults filled in, the selection
@@ -75,16 +61,6 @@ export async function initializeConfig(): Promise<InitializeConfigResult> {
     // The rebuilt config is untouched defaults, so recovered users get the
     // same one-time provider selection a genuine fresh install does.
     isFreshInstall = true
-  }
-
-  if (import.meta.env.DEV) {
-    const apiKeyResult = applyAPIKeysFromEnv(config)
-    config = apiKeyResult.config
-    didConfigChange = didConfigChange || apiKeyResult.changed
-
-    const betaResult = applyDevBetaExperience(config)
-    config = betaResult.config
-    didConfigChange = didConfigChange || betaResult.changed
   }
 
   const didMetaNeedUpdate =
@@ -102,55 +78,4 @@ export async function initializeConfig(): Promise<InitializeConfigResult> {
   }
 
   return { isFreshInstall }
-}
-
-function applyAPIKeysFromEnv(config: Config): { config: Config; changed: boolean } {
-  let changed = false
-
-  const providersConfig = config.providersConfig.map((providerConfig) => {
-    if (!isAPIProviderConfig(providerConfig)) {
-      return providerConfig
-    }
-
-    const apiKeyEnvName = `WXT_${providerConfig.provider.toUpperCase()}_API_KEY`
-    const envApiKey = import.meta.env[apiKeyEnvName] as string | undefined
-    if (!envApiKey || providerConfig.apiKey === envApiKey) {
-      return providerConfig
-    }
-
-    changed = true
-    return {
-      ...providerConfig,
-      apiKey: envApiKey,
-    }
-  })
-
-  if (!changed) {
-    return { config, changed: false }
-  }
-
-  return {
-    config: {
-      ...config,
-      providersConfig,
-    },
-    changed: true,
-  }
-}
-
-function applyDevBetaExperience(config: Config): { config: Config; changed: boolean } {
-  if (config.betaExperience.enabled) {
-    return { config, changed: false }
-  }
-
-  return {
-    config: {
-      ...config,
-      betaExperience: {
-        ...config.betaExperience,
-        enabled: true,
-      },
-    },
-    changed: true,
-  }
 }

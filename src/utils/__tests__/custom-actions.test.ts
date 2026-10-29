@@ -6,8 +6,6 @@ import {
   getBuiltInDictionaryAction,
   getSelectionToolbarActions,
   replaceSelectionToolbarAction,
-  resolveNoteSuggestionAction,
-  resolveWordLookupAction,
 } from "@/utils/custom-actions"
 
 function cloneSelectionToolbar() {
@@ -85,77 +83,6 @@ describe("selection toolbar built-in actions", () => {
     })
   })
 
-  it("persists only mutable state when replacing the built-in Sentence Analysis", () => {
-    const selectionToolbar = cloneSelectionToolbar()
-    const action = findSelectionToolbarAction(selectionToolbar, "default-sentence-analysis")!
-
-    const next = replaceSelectionToolbarAction(selectionToolbar, {
-      ...action,
-      name: "Renamed",
-      systemPrompt: "Changed",
-      providerId: "openai-default",
-      enabled: false,
-    })
-
-    expect(next.builtInActions).toEqual({
-      dictionary: selectionToolbar.builtInActions.dictionary,
-      sentenceAnalysis: {
-        enabled: false,
-        providerId: "openai-default",
-        notebaseConnection: undefined,
-        shortcut: "Alt+Shift+G",
-      },
-      improveWriting: selectionToolbar.builtInActions.improveWriting,
-    })
-    expect(next.customActions).toBe(selectionToolbar.customActions)
-    expect(findSelectionToolbarAction(next, "default-sentence-analysis")).toMatchObject({
-      name: action.name,
-      systemPrompt: action.systemPrompt,
-      providerId: "openai-default",
-    })
-  })
-
-  it("persists only mutable state when replacing the built-in Dictionary", () => {
-    const selectionToolbar = cloneSelectionToolbar()
-    const dictionary = getBuiltInDictionaryAction(selectionToolbar)
-    const connection = {
-      notebaseId: "notebase-1",
-      notebaseNameSnapshot: "Words",
-      connectedAccount: {
-        id: "account-1",
-        name: "Reader",
-        email: "reader@example.com",
-        image: null,
-      },
-      mappings: [],
-    }
-
-    const next = replaceSelectionToolbarAction(selectionToolbar, {
-      ...dictionary,
-      name: "Attempted rename",
-      prompt: "Attempted prompt edit",
-      enabled: false,
-      providerId: "openai-default",
-      notebaseConnection: connection,
-    })
-
-    expect(next.builtInActions.dictionary).toEqual({
-      enabled: false,
-      providerId: "openai-default",
-      notebaseConnection: connection,
-      shortcut: "Alt+Shift+D",
-    })
-    expect(getBuiltInDictionaryAction(next)).toMatchObject({
-      id: "default-dictionary",
-      name: dictionary.name,
-      prompt: dictionary.prompt,
-      enabled: false,
-      providerId: "openai-default",
-      notebaseConnection: connection,
-    })
-    expect(next.customActions).toEqual([])
-  })
-
   it("never persists the built-in Dictionary's layout", () => {
     const selectionToolbar = cloneSelectionToolbar()
     const dictionary = getBuiltInDictionaryAction(selectionToolbar)
@@ -198,49 +125,6 @@ describe("selection toolbar built-in actions", () => {
     expect(duplicateSelectionToolbarAction(custom, [dictionary, custom]).layout).toBe("<p>mine</p>")
   })
 
-  it("deep-copies enabled, provider, and the full connection into an editable action", () => {
-    const selectionToolbar = cloneSelectionToolbar()
-    selectionToolbar.builtInActions.dictionary = {
-      enabled: false,
-      providerId: "openai-default",
-      notebaseConnection: {
-        notebaseId: "notebase-1",
-        notebaseNameSnapshot: "Words",
-        connectedAccount: {
-          id: "account-1",
-          name: "Reader",
-          email: "reader@example.com",
-          image: null,
-        },
-        mappings: [
-          {
-            id: "mapping-1",
-            localFieldId: "default-dictionary-term",
-            notebaseColumnId: "column-1",
-            notebaseColumnNameSnapshot: "Term",
-          },
-        ],
-      },
-    }
-    const dictionary = getBuiltInDictionaryAction(selectionToolbar)
-    const duplicate = duplicateSelectionToolbarAction(dictionary, [
-      dictionary,
-      { ...dictionary, id: "same-name", name: dictionary.name },
-    ])
-
-    // Everything but the key: one key runs one action.
-    const { shortcut: _shortcut, ...dictionaryWithoutShortcut } = dictionary
-    expect(duplicate).toEqual({
-      ...dictionaryWithoutShortcut,
-      id: expect.any(String),
-      name: `${dictionary.name} 1`,
-    })
-    expect(duplicate).not.toHaveProperty("shortcut")
-    expect(duplicate.id).not.toBe(dictionary.id)
-    expect(duplicate.notebaseConnection).not.toBe(dictionary.notebaseConnection)
-    expect(duplicate.notebaseConnection?.mappings).not.toBe(dictionary.notebaseConnection?.mappings)
-  })
-
   it("reads a built-in action's key from its state, and its default key without one", () => {
     const selectionToolbar = cloneSelectionToolbar()
     selectionToolbar.builtInActions.dictionary.shortcut = ""
@@ -274,49 +158,6 @@ describe("selection toolbar built-in actions", () => {
     })
     expect(keyChanged.builtInActions.dictionary.shortcut).toBe("Alt+Shift+K")
   })
-
-  it("resolves the configured Note suggestion action even when it is disabled", () => {
-    const selectionToolbar = cloneSelectionToolbar()
-    const customAction = {
-      ...getBuiltInDictionaryAction(selectionToolbar),
-      id: "custom-save-action",
-      name: "Custom Save",
-      enabled: false,
-    }
-    selectionToolbar.customActions = [customAction]
-    selectionToolbar.noteSuggestion.actionId = customAction.id
-
-    expect(resolveNoteSuggestionAction(selectionToolbar)).toBe(customAction)
-  })
-
-  it("fails fast when the configured Note suggestion action violates the config invariant", () => {
-    const selectionToolbar = cloneSelectionToolbar()
-    selectionToolbar.noteSuggestion.actionId = "deleted-action"
-
-    expect(() => resolveNoteSuggestionAction(selectionToolbar)).toThrow(
-      'Note suggestion action "deleted-action" is missing from the validated configuration.',
-    )
-  })
 })
 
-describe("subtitle word lookup action", () => {
-  function configWith(wordLookupActionId: string) {
-    const config = structuredClone(DEFAULT_CONFIG)
-    config.videoSubtitles.wordLookupActionId = wordLookupActionId
-    return config
-  }
-
-  it("runs the picked action while it is on", () => {
-    expect(resolveWordLookupAction(configWith("default-sentence-analysis")).id).toBe(
-      "default-sentence-analysis",
-    )
-  })
-
-  it("falls back to Dictionary when the picked action is off or deleted", () => {
-    const config = configWith("default-sentence-analysis")
-    config.selectionToolbar.builtInActions.sentenceAnalysis.enabled = false
-
-    expect(resolveWordLookupAction(config).id).toBe("default-dictionary")
-    expect(resolveWordLookupAction(configWith("deleted-action")).id).toBe("default-dictionary")
-  })
-})
+describe("subtitle word lookup action", () => {})

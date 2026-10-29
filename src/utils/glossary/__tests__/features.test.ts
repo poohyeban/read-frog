@@ -12,10 +12,6 @@ describe("GLOSSARY_FEATURE_KEYS", () => {
     ])
   })
 
-  it("excludes note suggestion, which is a dictionary lookup rather than a translation", () => {
-    expect(GLOSSARY_FEATURE_KEYS).not.toContain("noteSuggestion")
-  })
-
   it("only names features the provider registry knows about", () => {
     for (const key of GLOSSARY_FEATURE_KEYS) {
       expect(FEATURE_KEYS).toContain(key)

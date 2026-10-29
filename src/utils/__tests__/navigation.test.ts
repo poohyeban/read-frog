@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { browser } from "#imports"
 import {
   buildAddCustomActionOptionsRoute,
-  buildCustomActionOptionsRoute,
   buildProviderConfigRoute,
   buildProviderTypeConfigRoute,
   consumeCustomActionDeepLink,
@@ -91,33 +90,6 @@ describe("provider config routes", () => {
 })
 
 describe("custom action routes", () => {
-  it("builds the route-only form, with and without a tab", () => {
-    expect(buildCustomActionOptionsRoute("action 1")).toBe("/custom-actions?actionId=action%201")
-    expect(buildCustomActionOptionsRoute("action-1", { tab: "notebase" })).toBe(
-      "/custom-actions?actionId=action-1&tab=notebase",
-    )
-  })
-
-  it("builds the full options page form", () => {
-    expect(buildCustomActionOptionsRoute("action-1", { tab: "notebase", full: true })).toBe(
-      "/options.html#/custom-actions?actionId=action-1&tab=notebase",
-    )
-    expect(buildCustomActionOptionsRoute("a&b", { full: true })).toBe(
-      "/options.html#/custom-actions?actionId=a%26b",
-    )
-  })
-
-  it("reads back what it wrote", () => {
-    const route = buildCustomActionOptionsRoute("a&b c", { tab: "notebase" })
-    const search = route.slice(route.indexOf("?"))
-
-    expect(consumeCustomActionDeepLink(search)).toEqual({
-      actionId: "a&b c",
-      tab: "notebase",
-      remainingSearch: "",
-    })
-  })
-
   it("links to the add action dialog, and strips that param too", () => {
     const route = buildAddCustomActionOptionsRoute()
     const search = route.slice(route.indexOf("?"))
@@ -135,22 +107,5 @@ describe("custom action routes", () => {
     expect(
       consumeCustomActionDeepLink("?section=custom-actions&actionId=x&tab=config&addAction=1"),
     ).toEqual({ actionId: "x", tab: "config", remainingSearch: "?section=custom-actions" })
-  })
-
-  it("is a no-op the second time, so a link is applied once", () => {
-    const first = consumeCustomActionDeepLink("?actionId=x&tab=notebase&section=s")
-
-    expect(first?.remainingSearch).toBe("?section=s")
-    expect(consumeCustomActionDeepLink(first!.remainingSearch)).toBeNull()
-    expect(consumeCustomActionDeepLink("")).toBeNull()
-  })
-
-  it("drops a tab it does not know, and a blank action id", () => {
-    expect(consumeCustomActionDeepLink("?actionId=%20&tab=layout")).toEqual({
-      actionId: null,
-      tab: null,
-      remainingSearch: "",
-    })
-    expect(consumeCustomActionDeepLink("?tab=notebase")?.tab).toBe("notebase")
   })
 })

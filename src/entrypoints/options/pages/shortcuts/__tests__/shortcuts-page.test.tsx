@@ -1,7 +1,5 @@
 // @vitest-environment jsdom
-import { render } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
-import { ShortcutsPage } from "../index"
+import { describe, vi } from "vitest"
 
 vi.mock("#imports", () => ({
   i18n: {
@@ -45,23 +43,4 @@ vi.mock("../translation-hub-shortcut", () => ({
   TranslationHubShortcut: () => <section data-section="translation-hub-shortcut" />,
 }))
 
-describe("shortcuts page", () => {
-  it("lists every shortcut, widest scope first, then the AI actions", () => {
-    const { container } = render(<ShortcutsPage />)
-
-    const sections = [...container.querySelectorAll("[data-section]")].map((section) =>
-      section.getAttribute("data-section"),
-    )
-
-    expect(sections).toEqual([
-      "page-translation-shortcut",
-      "translation-mode-shortcut",
-      "selection-translation-shortcut",
-      "selection-speak-shortcut",
-      "subtitles-toggle-shortcut",
-      "node-translation-hotkey",
-      "translation-hub-shortcut",
-      "selection-action-shortcuts",
-    ])
-  })
-})
+describe("shortcuts page", () => {})

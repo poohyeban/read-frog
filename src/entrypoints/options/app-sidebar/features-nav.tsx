@@ -2,8 +2,6 @@ import type { ReactNode } from "react"
 import { Icon } from "@iconify/react"
 import { useState } from "react"
 import { Link, useLocation } from "react-router"
-import { browser } from "#imports"
-import { NewBadge } from "@/components/badges/new-badge"
 import {
   Collapsible,
   CollapsibleContent,
@@ -20,8 +18,6 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/base-ui/sidebar"
-import { env } from "@/env"
-import { TRANSLATION_HUB_PAGE_PATH } from "@/utils/constants/translation-hub"
 import { i18n } from "@/utils/i18n"
 
 const OVERLAY_TOOLS_PATHS = ["/floating-button", "/selection-toolbar", "/context-menu"] as const
@@ -50,78 +46,13 @@ export function FeaturesNav() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              render={<Link to="/custom-actions" />}
-              isActive={pathname === "/custom-actions"}
-              tooltip={i18n.t("options.selectionToolbar.customActions.title")}
+              render={<Link to="/page-translation" />}
+              isActive={isTranslationActive}
             >
-              <Icon icon="tabler:sparkles" />
-              <span>{i18n.t("options.selectionToolbar.customActions.title")}</span>
+              <Icon icon="tabler:language" />
+              <span>{i18n.t("options.translation.title")}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
-
-          <CollapsibleNavGroup active={isTranslationActive}>
-            <SidebarMenuItem>
-              <CollapsibleTrigger
-                render={
-                  <SidebarMenuButton
-                    isActive={isTranslationActive}
-                    tooltip={i18n.t("options.sidebar.translation")}
-                  />
-                }
-              >
-                {/* Page translation's own icon stands for the group: it is the
-                    feature the other two are variations of. */}
-                <Icon icon="ri:translate" />
-                <span>{i18n.t("options.sidebar.translation")}</span>
-                <Icon
-                  icon="tabler:chevron-right"
-                  className="ml-auto transition-transform duration-200 group-data-open/collapsible:rotate-90"
-                />
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  <SidebarMenuSubItem>
-                    <SidebarMenuSubButton
-                      render={<Link to="/page-translation" />}
-                      isActive={pathname.startsWith("/page-translation")}
-                    >
-                      <span>{i18n.t("options.translation.title")}</span>
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                  <SidebarMenuSubItem>
-                    <SidebarMenuSubButton
-                      render={<Link to="/video-subtitles" />}
-                      isActive={pathname.startsWith("/video-subtitles")}
-                    >
-                      <span>{i18n.t("options.videoSubtitles.title")}</span>
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                  <SidebarMenuSubItem>
-                    <SidebarMenuSubButton
-                      render={<Link to="/input-translation" />}
-                      isActive={pathname === "/input-translation"}
-                    >
-                      <span>{i18n.t("options.inputTranslation.title")}</span>
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                  <SidebarMenuSubItem>
-                    <SidebarMenuSubButton
-                      render={
-                        <a
-                          href={`${env.WXT_WEBSITE_URL}/pdf-translation`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        />
-                      }
-                    >
-                      <span className="truncate">{i18n.t("options.tools.pdfTranslation")}</span>
-                      <NewBadge size="sm" className="ml-auto" />
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                </SidebarMenuSub>
-              </CollapsibleContent>
-            </SidebarMenuItem>
-          </CollapsibleNavGroup>
 
           <CollapsibleNavGroup active={isOverlayToolsActive}>
             <SidebarMenuItem>
@@ -182,21 +113,6 @@ export function FeaturesNav() {
             </SidebarMenuButton>
           </SidebarMenuItem>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              render={
-                <a
-                  href={browser.runtime.getURL(TRANSLATION_HUB_PAGE_PATH)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              }
-              tooltip={i18n.t("options.tools.translationHub")}
-            >
-              <Icon icon="tabler:language-hiragana" />
-              <span>{i18n.t("options.tools.translationHub")}</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
           <CollapsibleNavGroup active={isAdvancedActive}>
             <SidebarMenuItem>
               <CollapsibleTrigger

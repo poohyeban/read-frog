@@ -2,7 +2,6 @@ import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { FeatureUsageContext } from "@/types/analytics"
 import type { Config } from "@/types/config/config"
 import debounce from "debounce"
-import { toastManager } from "@/components/ui/base-ui/toast"
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
 import { createFeatureUsageContext, trackFeatureUsed } from "@/utils/analytics"
 import { classifyFailureReason } from "@/utils/analytics-failure-reason"
@@ -415,19 +414,6 @@ export class PageTranslationManager implements IPageTranslationManager {
 
     const availability = await checkProviderAvailability(requestedProviderConfig, "pageTranslation")
     if (this.pendingStart !== startToken) {
-      return
-    }
-    if (!availability.available) {
-      toastManager.add({ type: "error", title: availability.message })
-      if (trackedContext) {
-        void trackFeatureUsed({
-          ...trackedContext,
-          ...providerAnalytics,
-          ...pageAnalytics(),
-          outcome: "failure",
-          failure_reason: "precheck",
-        })
-      }
       return
     }
 

@@ -1,14 +1,11 @@
 import { useAtom, useAtomValue } from "jotai"
 import { useMemo } from "react"
 import ProviderSelector from "@/components/llm-providers/provider-selector"
-import { useHostedAiProviderOptions } from "@/components/llm-providers/use-hosted-ai-provider-options"
-import { useHostedAiStatus } from "@/components/llm-providers/use-hosted-ai-status"
 import { Label } from "@/components/ui/base-ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/base-ui/radio-group"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { resolveLanguageDetectionConfigForModeChange } from "@/utils/config/helpers"
 import { i18n } from "@/utils/i18n"
-import { isProviderSelectorOptionDisabled } from "@/utils/providers/provider-display"
 import { getSelectableProvidersForCapability } from "@/utils/providers/provider-registry"
 import { ConfigItem } from "../../../components/config-item"
 import { ConfigSection } from "../../../components/config-section"
@@ -27,13 +24,12 @@ export function LanguageDetectionConfig() {
   )
   // Adds the Ultra badge and grays out tiers this account cannot run, matching
   // every other provider dropdown.
-  const providerOptions = useHostedAiProviderOptions("languageDetection", selectableProviders)
-  const { status } = useHostedAiStatus()
+  const providerOptions = selectableProviders
 
   // Local providers do not carry a disabled flag, while Built-in AI can be
   // disabled by account access. Count every selectable option so a configured
   // local LLM keeps this control usable even when hosted AI is unavailable.
-  const hasProviders = providerOptions.some((option) => !isProviderSelectorOptionDisabled(option))
+  const hasProviders = providerOptions.length > 0
   const isLLMMode = languageDetection.mode === "llm"
 
   const statusIndicator = useMemo(() => {
@@ -82,7 +78,6 @@ export function LanguageDetectionConfig() {
                 languageDetection,
                 value,
                 providersConfig,
-                status,
               )
 
               // No provider can run LLM detection for this account, so arming

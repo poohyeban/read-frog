@@ -12,10 +12,7 @@ import {
   getLanguageDetectionSystemPrompt,
   parseDetectedLanguageCode,
 } from "@/utils/prompts/language-detection"
-import {
-  HostedAiProviderUnavailableError,
-  serializeProviderRef,
-} from "@/utils/providers/provider-ref"
+import { serializeProviderRef } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { cleanText } from "./utils"
 
@@ -77,9 +74,7 @@ export async function detectLanguageWithSource(
         type: "warning",
         title: isSpeaking
           ? i18n.t("speak.languageDetectionFallback")
-          : error instanceof HostedAiProviderUnavailableError
-            ? error.message
-            : i18n.t("languageDetection.llmFailed"),
+          : i18n.t("languageDetection.llmFailed"),
         description: isSpeaking ? i18n.t("speak.languageDetectionSettingsHint") : undefined,
         id: LLM_DETECTION_FALLBACK_TOAST_ID,
       })
@@ -165,9 +160,7 @@ export async function detectLanguageWithLLM(
       // the same null is what made the caller's `languageDetection.llmFailed`
       // toast unreachable, so a user who turned LLM detection on and can never
       // run it was told nothing at all.
-      if (error instanceof HostedAiProviderUnavailableError) {
-        throw error
-      }
+
       logger.error("Failed to resolve the language detection provider:", error)
       return null
     }

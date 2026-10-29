@@ -10,7 +10,6 @@ import type {
   TranslateProviderConfig,
 } from "@/types/config/provider"
 import type { FeatureKey } from "@/utils/constants/feature-providers"
-import type { HostedAiStatus } from "@/utils/hosted-ai/types"
 import {
   isAPIProviderConfig,
   isLLMProviderConfig,
@@ -20,7 +19,7 @@ import {
 } from "@/types/config/provider"
 import { FEATURE_KEYS, FEATURE_PROVIDER_DEFS } from "@/utils/constants/feature-providers"
 import { getSelectionToolbarActions, patchSelectionToolbarAction } from "@/utils/custom-actions"
-import { getUsableProviderIdsForCapability } from "@/utils/providers/provider-availability"
+import { getProviderIdsForCapability } from "@/utils/providers/provider-registry"
 
 export function getProviderConfigById<T extends ProviderConfig>(
   providersConfig: T[],
@@ -94,7 +93,6 @@ export function resolveLanguageDetectionConfigForModeChange(
   currentConfig: Config["languageDetection"],
   nextMode: LanguageDetectionMode,
   providersConfig: ProvidersConfig,
-  status?: HostedAiStatus,
 ): Partial<Config["languageDetection"]> | null {
   if (nextMode === "basic") {
     return { mode: "basic" }
@@ -106,11 +104,9 @@ export function resolveLanguageDetectionConfigForModeChange(
   // hosted detection. Filtered by usability, because the built-ins are in that
   // list for every account — arming LLM mode against a tier the plan does not
   // fund produces a green "enabled" indicator over a path that never runs.
-  const availableIds = getUsableProviderIdsForCapability(
-    "languageDetection",
-    providersConfig,
-    status,
-  )
+  const availableIds = getProviderIdsForCapability("languageDetection", providersConfig, {
+    requireEnable: true,
+  })
   if (availableIds.length === 0) {
     return null
   }
@@ -133,14 +129,15 @@ export function computeProviderFallbacksAfterDeletion(
   deletedProviderId: string,
   config: Config,
   remainingProviders: ProvidersConfig,
-  status?: HostedAiStatus,
 ): Partial<Record<FeatureKey, string>> {
   const updates: Partial<Record<FeatureKey, string>> = {}
   for (const key of FEATURE_KEYS) {
     const def = FEATURE_PROVIDER_DEFS[key]
     const currentId = def.getProviderId(config)
     if (currentId !== deletedProviderId) continue
-    const fallbackProviderId = getUsableProviderIdsForCapability(key, remainingProviders, status)[0]
+    const fallbackProviderId = getProviderIdsForCapability(key, remainingProviders, {
+      requireEnable: true,
+    })[0]
     if (fallbackProviderId) updates[key] = fallbackProviderId
   }
   return updates
@@ -169,17 +166,17 @@ export function computeProviderFallbacksAfterDeletion(
 export function findFeatureMissingProvider(
   remainingProviders: ProvidersConfig,
   config?: Config,
-  status?: HostedAiStatus,
 ): FeatureKey | "languageDetection" | null {
   for (const key of FEATURE_KEYS) {
-    if (!getUsableProviderIdsForCapability(key, remainingProviders, status)[0]) {
+    if (!getProviderIdsForCapability(key, remainingProviders, { requireEnable: true })[0]) {
       return key
     }
   }
 
   if (
     config?.languageDetection.mode === "llm" &&
-    getUsableProviderIdsForCapability("languageDetection", remainingProviders, status).length === 0
+    getProviderIdsForCapability("languageDetection", remainingProviders, { requireEnable: true })
+      .length === 0
   ) {
     return "languageDetection"
   }
@@ -196,7 +193,6 @@ export function computeSelectionToolbarCustomActionFallbacksAfterDeletion(
   deletedProviderId: string,
   config: Config,
   remainingProviders: ProvidersConfig,
-  status?: HostedAiStatus,
 ): Config["selectionToolbar"] | null {
   const affectedActions = getSelectionToolbarActions(config.selectionToolbar).filter(
     (action) => action.providerId === deletedProviderId,
@@ -206,11 +202,9 @@ export function computeSelectionToolbarCustomActionFallbacksAfterDeletion(
     return null
   }
 
-  const fallbackProviderId = getUsableProviderIdsForCapability(
-    "customAction",
-    remainingProviders,
-    status,
-  )[0]
+  const fallbackProviderId = getProviderIdsForCapability("customAction", remainingProviders, {
+    requireEnable: true,
+  })[0]
   if (!fallbackProviderId) {
     return null
   }
@@ -234,7 +228,6 @@ export function computeLanguageDetectionFallbackAfterDeletion(
   deletedProviderId: string,
   config: Config,
   remainingProviders: ProvidersConfig,
-  status?: HostedAiStatus,
 ): string | undefined | null {
   if (config.languageDetection.mode !== "llm") return null
   if (config.languageDetection.providerId !== deletedProviderId) return null
@@ -242,5 +235,7 @@ export function computeLanguageDetectionFallbackAfterDeletion(
   // Built-in AI is always in the capability list, but only counts here when the
   // account can actually run it: handing detection to a walled-off tier is what
   // produced a green "LLM detection enabled" card over a path that never ran.
-  return getUsableProviderIdsForCapability("languageDetection", remainingProviders, status)[0]
+  return getProviderIdsForCapability("languageDetection", remainingProviders, {
+    requireEnable: true,
+  })[0]
 }

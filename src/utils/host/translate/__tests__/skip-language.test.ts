@@ -1,7 +1,7 @@
 import type { LangCodeISO6393 } from "@read-frog/definitions"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { detectLanguage } from "@/utils/content/language"
-import { MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION, shouldSkipByLanguage } from "../translate-text"
+import { shouldSkipByLanguage } from "../translate-text"
 
 // Mock detectLanguage
 vi.mock("@/utils/content/language", () => ({
@@ -62,25 +62,6 @@ describe("shouldSkipByLanguage", () => {
   })
 
   describe("detection options", () => {
-    it("never routes a skip decision through an LLM", async () => {
-      mockedDetect.mockResolvedValueOnce("jpn")
-
-      const japaneseText = "これは日本語のテストです。日本語で書かれたテキストです。"
-      const skipLanguages: LangCodeISO6393[] = ["jpn"]
-
-      const result = await shouldSkipByLanguage(japaneseText, skipLanguages)
-
-      // This runs once per paragraph. Routing it through an LLM cost one hosted
-      // call per paragraph — hundreds per article — to avoid the occasional
-      // redundant translation, against the same weekly pool that funds page
-      // translation and subtitles.
-      expect(mockedDetect).toHaveBeenCalledWith(japaneseText, {
-        minLength: MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION,
-        enableLLM: false,
-      })
-      expect(result).toBe(true)
-    })
-
     it("does not skip when detection comes back empty", async () => {
       mockedDetect.mockResolvedValueOnce(null)
 

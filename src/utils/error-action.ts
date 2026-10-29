@@ -1,6 +1,3 @@
-import { env } from "@/env"
-import { i18n } from "@/utils/i18n"
-
 /**
  * A call to action carried alongside an error — "Upgrade", "Log in".
  * Described as data rather than a callback so the layer that raises the error
@@ -22,26 +19,7 @@ export interface ErrorAction {
  * one edit rather than a grep across features.
  */
 
-function websiteUrl(path: string): string {
-  return new URL(path, env.WXT_WEBSITE_URL).toString()
-}
-
-export function pricingUrl(): string {
-  return websiteUrl("/pricing")
-}
-
 /** Billing lives in the app's settings dialog, not on the marketing page. */
-export function billingUrl(): string {
-  return websiteUrl("/home")
-}
-
-export function logInUrl(): string {
-  return websiteUrl("/log-in")
-}
-
-export function upgradeAction(): ErrorAction {
-  return { label: i18n.t("action.upgrade"), url: pricingUrl() }
-}
 
 /**
  * Dunning, not cancellation: they already pay and the card just failed, so
@@ -49,10 +27,3 @@ export function upgradeAction(): ErrorAction {
  * again — and a button reading "Upgrade" would say the wrong thing to someone
  * who already did.
  */
-export function billingAction(): ErrorAction {
-  return { label: i18n.t("action.updatePayment"), url: billingUrl() }
-}
-
-export function logInAction(): ErrorAction {
-  return { label: i18n.t("account.login"), url: logInUrl() }
-}

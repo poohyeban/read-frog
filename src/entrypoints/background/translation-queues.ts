@@ -7,7 +7,6 @@ import type { ProviderRequestRouting } from "@/types/hosted-request"
 import type { MatchedTerm } from "@/utils/glossary/types"
 import type { PromptResolver } from "@/utils/host/translate/api/ai"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
-import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { storage } from "#imports"
 import { isLLMProviderConfig } from "@/types/config/provider"
 import { putBatchRequestRecord } from "@/utils/batch-request-record"
@@ -21,14 +20,12 @@ import {
 import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
-import { requireHostedFeature } from "@/utils/hosted-ai/routing"
 import { logger } from "@/utils/logger"
 import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
 import { BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
 import { RequestQueue } from "@/utils/request/request-queue"
-import { runStreamTextInBackground } from "./background-stream"
 import { ensureInitializedConfig } from "./config"
 
 type QueuedTranslationProvider = ProviderConfig | SerializableProviderRef
@@ -43,29 +40,15 @@ type QueuedTranslationRouting =
 export function getQueuedTranslationRouting(
   request: ProviderRequestRouting,
 ): QueuedTranslationRouting {
-  if (request.providerRef.kind === "local" && request.hostedFeature === undefined) {
-    return { provider: request.providerRef }
-  }
-  return {
-    provider: request.providerRef,
-    hostedFeature: requireHostedFeature(request.hostedFeature),
-  }
+  return { provider: request.providerRef }
 }
 
-function isSerializedPageProvider(
-  provider: QueuedTranslationProvider,
-): provider is SerializableProviderRef {
-  return "kind" in provider && (provider.kind === "local" || provider.kind === "system")
-}
-
-export function getLocalProviderConfig(provider: QueuedTranslationProvider): ProviderConfig | null {
-  if (!isSerializedPageProvider(provider)) return provider
-  return provider.kind === "local" ? provider.config : null
+export function getLocalProviderConfig(provider: QueuedTranslationProvider): ProviderConfig {
+  return "kind" in provider ? provider.config : provider
 }
 
 function getQueuedProviderId(provider: QueuedTranslationProvider): string {
-  const local = getLocalProviderConfig(provider)
-  return local?.id ?? (provider as Extract<SerializableProviderRef, { kind: "system" }>).providerId
+  return getLocalProviderConfig(provider).id
 }
 
 async function executeQueuedTranslation<TContext>(
@@ -83,35 +66,13 @@ async function executeQueuedTranslation<TContext>(
     glossaryTerms?: readonly MatchedTerm[]
   } = {},
 ): Promise<string> {
-  const { provider, hostedFeature } = routing
-  const local = getLocalProviderConfig(provider)
-  if (local) {
-    return executeTranslate(text, langConfig, local, promptResolver, options)
-  }
-
-  const system = provider as Extract<SerializableProviderRef, { kind: "system" }>
-  if (!options.hostedRequestId) {
-    throw new Error("Hosted page translation requires a stable requestId")
-  }
-  const targetLangName = LANG_CODE_TO_EN_NAME[langConfig.targetCode]
-  const { systemPrompt, prompt } = await promptResolver(targetLangName, text, {
-    isBatch: options.isBatch,
-    context: options.context,
-    glossaryTerms: options.glossaryTerms,
-  })
-  const result = await runStreamTextInBackground(
-    {
-      providerKind: "system",
-      providerId: system.providerId,
-      modelTier: system.modelTier,
-      requestId: options.hostedRequestId,
-      hostedFeature: requireHostedFeature(hostedFeature),
-      instructions: systemPrompt,
-      prompt,
-    },
-    { signal: options.signal },
+  return executeTranslate(
+    text,
+    langConfig,
+    getLocalProviderConfig(routing.provider),
+    promptResolver,
+    options,
   )
-  return result.output.trim()
 }
 
 export function parseBatchResult(result: string): string[] {
