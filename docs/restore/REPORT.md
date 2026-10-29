@@ -56,7 +56,7 @@ TTS 已接入真实播放链路；ASR 已实现 SDK 请求与响应规范化，*
 
 | 能力                          | 实际协议 / 实现                                                                                   | 已验证及限制                                                                                               |
 | ----------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| OpenAI-compatible 文本        | 现有 SDK Chat Completions                                                                         | 目标端点 / Header / Cookie / redirect 网络隔离测试；浏览器本地 HTTP 测试已配置 CI                          |
+| OpenAI-compatible 文本        | 现有 SDK Chat Completions                                                                         | 目标端点 / Header / Cookie / redirect 网络隔离测试；真实 Chromium + 本地 HTTP 端点回归通过                 |
 | OpenAI / Gemini / Ollama 文本 | 原 SDK 模型接口；OpenAI 原 Responses 行为保留                                                     | 四种 SDK 的自定义地址和凭据隔离自动测试；未向真实收费服务发送验收请求                                      |
 | Speech                        | POST `/audio/speech`，Base URL 通常含 `/v1`；JSON model / input / voice / speed / response_format | 真实本地 HTTP 协议测试，MP3 / WAV MIME 校验与格式匹配；当前返回完整音频字节，非实时音频流                  |
 | Transcription                 | POST `/audio/transcriptions`，SDK 生成 multipart；模型 / 音频 / 可选语言 / JSON 或 verbose_json   | 真实本地 HTTP 测试；SDK 校验响应；秒转毫秒，有限 / 非负 / end≥start；只有文本则返回空 segments，不伪造时间 |
@@ -98,13 +98,13 @@ Whisper 兼容服务仍需符合 SDK 的 verbose_json 结构；faster-whisper �
 
 - 修改前 Lite 基线：类型 / Lint、173 文件 / 1830 测试、生产构建通过。
 - 当前类型 / Lint 与全项目格式检查通过。
-- 最终全量 Vitest：**259 文件、2541 项全部通过，77.87 秒**，使用 SKIP_FREE_API=true。控制台有原 jsdom 的 navigation 未实现提示，未造成失败，不将其冒充真实浏览器导航验收。
+- 最终全量 Vitest：**260 文件、2544 项全部通过，本地 78.66 秒、CI 120.02 秒**，使用 SKIP_FREE_API=true。控制台有原 jsdom 的 navigation 未实现提示，未造成失败，不将其冒充真实浏览器导航验收。
 - 增加 / 恢复的覆盖：配置迁移 / 空服务 / 删除服务、术语、输入桥接、Actions、字幕获取 / 调度 / 导出、TTS 队列 / 替换、音频 HTTP、语言数据、YouTube URL 边界、错误凭据隔离。
 - GitHub Actions 真实浏览器回归暴露未配置音频服务时 Provider 选择器崩溃；修复空值渲染并保持受控选择。新增未配置、清除选择、删除最后一个 Provider 三项组件回归，均使用真实 Base UI Select。
 - 中间回归曾暴露旧装配未提供朗读 Context、旧禁用 Provider 断言、短假视频 ID、错误原文显示断言，均修正并完整复验。音频取消在 Blob 读取期间发生时，补充 SDK 调用前的 AbortSignal 检查，避免发送已取消请求。
 - Chromium MV3 生产构建与 ZIP 成功，精确数据和 SHA256 见 final-metrics.json。
 - **本云端真实 Chromium 尝试未通过扩展加载阶段**：15 秒内没有 Service Worker；此前同环境明确拒绝 unpacked 加载（administrator policy）。没有绕过管理策略，没有把单元测试冒充浏览器功能通过。
-- Playwright `e2e/extension.spec.ts` 使用真实 unpacked MV3、真实页面、真实本地 HTTP 服务，计划验证页面双语 / 仅译文 / 恢复、划词、输入、配置持久化、请求目标和 Key 隔离。协议服务是可控测试端点，不是对真实模型翻译质量的证明。CI 安装 Chromium，在 Xvfb 中执行，失败不跳过。
+- Playwright `e2e/extension.spec.ts` 使用真实 unpacked MV3、真实页面、真实本地 HTTP 服务，已在 GitHub Actions 验证页面双语 / 仅译文 / 恢复、划词、输入、Options 加载 / 刷新后配置持久化、请求目标和普通 / Shadow DOM 的 Key 隔离。协议服务是可控测试端点，不是对真实模型翻译质量的证明。CI 安装 Chromium，在 Xvfb 中执行，1 项端到端用例通过（用例 7.1 秒，运行 8.7 秒）。检查期间没有非本地 HTTP(S) 请求或 pageerror。
 - Actions 使用只读 contents 权限、frozen lockfile、Node 24、pnpm 12.10.1；先测试 / 构建 / 上传 ZIP，再执行 E2E 和上传报告。无部署 / 合并 / Release。旧上游 Claude / 贡献者信任 / 自动标签 / stale 运营工作流已删除，Git Hook 从已删除 Nx 切换到实际脚本。
 
 ## 7. 构建指标
@@ -125,8 +125,14 @@ Whisper 兼容服务仍需符合 SDK 的 verbose_json 结构；faster-whisper �
 
 已确认的上游行为：显示模式设置只影响下一次翻译，已翻译页面需要关闭后再开启以应用新模式；本次未添加即时重排机制。
 
-实际 YouTube / Netflix / X 登录态、站点近期 DOM 变化、长视频同步 / 导出、复杂编辑器、Chrome / Edge Service Worker 生命周期、声音设备与真实服务端部署仍需按 MANUAL-ACCEPTANCE.md 验收。当前没有确认的真实平台全覆盖结论；云环境加载失败也不能判为产品运行成功。
+实际 YouTube / Netflix / X 登录态、站点近期 DOM 变化、长视频同步 / 导出、复杂编辑器、Chrome / Edge Service Worker 生命周期、声音设备与真实服务端部署仍需按 MANUAL-ACCEPTANCE.md 验收。GitHub Actions 中核心文字流程已通过，不能扩展解读为真实视频平台或模型服务的全覆盖结论。
 
 后续确需工作分别为：不符合 OpenAI 响应结构的 ASR 服务 Adapter；不同 Voice / 格式 / 参数的 TTS 服务 Adapter；获授权的视频音频捕获；实时流式转录。四者均未在本轮擅自实现。无暂停后继续、无私有布局生成器、无任意远程图标、无视频自动 ASR 入口属于明确的保留边界，不是用 Mock 冒充完成。
 
-远程 PR / CI / Artifact 的实际结果将在交付时记录；已有本地阶段提交不依赖远程操作成功。
+## 9. 远程交付记录
+
+- 开发分支已推送至用户 Fork：`poohyeban/read-frog` / `codex/read-frog-independent`；[PR #1](https://github.com/poohyeban/read-frog/pull/1)，未合并、未发布 Release。
+- 生产代码提交 `d27511dfc8f9bc0abef7ef305b1d3f48d687dcc5` 的 [完整 CI](https://github.com/poohyeban/read-frog/actions/runs/40827815730) 成功：frozen install、Lint / TypeScript、2544 项单元 / 协议测试、Chromium ZIP、真实浏览器回归、产物上传。
+- [已验证的 Chromium 安装包 Artifact](https://github.com/poohyeban/read-frog/actions/runs/40827815730/artifacts/12877487270)，保留至 2026-11-28；[浏览器报告及 trace](https://github.com/poohyeban/read-frog/actions/runs/40827815730/artifacts/12877039626)，保留至 2026-11-12。Artifact 名称使用 GitHub PR merge SHA，其 head 为上述代码提交。
+- 下载 Artifact 并解压，再解压其中的 `read-frog-lite-0.2.0-chrome.zip`，加载含 `manifest.json` 的目录即可，不要求个人电脑编译。`final-metrics.json` 的 ZIP 字节 / SHA256 来自本云端构建；不同构建的时间戳 / 打包结果可能不同，不应用该 SHA 校验 CI Artifact 外层 ZIP。
+- 本文件的后续交付记录提交只更新文档，不改变上面已验证的生产源码。
