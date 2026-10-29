@@ -880,6 +880,31 @@ describe("pageTranslationManager mutation re-walk", () => {
     manager.stop()
   })
 
+  it("releases detached shadow observation roots and registers them again on reuse", async () => {
+    const host = document.createElement("section")
+    const child = document.createElement("p")
+    child.textContent = "Shadow content"
+    host.attachShadow({ mode: "open" }).append(child)
+    document.body.append(host)
+    const manager = new PageTranslationManager()
+    await manager.start()
+    await flushDomUpdates()
+    const roots = (manager as unknown as { mutationObservers: Map<HTMLElement, MutationObserver> })
+      .mutationObservers
+    expect(roots.has(child)).toBe(true)
+    const attachedCount = roots.size
+    host.remove()
+    await flushDomUpdates()
+    expect(roots.has(child)).toBe(false)
+    expect(roots.size).toBe(attachedCount - 1)
+    document.body.append(host)
+    await flushDomUpdates()
+    expect(roots.has(child)).toBe(true)
+    expect(roots.size).toBe(attachedCount)
+    manager.stop()
+    expect(roots.size).toBe(0)
+  })
+
   it("coalesces parent and descendant mutation additions into one chunked scan", async () => {
     const manager = new PageTranslationManager()
     await manager.start()
@@ -2381,7 +2406,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     await manager.start()
     await flushDomUpdates()
 
-    const observerCountAfterStart = (manager as any).mutationObservers.length
+    const observerCountAfterStart = (manager as any).mutationObservers.size
     expect(observerCountAfterStart).toBeGreaterThan(0)
 
     for (let i = 0; i < 5; i++) {
@@ -2391,7 +2416,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       await flushDomUpdates()
     }
 
-    expect((manager as any).mutationObservers.length).toBe(observerCountAfterStart)
+    expect((manager as any).mutationObservers.size).toBe(observerCountAfterStart)
 
     manager.stop()
   })

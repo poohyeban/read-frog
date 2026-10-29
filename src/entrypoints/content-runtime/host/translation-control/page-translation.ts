@@ -274,8 +274,7 @@ export class PageTranslationManager implements IPageTranslationManager {
   private boxlessUnitObserver: IntersectionObserver | null = null
   /** Box-less units still waiting for one of their boxes to intersect. */
   private pendingBoxlessUnits = new WeakSet<HTMLElement>()
-  private mutationObservers: MutationObserver[] = []
-  private observedMutationRoots = new WeakSet<Node>()
+  private mutationObservers = new Map<HTMLElement, MutationObserver>()
   private walkId: string | null = null
   private intersectionOptions: IntersectionObserverInit
   private walkBlockedElementsCache = new WeakSet<HTMLElement>()
@@ -585,8 +584,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
     this.pendingBoxlessUnits = new WeakSet()
     this.mutationObservers.forEach((observer) => observer.disconnect())
-    this.mutationObservers = []
-    this.observedMutationRoots = new WeakSet()
+    this.mutationObservers.clear()
 
     removeSiteRuleCSS(document)
     removeAllTranslatedWrapperNodes()
@@ -1183,8 +1181,7 @@ export class PageTranslationManager implements IPageTranslationManager {
   private observeMutations(container: HTMLElement, config?: Config): void {
     // Dynamic pages re-add the same subtrees repeatedly; without dedup every
     // re-added shadow host gained a duplicate subtree observer (#1831).
-    if (!this.observedMutationRoots.has(container)) {
-      this.observedMutationRoots.add(container)
+    if (!this.mutationObservers.has(container)) {
       const mutationObserver = new MutationObserver((records) => {
         void this.handleMutationRecords(records, container)
       })
@@ -1197,9 +1194,20 @@ export class PageTranslationManager implements IPageTranslationManager {
         attributeFilter: ["style", "class", "hidden", "aria-hidden"],
       })
 
-      this.mutationObservers.push(mutationObserver)
+      this.mutationObservers.set(container, mutationObserver)
     }
     this.observeIsolatedDescendantsMutations(container, config)
+  }
+
+  private releaseDetachedMutationRoots(): void {
+    for (const [root, observer] of this.mutationObservers) {
+      if (root.isConnected) continue
+      const pending = observer.takeRecords()
+      observer.disconnect()
+      this.mutationObservers.delete(root)
+      // Preserve queued cleanup/carry records before dropping the observer.
+      if (pending.length > 0) void this.handleMutationRecords(pending, root)
+    }
   }
 
   private static readonly SELF_NODE_CLASSES = [
@@ -1373,6 +1381,9 @@ export class PageTranslationManager implements IPageTranslationManager {
         this.cleanupDetachedTranslationArtifacts(record.removedNodes)
       }
       if (!this.isSelfInflictedRecord(record)) hostRecords.push(record)
+    }
+    if (records.some((record) => record.type === "childList" && record.removedNodes.length > 0)) {
+      this.releaseDetachedMutationRoots()
     }
     if (hostRecords.length === 0) return
 
