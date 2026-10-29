@@ -1,5 +1,6 @@
 import type { BrowserContext } from "@playwright/test"
 import type { Config } from "../src/types/config/config"
+import { readFile } from "node:fs/promises"
 import { createServer } from "node:http"
 import { resolve } from "node:path"
 import process from "node:process"
@@ -17,8 +18,9 @@ const original =
   "This paragraph provides enough English words for a realistic page translation check."
 const translated = "这是本地测试服务返回的译文。"
 const credential = "e2e-local-test-key"
+const structuredResult = "DeepSeek local structured result"
 
-test("unpacked MV3: translation, persistence, action diagnostics and credential isolation", async () => {
+test("unpacked MV3: translation, DeepSeek actions, diagnostics, images and credential isolation", async () => {
   const apiRequests: { authorization: string | undefined; body: string }[] = []
   const server = createServer(async (request, response) => {
     response.setHeader("Access-Control-Allow-Origin", "*")
@@ -38,7 +40,11 @@ test("unpacked MV3: translation, persistence, action diagnostics and credential 
       let body = ""
       for await (const chunk of request) body += chunk.toString()
       apiRequests.push({ authorization: request.headers.authorization, body })
-      const payload: { stream?: boolean; response_format?: { type: string } } = JSON.parse(body)
+      const payload: {
+        stream?: boolean
+        response_format?: { type: string }
+        messages: { role: string; content: string }[]
+      } = JSON.parse(body)
       if (payload.response_format?.type === "json_schema") {
         response.writeHead(400, { "Content-Type": "application/json" })
         response.end(
@@ -53,9 +59,34 @@ test("unpacked MV3: translation, persistence, action diagnostics and credential 
         return
       }
       if (payload.stream) {
+        let content = translated
+        if (payload.response_format?.type === "json_object") {
+          const schemaMessage = payload.messages.find(
+            (message) =>
+              message.role === "system" &&
+              message.content.startsWith("Return JSON that conforms to the following schema: "),
+          )
+          if (!schemaMessage) {
+            response
+              .writeHead(400, { "Content-Type": "application/json" })
+              .end(JSON.stringify({ error: { message: "JSON schema prompt is missing" } }))
+            return
+          }
+          const schema: { properties: Record<string, { type: string }> } = JSON.parse(
+            schemaMessage.content.slice(schemaMessage.content.indexOf("{")),
+          )
+          content = JSON.stringify(
+            Object.fromEntries(
+              Object.entries(schema.properties).map(([key, field]) => [
+                key,
+                field.type === "number" ? 2 : structuredResult,
+              ]),
+            ),
+          )
+        }
         response.setHeader("Content-Type", "text/event-stream")
         for (const choices of [
-          [{ index: 0, delta: { role: "assistant", content: translated }, finish_reason: null }],
+          [{ index: 0, delta: { role: "assistant", content }, finish_reason: null }],
           [{ index: 0, delta: {}, finish_reason: "stop" }],
         ])
           response.write(
@@ -160,6 +191,21 @@ test("unpacked MV3: translation, persistence, action diagnostics and credential 
     page.on("console", (message) => consoleMessages.push(message.text()))
     await page.goto(`${origin}/article`)
     await expect(page.locator("read-frog-lite button").first()).toBeVisible()
+    const logoDataURL = `data:image/png;base64,${(await readFile("src/assets/icons/read-frog.png")).toString("base64")}`
+    const floatingLogo = page.locator("read-frog-lite img").filter({ visible: true }).first()
+    await expect(floatingLogo).toHaveAttribute("src", logoDataURL)
+    await expect
+      .poll(() =>
+        floatingLogo.evaluate(
+          (element: HTMLImageElement) => element.complete && element.naturalWidth > 0,
+        ),
+      )
+      .toBe(true)
+    // The subtitle UI uses the same built-in image. Verify the shipped script
+    // embeds its bytes instead of issuing another chrome-extension URL request.
+    expect(await readFile(".output/chrome-mv3/content-scripts/subtitles.js", "utf8")).toContain(
+      logoDataURL,
+    )
     await page.keyboard.press("Alt+e")
     await expect(page.locator("#article .read-frog-translated-content-wrapper")).toContainText(
       translated,
@@ -245,6 +291,54 @@ test("unpacked MV3: translation, persistence, action diagnostics and credential 
       await expect(page.getByText("Unsupported response_format", { exact: false })).toHaveCount(0)
       await page.keyboard.press("Escape")
     }
+    // Use the real dedicated SDK through the same background/selection flow.
+    await worker.evaluate(async () => {
+      const api = (globalThis as unknown as { chrome: ExtensionAPI }).chrome
+      const config = (await api.storage.local.get("readFrogLiteConfig")).readFrogLiteConfig!
+      config.providersConfig = config.providersConfig.map((provider) =>
+        provider.id === config.pageTranslation.providerId
+          ? {
+              ...provider,
+              provider: "deepseek",
+              model: {
+                model: "deepseek-flash",
+                isCustomModel: true,
+                customModel: "deepseek-flash",
+              },
+            }
+          : provider,
+      )
+      config.pageTranslation.mode = "bilingual"
+      await api.storage.local.set({ readFrogLiteConfig: config })
+    })
+    await page.reload()
+    await expect(page.locator("read-frog-lite button").first()).toBeVisible()
+    await page.keyboard.press("Alt+e")
+    await expect(page.locator("#article")).toContainText(translated)
+    await expect(page.locator("#article")).toContainText(original)
+    await page.keyboard.press("Alt+e")
+    await expect(page.locator("#article")).toHaveText(original)
+    for (const shortcut of ["Alt+Shift+d", "Alt+Shift+g"]) {
+      await page.locator("#article").evaluate((element) => {
+        const range = document.createRange()
+        range.selectNodeContents(element)
+        const selection = window.getSelection()
+        selection?.removeAllRanges()
+        selection?.addRange(range)
+      })
+      await page.keyboard.press(shortcut)
+      await expect(page.getByText(structuredResult, { exact: true }).first()).toBeVisible()
+      await expect(page.getByRole("alert")).toHaveCount(0)
+      await page.keyboard.press("Escape")
+    }
+    expect(
+      apiRequests.filter(
+        (request) => JSON.parse(request.body).response_format?.type === "json_object",
+      ).length,
+    ).toBeGreaterThanOrEqual(2)
+    expect(
+      consoleMessages.filter((message) => message.startsWith("[Read Frog Lite][stream]")),
+    ).toHaveLength(2)
     expect(consoleMessages.join("\n")).not.toContain(credential)
     const renderedMarkup = await page.evaluate(() => {
       function markup(root: Document | ShadowRoot): string {

@@ -1,5 +1,7 @@
 # v0.2.0 字幕选词 / AI Actions 定位记录
 
+后续：用户在 0.2.1 捕获到实际 HTTP 400 / invalid_request_error / json_schema；0.2.2 已接入专用 DeepSeek 适配器，并修复剩余 PNG 路径。见 [0.2.2 修复说明](RELEASE-0.2.2.md)。以下保留诊断过程与证据边界。
+
 用户报告：YouTube 字幕选词打开词典后失败；刷新仍失败；普通网页的词典和长难句分析也失败。配置为自定义 Chat Complete、`https://api.deepseek.com`、`deepseek-flash`。同时出现 Provider SVG 跨源加载警告、后台连接错误及内置 Action 图标空白。
 
 本次范围：按用户后续要求修复图标与图片，并在 0.2.1 增加 DevTools 诊断、去掉 Action 运行错误框。AI 请求协议暂不修改，等待真实日志；不覆盖 v0.2.0 Release。

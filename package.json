@@ -1,6 +1,6 @@
 {
   "name": "read-frog-lite",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "Independent Chromium translation, native subtitles and user-configured audio services",
   "type": "module",
@@ -25,6 +25,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
+    "@ai-sdk/deepseek": "3.0.63",
     "@ai-sdk/google": "^4.0.93",
     "@ai-sdk/openai": "^4.0.91",
     "@ai-sdk/openai-compatible": "^3.0.67",

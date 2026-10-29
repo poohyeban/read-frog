@@ -75,7 +75,7 @@ options:
     title: API Providers
     pageDescription: Connect the AI services Read Frog Lite calls, then choose which
       one runs each feature.
-    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using
+    description: Configure OpenAI, DeepSeek, OpenAI-compatible APIs, Gemini, or Ollama using
       your own endpoint, model, and credentials.
     configTitle: Provider config
     addProvider: Add provider
@@ -154,6 +154,7 @@ options:
       name:
         customChatComplete: Custom Chat Complete
       description:
+        deepseek: Connect directly to DeepSeek with your own API key
         openai: Provides models like GPT-4o
         ollama: Run large language models locally on your machine for complete privacy
         google: Google's flagship AI models with advanced reasoning capabilities

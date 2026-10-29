@@ -1,5 +1,6 @@
-import { generateText } from "ai"
+import { generateText, Output } from "ai"
 import { afterEach, describe, expect, it, vi } from "vitest"
+import { z } from "zod"
 import { llmProviderConfigItemSchema } from "@/types/config/provider"
 import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
 import { getLanguageModelForConfig } from "../model"
@@ -9,7 +10,39 @@ const secret = "lite-test-key-never-a-real-credential"
 describe("direct user-configured provider requests", () => {
   afterEach(() => vi.unstubAllGlobals())
 
-  it.each(["openai", "openai-compatible", "google", "ollama"] as const)(
+  it("keeps OpenAI structured output on the existing Responses SDK path", async () => {
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(JSON.stringify({ error: { message: "Intentional test rejection" } }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }),
+    )
+    vi.stubGlobal("fetch", fetchMock)
+    await expect(
+      generateText({
+        model: getLanguageModelForConfig({ ...DEFAULT_PROVIDER_CONFIG.openai, apiKey: secret }),
+        prompt: "Explain this word",
+        output: Output.object({ schema: z.object({ definition: z.string() }) }),
+        maxRetries: 0,
+      }),
+    ).rejects.toBeInstanceOf(Error)
+    expect(fetchMock).toHaveBeenCalledOnce()
+    const [url, init] = fetchMock.mock.calls[0]!
+    expect(url).toBe("https://api.openai.com/v1/responses")
+    if (typeof init?.body !== "string") throw new Error("Expected a JSON request")
+    expect(JSON.parse(init.body)).toMatchObject({
+      text: {
+        format: {
+          type: "json_schema",
+          strict: true,
+          schema: { properties: { definition: { type: "string" } } },
+        },
+      },
+    })
+    expect(init).toMatchObject({ credentials: "omit", redirect: "error" })
+  })
+
+  it.each(["openai", "openai-compatible", "google", "ollama", "deepseek"] as const)(
     "%s sends credentials and text only to its configured endpoint",
     async (provider) => {
       const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(

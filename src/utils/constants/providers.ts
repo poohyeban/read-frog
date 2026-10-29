@@ -21,6 +21,11 @@ import { pick } from "@/types/utils"
 import { i18n } from "@/utils/i18n"
 
 export const DEFAULT_LLM_PROVIDER_MODELS: LLMProviderModels = {
+  deepseek: {
+    model: "deepseek-flash",
+    isCustomModel: false,
+    customModel: null,
+  },
   "openai-compatible": {
     model: "use-custom-model",
     isCustomModel: true,
@@ -61,6 +66,11 @@ export const PROVIDER_ITEMS: Record<
     apiKeyUrl?: string
   }
 > = {
+  deepseek: {
+    logo: () => customProviderLogo,
+    name: "DeepSeek",
+    website: "https://platform.deepseek.com",
+  },
   "openai-compatible": {
     logo: () => customProviderLogo,
     name: "Custom Chat Complete",
@@ -87,6 +97,14 @@ export const PROVIDER_ITEMS: Record<
 }
 
 export const DEFAULT_PROVIDER_CONFIG = {
+  deepseek: {
+    id: "deepseek-default",
+    name: PROVIDER_ITEMS.deepseek.name,
+    enabled: true,
+    provider: "deepseek",
+    baseURL: "https://api.deepseek.com",
+    model: DEFAULT_LLM_PROVIDER_MODELS.deepseek,
+  },
   "openai-compatible": {
     id: "openai-compatible-default",
     name: PROVIDER_ITEMS["openai-compatible"].name,
@@ -134,6 +152,7 @@ export const DEFAULT_TRANSLATE_PROVIDER_ID = DEFAULT_PROVIDER_CONFIG.openai.id
  */
 
 export const PROVIDER_URL_PLACEHOLDERS: Partial<Record<APIProviderTypes, string>> = {
+  deepseek: DEFAULT_PROVIDER_CONFIG.deepseek.baseURL,
   "openai-compatible": DEFAULT_PROVIDER_CONFIG["openai-compatible"].baseURL,
 
   openai: "https://api.openai.com/v1",
@@ -145,6 +164,7 @@ export const PROVIDER_URL_PLACEHOLDERS: Partial<Record<APIProviderTypes, string>
 
 export const DEFAULT_PROVIDER_CONFIG_LIST: ProvidersConfig = [
   DEFAULT_PROVIDER_CONFIG.openai,
+  DEFAULT_PROVIDER_CONFIG.deepseek,
   DEFAULT_PROVIDER_CONFIG.google,
   DEFAULT_PROVIDER_CONFIG["openai-compatible"],
   DEFAULT_PROVIDER_CONFIG.ollama,

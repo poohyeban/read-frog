@@ -39,6 +39,7 @@ for (const pkg of packages.sort((a, b) => a.name.localeCompare(b.name))) {
 }
 fs.copyFileSync("LICENSE", "public/LICENSE")
 fs.copyFileSync("LICENSES/iso-639-3.txt", "public/ISO-639-LICENSE.txt")
+fs.copyFileSync("LICENSES/Apache-2.0.txt", "public/APACHE-2.0-LICENSE.txt")
 fs.writeFileSync(
   "public/THIRD-PARTY-NOTICES.txt",
   "Dependency license notices; includes production dependency metadata and bundled offline icons.\n\n" +

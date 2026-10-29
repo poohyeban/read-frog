@@ -43,7 +43,7 @@ export { CONFIG_STORAGE_KEY } from "./config-storage-key"
 
 export const THEME_STORAGE_KEY = "theme"
 export const DEFAULT_DETECTED_CODE = "eng" as const
-export const CONFIG_SCHEMA_VERSION = 4
+export const CONFIG_SCHEMA_VERSION = 5
 
 // A built-in action's card, rebuilt only when its fields' ids change: it is
 // resolved on every read of the action. Cards place fields by id and hold no

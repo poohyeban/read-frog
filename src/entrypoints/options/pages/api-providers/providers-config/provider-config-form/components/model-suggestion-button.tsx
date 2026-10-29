@@ -1,4 +1,4 @@
-import type { ProtocolCompatibleLLMProviderConfig } from "@/types/config/provider"
+import type { ModelListProviderConfig } from "@/utils/providers/models-url"
 import { Combobox as ComboboxPrimitive } from "@base-ui/react"
 import { Icon } from "@iconify/react/offline"
 import { useMutation } from "@tanstack/react-query"
@@ -23,7 +23,7 @@ interface ModelsResponse {
 }
 
 interface ModelSuggestionButtonProps {
-  providerConfig: ProtocolCompatibleLLMProviderConfig
+  providerConfig: ModelListProviderConfig
   onSelect: (model: string) => void
   disabled?: boolean
 }
