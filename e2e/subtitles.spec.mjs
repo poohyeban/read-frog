@@ -210,7 +210,7 @@ test("subtitles retain timing across batches, AI recuts and extension reloads", 
     await expect(page.locator("#read-frog-subtitles-ui-host")).toHaveCount(0)
     await expect(page.locator("#read-frog-hide-native-captions")).toHaveCount(0)
     await expect(page.locator(".ytp-caption-window-container")).toBeVisible()
-    expect(evidence.pageErrors.slice(errorsBefore)).not.toContain("Extension context invalidated.")
+    expect(evidence.pageErrors.slice(errorsBefore)).toEqual([])
     evidence.afterReload = {
       overlayCount: await page.locator("#read-frog-subtitles-ui-host").count(),
       hidesNativeCaptions: await page.locator("#read-frog-hide-native-captions").count(),
@@ -237,7 +237,7 @@ test("subtitles retain timing across batches, AI recuts and extension reloads", 
         const provider = config.providersConfig.find(
           (item) => item.id === config.videoSubtitles.providerId,
         )
-        provider.model = { model, customModel: model, isCustomModel: true }
+        provider.model = { ...provider.model, customModel: model, isCustomModel: true }
         await chrome.storage.local.set({ readFrogLiteConfig: config })
       }, `deepseek-fixture-${mode}`)
       const requestCount = requests.filter((request) => request.segmentation).length
