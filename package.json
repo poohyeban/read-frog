@@ -23,7 +23,9 @@
     "zip:edge": "wxt zip -b edge",
     "prepare": "husky",
     "test:e2e": "playwright test",
-    "perf:report": "vitest run --config vitest.perf.config.ts"
+    "perf:report": "vitest run --config vitest.perf.config.ts",
+    "check:architecture": "node scripts/check-architecture.mjs",
+    "perf:icons": "node scripts/analyze-icons.mjs"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "3.0.63",

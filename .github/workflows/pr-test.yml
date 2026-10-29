@@ -21,15 +21,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - run: git fetch --no-tags origin 18f2c8cbfddc3df5e4b7552a48b1731c28ac4cfd
       - run: npm install --global pnpm@12.10.1
       - run: pnpm install --frozen-lockfile
       - name: Lint and TypeScript
         run: pnpm lint
+      - name: Architecture boundaries
+        run: pnpm check:architecture
       - name: Unit and local protocol tests
         run: pnpm test --maxWorkers=4
       - name: Chromium production ZIP
         id: build
         run: pnpm zip
+      - name: Production content-script boundaries
+        run: pnpm check:architecture --build
       - name: Upload unpackable MV3 extension
         uses: actions/upload-artifact@v4
         with:
@@ -55,3 +60,38 @@ jobs:
             test-results/
           if-no-files-found: ignore
           retention-days: 14
+
+  performance-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --global pnpm@12.10.1
+      - run: pnpm install --frozen-lockfile
+      - name: Record raw synthetic and React Profiler samples
+        run: pnpm perf:report
+      - name: Compare isolated icon entry sizes
+        run: pnpm perf:icons
+      - name: Record production build graph and sizes
+        run: |
+          pnpm build:analyze
+          node scripts/build-fingerprint.mjs
+      - name: Install browser for production UI observations
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Record production UI navigation timings
+        run: PERF_BROWSER=true xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
+      - name: Upload performance observations (no timing thresholds)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-observations-${{ github.sha }}
+          path: |
+            scripts/output/performance/
+            stats.html
+          if-no-files-found: warn
+          retention-days: 30
+          include-hidden-files: true
