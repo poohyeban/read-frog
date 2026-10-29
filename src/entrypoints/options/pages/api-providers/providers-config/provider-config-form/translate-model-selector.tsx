@@ -1,5 +1,5 @@
 import type { APIProviderConfig } from "@/types/config/provider"
-import { useSelector } from "@tanstack/react-store"
+import { useSelector } from "@tanstack/react-form"
 import { useAutosaveContext } from "@/components/form/use-autosave"
 import { Checkbox } from "@/components/ui/base-ui/checkbox"
 import {

@@ -1,6 +1,6 @@
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
 import { Icon } from "@iconify/react/offline"
-import { useSelector } from "@tanstack/react-store"
+import { useSelector } from "@tanstack/react-form"
 import { useState } from "react"
 import { useAutosaveContext } from "@/components/form/use-autosave"
 import { Button } from "@/components/ui/base-ui/button"

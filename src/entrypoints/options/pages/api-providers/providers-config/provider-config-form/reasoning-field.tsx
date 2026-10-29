@@ -1,5 +1,5 @@
 import type { APIProviderConfig } from "@/types/config/provider"
-import { useSelector } from "@tanstack/react-store"
+import { useSelector } from "@tanstack/react-form"
 import {
   SelectContent,
   SelectGroup,

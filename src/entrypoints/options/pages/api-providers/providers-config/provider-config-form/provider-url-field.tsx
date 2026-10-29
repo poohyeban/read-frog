@@ -1,5 +1,5 @@
 import type { APIProviderConfig } from "@/types/config/provider"
-import { useSelector } from "@tanstack/react-store"
+import { useSelector } from "@tanstack/react-form"
 import { isDedicatedLLMProvider } from "@/types/config/provider"
 import { PROVIDER_URL_PLACEHOLDERS } from "@/utils/constants/providers"
 import { i18n } from "@/utils/i18n"

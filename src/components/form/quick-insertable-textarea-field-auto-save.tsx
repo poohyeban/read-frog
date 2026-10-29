@@ -1,5 +1,5 @@
 import type { InsertCell } from "@/components/ui/insertable-textarea"
-import { useSelector } from "@tanstack/react-store"
+import { useSelector } from "@tanstack/react-form"
 import { Field, FieldError, FieldLabel } from "@/components/ui/base-ui/field"
 import { QuickInsertableTextarea } from "@/components/ui/insertable-textarea"
 import { useFieldContext } from "./form-context"
