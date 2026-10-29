@@ -148,6 +148,31 @@ describe("bootstrapHostContent URL changes", () => {
     })
   })
 
+  it("cleans up immediately when invalidated during asynchronous shortcut setup", async () => {
+    let finishBinding!: (cleanup: () => void) => void
+    const binding = new Promise<() => void>((resolve) => {
+      finishBinding = resolve
+    })
+    mockBindTranslationShortcutKey.mockReturnValue(binding)
+    const { ctx, invalidate } = createContentScriptContext()
+    const boot = bootstrapHostContent(ctx, null)
+    await vi.waitFor(() => expect(mockBindTranslationShortcutKey).toHaveBeenCalled())
+    invalidate()
+    const lateCleanup = vi.fn<() => void>()
+    finishBinding(lateCleanup)
+    await boot
+    expect(mockSetupUrlChangeListener.mock.results[0]!.value).toHaveBeenCalledOnce()
+    expect(mockRegisterNodeTranslationTriggers.mock.results[0]!.value).toHaveBeenCalledOnce()
+    expect(lateCleanup).toHaveBeenCalledOnce()
+    expect(managerInstances[0]!.start).not.toHaveBeenCalled()
+    expect(mockSendMessage).not.toHaveBeenCalledWith(
+      "getEnablePageTranslationFromContentScript",
+      undefined,
+    )
+    invalidate()
+    expect(lateCleanup).toHaveBeenCalledOnce()
+  })
+
   it("only refreshes site CSS on same-origin SPA navigation, keeping the session active", async () => {
     mockSendMessage.mockImplementation((name: string) => {
       if (name === "getEnablePageTranslationFromContentScript") return Promise.resolve(true)

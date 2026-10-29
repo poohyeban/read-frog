@@ -21,153 +21,175 @@ export async function bootstrapHostContent(
   ctx: ContentScriptContext,
   initialConfig: Config | null,
 ) {
-  ensurePresetStyles(document)
-
-  // No toast surface of its own: the selection UI renders the content
-  // runtime's toasts (see content-runtime/selection/app.tsx).
-  const cleanupUrlListener = setupUrlChangeListener()
-
-  const teardownNodeTranslation = registerNodeTranslationTriggers()
-
-  const preloadConfig =
-    initialConfig?.pageTranslation.page.preload ?? DEFAULT_CONFIG.pageTranslation.page.preload
-  let detectedPageLanguage: { url: string; code: LangCodeISO6393 | "und" } | undefined
+  if (ctx.isInvalid) return
+  let invalidated = false
   let detectionGeneration = 0
-  const manager = new PageTranslationManager(
-    {
-      root: null,
-      rootMargin: `${preloadConfig.margin}px`,
-      threshold: preloadConfig.threshold,
-    },
-    (url) => (detectedPageLanguage?.url === url ? detectedPageLanguage.code : undefined),
-  )
-
-  const cleanupPageTranslationTriggers = manager.registerPageTranslationTriggers()
-
-  // The tab-title switch applies to an already-translated page at once. Only
-  // the top frame owns the title, so iframes skip parsing every config write.
-  const cleanupTitleTranslationWatch =
-    window === window.top
-      ? storage.watch<Config>(`local:${CONFIG_STORAGE_KEY}`, (config) => {
-          const parsedConfig = configSchema.safeParse(config)
-          if (parsedConfig.success) {
-            manager.setTitleTranslationEnabled(
-              parsedConfig.data.pageTranslation.page.translateTitle,
-            )
-          }
-        })
-      : () => {}
-
-  const cleanupHubShortcut = await bindTranslationHubShortcutKey()
-  const cleanupTranslationShortcut = await bindTranslationShortcutKey(manager)
-
-  const cleanupTranslationModeShortcut = await bindTranslationModeShortcutKey()
-
-  const detectAndReportPageLanguage = async (url: string) => {
-    const generation = ++detectionGeneration
-    detectedPageLanguage = undefined
-    const { detectedCodeOrUnd } = await detectPageLanguageLightweight()
-    if (generation === detectionGeneration && url === window.location.href) {
-      detectedPageLanguage = { url, code: detectedCodeOrUnd }
-    }
-    void sendMessage("reportDetectedPageLanguage", { url, detectedCodeOrUnd })
+  const cleanups: Array<() => void> = []
+  const own = (cleanup: () => void) => {
+    if (invalidated) cleanup()
+    else cleanups.push(cleanup)
   }
-
-  // For late-loading iframes: check if translation is already enabled for this tab
-  let translationEnabled = false
+  const dispose = () => {
+    if (invalidated) return
+    invalidated = true
+    detectionGeneration++
+    for (const cleanup of cleanups.splice(0).reverse()) cleanup()
+    window.__READ_FROG_HOST_INJECTED__ = false
+    clearEffectiveSiteControlUrl()
+  }
+  // Register before the first await. A binding that finishes after invalidation
+  // is disposed immediately rather than attaching to a dead content context.
+  ctx.onInvalidated(dispose)
   try {
-    translationEnabled = await sendMessage("getEnablePageTranslationFromContentScript", undefined)
-  } catch {
-    // Extension context may be invalidated during update, proceed without auto-start
-    logger.error("Failed to check translation state:")
-  }
-  if (translationEnabled) {
-    void manager.start()
-  }
+    ensurePresetStyles(document)
 
-  const handleUrlChange = async (from: string, to: string) => {
-    if (from !== to) {
-      detectionGeneration += 1
+    // No toast surface of its own: the selection UI renders the content
+    // runtime's toasts (see content-runtime/selection/app.tsx).
+    own(setupUrlChangeListener())
+
+    own(registerNodeTranslationTriggers())
+
+    const preloadConfig =
+      initialConfig?.pageTranslation.page.preload ?? DEFAULT_CONFIG.pageTranslation.page.preload
+    let detectedPageLanguage: { url: string; code: LangCodeISO6393 | "und" } | undefined
+    const manager = new PageTranslationManager(
+      {
+        root: null,
+        rootMargin: `${preloadConfig.margin}px`,
+        threshold: preloadConfig.threshold,
+      },
+      (url) => (detectedPageLanguage?.url === url ? detectedPageLanguage.code : undefined),
+    )
+
+    own(() => manager.stop())
+    own(manager.registerPageTranslationTriggers())
+
+    // The tab-title switch applies to an already-translated page at once. Only
+    // the top frame owns the title, so iframes skip parsing every config write.
+    const cleanupTitleTranslationWatch =
+      window === window.top
+        ? storage.watch<Config>(`local:${CONFIG_STORAGE_KEY}`, (config) => {
+            const parsedConfig = configSchema.safeParse(config)
+            if (parsedConfig.success) {
+              manager.setTitleTranslationEnabled(
+                parsedConfig.data.pageTranslation.page.translateTitle,
+              )
+            }
+          })
+        : () => {}
+
+    own(cleanupTitleTranslationWatch)
+    own(await bindTranslationHubShortcutKey())
+    if (invalidated) return
+    own(await bindTranslationShortcutKey(manager))
+    if (invalidated) return
+    own(await bindTranslationModeShortcutKey())
+    if (invalidated) return
+
+    const detectAndReportPageLanguage = async (url: string) => {
+      const generation = ++detectionGeneration
       detectedPageLanguage = undefined
-      logger.info("URL changed from", from, "to", to)
-      if (manager.isActive) {
-        if (areSamePageTranslationOrigin(from, to)) {
-          // Same-document route change: keep the session and wrappers
-          // mounted — the MutationObserver walks the new route's DOM as the
-          // router inserts it. Site CSS is swapped for the new path;
-          // persistent DOM keeps its old walk decisions (accepted tradeoff,
-          // see refreshSiteRuleCSS).
-          await manager.refreshSiteRuleCSS()
-        } else {
-          manager.stop()
-        }
+      const { detectedCodeOrUnd } = await detectPageLanguageLightweight()
+      if (invalidated || generation !== detectionGeneration) return
+      if (url === window.location.href) {
+        detectedPageLanguage = { url, code: detectedCodeOrUnd }
       }
-      // Only the top frame should detect and set language to avoid race conditions from iframes
-      if (window === window.top) {
-        await detectAndReportPageLanguage(to)
-      }
+      void sendMessage("reportDetectedPageLanguage", { url, detectedCodeOrUnd })
     }
-  }
 
-  const handleExtensionUrlChange = (e: any) => {
-    const { from, to } = e.detail
-    void handleUrlChange(from, to)
-  }
-  window.addEventListener("extension:URLChange", handleExtensionUrlChange)
-
-  // Listen for translation state changes from background
-  const cleanupTranslationStateListener = onMessage("askManagerToTogglePageTranslation", (msg) => {
-    const { enabled } = msg.data
-    if (enabled === manager.isActive) return
-    if (enabled) {
+    // For late-loading iframes: check if translation is already enabled for this tab
+    let translationEnabled = false
+    try {
+      translationEnabled = await sendMessage("getEnablePageTranslationFromContentScript", undefined)
+    } catch {
+      // Extension context may be invalidated during update, proceed without auto-start
+      logger.error("Failed to check translation state:")
+    }
+    if (invalidated) return
+    if (translationEnabled) {
       void manager.start()
-    } else {
-      // Invariant: every sender of askManagerToTogglePageTranslation with
-      // enabled=false is a user surface (popup button, floating button,
-      // context menu) — the auto-translation path only ever sends
-      // enabled=true — so a disable here is always user-initiated.
-      manager.stop({ userInitiated: true })
     }
-  })
 
-  const cleanupFrameTranslationStateListener =
-    window === window.top
-      ? () => {}
-      : onMessage("notifyTranslationStateChanged", (msg) => {
-          const { enabled } = msg.data
-          if (enabled === manager.isActive) return
-          if (enabled) {
-            void manager.start()
+    const handleUrlChange = async (from: string, to: string) => {
+      if (invalidated) return
+      if (from !== to) {
+        detectionGeneration += 1
+        detectedPageLanguage = undefined
+        logger.info("URL changed from", from, "to", to)
+        if (manager.isActive) {
+          if (areSamePageTranslationOrigin(from, to)) {
+            // Same-document route change: keep the session and wrappers
+            // mounted — the MutationObserver walks the new route's DOM as the
+            // router inserts it. Site CSS is swapped for the new path;
+            // persistent DOM keeps its old walk decisions (accepted tradeoff,
+            // see refreshSiteRuleCSS).
+            await manager.refreshSiteRuleCSS()
           } else {
             manager.stop()
           }
-        })
+        }
+        // Only the top frame should detect and set language to avoid race conditions from iframes
+        if (!invalidated && window === window.top) {
+          await detectAndReportPageLanguage(to)
+        }
+      }
+    }
 
-  const cleanupDetectedLanguageRefreshListener =
-    window === window.top
-      ? onMessage("refreshDetectedPageLanguage", () => {
-          void detectAndReportPageLanguage(window.location.href)
-        })
-      : () => {}
+    const handleExtensionUrlChange = (e: any) => {
+      const { from, to } = e.detail
+      void handleUrlChange(from, to)
+    }
+    window.addEventListener("extension:URLChange", handleExtensionUrlChange)
+    own(() => window.removeEventListener("extension:URLChange", handleExtensionUrlChange))
 
-  ctx.onInvalidated(() => {
-    cleanupUrlListener()
-    teardownNodeTranslation()
-    cleanupPageTranslationTriggers()
-    cleanupTitleTranslationWatch()
-    cleanupHubShortcut()
-    cleanupTranslationShortcut()
-    cleanupTranslationModeShortcut()
-    cleanupTranslationStateListener()
-    cleanupFrameTranslationStateListener()
-    cleanupDetectedLanguageRefreshListener()
-    window.removeEventListener("extension:URLChange", handleExtensionUrlChange)
-    window.__READ_FROG_HOST_INJECTED__ = false
-    clearEffectiveSiteControlUrl()
-  })
+    // Listen for translation state changes from background
+    const cleanupTranslationStateListener = onMessage(
+      "askManagerToTogglePageTranslation",
+      (msg) => {
+        const { enabled } = msg.data
+        if (enabled === manager.isActive) return
+        if (enabled) {
+          void manager.start()
+        } else {
+          // Invariant: every sender of askManagerToTogglePageTranslation with
+          // enabled=false is a user surface (popup button, floating button,
+          // context menu) — the auto-translation path only ever sends
+          // enabled=true — so a disable here is always user-initiated.
+          manager.stop({ userInitiated: true })
+        }
+      },
+    )
 
-  // Only the top frame should detect and set language to avoid race conditions from iframes
-  if (window === window.top) {
-    await detectAndReportPageLanguage(window.location.href)
+    const cleanupFrameTranslationStateListener =
+      window === window.top
+        ? () => {}
+        : onMessage("notifyTranslationStateChanged", (msg) => {
+            const { enabled } = msg.data
+            if (enabled === manager.isActive) return
+            if (enabled) {
+              void manager.start()
+            } else {
+              manager.stop()
+            }
+          })
+
+    const cleanupDetectedLanguageRefreshListener =
+      window === window.top
+        ? onMessage("refreshDetectedPageLanguage", () => {
+            void detectAndReportPageLanguage(window.location.href)
+          })
+        : () => {}
+
+    own(cleanupTranslationStateListener)
+    own(cleanupFrameTranslationStateListener)
+    own(cleanupDetectedLanguageRefreshListener)
+
+    // Only the top frame should detect and set language to avoid race conditions from iframes
+    if (window === window.top) {
+      await detectAndReportPageLanguage(window.location.href)
+    }
+  } catch (error) {
+    dispose()
+    throw error
   }
 }
