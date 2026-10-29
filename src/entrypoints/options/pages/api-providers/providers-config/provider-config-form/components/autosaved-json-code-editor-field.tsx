@@ -1,13 +1,9 @@
 import type { ReactNode } from "react"
 import { dequal } from "dequal"
-import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useAutosaveContext } from "@/components/form/use-autosave"
 import { Field, FieldError, FieldTitle } from "@/components/ui/base-ui/field"
-import { Skeleton } from "@/components/ui/base-ui/skeleton"
-
-const JSONCodeEditor = lazy(() =>
-  import("@/components/ui/json-code-editor").then((module) => ({ default: module.JSONCodeEditor })),
-)
+import { LazyJSONCodeEditor } from "@/components/ui/lazy-json-code-editor"
 
 export type JsonEditorParseResult<TValue> =
   | { valid: true; value: TValue | undefined }
@@ -106,17 +102,15 @@ export function AutosavedJsonCodeEditorField<TValue extends Record<string, unkno
         onCompositionStartCapture={() => autosave.beginComposition(fieldName)}
         onCompositionEndCapture={() => autosave.endComposition(fieldName, () => {})}
       >
-        <Suspense fallback={<Skeleton style={{ height }} aria-hidden="true" />}>
-          <JSONCodeEditor
-            aria-label={editorAriaLabel}
-            value={jsonInput}
-            onChange={updateText}
-            onBlur={flush}
-            placeholder={placeholder}
-            hasError={!!jsonError}
-            height={height}
-          />
-        </Suspense>
+        <LazyJSONCodeEditor
+          aria-label={editorAriaLabel}
+          value={jsonInput}
+          onChange={updateText}
+          onBlur={flush}
+          placeholder={placeholder}
+          hasError={!!jsonError}
+          height={height}
+        />
       </div>
       {jsonError && <FieldError>{jsonError}</FieldError>}
     </Field>

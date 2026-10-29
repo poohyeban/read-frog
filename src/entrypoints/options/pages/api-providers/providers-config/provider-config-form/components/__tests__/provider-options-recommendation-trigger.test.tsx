@@ -88,7 +88,7 @@ describe("providerOptionsRecommendationTrigger", () => {
     expect(trigger.className).not.toContain("text-primary")
   })
 
-  it("shows the recommendation preview and applies it on demand", () => {
+  it("shows the recommendation preview and applies it on demand", async () => {
     const onApply = vi.fn<(...args: any[]) => any>()
 
     render(
@@ -99,11 +99,13 @@ describe("providerOptionsRecommendationTrigger", () => {
       />,
     )
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "options.apiProviders.form.providerOptionsRecommendationTrigger",
-      }),
-    )
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: "options.apiProviders.form.providerOptionsRecommendationTrigger",
+        }),
+      )
+    })
 
     expect(
       screen.getByText("options.apiProviders.form.providerOptionsRecommendationTitle"),

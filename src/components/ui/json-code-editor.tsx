@@ -33,7 +33,7 @@ const editorSetup = {
   syntaxHighlighting: true,
 }
 
-interface JSONCodeEditorProps extends Omit<ReactCodeMirrorProps, "theme" | "extensions"> {
+export interface JSONCodeEditorProps extends Omit<ReactCodeMirrorProps, "theme" | "extensions"> {
   hasError?: boolean
 }
 

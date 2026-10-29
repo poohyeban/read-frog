@@ -11,7 +11,7 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/base-ui/popover"
-import { JSONCodeEditor } from "@/components/ui/json-code-editor"
+import { LazyJSONCodeEditor } from "@/components/ui/lazy-json-code-editor"
 import { i18n } from "@/utils/i18n"
 import { getRecommendedProviderOptionsMatch } from "@/utils/providers/options"
 import { cn } from "@/utils/styles/utils"
@@ -151,7 +151,7 @@ export function ProviderOptionsRecommendationTrigger({
             {i18n.t("options.apiProviders.form.providerOptionsRecommendationDescription")}
           </PopoverDescription>
         </PopoverHeader>
-        <JSONCodeEditor value={recommendationJson} editable={false} height="132px" />
+        <LazyJSONCodeEditor value={recommendationJson} editable={false} height="132px" />
         <div className="flex justify-end">
           <Button
             type="button"
