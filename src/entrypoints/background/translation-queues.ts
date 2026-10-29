@@ -4,7 +4,6 @@ import type { ProviderConfig } from "@/types/config/provider"
 import type { BatchQueueConfig, RequestQueueConfig } from "@/types/config/translate"
 import type { WebPagePromptContext } from "@/types/content"
 import type { ProviderRequestRouting } from "@/types/hosted-request"
-import type { MatchedTerm } from "@/utils/glossary/types"
 import type { PromptResolver } from "@/utils/host/translate/api/ai"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import { storage } from "#imports"
@@ -21,7 +20,6 @@ import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { logger } from "@/utils/logger"
-import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
 import { BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
@@ -63,7 +61,6 @@ async function executeQueuedTranslation<TContext>(
     preserveLineBreaks?: boolean
     signal?: AbortSignal
     hostedRequestId?: string
-    glossaryTerms?: readonly MatchedTerm[]
   } = {},
 ): Promise<string> {
   return executeTranslate(
@@ -122,48 +119,6 @@ export function shouldUseBatchQueue(provider: QueuedTranslationProvider): boolea
  * sending no instruction costs the user the wording once, whereas guessing sends
  * a wording that is wrong half the time and then caches it.
  */
-function mergeBatchGlossaryTerms<TContext>(
-  dataList: readonly TranslateBatchData<TContext>[],
-): MatchedTerm[] | undefined {
-  // `undefined` means "nobody resolved terms", which lets the prompt resolver
-  // fall back to resolving them itself. An empty array means "resolved, nothing
-  // matched" and must suppress that fallback.
-  if (dataList.every((data) => data.glossaryTerms === undefined)) return undefined
-
-  const byMatchKey = new Map<string, { term: MatchedTerm; revision: number }>()
-  // Keys whose wording two members disagreed on at the SAME revision. Cleared
-  // again if a strictly newer revision turns up, which settles the key outright.
-  const unresolvable = new Set<string>()
-
-  for (const data of dataList) {
-    // Absent for a sender that predates the field (an old content script still
-    // live across an update). 0 loses every disagreement, which is the safe way
-    // round: a member that cannot say how fresh its terms are never displaces
-    // one that can.
-    const revision = data.glossaryRevision ?? 0
-    for (const term of data.glossaryTerms ?? []) {
-      const existing = byMatchKey.get(term.matchKey)
-      if (existing === undefined) {
-        byMatchKey.set(term.matchKey, { term, revision })
-        continue
-      }
-      if (revision > existing.revision) {
-        byMatchKey.set(term.matchKey, { term, revision })
-        unresolvable.delete(term.matchKey)
-        continue
-      }
-      if (revision === existing.revision && !isSameWording(existing.term, term)) {
-        unresolvable.add(term.matchKey)
-      }
-    }
-  }
-
-  for (const matchKey of unresolvable) byMatchKey.delete(matchKey)
-
-  return [...byMatchKey.values()]
-    .map(({ term }) => term)
-    .sort((a, b) => a.matchKey.localeCompare(b.matchKey))
-}
 
 /**
  * Whether two hits on one `matchKey` say the same thing.
@@ -173,9 +128,6 @@ function mergeBatchGlossaryTerms<TContext>(
  * the same glossary state are identical and this only ever separates hits
  * produced from DIFFERENT states.
  */
-function isSameWording(a: MatchedTerm, b: MatchedTerm): boolean {
-  return a.target === b.target && a.keepOriginal === b.keepOriginal && a.source === b.source
-}
 
 export async function executeBatchTranslation<TContext>(
   dataList: TranslateBatchData<TContext>[],
@@ -197,7 +149,6 @@ export async function executeBatchTranslation<TContext>(
       context,
       signal,
       hostedRequestId,
-      glossaryTerms: mergeBatchGlossaryTerms(dataList),
     },
   )
   return parseBatchResult(result)
@@ -209,12 +160,10 @@ export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & 
   hash: string
   scheduleAt: number
   context?: TContext
-  // Resolved by the sender, where the page URL is known. A separate field from
-  // `context` on purpose: `context` is part of the batch key.
-  glossaryTerms?: readonly MatchedTerm[]
+  // Resolved by the sender
   // Which revision `glossaryTerms` was read from — how `mergeBatchGlossaryTerms`
   // settles two members that disagree about one term.
-  glossaryRevision?: number
+
   // Cancellation scope (`${tabId}:${sessionId}`); absent = uncancellable.
   scope?: string
 }
@@ -291,7 +240,6 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
         // this component is inert except across an edit. What it buys is that a
         // batch can only ever hold one glossary state, which is the only way to
         // represent a REMOVAL: see `mergeBatchGlossaryTerms`.
-        `glossaryRevision:${data.glossaryRevision ?? 0}`,
       )
     },
     getCharacters: (data) => data.text.length,
@@ -328,7 +276,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, { timeoutMs })
     },
     executeIndividual: async (data) => {
-      const { text, langConfig, provider, hash, scheduleAt, context, scope, glossaryTerms } = data
+      const { text, langConfig, provider, hash, scheduleAt, context, scope } = data
       // This individual fallback is its own model call, but any automatic
       // retries of its RequestQueue thunk reuse the same idempotency key.
       const hostedRequestId = getLocalProviderConfig(provider) ? undefined : getRandomUUID()
@@ -346,7 +294,6 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
           // without the glossary and then cache that result under a hash taken
           // over a prompt that HAD the terms in it — a mismatch that outlives
           // the failure by a week.
-          glossaryTerms,
         })
       }
       return requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined)
@@ -459,27 +406,6 @@ export function createWebPageTranslationQueues() {
   return { queuesPromise, cancelledScopes }
 }
 
-const selectSubtitlesQueueConfig = (config: Config) => ({
-  requestQueueConfig: config.videoSubtitles.requestQueueConfig,
-  batchQueueConfig: config.videoSubtitles.batchQueueConfig,
-})
-
 /**
  * Create subtitle translation queues and watch their configuration
  */
-export function createSubtitlesTranslationQueues() {
-  const queuesPromise = loadQueueSetupConfig("subtitles", selectSubtitlesQueueConfig).then(
-    ({ requestQueueConfig, batchQueueConfig, configSource }) =>
-      createTranslationQueues({
-        requestQueueConfig,
-        batchQueueConfig,
-        promptResolver: getSubtitlesTranslatePrompt,
-        queueName: "subtitles",
-        configSource,
-      }),
-  )
-
-  watchQueueConfig("subtitles", queuesPromise, selectSubtitlesQueueConfig)
-
-  return queuesPromise
-}

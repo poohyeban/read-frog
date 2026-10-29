@@ -1,13 +1,10 @@
 import type { ComponentProps } from "react"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
-import { useEffect, useMemo, useRef } from "react"
+import { useMemo, useRef } from "react"
 import { SelectionPopover } from "@/components/ui/selection-popover"
 import { SelectionToolbarErrorAlert } from "@/components/ui/selection-popover/selection-toolbar-error-alert"
 import { SelectionToolbarFooterContent } from "@/components/ui/selection-popover/selection-toolbar-footer-content"
 import { SelectionToolbarTitleContent } from "@/components/ui/selection-popover/selection-toolbar-title-content"
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
-import { createFeatureUsageContext, trackFeatureUsed } from "@/utils/analytics"
-import { classifyResolvedProvider } from "@/utils/analytics-provider"
 import { configFieldsAtomMap, writeConfigAtom } from "@/utils/atoms/config"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { findSelectionToolbarAction, patchSelectionToolbarAction } from "@/utils/custom-actions"
@@ -45,7 +42,7 @@ export function CustomActionPanel() {
   const selectionToolbarConfig = useAtomValue(configFieldsAtomMap.selectionToolbar)
   const providersConfig = useAtomValue(configFieldsAtomMap.providersConfig)
   const setConfig = useSetAtom(writeConfigAtom)
-  const trackedFailureKeyRef = useRef<string | null>(null)
+
   const open = request !== null
   const actionId = request?.actionId ?? null
   const cleanSelection = request?.cleanSelection ?? ""
@@ -77,38 +74,12 @@ export function CustomActionPanel() {
   )
   const execution = useCustomActionExecution({
     bodyRef,
-    analyticsSurface: request?.surface ?? ANALYTICS_SURFACE.SELECTION_TOOLBAR,
+
     executionContext,
     open,
     popoverSessionKey: request?.sessionKey ?? 0,
     rerunNonce: request?.rerunNonce ?? 0,
   })
-
-  useEffect(() => {
-    if (!request || !precheckError) {
-      return
-    }
-
-    const failureKey = JSON.stringify({
-      actionId: request.actionId,
-      description: precheckError.description,
-      sessionKey: request.sessionKey,
-      surface: request.surface,
-    })
-    if (trackedFailureKeyRef.current === failureKey) {
-      return
-    }
-    trackedFailureKeyRef.current = failureKey
-
-    void trackFeatureUsed({
-      ...createFeatureUsageContext(ANALYTICS_FEATURE.CUSTOM_AI_ACTION, request.surface),
-      action_id: request.actionId,
-      ...(action ? { action_name: action.name } : {}),
-      ...classifyResolvedProvider(provider),
-      outcome: "failure",
-      failure_reason: "precheck",
-    })
-  }, [action, precheckError, provider, request])
 
   if (!request) {
     return null
@@ -130,10 +101,6 @@ export function CustomActionPanel() {
   const titleText = (webPageContext?.webTitle ?? getSourceDocumentTitle()) || null
   // Speech and Notebase saves count the card by where it sits: on video subtitles, or by a
   // selection, however the selection's card was opened.
-  const cardSurface =
-    request.surface === ANALYTICS_SURFACE.VIDEO_SUBTITLES
-      ? ANALYTICS_SURFACE.VIDEO_SUBTITLES
-      : ANALYTICS_SURFACE.SELECTION_TOOLBAR
 
   return (
     <>
@@ -151,12 +118,10 @@ export function CustomActionPanel() {
         <CustomActionContent
           action={action}
           status={status}
-          selection={cleanSelection}
-          targetCode={language.targetCode}
+
           selectionContent={request.selectionText}
           value={result}
           thinking={executionContext ? execution.thinking : null}
-          speakSurface={cardSurface}
         />
         <SelectionToolbarErrorAlert error={error} />
       </SelectionPopover.Body>

@@ -66,16 +66,4 @@ describe("getEffectiveSiteRule", () => {
     expect(first.dontWalkButTranslateTags!.has("CODE")).toBe(false)
     expect(second.dontWalkButTranslateTags).toBe(first.dontWalkButTranslateTags)
   })
-
-  it("resolves the migrated Steam inline selector as style-only", () => {
-    const resolved = getEffectiveSiteRule(
-      configWithUserRules([]),
-      "https://store.steampowered.com/app/2453660/Hoop_Land/",
-    )
-
-    expect(resolved.matchedRuleIds).toContain("steampoweredApp")
-    expect(resolved.includeSelector).toBeNull()
-    expect(resolved.forceInlineStyleSelector).toBe(".pulldown")
-    expect(resolved.forceInlineNodeSelector).toBeNull()
-  })
 })

@@ -400,55 +400,7 @@ export const testSeries: TestSeriesObject = {
       contextMenu: {
         enabled: true,
       },
-      videoSubtitles: {
-        enabled: false,
-        autoStart: false,
-        providerId: "openai-default",
-        style: {
-          displayMode: "bilingual",
-          translationPosition: "above",
-          main: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          translation: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          container: {
-            backgroundOpacity: 75,
-          },
-        },
-        aiSegmentation: false,
-        requestQueueConfig: {
-          capacity: 400,
-          rate: 8,
-        },
-        batchQueueConfig: {
-          maxCharactersPerBatch: 1000,
-          maxItemsPerBatch: 4,
-        },
-        customPromptsConfig: {
-          promptId: null,
-          patterns: [],
-        },
-        position: {
-          percent: 10,
-          anchor: "bottom",
-        },
-      },
-      inputTranslation: {
-        enabled: true,
-        providerId: "openai-default",
-        fromLang: "targetCode",
-        toLang: "sourceCode",
-        enableCycle: false,
-        timeThreshold: 300,
-      },
+
       siteControl: {
         mode: "blacklist",
         blacklistPatterns: [],
@@ -807,55 +759,7 @@ export const testSeries: TestSeriesObject = {
       contextMenu: {
         enabled: true,
       },
-      videoSubtitles: {
-        enabled: false,
-        autoStart: false,
-        providerId: "google-default",
-        style: {
-          displayMode: "bilingual",
-          translationPosition: "above",
-          main: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          translation: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          container: {
-            backgroundOpacity: 75,
-          },
-        },
-        aiSegmentation: false,
-        requestQueueConfig: {
-          capacity: 200,
-          rate: 2,
-        },
-        batchQueueConfig: {
-          maxCharactersPerBatch: 1000,
-          maxItemsPerBatch: 4,
-        },
-        customPromptsConfig: {
-          promptId: null,
-          patterns: [],
-        },
-        position: {
-          percent: 10,
-          anchor: "bottom",
-        },
-      },
-      inputTranslation: {
-        enabled: true,
-        providerId: "google-default",
-        fromLang: "targetCode",
-        toLang: "sourceCode",
-        enableCycle: false,
-        timeThreshold: 300,
-      },
+
       siteControl: {
         mode: "blacklist",
         blacklistPatterns: [],
@@ -1208,64 +1112,7 @@ export const testSeries: TestSeriesObject = {
       contextMenu: {
         enabled: true,
       },
-      videoSubtitles: {
-        enabled: false,
-        autoStart: false,
-        providerId: "google-default",
-        style: {
-          displayMode: "bilingual",
-          translationPosition: "above",
-          main: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          translation: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          container: {
-            backgroundOpacity: 75,
-          },
-        },
-        aiSegmentation: false,
-        requestQueueConfig: {
-          capacity: 200,
-          rate: 2,
-        },
-        batchQueueConfig: {
-          maxCharactersPerBatch: 1000,
-          maxItemsPerBatch: 4,
-        },
-        customPromptsConfig: {
-          promptId: "legacy-subtitles-prompt",
-          patterns: [
-            {
-              id: "legacy-subtitles-prompt",
-              name: "Legacy Subtitles Prompt",
-              systemPrompt:
-                "Translate subtitles into {{targetLanguage}} with {{webTitle}} and {{videoSummary}} as context.",
-              prompt:
-                "Title: {{webTitle}}\nSummary: {{videoSummary}}\nTranslate to {{targetLanguage}}:\n{{input}}",
-            },
-          ],
-        },
-        position: {
-          percent: 10,
-          anchor: "bottom",
-        },
-      },
-      inputTranslation: {
-        enabled: true,
-        providerId: "google-default",
-        fromLang: "targetCode",
-        toLang: "sourceCode",
-        enableCycle: false,
-        timeThreshold: 300,
-      },
+
       siteControl: {
         mode: "blacklist",
         blacklistPatterns: [],
@@ -1631,55 +1478,7 @@ export const testSeries: TestSeriesObject = {
       contextMenu: {
         enabled: true,
       },
-      videoSubtitles: {
-        enabled: false,
-        autoStart: false,
-        providerId: "google-default",
-        style: {
-          displayMode: "bilingual",
-          translationPosition: "above",
-          main: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          translation: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          container: {
-            backgroundOpacity: 75,
-          },
-        },
-        aiSegmentation: false,
-        requestQueueConfig: {
-          capacity: 200,
-          rate: 2,
-        },
-        batchQueueConfig: {
-          maxCharactersPerBatch: 1000,
-          maxItemsPerBatch: 4,
-        },
-        customPromptsConfig: {
-          promptId: null,
-          patterns: [],
-        },
-        position: {
-          percent: 10,
-          anchor: "bottom",
-        },
-      },
-      inputTranslation: {
-        enabled: true,
-        providerId: "google-default",
-        fromLang: "targetCode",
-        toLang: "sourceCode",
-        enableCycle: false,
-        timeThreshold: 300,
-      },
+
       siteControl: {
         mode: "blacklist",
         blacklistPatterns: [],

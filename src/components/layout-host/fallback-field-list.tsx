@@ -1,6 +1,4 @@
-import type { LayoutStatus } from "@read-frog/layout-engine/contract"
 import type { SelectionToolbarCustomActionOutputField } from "@/types/config/selection-toolbar"
-import { formatLayoutFieldValue } from "@read-frog/layout-engine/core"
 import { IconHash, IconTypography } from "@tabler/icons-react"
 
 // Last resort of the layout fallback chain (custom layout → default layout →
@@ -12,7 +10,7 @@ import { IconHash, IconTypography } from "@tabler/icons-react"
 interface FallbackFieldListProps {
   outputSchema: SelectionToolbarCustomActionOutputField[]
   value: Record<string, unknown> | null
-  status: LayoutStatus
+  status: "idle" | "streaming" | "done" | "error"
 }
 
 export function FallbackFieldList({ outputSchema, value, status }: FallbackFieldListProps) {
@@ -21,7 +19,9 @@ export function FallbackFieldList({ outputSchema, value, status }: FallbackField
       {outputSchema.map((field) => {
         const present = value !== null && Object.hasOwn(value, field.name)
         const pending = status === "streaming" && !present
-        const display = present ? formatLayoutFieldValue(value[field.name], field.type) : undefined
+        const raw = value?.[field.name]
+        const display =
+          present && (typeof raw === "string" || typeof raw === "number") ? raw : undefined
         const TypeIcon = field.type === "number" ? IconHash : IconTypography
 
         return (

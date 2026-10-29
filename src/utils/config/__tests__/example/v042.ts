@@ -165,16 +165,6 @@ export const testSeries: TestSeriesObject = {
       contextMenu: {
         enabled: true,
       },
-      videoSubtitles: {
-        enabled: false,
-      },
-      inputTranslation: {
-        enabled: true,
-        direction: "normal",
-        useCustomTarget: true,
-        targetCode: "eng",
-        timeThreshold: 300,
-      },
     },
   },
   "config-with-no-default-openai-model": {
@@ -290,16 +280,6 @@ export const testSeries: TestSeriesObject = {
       },
       contextMenu: {
         enabled: true,
-      },
-      videoSubtitles: {
-        enabled: false,
-      },
-      inputTranslation: {
-        enabled: true,
-        direction: "normal",
-        useCustomTarget: true,
-        targetCode: "eng",
-        timeThreshold: 300,
       },
     },
   },
@@ -485,16 +465,6 @@ export const testSeries: TestSeriesObject = {
       },
       contextMenu: {
         enabled: true,
-      },
-      videoSubtitles: {
-        enabled: false,
-      },
-      inputTranslation: {
-        enabled: true,
-        direction: "normal",
-        useCustomTarget: true,
-        targetCode: "eng",
-        timeThreshold: 300,
       },
     },
   },

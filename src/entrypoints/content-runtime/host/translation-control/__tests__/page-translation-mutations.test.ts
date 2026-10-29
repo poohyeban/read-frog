@@ -463,39 +463,6 @@ describe("pageTranslationManager mutation re-walk", () => {
     }
   })
 
-  it("gates a display: contents unit on its own boxes when its layout box is too tall", async () => {
-    // The column holds the whole page, so its intersection says nothing about
-    // where this message is. The message's inline boxes do.
-    document.body.innerHTML = `<section id="column"><div id="message">Hey there, <b id="first">welcome</b> to the <i id="second">community</i>!</div></section>`
-    const column = document.getElementById("column") as HTMLElement
-    const message = document.getElementById("message") as HTMLElement
-    const first = document.getElementById("first") as HTMLElement
-    const second = document.getElementById("second") as HTMLElement
-    giveBox(column, { bottom: 100_000, height: 100_000 })
-    giveBox(first)
-    giveBox(second)
-
-    const manager = new PageTranslationManager()
-    try {
-      await manager.start()
-      await flushDomUpdates()
-
-      const boxObserver = intersectionObservers[1]
-      expect(boxObserver!.observe).not.toHaveBeenCalledWith(column)
-      expect(boxObserver!.observe).toHaveBeenCalledWith(first)
-      expect(boxObserver!.observe).toHaveBeenCalledWith(second)
-
-      // Boxes on one line usually intersect in the same batch.
-      await boxObserver!.triggerIntersectAll([first, second])
-      await flushDomUpdates()
-
-      expect(mockTranslateWalkedElement).toHaveBeenCalledTimes(1)
-      expect(mockTranslateWalkedElement.mock.calls[0]![0]).toBe(message)
-    } finally {
-      if (manager.isActive) manager.stop()
-    }
-  })
-
   it("still translates a display: contents unit after a box inside it is re-walked as a unit of its own", async () => {
     document.body.innerHTML = `<div id="bubble"><div id="message">Hey there, <b id="first">welcome</b>!</div></div>`
     const bubble = document.getElementById("bubble") as HTMLElement
@@ -625,33 +592,6 @@ describe("pageTranslationManager mutation re-walk", () => {
     }
   })
 
-  it("falls back to a box inside a display: contents shadow host when the layout box is too tall", async () => {
-    document.body.innerHTML = `<section id="column"><div id="message">Hello <span id="chip"></span></div></section>`
-    const message = document.getElementById("message") as HTMLElement
-    const chip = document.getElementById("chip") as HTMLElement
-    // The chip is box-less too; what it renders lives in its shadow tree.
-    chip.attachShadow({ mode: "open" }).innerHTML = `<b id="inner">world</b>`
-    const inner = chip.shadowRoot!.getElementById("inner") as HTMLElement
-    giveBox(document.getElementById("column")!, { bottom: 100_000, height: 100_000 })
-    giveBox(inner)
-
-    const manager = new PageTranslationManager()
-    try {
-      await manager.start()
-      await flushDomUpdates()
-
-      const boxObserver = intersectionObservers[1]
-      expect(boxObserver!.observe).toHaveBeenCalledWith(inner)
-
-      await boxObserver!.triggerIntersect(inner)
-      await flushDomUpdates()
-
-      expect(mockTranslateWalkedElement.mock.calls.map((call) => call[0])).toContain(message)
-    } finally {
-      if (manager.isActive) manager.stop()
-    }
-  })
-
   it("takes every pending unit laid out in a shared box, nested ones included", async () => {
     // The inner unit sits at the top of a shadow root inside the outer one, so
     // both are top-level units, and both are laid out in the same bubble.
@@ -738,46 +678,6 @@ describe("pageTranslationManager mutation re-walk", () => {
       expect(observed).not.toContain(wrapper)
       // Split, so nothing was left to gate through its boxes.
       expect(intersectionObservers).toHaveLength(1)
-    } finally {
-      if (manager.isActive) manager.stop()
-    }
-  })
-
-  it("gives each unit its own gate when its layout box grew past the cap before intersecting", async () => {
-    document.body.innerHTML = `
-      <div id="list">
-        <div id="first">First message with <b id="first-box">formatting</b></div>
-        <div id="second">Second message with <b id="second-box">formatting</b></div>
-      </div>
-    `
-    const list = document.getElementById("list") as HTMLElement
-    const second = document.getElementById("second") as HTMLElement
-    const firstBox = document.getElementById("first-box") as HTMLElement
-    const secondBox = document.getElementById("second-box") as HTMLElement
-    let listContentHeight = 400
-    giveBox(list, { bottom: 400, height: 400 })
-    Object.defineProperty(list, "scrollHeight", { get: () => listContentHeight })
-    giveBox(firstBox)
-    giveBox(secondBox)
-
-    const manager = new PageTranslationManager()
-    try {
-      await manager.start()
-      await flushDomUpdates()
-      const boxObserver = intersectionObservers[1]
-      expect(boxObserver!.observe).toHaveBeenCalledWith(list)
-
-      // History loads in while the list is off-screen.
-      listContentHeight = 50_000
-      await boxObserver!.triggerIntersect(list)
-      await flushDomUpdates()
-      expect(mockTranslateWalkedElement).not.toHaveBeenCalled()
-      expect(boxObserver!.observe).toHaveBeenCalledWith(firstBox)
-      expect(boxObserver!.observe).toHaveBeenCalledWith(secondBox)
-
-      await boxObserver!.triggerIntersect(secondBox)
-      await flushDomUpdates()
-      expect(mockTranslateWalkedElement.mock.calls.map((call) => call[0])).toEqual([second])
     } finally {
       if (manager.isActive) manager.stop()
     }

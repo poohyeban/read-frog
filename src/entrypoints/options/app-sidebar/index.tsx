@@ -13,7 +13,6 @@ import { getCommandPaletteShortcutHint } from "@/utils/os"
 import { commandPaletteOpenAtom } from "../command-palette/atoms"
 import { CollapseToggle } from "./collapse-toggle"
 import { FeaturesNav } from "./features-nav"
-import { ProductNav } from "./product-nav"
 import { SettingsNav } from "./settings-nav"
 
 export function AppSidebar() {
@@ -40,7 +39,7 @@ export function AppSidebar() {
       <SidebarContent className="transition-all group-data-[state=expanded]:px-2">
         <SettingsNav />
         <FeaturesNav />
-        <ProductNav />
+        <></>
       </SidebarContent>
       <SidebarFooter className="transition-all group-data-[state=expanded]:px-2"></SidebarFooter>
       <CollapseToggle />

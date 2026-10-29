@@ -33,7 +33,7 @@ declare global {
 
 // The toolbar's own buttons, by the ids they have in `selectionToolbar.order`
 // beside the actions' ids.
-export const SELECTION_TOOLBAR_FEATURE_IDS = ["translate", "speak"] as const
+export const SELECTION_TOOLBAR_FEATURE_IDS = ["translate"] as const
 export type SelectionToolbarFeatureId = (typeof SELECTION_TOOLBAR_FEATURE_IDS)[number]
 
 // Reads the selection aloud. Alt+Shift, like the built-in actions' keys (see

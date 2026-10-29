@@ -28,17 +28,11 @@ import {
 import { SelectionToolbarErrorAlert } from "@/components/ui/selection-popover/selection-toolbar-error-alert"
 import { SelectionToolbarFooterContent } from "@/components/ui/selection-popover/selection-toolbar-footer-content"
 import { SelectionToolbarTitleContent } from "@/components/ui/selection-popover/selection-toolbar-title-content"
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
 import { isLLMProviderConfig, isTranslateProviderConfig } from "@/types/config/provider"
-import { createFeatureUsageContext, trackFeatureUsed } from "@/utils/analytics"
-import { classifyFailureReason } from "@/utils/analytics-failure-reason"
-import { classifyProviderConfig, classifyResolvedProvider } from "@/utils/analytics-provider"
 import { configFieldsAtomMap, writeConfigAtom } from "@/utils/atoms/config"
 import { buildFeatureProviderPatch } from "@/utils/constants/feature-providers"
 import { streamBackgroundText } from "@/utils/content-script/background-stream-client"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
-import { resolveGlossaryTermsFromCache } from "@/utils/glossary/active-matcher"
-import { trackGlossaryUsed } from "@/utils/glossary/analytics"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { translateTextCore } from "@/utils/host/translate/translate-text"
 import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
@@ -63,10 +57,6 @@ import { TranslationContent } from "./translation-content"
 interface SelectionTranslatePendingOpenRequest {
   anchor?: { x: number; y: number }
   session: SelectionSession
-  surface:
-    | typeof ANALYTICS_SURFACE.SELECTION_TOOLBAR
-    | typeof ANALYTICS_SURFACE.CONTEXT_MENU
-    | typeof ANALYTICS_SURFACE.SHORTCUT
 }
 
 /**
@@ -142,17 +132,6 @@ async function translateWithTextStream({
 
   // Read from the already-compiled matcher — no await on this path. See
   // `resolveGlossaryTermsFromCache`.
-  const glossaryTerms = resolveGlossaryTermsFromCache(
-    preparedText,
-    translateRequest.glossaryEnabled,
-    translateRequest.language.targetCode,
-  )
-  trackGlossaryUsed(
-    "selectionTranslation",
-    glossaryTerms,
-    translateRequest.language.targetCode,
-    classifyProviderConfig(providerConfig),
-  )
 
   const { systemPrompt, prompt } = getTranslatePromptFromConfig(
     { customPromptsConfig: translateRequest.customPromptsConfig },
@@ -169,7 +148,6 @@ async function translateWithTextStream({
             },
           }
         : {}),
-      glossaryTerms,
     },
   )
 
@@ -215,7 +193,7 @@ async function translateWithStandardProvider({
     providerConfig: provider,
     hostedFeature: "selectionTranslation",
     enableAIContentAware: translateRequest.enableAIContentAware,
-    glossaryEnabled: translateRequest.glossaryEnabled,
+
     extraHashTags: ["selectionTranslation"],
     webPageContext,
   })
@@ -270,11 +248,7 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
   const [error, setError] = useState<SelectionToolbarInlineError | null>(null)
   const [isTranslating, setIsTranslating] = useState(false)
   const [rerunNonce, setRerunNonce] = useState(0)
-  const [sourceSurface, setSourceSurface] = useState<
-    | typeof ANALYTICS_SURFACE.SELECTION_TOOLBAR
-    | typeof ANALYTICS_SURFACE.CONTEXT_MENU
-    | typeof ANALYTICS_SURFACE.SHORTCUT
-  >(ANALYTICS_SURFACE.SELECTION_TOOLBAR)
+
   const [activeSession, setActiveSession] = useState<SelectionSession | null>(null)
   const selectionSession = useAtomValue(selectionSessionAtom)
   const translateRequest = useAtomValue(selectionToolbarTranslateRequestAtom)
@@ -338,7 +312,7 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
     const pendingRequest = pendingOpenRequestRef.current
 
     setActiveSession(pendingRequest?.session ?? selectionSession)
-    setSourceSurface(pendingRequest?.surface ?? ANALYTICS_SURFACE.SELECTION_TOOLBAR)
+
     setIsSelectionToolbarOpen(false)
     pendingOpenRequestRef.current = null
   }, [selectionSession, setIsSelectionToolbarOpen])
@@ -366,13 +340,6 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
         return
       }
 
-      const analyticsContext = createFeatureUsageContext(
-        ANALYTICS_FEATURE.SELECTION_TRANSLATION,
-        sourceSurface,
-      )
-      const providerAnalytics = classifyResolvedProvider(translateRequest.provider)
-      const target_language = translateRequest.language.targetCode
-
       setIsTranslating(true)
       setTranslatedText(undefined)
       setThinking(null)
@@ -384,14 +351,7 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
           setIsTranslating(false)
           setError(createSelectionToolbarPrecheckError("translate", "providerUnavailable"))
         }
-        void trackFeatureUsed({
-          ...analyticsContext,
-          ...providerAnalytics,
-          char_count: preparedText.length,
-          target_language,
-          outcome: "failure",
-          failure_reason: "precheck",
-        })
+
         return
       }
 
@@ -400,14 +360,7 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
           setIsTranslating(false)
           setError(createSelectionToolbarPrecheckError("translate", "providerDisabled"))
         }
-        void trackFeatureUsed({
-          ...analyticsContext,
-          ...providerAnalytics,
-          char_count: preparedText.length,
-          target_language,
-          outcome: "failure",
-          failure_reason: "precheck",
-        })
+
         return
       }
 
@@ -418,14 +371,7 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
             setIsTranslating(false)
             setError(createSelectionToolbarPrecheckError("translate", "providerUnavailable"))
           }
-          void trackFeatureUsed({
-            ...analyticsContext,
-            ...providerAnalytics,
-            char_count: preparedText.length,
-            target_language,
-            outcome: "failure",
-            failure_reason: "precheck",
-          })
+
           return
         } else if (isLLMProviderConfig(provider.config)) {
           const providerConfig = provider.config
@@ -466,14 +412,6 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
         if (runIdRef.current === runId) {
           setTranslatedText(nextTranslatedText)
         }
-
-        void trackFeatureUsed({
-          ...analyticsContext,
-          ...providerAnalytics,
-          char_count: preparedText.length,
-          target_language,
-          outcome: "success",
-        })
       } catch (caughtError) {
         if (!isAbortError(caughtError) && runIdRef.current === runId) {
           setThinking((prev) => (prev?.text ? { ...prev, status: "complete" } : null))
@@ -481,14 +419,6 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
         }
 
         if (!isAbortError(caughtError)) {
-          void trackFeatureUsed({
-            ...analyticsContext,
-            ...providerAnalytics,
-            char_count: preparedText.length,
-            target_language,
-            outcome: "failure",
-            failure_reason: classifyFailureReason(caughtError),
-          })
         }
       } finally {
         if (runIdRef.current === runId) {
@@ -497,7 +427,7 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
         }
       }
     },
-    [resetTranslationState, selectionText, sourceSurface, translateRequest],
+    [resetTranslationState, selectionText, translateRequest],
   )
 
   const startTranslation = useEffectEvent((runId: number) => {
@@ -578,7 +508,6 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
 
     commitOpenRequest({
       session: selectionSession,
-      surface: ANALYTICS_SURFACE.SELECTION_TOOLBAR,
     })
   }, [commitOpenRequest, selectionSession])
 
@@ -591,7 +520,6 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
     return {
       anchor: request.anchor,
       session: request.session,
-      surface: ANALYTICS_SURFACE.CONTEXT_MENU,
     }
   }, [resolveContextMenuOpenRequest])
 
@@ -605,7 +533,6 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
       return {
         anchor: request.anchor,
         session: request.session,
-        surface: ANALYTICS_SURFACE.SHORTCUT,
       }
     },
     [resolveShortcutOpenRequest],
@@ -640,7 +567,6 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
       openSelectionTranslationRequest({
         anchor: { x: rect.left, y: rect.top },
         session: selectionSession,
-        surface: ANALYTICS_SURFACE.SELECTION_TOOLBAR,
       })
     },
     [openSelectionTranslationRequest, selectionSession],

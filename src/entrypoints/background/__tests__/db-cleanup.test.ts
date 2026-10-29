@@ -59,12 +59,6 @@ const caches = [
     label: "Summary cache",
     clear: "cleanupAllSummaryCache",
   },
-  {
-    alarm: "ai-segmentation-cache-cleanup",
-    table: cacheTables.aiSegmentationCache,
-    label: "AI segmentation cache",
-    clear: "cleanupAllAiSegmentationCache",
-  },
 ] as const
 
 const jobs = [
@@ -107,7 +101,7 @@ describe("database cleanup", () => {
   it("creates daily alarms with a one-minute delay without running cleanup on setup", async () => {
     await setUpAlarmListener()
 
-    expect(alarms.create).toHaveBeenCalledTimes(4)
+    expect(alarms.create).toHaveBeenCalledTimes(3)
     expect(alarms.onAlarm.addListener).toHaveBeenCalledTimes(1)
     for (const { alarm, table } of jobs) {
       expect(alarms.create).toHaveBeenCalledWith(alarm, {

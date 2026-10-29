@@ -2,7 +2,7 @@
 // so it must stay free of imports: the loader is injected into every page.
 
 /** The parts of the content runtime, each formerly its own content script. */
-export const CONTENT_RUNTIME_PARTS = ["host", "selection", "side"] as const
+export const CONTENT_RUNTIME_PARTS = ["host", "selection"] as const
 
 export type ContentRuntimePart = (typeof CONTENT_RUNTIME_PARTS)[number]
 

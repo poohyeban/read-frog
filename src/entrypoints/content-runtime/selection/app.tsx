@@ -6,12 +6,9 @@ import {
   SELECTION_CONTENT_OVERLAY_LAYERS,
   SELECTION_CONTENT_OVERLAY_ROOT_ATTRIBUTE,
 } from "@/utils/constants/selection-overlay-layers"
-import { useInputTranslation } from "./input-translation"
 import { SelectionToolbar } from "./selection-toolbar"
 import { SelectionCustomActionProvider } from "./selection-toolbar/custom-action-button/provider"
-import { SelectionSpeechProvider } from "./selection-toolbar/speak-button"
 import { SelectionTranslationProvider } from "./selection-toolbar/translate-button/provider"
-import { useContextMenuReadAloud } from "./use-context-menu-read-aloud"
 
 export default function App({
   uiContainer,
@@ -20,8 +17,6 @@ export default function App({
   uiContainer: HTMLElement
   portalContainer: ShadowRoot
 }) {
-  useInputTranslation()
-  useContextMenuReadAloud()
   const opacity = useAtomValue(configFieldsAtomMap.selectionToolbar).opacity / 100
 
   useEffect(() => {
@@ -47,9 +42,7 @@ export default function App({
     >
       <SelectionTranslationProvider>
         <SelectionCustomActionProvider>
-          <SelectionSpeechProvider>
-            <SelectionToolbar />
-          </SelectionSpeechProvider>
+          <SelectionToolbar />
         </SelectionCustomActionProvider>
       </SelectionTranslationProvider>
     </ToastProvider>

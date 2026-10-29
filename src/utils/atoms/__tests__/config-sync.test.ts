@@ -74,7 +74,7 @@ describe("config persistence and invalidation", () => {
     const store = mountStore()
     await tick()
     vi.mocked(storageAdapter.set).mockRejectedValueOnce(new Error("failed write"))
-    const first = store.set(writeConfigAtom, { betaExperience: { enabled: true } })
+    const first = store.set(writeConfigAtom, { contextMenu: { enabled: false } })
     const failure = first.catch((error: unknown) => error)
     const second = store.set(writeConfigAtom, { uiLanguage: "zh-CN" })
     expect(await failure).toEqual(new Error("failed write"))

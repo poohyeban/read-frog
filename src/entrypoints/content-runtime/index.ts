@@ -4,7 +4,6 @@ import { ContentScriptContext, defineUnlistedScript } from "#imports"
 import { logger } from "@/utils/logger"
 import { runHostContent } from "./host/main"
 import { runSelectionContent } from "./selection/main"
-import { runSideContent } from "./side/main"
 
 // The shared ES module behind every page's content scripts. The manifest only
 // injects the small loader (entrypoints/loader.content.ts); it imports this
@@ -15,7 +14,6 @@ import { runSideContent } from "./side/main"
 const RUNNERS: Record<ContentRuntimePart, (ctx: ContentScriptContext) => Promise<void>> = {
   host: runHostContent,
   selection: runSelectionContent,
-  side: runSideContent,
 }
 
 function isPartRunning(part: ContentRuntimePart) {

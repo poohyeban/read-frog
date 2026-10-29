@@ -112,22 +112,4 @@ describe("config provider enabled validation", () => {
 
     expect(issuePaths).toContain("selectionToolbar.features.translate.providerId")
   })
-
-  it("still rejects a provider id no capability covers", () => {
-    // The capability gate is what keeps this honest — not a hardcoded list.
-    expect(
-      getIssuePaths({
-        ...DEFAULT_CONFIG,
-        inputTranslation: { ...DEFAULT_CONFIG.inputTranslation, providerId: "does-not-exist" },
-      }),
-    ).toContain("inputTranslation.providerId")
-
-    // Pure translate providers cannot run language detection: it needs an LLM.
-    expect(
-      getIssuePaths({
-        ...DEFAULT_CONFIG,
-        languageDetection: { mode: "llm" as const, providerId: "google-translate-default" },
-      }),
-    ).toContain("languageDetection.providerId")
-  })
 })

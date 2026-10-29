@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import {
-  duplicateSelectionToolbarAction,
   findSelectionToolbarAction,
   getBuiltInDictionaryAction,
   getSelectionToolbarActions,
@@ -52,7 +51,6 @@ describe("selection toolbar built-in actions", () => {
       "default-sentence-analysis-translation",
     ])
     expect(action?.outputSchema[0]?.source).toBe("selection")
-    expect(action?.layout).toContain("default-sentence-analysis-annotations")
   })
 
   it("resolves the built-in Improve Writing, on by default, from its stored state", () => {
@@ -71,7 +69,6 @@ describe("selection toolbar built-in actions", () => {
       "default-improve-writing-improved",
       "default-improve-writing-summary",
     ])
-    expect(action?.layout).toContain("default-improve-writing-annotations")
 
     selectionToolbar.builtInActions.improveWriting = {
       enabled: false,
@@ -81,48 +78,6 @@ describe("selection toolbar built-in actions", () => {
       enabled: false,
       providerId: "openai-default",
     })
-  })
-
-  it("never persists the built-in Dictionary's layout", () => {
-    const selectionToolbar = cloneSelectionToolbar()
-    const dictionary = getBuiltInDictionaryAction(selectionToolbar)
-    expect(dictionary.layout).toEqual(expect.any(String))
-
-    const next = replaceSelectionToolbarAction(selectionToolbar, {
-      ...dictionary,
-      layout: "<p>Attempted layout edit</p>",
-    })
-
-    expect(next.builtInActions.dictionary).not.toHaveProperty("layout")
-    expect(getBuiltInDictionaryAction(next).layout).toBe(dictionary.layout)
-    expect(next.customActions).toEqual([])
-  })
-
-  it("stores a custom action's layout as given", () => {
-    const selectionToolbar = cloneSelectionToolbar()
-    const custom = {
-      ...getBuiltInDictionaryAction(selectionToolbar),
-      id: "custom-action",
-      name: "Custom",
-      layout: "<p>{{ Before }}</p>",
-    }
-    selectionToolbar.customActions = [custom]
-
-    const next = replaceSelectionToolbarAction(selectionToolbar, {
-      ...custom,
-      layout: "<p>{{ After }}</p>",
-    })
-
-    expect(next.customActions[0]?.layout).toBe("<p>{{ After }}</p>")
-  })
-
-  it("copies the layout when duplicating", () => {
-    const selectionToolbar = cloneSelectionToolbar()
-    const dictionary = getBuiltInDictionaryAction(selectionToolbar)
-    const custom = { ...dictionary, id: "custom-action", name: "Custom", layout: "<p>mine</p>" }
-
-    expect(duplicateSelectionToolbarAction(dictionary, [dictionary]).layout).toBe(dictionary.layout)
-    expect(duplicateSelectionToolbarAction(custom, [dictionary, custom]).layout).toBe("<p>mine</p>")
   })
 
   it("reads a built-in action's key from its state, and its default key without one", () => {
@@ -159,5 +114,3 @@ describe("selection toolbar built-in actions", () => {
     expect(keyChanged.builtInActions.dictionary.shortcut).toBe("Alt+Shift+K")
   })
 })
-
-describe("subtitle word lookup action", () => {})

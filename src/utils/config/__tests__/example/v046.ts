@@ -166,21 +166,6 @@ export const testSeries: TestSeriesObject = {
       contextMenu: {
         enabled: true,
       },
-      videoSubtitles: {
-        enabled: false,
-        autoStart: false,
-        style: {
-          displayMode: "bilingual",
-          translationPosition: "above",
-        },
-      },
-      inputTranslation: {
-        enabled: true,
-        fromLang: "targetCode",
-        toLang: "sourceCode",
-        enableCycle: false,
-        timeThreshold: 300,
-      },
     },
   },
   "config-with-no-default-openai-model": {
@@ -297,21 +282,6 @@ export const testSeries: TestSeriesObject = {
       },
       contextMenu: {
         enabled: true,
-      },
-      videoSubtitles: {
-        enabled: false,
-        autoStart: false,
-        style: {
-          displayMode: "bilingual",
-          translationPosition: "above",
-        },
-      },
-      inputTranslation: {
-        enabled: true,
-        fromLang: "targetCode",
-        toLang: "sourceCode",
-        enableCycle: false,
-        timeThreshold: 300,
       },
     },
   },

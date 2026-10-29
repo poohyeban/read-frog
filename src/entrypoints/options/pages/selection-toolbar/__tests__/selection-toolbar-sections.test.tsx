@@ -2,10 +2,8 @@
 
 import type { Config } from "@/types/config/config"
 import { fireEvent, render, screen } from "@testing-library/react"
-import { MemoryRouter } from "react-router"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
-import { ActionsSection } from "../actions"
 import { DisplaySection } from "../display"
 import { EnableItem } from "../enable-item"
 
@@ -65,29 +63,6 @@ describe("selection toolbar page sections", () => {
       ...selectionToolbar,
       enabled: !selectionToolbar.enabled,
     })
-  })
-
-  it("switches one built-in action at a time, leaving the other enabled", () => {
-    const selectionToolbar = testState.selectionToolbar!
-
-    // Its rows link to their keys on the Shortcuts page.
-    render(
-      <MemoryRouter>
-        <ActionsSection />
-      </MemoryRouter>,
-    )
-    const [translate, speak] = screen.getAllByRole("switch")
-
-    fireEvent.click(speak!)
-
-    expect(setSelectionToolbarMock).toHaveBeenCalledWith({
-      ...selectionToolbar,
-      features: {
-        ...selectionToolbar.features,
-        speak: { ...selectionToolbar.features.speak, enabled: false },
-      },
-    })
-    expect(translate).toBeChecked()
   })
 
   it("adds a disabled site without dropping the rest of the toolbar config", () => {

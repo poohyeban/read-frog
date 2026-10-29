@@ -1,7 +1,5 @@
 import type { LangCodeISO6393 } from "@read-frog/definitions"
-import type { GlossaryTargetLang } from "@/utils/glossary/target-language"
 import { langCodeISO6393Schema } from "@read-frog/definitions"
-import { ALL_LANGUAGES } from "@/utils/glossary/target-language"
 import { getLanguageLabel, getLanguageName } from "@/utils/language-labels"
 
 /**
@@ -55,11 +53,6 @@ export function getLanguageItems(
  * detect a language from, and offering `auto` beside `all` would put two rows
  * that both mean "not a specific language" next to each other.
  */
-export function getGlossaryTargetLanguageItems(
-  allLabel: string,
-): LanguageItem<GlossaryTargetLang>[] {
-  return [{ value: ALL_LANGUAGES, label: allLabel }, ...getTargetLanguageItems()]
-}
 
 export function filterLanguage(item: LanguageItem<string>, query: string): boolean {
   const searchLower = query.toLowerCase()

@@ -3,7 +3,6 @@ import type { CachedWebPageContext } from "@/utils/host/translate/webpage-contex
 import { act, render, renderHook, screen, waitFor } from "@testing-library/react"
 import { createElement } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { ANALYTICS_SURFACE } from "@/types/analytics"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { CUSTOM_ACTION_CONTEXT_CHAR_LIMIT } from "@/utils/custom-action-prompt"
 import { findSelectionToolbarAction, getBuiltInDictionaryAction } from "@/utils/custom-actions"
@@ -26,11 +25,6 @@ vi.mock("@/utils/content-script/background-stream-client", async () => {
     streamBackgroundStructuredObject: (...args: unknown[]) =>
       streamBackgroundStructuredObjectMock(...args),
   }
-})
-
-vi.mock("@/utils/analytics", async () => {
-  const actual = await vi.importActual<typeof import("@/utils/analytics")>("@/utils/analytics")
-  return { ...actual, trackFeatureUsed: vi.fn<(...args: any[]) => any>() }
 })
 
 const getOrCreateWebPageContextMock = vi.fn<(...args: any[]) => any>()
@@ -259,7 +253,6 @@ describe("useCustomActionExecution", () => {
 
     const { result } = renderHook(() => {
       const execution = useCustomActionExecution({
-        analyticsSurface: ANALYTICS_SURFACE.SELECTION_TOOLBAR,
         bodyRef: { current: null },
         executionContext: {
           action,

@@ -8,13 +8,9 @@ import { CustomActionPanel } from "@/components/custom-action/custom-action-pane
 import { toastManager } from "@/components/ui/base-ui/toast"
 import { SelectionPopover } from "@/components/ui/selection-popover"
 import { createSelectionToolbarPrecheckError } from "@/components/ui/selection-popover/inline-error"
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
-import { createFeatureUsageContext, trackFeatureUsed } from "@/utils/analytics"
-import { classifyResolvedProvider, UNKNOWN_FEATURE_PROVIDER } from "@/utils/analytics-provider"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { findSelectionToolbarAction, getSelectionToolbarActions } from "@/utils/custom-actions"
 import { onMessage } from "@/utils/message"
-import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { ShadowWrapperContext } from "@/utils/react-shadow-host/create-shadow-host"
 import { normalizeSelectedText } from "../../utils"
 import {
@@ -26,16 +22,10 @@ import {
 import { useSelectionOpenRequestResolver } from "../use-selection-open-request"
 import { useSelectionShortcuts } from "../use-selection-shortcuts"
 
-type SelectionCustomActionSurface =
-  | typeof ANALYTICS_SURFACE.SELECTION_TOOLBAR
-  | typeof ANALYTICS_SURFACE.CONTEXT_MENU
-  | typeof ANALYTICS_SURFACE.SHORTCUT
-
 interface SelectionCustomActionPendingOpenRequest {
   actionId: string
   anchor?: { x: number; y: number }
   session: SelectionSession | null
-  surface: SelectionCustomActionSurface
 }
 
 interface SelectionCustomActionContextValue {
@@ -65,7 +55,7 @@ export function SelectionCustomActionProvider({ children }: { children: ReactNod
   const selection = useAtomValue(selectionAtom)
   const context = useAtomValue(contextAtom)
   const selectionToolbarConfig = useAtomValue(configFieldsAtomMap.selectionToolbar)
-  const providersConfig = useAtomValue(configFieldsAtomMap.providersConfig)
+
   const [customActionRequest, setCustomActionRequest] = useAtom(customActionRequestAtom)
   const setIsSelectionToolbarOpen = useSetAtom(isSelectionToolbarOpenAtom)
 
@@ -101,7 +91,7 @@ export function SelectionCustomActionProvider({ children }: { children: ReactNod
               selectionText,
               cleanSelection,
               contextText: cleanSelection ? session?.contextSnapshot.text || cleanSelection : "",
-              surface: pendingRequest.surface,
+
               sessionKey: sessionKeyRef.current,
               // A reuse forces a rerun even when the retriggered request
               // resolves to an identical execution key.
@@ -153,7 +143,7 @@ export function SelectionCustomActionProvider({ children }: { children: ReactNod
       openActionRequest({
         actionId,
         anchor: { x: rect.left, y: rect.top },
-        surface: ANALYTICS_SURFACE.SELECTION_TOOLBAR,
+
         session:
           selectionSession ??
           (selection
@@ -177,16 +167,7 @@ export function SelectionCustomActionProvider({ children }: { children: ReactNod
       const action = findSelectionToolbarAction(selectionToolbarConfig, actionId)
       if (!action || action.enabled === false) {
         const nextError = createSelectionToolbarPrecheckError("customAction", "actionUnavailable")
-        void trackFeatureUsed({
-          ...createFeatureUsageContext(
-            ANALYTICS_FEATURE.CUSTOM_AI_ACTION,
-            ANALYTICS_SURFACE.CONTEXT_MENU,
-          ),
-          action_id: actionId,
-          ...UNKNOWN_FEATURE_PROVIDER,
-          outcome: "failure",
-          failure_reason: "precheck",
-        })
+
         toastManager.add({ type: "error", title: nextError.description })
         return
       }
@@ -194,19 +175,7 @@ export function SelectionCustomActionProvider({ children }: { children: ReactNod
       const request = resolveContextMenuOpenRequest()
       if (!request) {
         const nextError = createSelectionToolbarPrecheckError("customAction", "missingSelection")
-        void trackFeatureUsed({
-          ...createFeatureUsageContext(
-            ANALYTICS_FEATURE.CUSTOM_AI_ACTION,
-            ANALYTICS_SURFACE.CONTEXT_MENU,
-          ),
-          action_id: action.id,
-          action_name: action.name,
-          ...classifyResolvedProvider(
-            resolveProviderRefForCapability("customAction", providersConfig, action.providerId),
-          ),
-          outcome: "failure",
-          failure_reason: "precheck",
-        })
+
         toastManager.add({ type: "error", title: nextError.description })
         return
       }
@@ -215,10 +184,9 @@ export function SelectionCustomActionProvider({ children }: { children: ReactNod
         actionId: action.id,
         anchor: request.anchor,
         session: request.session,
-        surface: ANALYTICS_SURFACE.CONTEXT_MENU,
       })
     },
-    [openActionRequest, providersConfig, resolveContextMenuOpenRequest, selectionToolbarConfig],
+    [openActionRequest, resolveContextMenuOpenRequest, selectionToolbarConfig],
   )
 
   // An action switched off has no key, whatever it was given.
@@ -241,7 +209,6 @@ export function SelectionCustomActionProvider({ children }: { children: ReactNod
       actionId,
       anchor: request.anchor,
       session: request.session,
-      surface: ANALYTICS_SURFACE.SHORTCUT,
     })
     return true
   })

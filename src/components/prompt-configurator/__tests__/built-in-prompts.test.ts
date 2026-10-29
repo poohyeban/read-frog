@@ -3,11 +3,7 @@ import {
   DEFAULT_TRANSLATE_PROMPT_ID,
   PRECISION_REWRITE_TRANSLATE_PROMPT_ID,
 } from "@/utils/constants/prompt"
-import {
-  getBuiltInPageTranslatePrompts,
-  getBuiltInSubtitleTranslatePrompts,
-  getPageTranslatePromptSelectItems,
-} from "../built-in-prompts"
+import { getPageTranslatePromptSelectItems } from "../built-in-prompts"
 
 vi.mock("@/utils/i18n", () => ({
   i18n: {
@@ -36,15 +32,5 @@ describe("built-in translation prompt presentation", () => {
       "custom",
     ])
     expect(items.map(({ label }) => label)).toEqual(["Default", "Deep polish", "Custom"])
-  })
-
-  it("offers precision rewrite only for page translation", () => {
-    expect(getBuiltInPageTranslatePrompts().map(({ id }) => id)).toEqual([
-      DEFAULT_TRANSLATE_PROMPT_ID,
-      PRECISION_REWRITE_TRANSLATE_PROMPT_ID,
-    ])
-    expect(getBuiltInSubtitleTranslatePrompts().map(({ id }) => id)).toEqual([
-      DEFAULT_TRANSLATE_PROMPT_ID,
-    ])
   })
 })

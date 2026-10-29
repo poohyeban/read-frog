@@ -1,4 +1,3 @@
-import type { AnalyticsFailureReason } from "@/types/analytics"
 import type {
   StreamPortErrorPayload,
   StreamPortRequestMessage,
@@ -24,13 +23,11 @@ export const STREAM_PORT_DISCONNECTED_MESSAGE = "Stream disconnected unexpectedl
  */
 export class StreamPortError extends Error {
   readonly action?: ErrorAction
-  readonly reason?: AnalyticsFailureReason
 
-  constructor({ message, action, reason }: StreamPortErrorPayload) {
+  constructor({ message, action }: StreamPortErrorPayload) {
     super(message)
     this.name = "StreamPortError"
     this.action = action
-    this.reason = reason
   }
 }
 

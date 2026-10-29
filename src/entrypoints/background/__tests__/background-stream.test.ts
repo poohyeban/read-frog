@@ -481,7 +481,7 @@ describe("background-stream", () => {
       streamRequestId: "req-text-pre-stream-error",
       error: {
         message: "Model is undefined",
-        reason: "precheck",
+        action: undefined,
       },
     })
     expect(mockPort.disconnect).toHaveBeenCalledTimes(1)

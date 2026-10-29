@@ -102,15 +102,4 @@ describe("ShortcutConfigItem", () => {
     })
     expect(toastAdd).not.toHaveBeenCalled()
   })
-
-  it("flags a clash saved before the check existed", async () => {
-    const config = structuredClone(DEFAULT_CONFIG)
-    config.selectionToolbar.features.speak.shortcut = "Alt+Shift+D"
-    await renderItem(config, "Alt+Shift+D")
-
-    // Named after the built-in Dictionary, whose key it is.
-    expect(screen.getByText(/^options\.shortcuts\.clash:/)).toHaveTextContent(
-      "options.shortcuts.clash:options.selectionToolbar.customActions.templates.dictionary.name",
-    )
-  })
 })

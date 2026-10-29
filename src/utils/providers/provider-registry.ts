@@ -20,9 +20,9 @@ export type ResolvedProviderRef<T extends ProviderConfig = ProviderConfig> = Loc
 
 const LOCAL_PROVIDER_CAPABILITY_PREDICATES = {
   pageTranslation: isTranslateProviderConfig,
-  videoSubtitles: isTranslateProviderConfig,
+
   selectionTranslation: isTranslateProviderConfig,
-  inputTranslation: isTranslateProviderConfig,
+
   customAction: isLLMProviderConfig,
   languageDetection: isLLMProviderConfig,
 } as const satisfies Record<ProviderCapability, ProviderConfigPredicate>

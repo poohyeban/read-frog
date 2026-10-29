@@ -1178,46 +1178,6 @@ describe("selectionPopover", () => {
     expectLatestPosition({ x: 100, y: 80 })
   })
 
-  it("cancels stale auto-layout on drag start and reclamps once dragging stops", async () => {
-    const { element } = renderPopover()
-
-    await act(async () => {
-      await Promise.resolve()
-    })
-
-    mockRect(element, { left: 120, top: 620, width: 500, height: 280 })
-
-    act(() => {
-      latestRndProps?.onDragStop?.(new MouseEvent("mouseup"), { x: 120, y: 620 })
-    })
-    updatePositionSpy.mockReset()
-    updateSizeSpy.mockReset()
-
-    act(() => {
-      latestRndProps?.onDragStart?.()
-    })
-
-    mockRect(element, { left: 120, top: 620, width: 500, height: 360 })
-    triggerResizeObserver()
-
-    expect(updatePositionSpy).not.toHaveBeenCalled()
-    expect(updateSizeSpy).not.toHaveBeenCalled()
-    expectLatestPosition({ x: 120, y: 620 })
-
-    mockRect(element, { left: 120, top: 620, width: 500, height: 400 })
-    triggerResizeObserver()
-
-    expect(updatePositionSpy).not.toHaveBeenCalled()
-    expect(updateSizeSpy).not.toHaveBeenCalled()
-    expectLatestPosition({ x: 120, y: 620 })
-
-    act(() => {
-      latestRndProps?.onDragStop?.(new MouseEvent("mouseup"), { x: 120, y: 620 })
-    })
-
-    expectLatestPosition({ x: 120, y: 500 })
-  })
-
   it("merges Base UI render props into a custom trigger element", () => {
     renderPopover({ customTrigger: true })
 

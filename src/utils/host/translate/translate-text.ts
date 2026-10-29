@@ -4,17 +4,13 @@ import type { Config } from "@/types/config/config"
 import type { LLMProviderConfig, TranslateProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { WebPagePromptContext } from "@/types/content"
-import type { MatchedTerm } from "@/utils/glossary/types"
 import type { PromptableProviderRef, SerializableProviderRef } from "@/utils/providers/provider-ref"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
 import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { toastManager } from "@/components/ui/base-ui/toast"
 import { isAPIProviderConfig, isLLMProviderConfig } from "@/types/config/provider"
-import { classifyResolvedProvider } from "@/utils/analytics-provider"
 import { isNoTranslationSentinel } from "@/utils/constants/prompt"
 import { detectLanguage } from "@/utils/content/language"
-import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
-import { trackGlossaryUsed } from "@/utils/glossary/analytics"
 import { i18n } from "@/utils/i18n"
 import { logger } from "@/utils/logger"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
@@ -102,7 +98,7 @@ async function buildWebPageHashComponents(
   enableAIContentAware: boolean,
   textFormat: TranslationTextFormat,
   preserveLineBreaks: boolean,
-  glossaryTerms: readonly MatchedTerm[],
+
   webPageContext?: WebPagePromptContext,
 ): Promise<string[]> {
   const preparedText = prepareTranslationText(text)
@@ -139,7 +135,6 @@ async function buildWebPageHashComponents(
   const { systemPrompt, prompt } = await getTranslatePrompt(targetLangName, preparedText, {
     isBatch: true,
     context: normalizedWebPageContext,
-    glossaryTerms,
   })
   hashComponents.push(systemPrompt, prompt)
   hashComponents.push(
@@ -228,10 +223,7 @@ export interface TranslateTextOptions {
   forceRetranslation?: boolean
   /**
    * Whether the user's glossary is switched on. Supplied by the caller, which
-   * already holds the config, rather than re-read here per paragraph — the same
-   * arrangement as `enableAIContentAware`.
-   */
-  glossaryEnabled?: boolean
+   * already holds the config
   /**
    * Which hosted route a system provider bills against; local providers
    * ignore it. Required so every entry point states its route where the
@@ -257,7 +249,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     preserveLineBreaks = false,
     sessionId,
     forceRetranslation = false,
-    glossaryEnabled = false,
+
     hostedFeature,
   } = options
 
@@ -285,20 +277,10 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
   // either side of an edit made while this page was still translating, and it
   // is the only thing that tells the background which wording is the newer one
   // (see `mergeBatchGlossaryTerms`).
-  const { terms: glossaryTerms, revision: glossaryRevision } = await resolveGlossaryTerms(
-    preparedText,
-    glossaryEnabled,
-    langConfig.targetCode,
-  )
+
   // Covers page, input and pure-translate-provider selection runs, which all
   // enter here; the two prompt-building selection paths and subtitles resolve
   // their own terms and report at their own resolve sites.
-  trackGlossaryUsed(
-    hostedFeature,
-    glossaryTerms,
-    langConfig.targetCode,
-    classifyResolvedProvider(providerConfig),
-  )
 
   const hashComponents = await buildWebPageHashComponents(
     preparedText,
@@ -307,7 +289,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     enableAIContentAware,
     textFormat,
     preserveLineBreaks,
-    glossaryTerms,
+
     normalizedWebPageContext,
   )
 
@@ -358,8 +340,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     webSummary: normalizedWebPageContext?.webSummary,
     sessionId,
     forceRetranslation,
-    glossaryTerms,
-    glossaryRevision,
+
     hostedFeature,
   })
   if (sessionId !== undefined) {

@@ -12,7 +12,6 @@ import { baseThemeModeAtom } from "@/utils/atoms/theme"
 import { getLocalConfig } from "@/utils/config/storage"
 import { APP_NAME } from "@/utils/constants/app"
 import { SELECTION_UI_CSS } from "@/utils/content-ui-css"
-import { primeGlossaryMatcher } from "@/utils/glossary/active-matcher"
 import { initI18n } from "@/utils/i18n"
 import { LocaleBoundary } from "@/utils/i18n/locale-boundary"
 import { ensureIconifyBackgroundFetch } from "@/utils/iconify/setup-background-fetch"
@@ -128,7 +127,6 @@ export async function runSelectionContent(ctx: ContentScriptContext) {
   // `config?.` because `isSiteEnabled` tolerates a null config rather than
   // narrowing it; `glossary` itself is always present once config is, since
   // its schema carries a default.
-  if (config?.glossary.enabled) primeGlossaryMatcher(config.language.targetCode)
 
   // Answer ebook bridge handshakes before the React UI finishes mounting
   const cleanupExternalSelectionSource = setupExternalSelectionSource()

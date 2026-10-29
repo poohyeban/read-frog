@@ -168,37 +168,7 @@ export const testSeries: TestSeriesObject = {
       contextMenu: {
         enabled: true,
       },
-      videoSubtitles: {
-        enabled: false,
-        autoStart: false,
-        style: {
-          displayMode: "bilingual",
-          translationPosition: "above",
-          main: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          translation: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          container: {
-            backgroundOpacity: 75,
-          },
-        },
-        aiSegmentation: false,
-      },
-      inputTranslation: {
-        enabled: true,
-        fromLang: "targetCode",
-        toLang: "sourceCode",
-        enableCycle: false,
-        timeThreshold: 300,
-      },
+
       siteControl: {
         mode: "all",
         patterns: [],
@@ -322,37 +292,7 @@ export const testSeries: TestSeriesObject = {
       contextMenu: {
         enabled: true,
       },
-      videoSubtitles: {
-        enabled: false,
-        autoStart: false,
-        style: {
-          displayMode: "bilingual",
-          translationPosition: "above",
-          main: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          translation: {
-            fontFamily: "system",
-            fontScale: 100,
-            color: "#FFFFFF",
-            fontWeight: 400,
-          },
-          container: {
-            backgroundOpacity: 75,
-          },
-        },
-        aiSegmentation: false,
-      },
-      inputTranslation: {
-        enabled: true,
-        fromLang: "targetCode",
-        toLang: "sourceCode",
-        enableCycle: false,
-        timeThreshold: 300,
-      },
+
       siteControl: {
         mode: "all",
         patterns: [],

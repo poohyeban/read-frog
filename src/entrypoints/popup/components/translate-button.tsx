@@ -2,8 +2,6 @@ import { useAtom, useAtomValue } from "jotai"
 import { browser } from "#imports"
 import { Button } from "@/components/ui/base-ui/button"
 import { Kbd, KbdGroup } from "@/components/ui/base-ui/kbd"
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
-import { createFeatureUsageContext } from "@/utils/analytics"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { i18n } from "@/utils/i18n"
 import { sendMessage } from "@/utils/message"
@@ -33,9 +31,6 @@ export default function TranslateButton({ className }: { className?: string }) {
       void sendMessage("tryToSetEnablePageTranslationByTabId", {
         tabId: currentTab!.id,
         enabled: nextEnabled,
-        analyticsContext: nextEnabled
-          ? createFeatureUsageContext(ANALYTICS_FEATURE.PAGE_TRANSLATION, ANALYTICS_SURFACE.POPUP)
-          : undefined,
       })
 
       setIsPageTranslated((prev) => !prev)

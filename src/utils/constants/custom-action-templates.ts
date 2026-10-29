@@ -1,13 +1,7 @@
 import type { GeneratedI18nStructure } from "#i18n"
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
-import { DEFAULT_LAYOUT } from "@read-frog/layout-engine/presets"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { i18n } from "@/utils/i18n"
-import {
-  buildDictionaryActionLayout,
-  buildImproveWritingActionLayout,
-  buildSentenceAnalysisActionLayout,
-} from "@/utils/layout-host/slots"
 import { createOutputSchemaField, createSelectionOutputField } from "./custom-action"
 
 const T_PREFIX = "options.selectionToolbar.customActions.templates"
@@ -215,7 +209,6 @@ export const CUSTOM_ACTION_TEMPLATES: CustomActionTemplate[] = [
       // preset always has the term and definition slots, so it is never null.
       return {
         ...action,
-        layout: buildDictionaryActionLayout(action.outputSchema) ?? DEFAULT_LAYOUT,
       }
     },
   },
@@ -230,7 +223,6 @@ export const CUSTOM_ACTION_TEMPLATES: CustomActionTemplate[] = [
       // has the annotations slot, so it is never null.
       return {
         ...action,
-        layout: buildSentenceAnalysisActionLayout(action.outputSchema) ?? DEFAULT_LAYOUT,
       }
     },
   },
@@ -245,7 +237,6 @@ export const CUSTOM_ACTION_TEMPLATES: CustomActionTemplate[] = [
       // the annotations slot, so it is never null.
       return {
         ...action,
-        layout: buildImproveWritingActionLayout(action.outputSchema) ?? DEFAULT_LAYOUT,
       }
     },
   },
@@ -269,7 +260,6 @@ export const CUSTOM_ACTION_TEMPLATES: CustomActionTemplate[] = [
           i18n.t("options.selectionToolbar.customActions.form.defaultFieldName"),
         ),
       ],
-      layout: DEFAULT_LAYOUT,
     }),
   },
 ] satisfies CustomActionTemplateDefinition[]

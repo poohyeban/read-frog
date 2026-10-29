@@ -1,59 +1,25 @@
 import type { LangCodeISO6393 } from "@read-frog/definitions"
-import type { FeatureUsageContext, FeatureUsedEventProperties } from "@/types/analytics"
 import type {
   BackgroundGenerateTextPayload,
   BackgroundGenerateTextResponse,
 } from "@/types/background-generate-text"
 import type { Config } from "@/types/config/config"
 import type { TranslationTextFormat } from "@/types/config/translate"
-import type {
-  EdgeTTSHealthStatus,
-  EdgeTTSSynthesizeRequest,
-  EdgeTTSSynthesizeWireResponse,
-} from "@/types/edge-tts"
 import type { ProviderRequestRouting } from "@/types/hosted-request"
 import type { ProxyRequest, ProxyResponse } from "@/types/proxy-fetch"
-import type {
-  TTSPlaybackStartRequest,
-  TTSPlaybackStartResponse,
-  TTSPlaybackStopRequest,
-} from "@/types/tts-playback"
-import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
-import type { MatchedTerm } from "@/utils/glossary/types"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
-import type { EdgeTTSVoice } from "@/utils/server/edge-tts/types"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
 interface ProtocolMap {
   openPage: (data: { url: string; active?: boolean }) => void
   openOptionsPage: (data?: { route?: `/${string}` }) => void
-  toggleSidePanel: (data?: { source?: "content-script" | "extension-user-action" }) => Promise<
-    | { ok: true; action: "opened" | "closed" }
-    | {
-        ok: false
-        reason:
-          | "missing-window"
-          | "unsupported"
-          | "toggle-failed"
-          | "requires-extension-user-action"
-      }
-  >
+
   getInitialConfig: () => Config | null
-  getGlossarySnapshot: (data: {
-    url: string | undefined
-    targetLang: LangCodeISO6393
-  }) => Promise<GlossarySnapshot>
+
   getEnablePageTranslationByTabId: (data: { tabId: number }) => boolean | undefined
   getEnablePageTranslationFromContentScript: () => Promise<boolean>
-  tryToSetEnablePageTranslationByTabId: (data: {
-    tabId: number
-    enabled: boolean
-    analyticsContext?: FeatureUsageContext<"page_translation">
-  }) => void
-  tryToSetEnablePageTranslationOnContentScript: (data: {
-    enabled: boolean
-    analyticsContext?: FeatureUsageContext<"page_translation">
-  }) => void
+  tryToSetEnablePageTranslationByTabId: (data: { tabId: number; enabled: boolean }) => void
+  tryToSetEnablePageTranslationOnContentScript: (data: { enabled: boolean }) => void
   setAndNotifyPageTranslationStateChangedByManager: (data: {
     enabled: boolean
     url?: string
@@ -70,17 +36,13 @@ interface ProtocolMap {
   refreshDetectedPageLanguage: () => void
   getDetectedCode: () => LangCodeISO6393
   detectedPageLanguageChanged: (data: { detectedCode: LangCodeISO6393 }) => void
-  askManagerToTogglePageTranslation: (data: {
-    enabled: boolean
-    analyticsContext?: FeatureUsageContext<"page_translation">
-  }) => void
+  askManagerToTogglePageTranslation: (data: { enabled: boolean }) => void
   openSelectionTranslationFromContextMenu: (data: { selectionText: string }) => void
   openSelectionCustomActionFromContextMenu: (data: {
     actionId: string
     selectionText: string
   }) => void
-  readAloudSelectionFromContextMenu: (data: { selectionText: string }) => void
-  trackFeatureUsedEvent: (data: FeatureUsedEventProperties) => void
+
   enqueueTranslateRequest: (
     data: ProviderRequestRouting & {
       text: string
@@ -103,16 +65,11 @@ interface ProtocolMap {
       // Glossary terms the SENDER found in `text`. Resolved where the page URL
       // is known, so a glossary scoped to this site reaches the prompt and one
       // scoped elsewhere does not — the background serves every tab and cannot
-      // tell them apart. Passing `[]` means "nothing matched", which is not the
-      // same as omitting the field: omitting it lets the background fall back to
-      // resolving unscoped glossaries itself.
-      glossaryTerms?: MatchedTerm[]
+      // tell them apart. Passing `[]` means "nothing matched"
       // Which glossary revision `glossaryTerms` was read from. A batch can hold
       // requests resolved either side of an edit made while the page was still
       // translating; without this the background would settle a disagreement by
-      // message arrival order, which is a coin flip. See
-      // `mergeBatchGlossaryTerms`.
-      glossaryRevision?: number
+      // message arrival order
     },
   ) => Promise<string>
   cancelPageTranslationRequests: (data: { sessionId: string }) => void
@@ -122,35 +79,12 @@ interface ProtocolMap {
       webContent: string
     },
   ) => Promise<string | null>
-  getSubtitlesSummary: (data: {
-    videoTitle: string
-    subtitlesContext: string
-    providerRef: PromptableProviderRef
-  }) => Promise<string | null>
-  getCachedVideoSummary: (data: {
-    transcript: string
-    targetLanguage: string
-    providerRef: PromptableProviderRef
-  }) => Promise<string | null>
-  saveVideoSummary: (data: {
-    transcript: string
-    targetLanguage: string
-    providerRef: PromptableProviderRef
-    summary: string
-  }) => Promise<void>
+
   backgroundGenerateText: (
     data: BackgroundGenerateTextPayload,
   ) => Promise<BackgroundGenerateTextResponse>
   backgroundFetch: (data: ProxyRequest) => Promise<ProxyResponse>
   clearAllTranslationRelatedCache: () => Promise<void>
-  edgeTtsSynthesize: (data: EdgeTTSSynthesizeRequest) => Promise<EdgeTTSSynthesizeWireResponse>
-  edgeTtsListVoices: () => Promise<EdgeTTSVoice[]>
-  edgeTtsHealthCheck: () => Promise<EdgeTTSHealthStatus>
-  ttsPlaybackPrepare: () => Promise<{ ok: true }>
-  ttsPlaybackStart: (data: TTSPlaybackStartRequest) => Promise<TTSPlaybackStartResponse>
-  ttsPlaybackStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
-  ttsOffscreenPlay: (data: TTSPlaybackStartRequest) => Promise<TTSPlaybackStartResponse>
-  ttsOffscreenStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
 }
 
 export const { sendMessage, onMessage } = defineExtensionMessaging<ProtocolMap>()

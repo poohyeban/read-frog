@@ -126,9 +126,9 @@ vi.mock("@/utils/config/helpers", () => ({
 vi.mock("@/utils/constants/feature-providers", () => ({
   FEATURE_KEYS: [
     "pageTranslation",
-    "videoSubtitles",
+
     "selectionTranslation",
-    "inputTranslation",
+
     "noteSuggestion",
   ],
   FEATURE_PROVIDER_DEFS: {
@@ -138,8 +138,6 @@ vi.mock("@/utils/constants/feature-providers", () => ({
     // provider, so no built-in card starts with a feature assignment.
     noteSuggestion: { getProviderId: () => "openai-default" },
     // Both default to Microsoft, so neither starts assigned to a built-in.
-    videoSubtitles: { getProviderId: () => "microsoft-translate-default" },
-    inputTranslation: { getProviderId: () => "microsoft-translate-default" },
   },
   buildFeatureProviderPatch: () => ({}),
   getFeatureLabelI18nKey: (key: string) => `feature.${key}`,
@@ -226,14 +224,5 @@ describe("ProvidersConfig", () => {
       title: "options.apiProviders.form.providerInUseCannotDisable:Long Provider Name|1",
       type: "error",
     })
-  })
-
-  it("lists both built-in provider cards", () => {
-    renderProvidersConfig()
-
-    expect(screen.getByText("options.apiProviders.providers.name.builtInAi")).toBeInTheDocument()
-    expect(
-      screen.getByText("options.apiProviders.providers.name.builtInAiAdvance"),
-    ).toBeInTheDocument()
   })
 })

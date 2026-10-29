@@ -7,10 +7,6 @@ vi.mock("../copy-button", () => ({
   CopyButton: () => <button type="button">Copy</button>,
 }))
 
-vi.mock("../speak-button", () => ({
-  SpeakButton: () => <button type="button">Speak</button>,
-}))
-
 function getViewport(container: HTMLElement) {
   const viewport = container.querySelector<HTMLElement>("[data-slot=scroll-area-viewport]")
   expect(viewport).not.toBeNull()

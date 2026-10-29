@@ -16,16 +16,11 @@ import {
   cleanupAllTranslationCache,
   setUpDatabaseCleanup,
 } from "./db-cleanup"
-import { setupEdgeTTSMessageHandlers } from "./edge-tts"
-import { setupFeatureUsedEventHandlers } from "./feature-used-event"
-import { setupGlossaryMessageHandlers } from "./glossary"
 import { setupIframeInjection } from "./iframe-injection"
 import { setupLLMGenerateTextMessageHandlers } from "./llm-generate-text"
-import { initMockData } from "./mock-data"
 import { setupPageTranslationHandlers } from "./page-translation"
 import { proxyFetch } from "./proxy-fetch"
 import { translationMessage } from "./translation-signal"
-import { setupTTSPlaybackMessageHandlers } from "./tts-playback"
 
 export default defineBackground({
   type: "module",
@@ -56,7 +51,6 @@ export default defineBackground({
       await cleanupAllSummaryCache()
     })
 
-    setupFeatureUsedEventHandlers()
     translationMessage()
     registerActionIconListeners()
 
@@ -85,12 +79,7 @@ export default defineBackground({
 
     proxyFetch()
 
-    setupGlossaryMessageHandlers()
-
-    setupEdgeTTSMessageHandlers()
     setupLLMGenerateTextMessageHandlers()
-    setupTTSPlaybackMessageHandlers()
-    void initMockData()
 
     // Setup on-demand iframe injection after page translation is enabled.
     setupIframeInjection()

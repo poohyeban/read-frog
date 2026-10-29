@@ -20,7 +20,6 @@ import { setSelectionStateAtom } from "../atoms"
 import { SelectionCustomActionProvider } from "../custom-action-button/provider"
 import { SelectionToolbar } from "../index"
 import { SelectionToolbarPinnedItems } from "../pinned-items"
-import { SelectionSpeechProvider } from "../speak-button"
 import { TranslateButton } from "../translate-button"
 import { SelectionTranslationProvider } from "../translate-button/provider"
 
@@ -309,8 +308,8 @@ vi.mock("../translate-button/translation-content", () => ({
   ),
 }))
 
-vi.mock("@/components/layout-host/custom-action-layout-view", () => ({
-  CustomActionLayoutView: ({
+vi.mock("@/components/layout-host/fallback-field-list", () => ({
+  FallbackFieldList: ({
     source,
     value,
   }: {
@@ -584,9 +583,7 @@ function renderWithProviders(ui: ReactElement, store = createStore()) {
       <Provider store={store}>
         <TooltipProvider>
           <SelectionTranslationProvider>
-            <SelectionCustomActionProvider>
-              <SelectionSpeechProvider>{ui}</SelectionSpeechProvider>
-            </SelectionCustomActionProvider>
+            <SelectionCustomActionProvider>{ui}</SelectionCustomActionProvider>
           </SelectionTranslationProvider>
         </TooltipProvider>
       </Provider>
@@ -1044,56 +1041,6 @@ describe("selection toolbar requests", () => {
   // prepares its own copy, which drops invisible joiners such as the one that
   // holds an emoji sequence together.
 
-  it("opens selection translation from the context menu and tracks the context-menu surface", async () => {
-    translateTextCoreMock.mockResolvedValue("Context menu result")
-    getOrCreateWebPageContextMock.mockResolvedValue(null)
-
-    const paragraph = document.createElement("p")
-    paragraph.textContent = "Selected text inside a paragraph."
-    document.body.appendChild(paragraph)
-
-    const store = createStore()
-    store.set(configAtom, cloneConfig(DEFAULT_CONFIG))
-    setSelectionState(store, { text: "Selected text", range: createRangeFor(paragraph) })
-    renderWithProviders(<TranslateButton />, store)
-
-    act(() => {
-      paragraph.dispatchEvent(
-        new MouseEvent("contextmenu", {
-          bubbles: true,
-          button: 2,
-          clientX: 140,
-          clientY: 180,
-        }),
-      )
-    })
-
-    const handler = getRegisteredMessageHandler("openSelectionTranslationFromContextMenu")
-
-    await act(async () => {
-      handler({ data: { selectionText: "Selected text" } })
-      await Promise.resolve()
-    })
-
-    await waitFor(() => {
-      expect(translateTextCoreMock).toHaveBeenCalledTimes(1)
-    })
-
-    await waitFor(() => {
-      expect(screen.getByTestId("translation-result").textContent).toBe("Context menu result")
-    })
-
-    const { sendMessage } = await import("@/utils/message")
-    expect(vi.mocked(sendMessage)).toHaveBeenCalledWith(
-      "trackFeatureUsedEvent",
-      expect.objectContaining({
-        feature: "selection_translation",
-        surface: "context_menu",
-        outcome: "success",
-      }),
-    )
-  })
-
   it("reuses the same captured session for cross-node context-menu translation", async () => {
     translateTextCoreMock.mockResolvedValue("Cross-node result")
     getOrCreateWebPageContextMock.mockResolvedValue(null)
@@ -1172,45 +1119,6 @@ describe("selection toolbar requests", () => {
       title: "options.selectionToolbar.errors.missingSelection",
     })
     expect(translateTextCoreMock).not.toHaveBeenCalled()
-  })
-
-  it("opens selection translation from the shortcut and tracks the shortcut surface", async () => {
-    translateTextCoreMock.mockResolvedValue("Shortcut result")
-    getOrCreateWebPageContextMock.mockResolvedValue(null)
-
-    const paragraph = document.createElement("p")
-    paragraph.textContent = "Selected text inside a paragraph."
-    document.body.appendChild(paragraph)
-
-    const store = createStore()
-    store.set(configAtom, cloneConfig(DEFAULT_CONFIG))
-    setSelectionState(store, { text: "Selected text", range: createRangeFor(paragraph) })
-    renderWithProviders(<TranslateButton />, store)
-
-    const shortcutCallback = () => pressShortcut()
-
-    await act(async () => {
-      shortcutCallback()
-      await Promise.resolve()
-    })
-
-    await waitFor(() => {
-      expect(translateTextCoreMock).toHaveBeenCalledTimes(1)
-    })
-
-    await waitFor(() => {
-      expect(screen.getByTestId("translation-result").textContent).toBe("Shortcut result")
-    })
-
-    const { sendMessage } = await import("@/utils/message")
-    expect(vi.mocked(sendMessage)).toHaveBeenCalledWith(
-      "trackFeatureUsedEvent",
-      expect.objectContaining({
-        feature: "selection_translation",
-        surface: "shortcut",
-        outcome: "success",
-      }),
-    )
   })
 
   it("opens selection translation from the shortcut when the toolbar UI is disabled", async () => {
@@ -1673,110 +1581,6 @@ describe("selection toolbar requests", () => {
     })
   })
 
-  it("opens a custom action from the context menu with the captured selection session", async () => {
-    streamBackgroundStructuredObjectMock.mockResolvedValue(
-      createStructuredObjectSnapshot({ summary: "Context menu result" }),
-    )
-
-    const paragraph = document.createElement("p")
-    paragraph.textContent = "Selected text inside a paragraph."
-    document.body.appendChild(paragraph)
-
-    const store = createStore()
-    store.set(configAtom, cloneConfig(DEFAULT_CONFIG))
-    setSelectionState(store, { text: "Selected text", range: createRangeFor(paragraph) })
-    renderWithProviders(<SelectionToolbarPinnedItems />, store)
-
-    const action = DEFAULT_DICTIONARY_ACTION
-
-    act(() => {
-      paragraph.dispatchEvent(
-        new MouseEvent("contextmenu", {
-          bubbles: true,
-          button: 2,
-          clientX: 140,
-          clientY: 180,
-        }),
-      )
-    })
-
-    const handler = getRegisteredMessageHandler("openSelectionCustomActionFromContextMenu")
-
-    await act(async () => {
-      handler({
-        data: {
-          actionId: action.id,
-          selectionText: "Selected text",
-        },
-      })
-      await Promise.resolve()
-    })
-
-    await waitFor(() => {
-      expect(streamBackgroundStructuredObjectMock).toHaveBeenCalledTimes(1)
-    })
-
-    await waitFor(() => {
-      expect(screen.getByText('{"summary":"Context menu result"}')).toBeInTheDocument()
-    })
-
-    expect(screen.getByTestId("footer-paragraphs").textContent).toContain(
-      "Selected text inside a paragraph.",
-    )
-    expect(toastAddMock).not.toHaveBeenCalled()
-
-    const { sendMessage } = await import("@/utils/message")
-    expect(vi.mocked(sendMessage)).toHaveBeenCalledWith(
-      "trackFeatureUsedEvent",
-      expect.objectContaining({
-        feature: "custom_ai_action",
-        surface: "context_menu",
-        outcome: "success",
-        action_id: action.id,
-        action_name: action.name,
-      }),
-    )
-  })
-
-  it("opens a custom action from its shortcut and tracks the shortcut surface", async () => {
-    streamBackgroundStructuredObjectMock.mockResolvedValue(
-      createStructuredObjectSnapshot({ summary: "Shortcut result" }),
-    )
-
-    const paragraph = document.createElement("p")
-    paragraph.textContent = "Selected text inside a paragraph."
-    document.body.appendChild(paragraph)
-
-    const store = createStore()
-    store.set(configAtom, cloneConfig(DEFAULT_CONFIG))
-    setSelectionState(store, { text: "Selected text", range: createRangeFor(paragraph) })
-    renderWithProviders(<SelectionToolbarPinnedItems />, store)
-
-    const action = DEFAULT_DICTIONARY_ACTION
-    let event!: KeyboardEvent
-
-    await act(async () => {
-      event = pressShortcut("Alt+Shift+D")
-      await Promise.resolve()
-    })
-
-    expect(event.defaultPrevented).toBe(true)
-    await waitFor(() => {
-      expect(screen.getByText('{"summary":"Shortcut result"}')).toBeInTheDocument()
-    })
-
-    const { sendMessage } = await import("@/utils/message")
-    expect(vi.mocked(sendMessage)).toHaveBeenCalledWith(
-      "trackFeatureUsedEvent",
-      expect.objectContaining({
-        feature: "custom_ai_action",
-        surface: "shortcut",
-        outcome: "success",
-        action_id: action.id,
-      }),
-    )
-  })
-
   it("claims a key it runs ahead of the page's own handlers", () => {
     const paragraph = document.createElement("p")
     paragraph.textContent = "Selected text inside a paragraph."
@@ -1937,43 +1741,6 @@ describe("selection toolbar requests", () => {
     })
   })
 
-  it("shows a toast when a custom action context menu request cannot recover a selection snapshot", async () => {
-    const store = createStore()
-    store.set(configAtom, cloneConfig(DEFAULT_CONFIG))
-    renderWithProviders(<SelectionToolbarPinnedItems />, store)
-
-    const action = DEFAULT_DICTIONARY_ACTION
-
-    const handler = getRegisteredMessageHandler("openSelectionCustomActionFromContextMenu")
-
-    act(() => {
-      handler({
-        data: {
-          actionId: action.id,
-          selectionText: "Missing selection",
-        },
-      })
-    })
-
-    expect(toastAddMock).toHaveBeenCalledWith({
-      type: "error",
-      title: "options.selectionToolbar.errors.missingSelection",
-    })
-    expect(streamBackgroundStructuredObjectMock).not.toHaveBeenCalled()
-
-    const { sendMessage } = await import("@/utils/message")
-    expect(vi.mocked(sendMessage)).toHaveBeenCalledWith(
-      "trackFeatureUsedEvent",
-      expect.objectContaining({
-        feature: "custom_ai_action",
-        surface: "context_menu",
-        outcome: "failure",
-        action_id: action.id,
-        action_name: action.name,
-      }),
-    )
-  })
-
   it("does not rerun custom action requests on passive config refresh, but reruns when request values change", async () => {
     streamBackgroundStructuredObjectMock.mockResolvedValue(
       createStructuredObjectSnapshot({ summary: "done" }),
@@ -2024,68 +1791,6 @@ describe("selection toolbar requests", () => {
     await waitFor(() => {
       expect(streamBackgroundStructuredObjectMock).toHaveBeenCalledTimes(2)
     })
-  })
-
-  it("does not rerun a custom action when only its layout changes", async () => {
-    streamBackgroundStructuredObjectMock.mockResolvedValue(
-      createStructuredObjectSnapshot({ summary: "done" }),
-    )
-
-    const paragraph = document.createElement("p")
-    paragraph.textContent = "Selected text inside a paragraph."
-    document.body.appendChild(paragraph)
-
-    const action = {
-      ...structuredClone(DEFAULT_DICTIONARY_ACTION),
-      id: "layout-action",
-      name: "Layout Action",
-      layout: "<p>first layout</p>",
-    }
-    const config = cloneConfig(DEFAULT_CONFIG)
-    config.selectionToolbar.customActions = [action]
-    // The layout editor saves through storage, which the content script's
-    // config atom follows; seed it too so the mount-time refresh keeps the action.
-    await fakeBrowser.storage.local.set({ [CONFIG_STORAGE_KEY]: config })
-
-    try {
-      const store = createStore()
-      store.set(configAtom, cloneConfig(config))
-      setSelectionState(store, { text: "Selected text", range: createRangeFor(paragraph) })
-      renderWithProviders(<SelectionToolbarPinnedItems />, store)
-
-      fireEvent.click(await screen.findByRole("button", { name: action.name }))
-
-      await waitFor(() => {
-        expect(screen.getByText('{"summary":"done"}')).toBeInTheDocument()
-      })
-      expect(streamBackgroundStructuredObjectMock).toHaveBeenCalledTimes(1)
-      expect(screen.getByTestId("custom-action-layout")).toHaveAttribute(
-        "data-layout-source",
-        "<p>first layout</p>",
-      )
-
-      const updatedConfig = cloneConfig(config)
-      updatedConfig.selectionToolbar.customActions = [{ ...action, layout: "<p>second layout</p>" }]
-      await act(async () => {
-        await fakeBrowser.storage.local.set({ [CONFIG_STORAGE_KEY]: updatedConfig })
-      })
-
-      await waitFor(() => {
-        expect(screen.getByTestId("custom-action-layout")).toHaveAttribute(
-          "data-layout-source",
-          "<p>second layout</p>",
-        )
-      })
-
-      await act(async () => {
-        await Promise.resolve()
-      })
-
-      expect(streamBackgroundStructuredObjectMock).toHaveBeenCalledTimes(1)
-      expect(screen.getByText('{"summary":"done"}')).toBeInTheDocument()
-    } finally {
-      await fakeBrowser.storage.local.remove(CONFIG_STORAGE_KEY)
-    }
   })
 
   it("keeps a pending custom action request alive across a passive config refresh", async () => {
@@ -2259,38 +1964,6 @@ describe("selection toolbar requests", () => {
     expect(screen.queryByRole("alert")).toBeNull()
     expect(store.get(configAtom).selectionToolbar.builtInActions.dictionary.providerId).toBe(
       nextProviderId,
-    )
-  })
-
-  it("shows a precheck alert when a custom action has no selected text", async () => {
-    const paragraph = document.createElement("p")
-    paragraph.textContent = "Selected text inside a paragraph."
-    document.body.appendChild(paragraph)
-
-    const store = createStore()
-    store.set(configAtom, cloneConfig(DEFAULT_CONFIG))
-    setSelectionState(store, { text: "   ", range: createRangeFor(paragraph) })
-    renderWithProviders(<SelectionToolbarPinnedItems />, store)
-
-    const actionName = DEFAULT_DICTIONARY_ACTION.name
-
-    fireEvent.click(screen.getByRole("button", { name: actionName }))
-
-    const alert = await screen.findByRole("alert")
-    expect(alert).toHaveTextContent("options.selectionToolbar.errors.customActionFailed")
-    expect(alert).toHaveTextContent("options.selectionToolbar.errors.missingSelection")
-    expect(streamBackgroundStructuredObjectMock).not.toHaveBeenCalled()
-
-    const { sendMessage } = await import("@/utils/message")
-    expect(vi.mocked(sendMessage)).toHaveBeenCalledWith(
-      "trackFeatureUsedEvent",
-      expect.objectContaining({
-        feature: "custom_ai_action",
-        surface: "selection_toolbar",
-        outcome: "failure",
-        action_id: DEFAULT_DICTIONARY_ACTION.id,
-        action_name: DEFAULT_DICTIONARY_ACTION.name,
-      }),
     )
   })
 

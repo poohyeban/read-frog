@@ -8,7 +8,6 @@ import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION } from "@/utils/host/translate/translate-text"
 import {
-  translateTextForInput,
   translateTextForPage,
   translateTextForPageTitle,
 } from "@/utils/host/translate/translate-variants"
@@ -312,17 +311,6 @@ describe("translate-text", () => {
         expect(isTranslationCancelledError(caught)).toBe(true)
         expect(mockSendMessage).not.toHaveBeenCalled()
       })
-
-      it("does not gate input translation (no session id)", async () => {
-        mockSendMessage.mockResolvedValue("translated text")
-        beginPageTranslationSession()
-        endPageTranslationSession()
-
-        const result = await translateTextForInput("hello", "eng", "cmn")
-
-        expect(result).toBe("translated text")
-        expect(mockSendMessage).toHaveBeenCalled()
-      })
     })
   })
 
@@ -422,76 +410,6 @@ describe("translate-text", () => {
         expect.objectContaining({
           text: "Body text",
           webTitle: "Translated Browser Title",
-        }),
-      )
-    })
-  })
-
-  describe("translateTextForInput", () => {
-    it("reports the resolved target used by the input request", async () => {
-      mockSendMessage.mockResolvedValue("translated input")
-      const onTargetLanguageResolved = vi.fn<(targetLanguage: string) => void>()
-
-      await translateTextForInput("hello", "eng", "cmn", onTargetLanguageResolved)
-
-      expect(onTargetLanguageResolved).toHaveBeenCalledOnce()
-      expect(onTargetLanguageResolved).toHaveBeenCalledWith("cmn")
-    })
-
-    it("skips webpage context loading for non-llm input translations", async () => {
-      mockSendMessage.mockResolvedValue("translated input")
-
-      const result = await translateTextForInput("hello", "eng", "cmn")
-
-      expect(result).toBe("translated input")
-      expect(mockGetOrCreateWebPageContext).not.toHaveBeenCalled()
-      expect(mockGetOrGenerateWebPageSummary).not.toHaveBeenCalled()
-      expect(mockSendMessage).toHaveBeenCalledWith(
-        "enqueueTranslateRequest",
-        expect.objectContaining({
-          text: "hello",
-          webTitle: undefined,
-          webContent: undefined,
-          webSummary: undefined,
-        }),
-      )
-    })
-
-    it("includes webpage summary for AI-aware llm input translations", async () => {
-      const llmConfig = {
-        ...DEFAULT_CONFIG,
-        pageTranslation: {
-          ...DEFAULT_CONFIG.pageTranslation,
-          enableAIContentAware: true,
-        },
-        inputTranslation: {
-          ...DEFAULT_CONFIG.inputTranslation,
-          providerId: "openai-default",
-        },
-      }
-
-      mockGetConfigFromStorage.mockResolvedValue(llmConfig)
-      mockSendMessage.mockImplementation(async (type: string) => {
-        if (type === "enqueueTranslateRequest") {
-          return "translated input"
-        }
-        if (type === "getOrGenerateWebPageSummary") {
-          return "Generated summary"
-        }
-        return undefined
-      })
-
-      const result = await translateTextForInput("hello", "eng", "cmn")
-
-      expect(result).toBe("translated input")
-      expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(1)
-      expect(mockSendMessage).toHaveBeenCalledWith(
-        "enqueueTranslateRequest",
-        expect.objectContaining({
-          text: "hello",
-          webTitle: "Document Title",
-          webContent: "Body content",
-          webSummary: "Generated summary",
         }),
       )
     })

@@ -211,46 +211,6 @@ describe("validateUserRulesDocument", () => {
     expect(result).toEqual({ ok: true, rules })
   })
 
-  it("migrates legacy force selector fields to canonical editor output", () => {
-    const result = validateUserRulesDocument(
-      JSON.stringify([
-        {
-          id: "legacy",
-          matches: "example.com",
-          forceBlockSelectors: [".block"],
-          "forceBlockSelectors.add": [".block-added"],
-          "forceBlockSelectors.remove": [".block-removed"],
-          forceInlineSelectors: [".inline"],
-          "forceInlineSelectors.add": [".inline-added"],
-          "forceInlineSelectors.remove": [".inline-removed"],
-        },
-      ]),
-    )
-
-    expect(result).toEqual({
-      ok: true,
-      rules: [
-        {
-          id: "legacy",
-          matches: "example.com",
-          forceBlockNodeSelectors: [".block"],
-          "forceBlockNodeSelectors.add": [".block-added"],
-          "forceBlockNodeSelectors.remove": [".block-removed"],
-          forceBlockStyleSelectors: [".block"],
-          "forceBlockStyleSelectors.add": [".block-added"],
-          "forceBlockStyleSelectors.remove": [".block-removed"],
-          forceInlineStyleSelectors: [".inline"],
-          "forceInlineStyleSelectors.add": [".inline-added"],
-          "forceInlineStyleSelectors.remove": [".inline-removed"],
-        },
-      ],
-    })
-    if (!result.ok) {
-      return
-    }
-    expect(validateUserRulesDocument(JSON.stringify(result.rules))).toEqual(result)
-  })
-
   it("keeps explicitly authored canonical selector values per corresponding key", () => {
     const result = validateUserRulesDocument(
       JSON.stringify([

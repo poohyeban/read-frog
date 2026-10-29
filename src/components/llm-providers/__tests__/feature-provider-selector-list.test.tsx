@@ -47,8 +47,6 @@ function renderWithConfig(config: Config) {
   )
 }
 
-describe("featureProviderSelectorList feature rows", () => {})
-
 describe("featureProviderSelectorList custom action filtering", () => {
   it("only renders provider rows for enabled custom actions", () => {
     const config = cloneConfig(DEFAULT_CONFIG)

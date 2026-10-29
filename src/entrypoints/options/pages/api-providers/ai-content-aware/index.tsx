@@ -14,9 +14,7 @@ import { LlmFeatureStatusList } from "../../../components/llm-feature-status-lis
  */
 const CONTEXT_AWARE_FEATURE_KEYS = [
   "pageTranslation",
-  "videoSubtitles",
   "selectionTranslation",
-  "inputTranslation",
 ] as const satisfies readonly FeatureKey[]
 
 export function AIContentAwareConfig() {

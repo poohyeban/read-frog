@@ -28,7 +28,7 @@ describe("getSelectionToolbarItems", () => {
   it("lists the features, built-in actions and custom actions in the default order", () => {
     expect(idsOf(toolbarWith(["a", "b"]))).toEqual([
       "translate",
-      "speak",
+
       "default-dictionary",
       "default-sentence-analysis",
       "default-improve-writing",
@@ -40,11 +40,11 @@ describe("getSelectionToolbarItems", () => {
   it("follows the saved order across features and actions", () => {
     const selectionToolbar = toolbarWith(
       ["a", "b"],
-      ["b", "speak", "default-sentence-analysis", "translate", "a", "default-dictionary"],
+      ["b", "default-sentence-analysis", "translate", "a", "default-dictionary"],
     )
     expect(idsOf(selectionToolbar)).toEqual([
       "b",
-      "speak",
+
       "default-sentence-analysis",
       "translate",
       "a",
@@ -54,39 +54,16 @@ describe("getSelectionToolbarItems", () => {
   })
 
   it("puts items the order does not name after it, and skips ids no item has", () => {
-    const selectionToolbar = toolbarWith(["a", "new"], ["a", "gone", "speak", "a"])
+    const selectionToolbar = toolbarWith(["a", "new"], ["a", "gone", "a"])
     expect(idsOf(selectionToolbar)).toEqual([
       "a",
-      "speak",
+
       "translate",
       "default-dictionary",
       "default-sentence-analysis",
       "default-improve-writing",
       "new",
     ])
-  })
-
-  it("reads each item's enabled switch, and pins everything the unpinned list does not name", () => {
-    const selectionToolbar = toolbarWith(["a", "b"])
-    selectionToolbar.features.speak.enabled = false
-    selectionToolbar.builtInActions.sentenceAnalysis.enabled = false
-    selectionToolbar.customActions[0]!.enabled = false
-    selectionToolbar.unpinned = ["speak", "b", "gone"]
-    const states = Object.fromEntries(
-      getSelectionToolbarItems(selectionToolbar).map((item) => [
-        item.id,
-        [item.enabled, item.pinned],
-      ]),
-    )
-    expect(states).toEqual({
-      translate: [true, true],
-      speak: [false, false],
-      "default-dictionary": [true, true],
-      "default-sentence-analysis": [false, true],
-      "default-improve-writing": [true, true],
-      a: [false, true],
-      b: [true, false],
-    })
   })
 })
 
@@ -97,7 +74,7 @@ describe("reorderSelectionToolbarItems", () => {
       "c",
       "translate",
       "a",
-      "speak",
+
       "default-improve-writing",
       "default-dictionary",
       "b",
@@ -113,38 +90,11 @@ describe("reorderSelectionToolbarItems", () => {
   })
 })
 
-describe("reorderSelectionToolbarItems for the enabled items only", () => {
-  it("moves them among their own places, leaving the disabled ones where they were", () => {
-    const selectionToolbar = toolbarWith(["a", "b"])
-    selectionToolbar.features.speak.enabled = false
-    selectionToolbar.customActions[0]!.enabled = false
-    // The menu lists translate, the three built-in actions and b; b goes first.
-    const next = reorderSelectionToolbarItems(selectionToolbar, [
-      "b",
-      "translate",
-      "default-dictionary",
-      "default-sentence-analysis",
-      "default-improve-writing",
-    ])
-
-    expect(next.order).toEqual([
-      "b",
-      "speak",
-      "translate",
-      "default-dictionary",
-      "default-sentence-analysis",
-      "a",
-      "default-improve-writing",
-    ])
-    expect(next.customActions.map((action) => action.id)).toEqual(["b", "a"])
-  })
-})
-
 describe("setSelectionToolbarCustomActions", () => {
   it("moves the custom actions within their own places in the toolbar order", () => {
     const selectionToolbar = toolbarWith(
       ["a", "b", "c"],
-      ["a", "translate", "b", "speak", "c", "default-dictionary", "default-sentence-analysis"],
+      ["a", "translate", "b", "c", "default-dictionary", "default-sentence-analysis"],
     )
     const [a, b, c] = selectionToolbar.customActions
     const next = setSelectionToolbarCustomActions(selectionToolbar, [c!, a!, b!])
@@ -154,7 +104,7 @@ describe("setSelectionToolbarCustomActions", () => {
       "c",
       "translate",
       "a",
-      "speak",
+
       "b",
       "default-dictionary",
       "default-sentence-analysis",
@@ -177,13 +127,13 @@ describe("setSelectionToolbarCustomActions", () => {
 describe("setSelectionToolbarItemPinned", () => {
   it("unpins and pins an item through the unpinned list, once each", () => {
     // Improve Writing starts unpinned.
-    const unpinned = setSelectionToolbarItemPinned(toolbarWith(), "speak", false)
-    expect(unpinned.unpinned).toEqual(["default-improve-writing", "speak"])
-    expect(setSelectionToolbarItemPinned(unpinned, "speak", false).unpinned).toEqual([
+    const unpinned = setSelectionToolbarItemPinned(toolbarWith(), "translate", false)
+    expect(unpinned.unpinned).toEqual(["default-improve-writing", "translate"])
+    expect(setSelectionToolbarItemPinned(unpinned, "translate", false).unpinned).toEqual([
       "default-improve-writing",
-      "speak",
+      "translate",
     ])
-    expect(setSelectionToolbarItemPinned(unpinned, "speak", true).unpinned).toEqual([
+    expect(setSelectionToolbarItemPinned(unpinned, "translate", true).unpinned).toEqual([
       "default-improve-writing",
     ])
   })

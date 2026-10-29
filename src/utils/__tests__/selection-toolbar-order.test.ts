@@ -11,7 +11,7 @@ import { normalizeSelectionToolbarLists } from "@/utils/selection-toolbar-order"
 
 const DEFAULT_ORDER = [
   "translate",
-  "speak",
+
   "default-dictionary",
   "default-sentence-analysis",
   "default-improve-writing",
@@ -43,16 +43,16 @@ describe("normalizeSelectionToolbarLists", () => {
     })
 
   it("keeps a saved order that names every item as it is", () => {
-    const order = ["b", "speak", "default-improve-writing", "translate", "a"]
+    const order = ["b", "default-improve-writing", "translate", "a"]
     const next = lists(["a", "b"], [...order, "default-dictionary", "default-sentence-analysis"])
     expect(next.order).toEqual([...order, "default-dictionary", "default-sentence-analysis"])
   })
 
   it("adds the items the order does not name after it, in the default order", () => {
     // A custom action added since, and whatever else the order lacks.
-    expect(lists(["a", "new"], ["a", "speak"]).order).toEqual([
+    expect(lists(["a", "new"], ["a"]).order).toEqual([
       "a",
-      "speak",
+
       "translate",
       "default-dictionary",
       "default-sentence-analysis",
@@ -63,23 +63,23 @@ describe("normalizeSelectionToolbarLists", () => {
   })
 
   it("drops ids no item has, and repeats, from both lists", () => {
-    const next = lists(["a"], ["gone", "a", "speak", "a", "gone"], ["gone", "a", "a"])
-    expect(next.order.slice(0, 2)).toEqual(["a", "speak"])
+    const next = lists(["a"], ["gone", "a", "a", "gone"], ["gone", "a", "a"])
+    expect(next.order.slice(0, 1)).toEqual(["a"])
     expect(next.order).toHaveLength(DEFAULT_ORDER.length + 1)
     expect(next.unpinned).toEqual(["a"])
   })
 
   it("keeps the pins of disabled items: they are still items", () => {
-    expect(lists(["a"], undefined, ["speak", "a"]).unpinned).toEqual(["speak", "a"])
+    expect(lists(["a"], undefined, ["a"]).unpinned).toEqual(["a"])
   })
 })
 
 describe("the config schema", () => {
   it("brings the toolbar's order and pins in step with its actions on every parse", () => {
-    const parsed = configSchema.parse(configWith(["b"], ["gone", "b", "speak"], ["gone", "b"]))
+    const parsed = configSchema.parse(configWith(["b"], ["gone", "b"], ["gone", "b"]))
     expect(parsed.selectionToolbar.order).toEqual([
       "b",
-      "speak",
+
       "translate",
       "default-dictionary",
       "default-sentence-analysis",

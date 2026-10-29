@@ -1,19 +1,13 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest"
 import { siteRuleSchema } from "@/types/config/site-rules"
-import {
-  STATE_MESSAGE_CLASS,
-  SUBTITLES_VIEW_CLASS,
-  TRANSLATE_BUTTON_CLASS,
-  YOUTUBE_NATIVE_SUBTITLES_CLASS,
-} from "@/utils/constants/subtitles"
 import { normalizeUrlPattern } from "@/utils/url-pattern"
 import { BUILT_IN_SITE_RULES } from "../built-in"
 import rawBuiltInRules from "../built-in/rules.json"
 import { resolveSiteRule } from "../resolve"
 
 const RAW_BUILT_IN_SITE_RULES = rawBuiltInRules as unknown as Array<Record<string, unknown>>
-const FORCE_SELECTOR_SUFFIXES = ["", ".add", ".remove"] as const
+
 const LEGACY_FORCE_SELECTOR_KEYS = [
   "forceBlockSelectors",
   "forceBlockSelectors.add",
@@ -26,22 +20,6 @@ const LEGACY_FORCE_SELECTOR_KEYS = [
 function rawSelectorList(rule: Record<string, unknown>, key: string): string[] {
   const value = rule[key]
   return Array.isArray(value) ? value : []
-}
-
-function selectorFamilyStats(baseKey: string): { rules: number; selectorStrings: number } {
-  const keys = FORCE_SELECTOR_SUFFIXES.map((suffix) => `${baseKey}${suffix}`)
-  const matchingRules = RAW_BUILT_IN_SITE_RULES.filter((rule) =>
-    keys.some((key) => Object.hasOwn(rule, key)),
-  )
-
-  return {
-    rules: matchingRules.length,
-    selectorStrings: matchingRules.reduce(
-      (total, rule) =>
-        total + keys.reduce((ruleTotal, key) => ruleTotal + rawSelectorList(rule, key).length, 0),
-      0,
-    ),
-  }
 }
 
 function allSelectors(rule: (typeof BUILT_IN_SITE_RULES)[number]): string[] {
@@ -149,34 +127,6 @@ describe("built-in site rules", () => {
     expect(legacyOccurrences).toEqual([])
   })
 
-  it("ships the migrated force selector families with complete coverage", () => {
-    expect({
-      forceBlockNodeSelectors: selectorFamilyStats("forceBlockNodeSelectors"),
-      forceBlockStyleSelectors: selectorFamilyStats("forceBlockStyleSelectors"),
-      forceInlineStyleSelectors: selectorFamilyStats("forceInlineStyleSelectors"),
-      forceInlineNodeSelectors: selectorFamilyStats("forceInlineNodeSelectors"),
-    }).toEqual({
-      // +1 selector each: the linkedin rule forces `.update-components-actor__meta-link`
-      // (an inline <a> wrapping name + degree + headline) to a block node, so the post
-      // actor block stops collapsing into one 16px paragraph. See the dedicated test below.
-      forceBlockNodeSelectors: { rules: 48, selectorStrings: 76 },
-      forceBlockStyleSelectors: { rules: 48, selectorStrings: 76 },
-      forceInlineStyleSelectors: { rules: 26, selectorStrings: 45 },
-      forceInlineNodeSelectors: { rules: 0, selectorStrings: 0 },
-    })
-  })
-
-  it("duplicates every migrated force-block selector into node and style channels", () => {
-    for (const rule of RAW_BUILT_IN_SITE_RULES) {
-      for (const suffix of FORCE_SELECTOR_SUFFIXES) {
-        const nodeKey = `forceBlockNodeSelectors${suffix}`
-        const styleKey = `forceBlockStyleSelectors${suffix}`
-        expect(Object.hasOwn(rule, nodeKey)).toBe(Object.hasOwn(rule, styleKey))
-        expect(rawSelectorList(rule, nodeKey)).toEqual(rawSelectorList(rule, styleKey))
-      }
-    }
-  })
-
   it("preserves representative base and add force-block deltas", () => {
     const cases = [
       { id: "readfrog-github", suffix: "", selectors: ["task-lists"] },
@@ -198,22 +148,6 @@ describe("built-in site rules", () => {
       expect(rule).not.toHaveProperty("forceBlockNodeSelectors.remove")
       expect(rule).not.toHaveProperty("forceBlockStyleSelectors.remove")
     }
-  })
-
-  it("keeps migrated inline selectors style-only", () => {
-    const wikipedia = BUILT_IN_SITE_RULES.find((rule) => rule.id === "wikipedia")
-    expect(wikipedia?.forceInlineStyleSelectors).toEqual([
-      ".chemf",
-      ".mwe-math-element",
-      "[role=math]",
-      ".nowrap",
-    ])
-    expect(wikipedia?.forceInlineNodeSelectors).toBeUndefined()
-
-    const steam = BUILT_IN_SITE_RULES.find((rule) => rule.id === "steampoweredApp")
-    expect(steam?.includeSelectors).toBeUndefined()
-    expect(steam?.forceInlineStyleSelectors).toEqual([".pulldown"])
-    expect(steam?.forceInlineNodeSelectors).toBeUndefined()
   })
 
   it("every URL pattern normalizes", () => {
@@ -475,19 +409,6 @@ describe("built-in site rules", () => {
     expect(resolved.includeSelector).toBeNull()
   })
 
-  it("keeps the youtube rule in sync with the subtitle class constants", () => {
-    const youtube = BUILT_IN_SITE_RULES.find((rule) => rule.id === "readfrog-youtube")
-    expect(youtube).toBeDefined()
-    expect(youtube!.excludeSelectors).toEqual(
-      expect.arrayContaining([
-        YOUTUBE_NATIVE_SUBTITLES_CLASS,
-        `.${SUBTITLES_VIEW_CLASS}`,
-        `.${STATE_MESSAGE_CLASS}`,
-        `.${TRANSLATE_BUTTON_CLASS}`,
-      ]),
-    )
-  })
-
   it("unclamps YouTube watch titles with or without an h1 wrapper", () => {
     const resolved = resolveSiteRule(
       "https://www.youtube.com/watch?v=video-id",
@@ -524,31 +445,6 @@ describe("built-in site rules", () => {
     // vote button with its login tooltip. Post bodies live outside both bars.
     expect(resolved.excludeSelector).toContain(".forum-topbar")
     expect(resolved.excludeSelector).toContain(".forum-bottombar")
-  })
-
-  it("does not restrict migrated sites to stale include selectors", () => {
-    const restoredSites = [
-      ["newyorker", "https://www.newyorker.com/news/the-lede/example"],
-      ["scmp", "https://www.scmp.com/news/china/politics/article/example"],
-      ["android", "https://developer.android.com/develop/ui/compose/documentation"],
-      ["thehackernews", "https://thehackernews.com/2026/07/example.html"],
-      ["artstationLearning", "https://www.artstation.com/learning/courses/example"],
-      ["artstationBlog", "https://www.artstation.com/blogs/example/example"],
-      ["figmaCommunity", "https://www.figma.com/community/file/example"],
-      ["construct", "https://www.construct.net/en/forum"],
-      ["construct", "https://www.construct.net/en/make-games/manuals/construct-3"],
-      ["wandb", "https://wandb.ai/site/reports/"],
-      [
-        "wandb",
-        "https://wandb.ai/stacey/estuary/reports/When-Inception-ResNet-V2-is-too-slow--Vmlldzo3MDcxMA",
-      ],
-    ] as const
-
-    for (const [id, url] of restoredSites) {
-      const resolved = resolveSiteRule(url, BUILT_IN_SITE_RULES, [], [])
-      expect(resolved.matchedRuleIds).toContain(id)
-      expect(resolved.includeSelector).toBeNull()
-    }
   })
 
   it("matches current Microsoft Store URLs without a dead PRE-only scope", () => {

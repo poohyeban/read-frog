@@ -1,5 +1,3 @@
-import { READ_FROG_SUBTITLES_UI_HOST_ID } from "@/utils/constants/subtitles"
-
 export interface SelectionRangeSnapshot {
   startContainer: Node
   startOffset: number
@@ -169,12 +167,6 @@ function collectSelectionBoundaryNodes(selection: Selection) {
   return [...boundaryNodes]
 }
 
-function getReadFrogSubtitleShadowRoot() {
-  const subtitlesHost = document.getElementById(READ_FROG_SUBTITLES_UI_HOST_ID)
-  const subtitlesRoot = subtitlesHost?.shadowRoot
-  return subtitlesRoot ?? null
-}
-
 function collectSelectionShadowRoots(selection: Selection) {
   const shadowRoots = new Set<ShadowRoot>()
 
@@ -190,11 +182,6 @@ function collectSelectionShadowRoots(selection: Selection) {
       shadowRoots.add(root)
       current = root.host
     }
-  }
-
-  const subtitleShadowRoot = getReadFrogSubtitleShadowRoot()
-  if (subtitleShadowRoot) {
-    shadowRoots.add(subtitleShadowRoot)
   }
 
   return [...shadowRoots]

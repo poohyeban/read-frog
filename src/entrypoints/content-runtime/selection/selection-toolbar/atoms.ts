@@ -86,7 +86,7 @@ export interface SelectionToolbarTranslateRequestSlice {
   language: Config["language"]
   enableAIContentAware: boolean
   /** Read from config here so the request path never has to touch storage. */
-  glossaryEnabled: boolean
+
   customPromptsConfig: Config["pageTranslation"]["customPromptsConfig"]
   provider: SelectionTranslationProviderRef | null
 }
@@ -97,7 +97,7 @@ function createSelectionToolbarTranslateRequestSliceAtom() {
     (config): SelectionToolbarTranslateRequestSlice => ({
       language: config.language,
       enableAIContentAware: config.pageTranslation.enableAIContentAware,
-      glossaryEnabled: config.glossary.enabled,
+
       customPromptsConfig: config.pageTranslation.customPromptsConfig,
       provider: resolveProviderRefForCapability(
         "selectionTranslation",

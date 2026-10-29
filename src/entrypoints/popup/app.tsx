@@ -4,14 +4,10 @@ import { openOptionsPage } from "@/utils/navigation"
 import { version } from "../../../package.json"
 import { AISmartContext } from "./components/ai-smart-context"
 import { AlwaysTranslate } from "./components/always-translate"
-import BlogNotification from "./components/blog-notification"
-import { DiscordButton } from "./components/discord-button"
 import LanguageOptionsSelector from "./components/language-options-selector"
-import { MoreMenu } from "./components/more-menu"
 import Hotkey from "./components/node-translation-hotkey-selector"
 import ProvidersField from "./components/providers-field"
 import { SiteControlToggle } from "./components/site-control-toggle"
-import { StoreReviewPrompt } from "./components/store-review-prompt"
 import TranslateButton from "./components/translate-button"
 import TranslatePromptSelector from "./components/translate-prompt-selector"
 import TranslationModeSelector from "./components/translation-mode-selector"
@@ -26,8 +22,8 @@ function App() {
               name ellipses inside that instead of pushing the icons off. */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex shrink-0 items-center">
-              <DiscordButton />
-              <BlogNotification />
+              <></>
+              <></>
             </div>
           </div>
           <LanguageOptionsSelector />
@@ -44,7 +40,7 @@ function App() {
         </div>
         {/* Out of flow on purpose: the card appears on its own schedule, and letting it
             grow the popup would shift every control out from under the user's cursor. */}
-        <StoreReviewPrompt />
+        <></>
       </div>
       <div className="flex items-center justify-between bg-neutral-200 px-2 py-1 dark:bg-neutral-800">
         <button
@@ -58,7 +54,7 @@ function App() {
           <span className="text-[13px] font-medium">{i18n.t("popup.options")}</span>
         </button>
         <span className="text-sm text-neutral-500 dark:text-neutral-400">{version}</span>
-        <MoreMenu />
+        <></>
       </div>
     </>
   )

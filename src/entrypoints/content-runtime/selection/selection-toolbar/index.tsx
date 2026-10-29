@@ -26,7 +26,6 @@ import { buildContextSnapshot, readSelectionSnapshot } from "../utils"
 import { clearSelectionStateAtom, isSelectionToolbarOpenAtom, setSelectionStateAtom } from "./atoms"
 import { CloseButton, DropEvent } from "./close-button"
 import { createModalDialogHostController } from "./modal-dialog-host"
-import { SelectionToolbarMoreMenu } from "./more-menu"
 import { SelectionToolbarPinnedItems } from "./pinned-items"
 import {
   collectSelectionScrollTargets,
@@ -641,7 +640,7 @@ export function SelectionToolbar() {
               <SelectionToolbarPinnedItems />
             </div>
             {hasAnyPinnedItem && <div className="w-px shrink-0 self-stretch bg-border" />}
-            <SelectionToolbarMoreMenu />
+
             <CloseButton />
           </div>
         </div>

@@ -6,15 +6,11 @@ import {
   MAX_SELECTION_OVERLAY_OPACITY,
   MIN_SELECTION_OVERLAY_OPACITY,
 } from "@/utils/constants/selection"
-import { MIN_SIDE_CONTENT_WIDTH } from "@/utils/constants/side"
-import { DEFAULT_TRANSLATION_HUB_SHORTCUT_KEY } from "@/utils/constants/translation-hub"
 import {
   doesProviderSupportsCapability,
   getProviderIdsForCapability,
 } from "@/utils/providers/provider-registry"
 import { normalizeSelectionToolbarLists } from "@/utils/selection-toolbar-order"
-import { floatingButtonSchema } from "./floating-button"
-import { glossaryConfigSchema } from "./glossary"
 import { languageDetectionConfigSchema } from "./language-detection"
 import { providersConfigSchema } from "./provider"
 import {
@@ -23,9 +19,8 @@ import {
 } from "./selection-toolbar"
 import { shortcutSchema } from "./shortcut"
 import { siteRulesConfigSchema } from "./site-rules"
-import { videoSubtitlesSchema } from "./subtitles"
 import { translateConfigSchema } from "./translate"
-import { ttsConfigSchema } from "./tts"
+
 // Language schema
 const languageSchema = z.object({
   sourceCode: langCodeISO6393Schema.or(z.literal("auto")),
@@ -39,16 +34,6 @@ const selectionToolbarFeatureSchema = z.object({
   shortcut: shortcutSchema,
 })
 
-const selectionToolbarSpeakFeatureSchema = z.object({
-  enabled: z.boolean(),
-  // Missing means the default key (see getSpeakShortcut); empty means the user
-  // cleared it. Optional rather than defaulted: a UI context that parses a
-  // pre-v110 config and writes it back must not store the default, or the v110
-  // migration could no longer tell it from a key the user chose, and would not
-  // check it against the user's other shortcuts.
-  shortcut: shortcutSchema.optional(),
-})
-
 // Text selection toolbar schema
 const selectionToolbarSchema = z
   .object({
@@ -57,7 +42,6 @@ const selectionToolbarSchema = z
     opacity: z.number().min(MIN_SELECTION_OVERLAY_OPACITY).max(MAX_SELECTION_OVERLAY_OPACITY),
     features: z.object({
       translate: selectionToolbarFeatureSchema,
-      speak: selectionToolbarSpeakFeatureSchema,
     }),
     builtInActions: selectionToolbarBuiltInActionsSchema,
     customActions: selectionToolbarCustomActionsSchema,
@@ -69,36 +53,13 @@ const selectionToolbarSchema = z
   .transform((selectionToolbar) => normalizeSelectionToolbarLists(selectionToolbar))
 
 // side content schema
-const sideContentSchema = z.object({
-  width: z.number().min(MIN_SIDE_CONTENT_WIDTH),
-})
 
 // Translation Hub schema. `.default()` mirrors `uiLanguageSchema`: it lets a
 // config stored before this field existed still parse in UI contexts that load
 // ahead of the background migration, instead of falling back to DEFAULT_CONFIG
 // and writing that over the user's settings.
-const translationHubSchema = z
-  .object({
-    shortcut: shortcutSchema,
-    selectedProviderIds: z.array(z.string().min(1)).nullable().default(null),
-    sourceCode: langCodeISO6393Schema.or(z.literal("auto")).nullable().default(null),
-    targetCode: langCodeISO6393Schema.nullable().default(null),
-    // A missing ID in a pre-migration config must stay unset until v102 copies
-    // the page prompt; another UI context may write this config first.
-    promptId: z.string().min(1).nullable().default(null),
-  })
-  .default({
-    shortcut: DEFAULT_TRANSLATION_HUB_SHORTCUT_KEY,
-    selectedProviderIds: null,
-    sourceCode: null,
-    targetCode: null,
-    promptId: null,
-  })
 
 // beta experience schema
-const betaExperienceSchema = z.object({
-  enabled: z.boolean(),
-})
 
 // context menu schema
 const contextMenuSchema = z.object({
@@ -113,14 +74,6 @@ const inputTranslationLangSchema = z.union([
 ])
 
 // input translation schema (triple-space trigger)
-const inputTranslationSchema = z.object({
-  enabled: z.boolean(),
-  providerId: z.string().nonempty(),
-  fromLang: inputTranslationLangSchema,
-  toLang: inputTranslationLangSchema,
-  enableCycle: z.boolean(),
-  timeThreshold: z.number().min(100).max(1000),
-})
 
 // Export types for use in components
 export type InputTranslationLang = z.infer<typeof inputTranslationLangSchema>
@@ -150,19 +103,14 @@ export const configSchema = z
     providersConfig: providersConfigSchema,
     pageTranslation: translateConfigSchema,
     languageDetection: languageDetectionConfigSchema,
-    tts: ttsConfigSchema,
-    floatingButton: floatingButtonSchema,
+
     selectionToolbar: selectionToolbarSchema,
-    sideContent: sideContentSchema,
-    betaExperience: betaExperienceSchema,
+
     contextMenu: contextMenuSchema,
-    inputTranslation: inputTranslationSchema,
-    videoSubtitles: videoSubtitlesSchema,
+
     siteControl: siteControlSchema,
     siteRules: siteRulesConfigSchema,
     uiLanguage: uiLanguageSchema,
-    translationHub: translationHubSchema,
-    glossary: glossaryConfigSchema,
   })
   .superRefine((data, ctx) => {
     for (const featureKey of FEATURE_KEYS) {

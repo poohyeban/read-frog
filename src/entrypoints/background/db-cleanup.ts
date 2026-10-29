@@ -15,9 +15,6 @@ export const REQUEST_RECORD_MAX_AGE_DAYS = 120
 export const SUMMARY_CACHE_CLEANUP_ALARM = "summary-cache-cleanup"
 export const SUMMARY_CACHE_MAX_AGE_MINUTES = 7 * 24 * 60
 
-export const AI_SEGMENTATION_CACHE_CLEANUP_ALARM = "ai-segmentation-cache-cleanup"
-export const AI_SEGMENTATION_CACHE_MAX_AGE_MINUTES = 7 * 24 * 60
-
 export async function setUpDatabaseCleanup() {
   const cleanupJobs = new Map<string, () => Promise<void>>([
     [
@@ -35,14 +32,6 @@ export async function setUpDatabaseCleanup() {
         table: db.articleSummaryCache,
         maxAgeMinutes: SUMMARY_CACHE_MAX_AGE_MINUTES,
         label: "Summary cache",
-      }),
-    ],
-    [
-      AI_SEGMENTATION_CACHE_CLEANUP_ALARM,
-      createCacheCleanup({
-        table: db.aiSegmentationCache,
-        maxAgeMinutes: AI_SEGMENTATION_CACHE_MAX_AGE_MINUTES,
-        label: "AI segmentation cache",
       }),
     ],
   ])
@@ -158,16 +147,6 @@ export async function cleanupAllSummaryCache() {
     logger.info(`Summary cache cleanup: Deleted all article summary cache entries`)
   } catch (error) {
     logger.error("Failed to cleanup all summary cache:", error)
-    throw error
-  }
-}
-
-export async function cleanupAllAiSegmentationCache() {
-  try {
-    await db.aiSegmentationCache.clear()
-    logger.info("AI segmentation cache cleanup: Deleted all entries")
-  } catch (error) {
-    logger.error("Failed to cleanup all AI segmentation cache:", error)
     throw error
   }
 }

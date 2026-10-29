@@ -23,7 +23,6 @@ import { z } from "zod"
 import { BACKGROUND_STREAM_PORTS } from "@/types/background-stream"
 import { isLLMProviderConfig, llmProviderConfigItemSchema } from "@/types/config/provider"
 import { createStructuredObjectSchema } from "@/utils/ai/structured-object-schema"
-import { classifyFailureReason } from "@/utils/analytics-failure-reason"
 import { extractAISDKErrorMessage } from "@/utils/error/extract-message"
 import { logger } from "@/utils/logger"
 import { buildLocalGenerateTextParams } from "@/utils/providers/generate-params"
@@ -238,7 +237,6 @@ function createStreamPortHandler<TSerializablePayload, TResponse>(
           error: {
             message: extractAISDKErrorMessage(finalError),
             action: finalError instanceof BackgroundStreamError ? finalError.action : undefined,
-            reason: classifyFailureReason(finalError),
           },
         })
       } finally {
