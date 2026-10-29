@@ -21,6 +21,18 @@ const allowEmptyJsonLinter = linter((view) => {
   return jsonParseLinter()(view)
 })
 
+const editorExtensions = [json(), allowEmptyJsonLinter, lintGutter()]
+const editorSetup = {
+  lineNumbers: true,
+  highlightActiveLineGutter: true,
+  highlightActiveLine: true,
+  foldGutter: true,
+  bracketMatching: true,
+  closeBrackets: true,
+  autocompletion: true,
+  syntaxHighlighting: true,
+}
+
 interface JSONCodeEditorProps extends Omit<ReactCodeMirrorProps, "theme" | "extensions"> {
   hasError?: boolean
 }
@@ -35,18 +47,9 @@ export function JSONCodeEditor({
 
   return (
     <CodeMirror
-      extensions={[json(), allowEmptyJsonLinter, lintGutter()]}
+      extensions={editorExtensions}
       theme={theme}
-      basicSetup={{
-        lineNumbers: true,
-        highlightActiveLineGutter: true,
-        highlightActiveLine: true,
-        foldGutter: true,
-        bracketMatching: true,
-        closeBrackets: true,
-        autocompletion: true,
-        syntaxHighlighting: true,
-      }}
+      basicSetup={editorSetup}
       className={cn(
         "overflow-hidden rounded-lg border",
         "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50",

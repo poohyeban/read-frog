@@ -14,6 +14,18 @@ import { useTheme } from "@/components/providers/theme-provider"
 import { cssLinter } from "@/utils/css/lint-css"
 import { cn } from "@/utils/styles/utils"
 
+const editorExtensions = [color, css(), cssLinter(), lintGutter()]
+const editorSetup = {
+  lineNumbers: true,
+  highlightActiveLineGutter: true,
+  highlightActiveLine: true,
+  foldGutter: true,
+  bracketMatching: true,
+  closeBrackets: true,
+  autocompletion: true,
+  syntaxHighlighting: true,
+}
+
 interface CSSCodeEditorProps extends Omit<ReactCodeMirrorProps, "theme" | "extensions"> {
   hasError?: boolean
 }
@@ -28,24 +40,9 @@ export function CSSCodeEditor({
 
   return (
     <CodeMirror
-      extensions={[
-        color,
-        css(),
-        // CSS syntax linter - shows red squiggly lines for errors
-        cssLinter(),
-        lintGutter(),
-      ]}
+      extensions={editorExtensions}
       theme={theme}
-      basicSetup={{
-        lineNumbers: true,
-        highlightActiveLineGutter: true,
-        highlightActiveLine: true,
-        foldGutter: true,
-        bracketMatching: true,
-        closeBrackets: true,
-        autocompletion: true,
-        syntaxHighlighting: true,
-      }}
+      basicSetup={editorSetup}
       className={cn(
         "overflow-hidden rounded-lg border",
         "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50",
