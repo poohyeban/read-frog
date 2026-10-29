@@ -70,7 +70,7 @@ for (const file of production) {
   graph.set(file, specs.map((spec) => localFile(file, spec)).filter(Boolean))
 }
 const uiPackage =
-  /^(?:react(?:-dom)?(?:\/|$)|jotai(?:\/|$)|@tanstack\/react-|@base-ui\/|motion(?:\/|$))/
+  /^(?:react(?:-dom)?(?:\/|$)|jotai(?:-family)?(?:\/|$)|@tanstack\/react-|@(?:base-ui|iconify|tabler|remixicon)\/|motion(?:\/|$))/
 const uiFile = /^src\/(?:components|hooks|utils\/atoms)\//
 const pure =
   /^src\/utils\/(?:request\/|glossary\/(?:matcher|boundary|match-key|prompt|scope)\.ts$|subtitles\/(?:time-index|transcript)\.ts$|prompts\/(?:context|request-identity)\.ts$|host\/translate\/translate-text\.ts$)/
@@ -107,7 +107,10 @@ if (process.argv.includes("--build")) {
   const manifest = JSON.parse(await readFile(".output/chrome-mv3/manifest.json", "utf8"))
   for (const script of manifest.content_scripts.flatMap((entry) => entry.js ?? [])) {
     const source = await readFile(path.join(".output/chrome-mv3", script), "utf8")
-    if (runtimeImports(script, source).length)
+    if (
+      runtimeImports(script, source).length ||
+      parseSync(script, source).module.dynamicImports.length
+    )
       issues.push(`Content script contains a runtime import: ${script}`)
   }
 }
