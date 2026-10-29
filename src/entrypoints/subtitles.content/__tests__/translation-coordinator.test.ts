@@ -97,8 +97,7 @@ describe("translation coordinator loading state", () => {
     })
 
     coordinator.start()
-    await Promise.resolve()
-    expect(spy).toHaveBeenCalledTimes(1)
+    await vi.waitFor(() => expect(spy).toHaveBeenCalledTimes(1))
 
     coordinator.stop()
     const firstCall = spy.mock.calls[0]!
@@ -175,14 +174,12 @@ describe("translation coordinator loading state", () => {
     })
 
     coordinator.start()
-    await Promise.resolve()
-    expect(spy).toHaveBeenCalledTimes(1)
+    await vi.waitFor(() => expect(spy).toHaveBeenCalledTimes(1))
 
     coordinator.stop()
     coordinator.start()
-    await Promise.resolve()
     // Resume must be able to start a new batch (isTranslating not stuck).
-    expect(spy).toHaveBeenCalledTimes(2)
+    await vi.waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
 
     // Stale first-run result.
     resolvers[0]!([{ text: "a", start: 0, end: 1000, translation: "STALE" }])
@@ -227,7 +224,7 @@ describe("translation coordinator loading state", () => {
       })
 
       coordinator.start()
-      await Promise.resolve()
+      await vi.waitFor(() => expect(spy).toHaveBeenCalledOnce())
       coordinator.stop()
 
       const batch = (spy.mock.calls[0]?.[0] ?? []) as Array<{ start: number }>

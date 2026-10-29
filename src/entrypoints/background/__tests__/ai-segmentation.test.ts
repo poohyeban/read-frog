@@ -89,4 +89,21 @@ describe("runAiSegmentSubtitles result validation", () => {
     expect(result).toBe(parseableVtt)
     expect(cachePutMock).toHaveBeenCalledWith(expect.objectContaining({ result: parseableVtt }))
   })
+  it("rejects a parseable shifted result without poisoning the cache", async () => {
+    generateTextForProviderRefMock.mockResolvedValue("WEBVTT\n\n0 --> 1000\nHello world.")
+    const { runAiSegmentSubtitles } = await import("../ai-segmentation")
+    await expect(runAiSegmentSubtitles({ jsonContent, providerRef })).rejects.toThrow(
+      /source timeline/,
+    )
+    expect(cachePutMock).not.toHaveBeenCalled()
+  })
+
+  it("evicts a parseable but misaligned old cache entry", async () => {
+    cacheGetMock.mockResolvedValue({ result: "WEBVTT\n\n0 --> 1000\nHello world." })
+    generateTextForProviderRefMock.mockResolvedValue(parseableVtt)
+    const { runAiSegmentSubtitles } = await import("../ai-segmentation")
+    await expect(runAiSegmentSubtitles({ jsonContent, providerRef })).resolves.toBe(parseableVtt)
+    expect(cacheDeleteMock).toHaveBeenCalledTimes(1)
+    expect(generateTextForProviderRefMock).toHaveBeenCalledTimes(1)
+  })
 })

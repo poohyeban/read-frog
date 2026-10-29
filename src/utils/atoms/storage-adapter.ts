@@ -1,5 +1,6 @@
 import type { ZodSchema } from "zod"
 import { storage } from "#imports"
+import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { isNonNullish } from "@/utils/utils"
 
 export const storageAdapter = {
@@ -29,6 +30,15 @@ export const storageAdapter = {
     const unwatch = storage.watch<T>(`local:${key}`, (newValue) => {
       if (isNonNullish(newValue)) callback(newValue)
     })
-    return unwatch
+    return () => {
+      try {
+        unwatch()
+      } catch (error) {
+        // Chrome already discarded its listeners when the extension reloaded.
+        // WXT resolves storage again during unwatch, which can now throw and
+        // interrupt React/Jotai cleanup before DOM listeners are removed.
+        if (!isExtensionContextInvalidatedError(error)) throw error
+      }
+    }
   },
 }

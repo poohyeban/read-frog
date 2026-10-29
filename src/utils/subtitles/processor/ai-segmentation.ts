@@ -1,16 +1,48 @@
 import type { SubtitlesFragment } from "../types"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
+import { PAUSE_TIMEOUT_MS } from "@/utils/constants/subtitles"
 import { sendMessage } from "@/utils/message"
 
 const NEWLINE_PATTERN = /\n/g
 const WHITESPACE_PATTERN = /\s+/g
 const VTT_TIMESTAMP_PATTERN = /^(\d+)\s*-->\s*(\d+)$/
 
-/**
- * Hosted `prompt` is capped at 32000 characters by the contract. Held below it
- * so the prompt template and instructions have room, and so a split happens
- * before the server would reject the request outright.
- */
+const SEGMENTATION_PUNCTUATION = /[\p{P}\s]/gu
+
+function normalizeSegmentationText(text: string): string {
+  return text.normalize("NFKC").toLowerCase().replace(SEGMENTATION_PUNCTUATION, "")
+}
+
+/** AI may group fragments and add punctuation, but must preserve their timeline. */
+export function isSegmentationAligned(
+  source: SubtitlesFragment[],
+  segmented: SubtitlesFragment[],
+): boolean {
+  if (source.length === 0 || segmented.length === 0) return false
+  let cursor = 0
+  for (const cue of segmented) {
+    const first = source[cursor]
+    if (!first || cue.start !== first.start || cue.end <= cue.start) return false
+    const target = normalizeSegmentationText(cue.text)
+    let text = ""
+    let matched = false
+    for (; cursor < source.length; cursor++) {
+      const fragment = source[cursor]!
+      if (cursor > 0 && text && fragment.start - source[cursor - 1]!.end > PAUSE_TIMEOUT_MS) {
+        return false
+      }
+      text += normalizeSegmentationText(fragment.text)
+      if (!target.startsWith(text)) return false
+      if (text === target && cue.end === fragment.end) {
+        cursor++
+        matched = true
+        break
+      }
+    }
+    if (!matched) return false
+  }
+  return cursor === source.length
+}
 
 export function cleanFragmentsForAi(fragments: SubtitlesFragment[]): SubtitlesFragment[] {
   return fragments
@@ -104,11 +136,6 @@ export async function aiSegmentBlock(
 
   const jsonContent = formatFragmentsToJson(cleanedFragments)
 
-  // (one look-ahead window), but the download path segments a whole file. Split
-  // rather than truncate: dropping the tail of subtitle JSON silently loses
-  // cues, which is a correctness bug, not a degraded result. Local providers
-  // have no such cap, so they never split.
-
   const segmentedVtt = await sendMessage("aiSegmentSubtitles", {
     jsonContent,
     providerRef,
@@ -118,6 +145,10 @@ export async function aiSegmentBlock(
 
   if (segmentedFragments.length === 0) {
     throw new Error("AI segmentation returned empty result")
+  }
+
+  if (!isSegmentationAligned(cleanedFragments, segmentedFragments)) {
+    throw new Error("AI segmentation does not match the source timeline")
   }
 
   return segmentedFragments

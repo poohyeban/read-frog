@@ -2,6 +2,10 @@ import type { ThemeMode } from "@/types/config/theme"
 import { atom } from "jotai"
 import { DEFAULT_THEME_MODE, themeModeSchema } from "@/types/config/theme"
 import { THEME_STORAGE_KEY } from "../constants/config"
+import {
+  isExtensionContextAlive,
+  isExtensionContextInvalidatedError,
+} from "../error/extension-context"
 import { logger } from "../logger"
 import { storageAdapter } from "./storage-adapter"
 
@@ -24,22 +28,33 @@ export const themeModeAtom = atom(
 )
 
 baseThemeModeAtom.onMount = (setAtom: (newValue: ThemeMode) => void) => {
-  void storageAdapter
-    .get<ThemeMode>(THEME_STORAGE_KEY, DEFAULT_THEME_MODE, themeModeSchema)
-    .then(setAtom)
+  let active = true
+  const refresh = async () => {
+    if (!active || !isExtensionContextAlive()) return
+    try {
+      const theme = await storageAdapter.get(THEME_STORAGE_KEY, DEFAULT_THEME_MODE, themeModeSchema)
+      if (active) setAtom(theme)
+    } catch (error) {
+      // An update can invalidate storage while this read is in flight. Keep the
+      // existing theme, and never leave visibility-event promises unhandled.
+      if (!isExtensionContextInvalidatedError(error)) {
+        logger.warn("Failed to refresh theme from storage")
+      }
+    }
+  }
+  void refresh()
   const unwatch = storageAdapter.watch<ThemeMode>(THEME_STORAGE_KEY, setAtom)
 
   const handleVisibilityChange = () => {
     if (document.visibilityState === "visible") {
       logger.info("baseThemeModeAtom onMount handleVisibilityChange when: ", new Date())
-      void storageAdapter
-        .get<ThemeMode>(THEME_STORAGE_KEY, DEFAULT_THEME_MODE, themeModeSchema)
-        .then(setAtom)
+      void refresh()
     }
   }
   document.addEventListener("visibilitychange", handleVisibilityChange)
 
   return () => {
+    active = false
     unwatch()
     document.removeEventListener("visibilitychange", handleVisibilityChange)
   }

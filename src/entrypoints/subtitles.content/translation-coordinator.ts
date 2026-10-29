@@ -1,8 +1,10 @@
 import type { SegmentationPipeline } from "./segmentation-pipeline"
+import type { Config } from "@/types/config/config"
 import type { SubtitlesVideoContext } from "@/utils/subtitles/processor/translator"
 import type { SubtitlesFragment, SubtitlesState } from "@/utils/subtitles/types"
 import { getLocalConfig } from "@/utils/config/storage"
 import { TRANSLATE_LOOK_AHEAD_MS, TRANSLATION_BATCH_SIZE } from "@/utils/constants/subtitles"
+import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { effectiveLookAheadMs } from "@/utils/subtitles/lookahead"
 import { translateSubtitles } from "@/utils/subtitles/processor/translator"
 import { adPlayingAtom, subtitlesStore } from "./atoms"
@@ -204,7 +206,9 @@ export class TranslationCoordinator {
           !this.translatedStarts.has(f.start) &&
           !this.translatingStarts.has(f.start) &&
           !this.failedStarts.has(f.start) &&
-          f.start >= currentTimeMs - 5000 &&
+          // A long cue can still be on screen after its start is outside the
+          // look-back window (especially after seeking or a slow earlier batch).
+          f.end > currentTimeMs - 5000 &&
           f.start <= currentTimeMs + lookAheadMs,
       )
       .slice(0, TRANSLATION_BATCH_SIZE)
@@ -220,8 +224,11 @@ export class TranslationCoordinator {
       this.rememberIdentity(f)
     })
 
+    let config: Config | null = null
     try {
-      const translated = await translateSubtitles(batch, this.videoContext)
+      config = await getLocalConfig()
+      if (!this.active || runId !== this.runId) return
+      const translated = await translateSubtitles(batch, this.videoContext, config ?? undefined)
       if (!this.active || runId !== this.runId) {
         batch.forEach((f) => this.translatingStarts.delete(f.start))
         return
@@ -262,12 +269,8 @@ export class TranslationCoordinator {
         this.rememberIdentity(f)
       })
 
-      const config = await getLocalConfig()
-      if (!this.active || runId !== this.runId) {
-        return
-      }
-
-      // Re-check after the await: AI recut may have landed while config was loading.
+      // Recovery must not read storage again: an invalidated extension context
+      // can fail that read too, leaving the cue unresolved and rejecting the tick.
       const validForFallback = this.filterIdentityValid(stillValid)
       const displayMode = config?.videoSubtitles?.style.displayMode
       const fallback =
@@ -276,6 +279,13 @@ export class TranslationCoordinator {
           : validForFallback.map((f) => ({ ...f, translation: "" }))
       if (fallback.length > 0) {
         this.onTranslated(fallback)
+      }
+
+      if (isExtensionContextInvalidatedError(error)) {
+        this.stop()
+        this.lastEmittedState = "idle"
+        this.onStateChange("idle")
+        return
       }
 
       const errorMessage = error instanceof Error ? error.message : String(error)
