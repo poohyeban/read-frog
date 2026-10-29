@@ -21,10 +21,17 @@ const translations = new Map<string, NodeTranslation>()
 let observer: MutationObserver | undefined
 const observedRoots = new Set<Document | ShadowRoot>()
 
-function containsComposed(ancestor: Node, node: Node): boolean {
-  if (ancestor.contains(node)) return true
-  const root = node.getRootNode()
-  return root instanceof ShadowRoot && containsComposed(ancestor, root.host)
+function composedParent(node: Node): Node | null {
+  return node.parentNode ?? (node instanceof ShadowRoot ? node.host : null)
+}
+
+function hasRemovedAncestor(source: Node, removed: Set<Node>): boolean {
+  let node: Node | null = source
+  while (node) {
+    if (removed.has(node)) return true
+    node = composedParent(node)
+  }
+  return false
 }
 
 function observeSource(source: Node): void {
@@ -59,6 +66,18 @@ function releaseUnusedObservers(): void {
 }
 
 function reconcile(records?: MutationRecord[]): void {
+  // Index each delivery once. The old unit × record scan repeatedly walked the
+  // same ancestor chains and allocated removed-node arrays for every unit.
+  const changedAncestors = new Set<Node>()
+  const removed = new Set<Node>()
+  for (const record of records ?? []) {
+    let node: Node | null = record.target
+    while (node && !changedAncestors.has(node)) {
+      changedAncestors.add(node)
+      node = composedParent(node)
+    }
+    for (const removedNode of record.removedNodes) removed.add(removedNode)
+  }
   let released = false
   for (const [walkId, translation] of translations) {
     const connected = translation.root.isConnected
@@ -68,11 +87,8 @@ function reconcile(records?: MutationRecord[]): void {
         !connected ||
         !unit.source.isConnected ||
         !records ||
-        records.some(
-          (record) =>
-            containsComposed(unit.source, record.target) ||
-            [...record.removedNodes].some((node) => containsComposed(node, unit.source)),
-        )
+        changedAncestors.has(unit.source) ||
+        (removed.size > 0 && hasRemovedAncestor(unit.source, removed))
       if (!affected) continue
       // Frameworks can move a still-valid node into another shadow tree. Keep
       // following that source instead of leaving the observer on its old root.
