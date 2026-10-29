@@ -19,3 +19,9 @@
 官方专用 DeepSeek 适配器默认使用 `json_object`；Lite 的通用 Chat Complete 沿用了官方通用适配器的 `supportsStructuredOutputs: true`，结构化操作发送 `json_schema`。这是当前最明确的兼容性差异，真实失败状态仍需用户复现日志确认。本版不声称已修复 DeepSeek 的词典请求，也未使用用户密钥访问真实服务。
 
 源码对照、日志字段和验证说明见 `docs/restore/DIAGNOSIS-ACTION-ICONS.md`。`SHA256SUMS.txt` 对应经过 CI 检查的发布 ZIP。
+
+## 验证记录
+
+[CI 40841137021](https://github.com/poohyeban/read-frog/actions/runs/40841137021) 全部通过：类型检查、Lint、263 文件 / 2559 项测试、Chromium 生产构建，以及实际 Chromium 扩展 E2E（包含词典 / 长难句失败日志、图标、翻译、恢复和持久化）。按 AGENTS.md 跳过免费服务联网测试。
+
+发布 ZIP 直接复用该成功 CI 产物，4,603,209 字节；SHA256：`3cc06fdc3ec41fb608b31d79208cb8647ad24dd9f06f61484534baea09e73635`。未为此说明文档重新构建。
