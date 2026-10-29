@@ -1,18 +1,18 @@
 {
-  "version": "0.2.4",
-  "source_commit": "1d032f06903464915cc94f10fcb0eb8aff4d0637",
-  "ci_run": "https://github.com/poohyeban/read-frog/actions/runs/40868197221",
-  "source_files": 1009,
-  "source_bytes": 5939733,
+  "version": "0.2.5",
+  "source_commit": "fd843ed2d3ff177fd0646761b4aad5652118e7ad",
+  "ci_run": "https://github.com/poohyeban/read-frog/actions/runs/40882872482",
+  "source_files": 1011,
+  "source_bytes": 5964015,
   "dependencies": 56,
   "dev_dependencies": 37,
-  "build_bytes": 14711708,
+  "build_bytes": 14714658,
   "license_notice_bytes": 755576,
-  "zip_bytes": 4654856,
-  "zip_sha256": "fdb174c83fe56b9fd24d30c0382ffe22222732645effc57e3fd1ff46f1e7ad49",
+  "zip_bytes": 4656144,
+  "zip_sha256": "fcbab5cb725e0916a894e433019756f57fc1ad11e76fd116b14338695a76f342",
   "bundles": {
     "content-scripts/subtitles.js": 3394937,
-    "content-scripts/loader.js": 3364158,
+    "content-scripts/loader.js": 3367108,
     "chunks/execute-translate-BQ6eDXwJ.js": 1219312,
     "chunks/button-C_oBZEiZ.js": 1009513,
     "chunks/esm-Cshe8mZq.js": 423549,
@@ -27,7 +27,7 @@
     "chunks/repository-DpL0B-4e.js": 103193,
     "chunks/options-C8s0MP_X.js": 96795,
     "background.js": 59624,
-    "chunks/popup-B_6IKDzT.js": 43823,
+    "chunks/popup-DmoOF3l4.js": 43823,
     "chunks/slider-DLUaakUN.js": 40746,
     "chunks/combobox-D6ZY8gEh.js": 38946,
     "chunks/toast-BRWkeHwl.js": 38038,
@@ -36,6 +36,5 @@
     "chunks/custom-actions-DSDPVVj3.js": 24349,
     "chunks/editor-page-DXysCJ8P.js": 18248,
     "chunks/translate-DXlirflT.js": 15692
-  },
-  "live_browser_run": "https://github.com/poohyeban/read-frog/actions/runs/40868012940"
+  }
 }

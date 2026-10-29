@@ -1,12 +1,12 @@
 # Read Frog Lite
 
-**Read Frog Lite 0.2.4 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
+**Read Frog Lite 0.2.5 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
 
 普通使用者可以直接下载扩展安装包，**不需要下载源码或在个人电脑编译**。翻译、语音合成和语音转录服务均由用户选择；扩展不提供内置免费额度，也不通过 Read Frog 官方服务器中转请求。
 
-[直接下载 v0.2.4 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.4/read-frog-lite-0.2.4-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
+[直接下载 v0.2.5 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.5/read-frog-lite-0.2.5-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
 
-0.2.4 修复 YouTube 网站 Service Worker 与扩展动态模块加载产生的资源报错、没有接收端时的后台消息错误，并补齐字幕启动期间的失效处理。保留 0.2.3 的长字幕翻译和 AI 断句时间轴修复，以及内置 DeepSeek 和本地图标。详见[本版说明](docs/restore/RELEASE-0.2.4.md)。
+0.2.5 修复悬停翻译后动态网页切换内容时残留旧译文的问题，覆盖通用 DOM 更新、节点复用和过期请求返回，不局限于 YouTube。保留此前的字幕时间轴、扩展上下文处理、内置 DeepSeek 和本地图标修复。详见[本版说明](docs/restore/RELEASE-0.2.5.md)。
 
 ## 目录
 
@@ -41,14 +41,14 @@
 - 原版 TTS 没有独立的暂停后继续 API，本版保留停止 / 再播放，没有另造暂停恢复机制。
 - 自定义 Action 保留基础字段输出和本地图标；没有恢复许可未确认的专有布局引擎和在线布局生成器。
 
-验证范围：生产代码已通过类型 / Lint、269 个测试文件中的 2601 项单元和协议测试，以及真实 Chromium 的网页双语、仅译文、恢复、划词、输入翻译、配置持久化和网络隔离回归。字幕另有真实生产扩展回归，覆盖连续翻译、长字幕跳转、重载恢复和 AI 时间轴校验。浏览器测试调用本地 HTTP 测试端点、使用可控页面，不证明任何真实模型的翻译质量。YouTube / Netflix / X 当前网页、复杂编辑器、真实音频设备和具体模型部署仍需按[人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)检查。
+验证范围：生产代码已通过类型 / Lint、271 个测试文件中的 2626 项单元和协议测试，以及真实 Chromium 的网页双语、仅译文、恢复、悬停译文失效与再次翻译、划词、输入翻译、配置持久化和网络隔离回归。字幕另有真实生产扩展回归，覆盖连续翻译、长字幕跳转、重载恢复和 AI 时间轴校验。浏览器测试调用本地 HTTP 测试端点、使用可控页面，不证明任何真实模型的翻译质量。YouTube / Netflix / X 当前网页、复杂编辑器、真实音频设备和具体模型部署仍需按[人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)检查。
 
 ## 安装、升级与备份
 
 ### 首次安装：无需编译
 
 1. 打开本 Fork 的 [Releases](https://github.com/poohyeban/read-frog/releases)，选择所需版本，或使用上方的直接下载链接。
-2. 下载 Assets 中的 **`read-frog-lite-0.2.4-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
+2. 下载 Assets 中的 **`read-frog-lite-0.2.5-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
 3. 解压扩展 ZIP，将扩展目录保存在固定位置。Release 下载不受 Actions Artifact 的 30 天保留期限制。
 4. Chrome 打开 `chrome://extensions`，Edge 打开 `edge://extensions`，开启开发者模式，选择“加载已解压的扩展程序”。
 5. 选择**直接包含 `manifest.json` 的目录**，确认名称为 Read Frog Lite。打开扩展设置配置服务，再刷新要翻译的网页。
@@ -242,7 +242,7 @@ flowchart TD
 
 ## 如何继续开发与同步上游
 
-### 悬停翻译与动态网页（开发分支，尚未发布）
+### 悬停翻译与动态网页（0.2.5）
 
 悬停译文只对应触发时的原文。网站原地改字、替换文本、移除或复用节点后，失效译文应被清理；随后再次悬停才翻译新内容。仅悬停翻译不会因为页面更新而自动追加 API 请求。尚未完成的旧请求可以继续在服务端执行，但返回结果不能写进已变化的页面。
 
@@ -365,7 +365,7 @@ git push origin v0.2.0
 
 从 0.2.1 起，Action 的运行错误只在开发者控制台记录，不在面板显示红色错误框；缺少 Provider 等配置提示仍会显示。失败后可以切换服务或点击重试。
 
-1. 更新已加载的扩展目录，在 `chrome://extensions` 点击重新加载，确认版本为 0.2.4，然后刷新 YouTube 或普通网页。
+1. 更新已加载的扩展目录，在 `chrome://extensions` 点击重新加载，确认版本为 0.2.5，然后刷新 YouTube 或普通网页。
 2. 在出问题的网页按 F12，打开 **Console**，开启 **Preserve log**。确认没有启用会隐藏扩展消息的 **Selected context only**，过滤 `[Read Frog Lite][stream]`。
 3. 重新选词，打开词典或长难句分析。复制该前缀后的 JSON，附上触发操作及浏览器版本即可。
 4. 如果页面没有该日志，在 `chrome://extensions` 打开 Read Frog Lite 的 **Service worker → Inspect**，保持窗口打开再复现，复制同一前缀日志。
