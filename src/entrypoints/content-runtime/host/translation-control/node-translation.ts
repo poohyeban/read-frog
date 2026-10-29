@@ -1,6 +1,7 @@
 import type { Config } from "@/types/config/config"
 import { getLocalConfig } from "@/utils/config/storage"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
+import { cleanupNodeTranslations } from "@/utils/host/translate/core/node-translation-lifecycle"
 import { removeOrShowNodeTranslation } from "@/utils/host/translate/node-manipulation"
 import { sendMessage } from "@/utils/message"
 import { createNodeTranslationPreview } from "./node-translation-preview"
@@ -55,5 +56,6 @@ export function registerNodeTranslationTriggers(): () => void {
     ac.abort()
     teardownTriggerListeners()
     preview.destroy()
+    cleanupNodeTranslations()
   }
 }

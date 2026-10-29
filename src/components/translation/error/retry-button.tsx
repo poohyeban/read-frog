@@ -4,6 +4,7 @@ import { use } from "react"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/base-ui/tooltip"
 import { configAtom } from "@/utils/atoms/config"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { beginNodeTranslation } from "@/utils/host/translate/core/node-translation-lifecycle"
 import {
   translateNodesBilingualMode,
   translateNodeTranslationOnlyMode,
@@ -16,11 +17,18 @@ export function RetryButton({ nodes }: { nodes: ChildNode[] }) {
   const translationMode = config.pageTranslation.mode
 
   const handleRetry = async () => {
+    const root = nodes.find((node) => node.isConnected)?.parentElement
+    if (!root) return
     const walkId = getRandomUUID()
-    if (translationMode === "bilingual") {
-      await translateNodesBilingualMode(nodes, walkId, config)
-    } else if (translationMode === "translationOnly") {
-      await translateNodeTranslationOnlyMode(nodes, walkId, config)
+    const lifecycle = beginNodeTranslation(root, walkId)
+    try {
+      if (translationMode === "bilingual") {
+        await translateNodesBilingualMode(nodes, walkId, config)
+      } else if (translationMode === "translationOnly") {
+        await translateNodeTranslationOnlyMode(nodes, walkId, config)
+      }
+    } finally {
+      lifecycle.finish()
     }
   }
 

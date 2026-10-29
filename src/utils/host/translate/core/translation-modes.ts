@@ -60,6 +60,7 @@ import {
 import { translateTextForPage } from "../translate-variants"
 import { setTranslationDirAndLang } from "../translation-attributes"
 import { createSpinnerInside, getTranslatedTextAndRemoveSpinner } from "../ui/spinner"
+import { getNodeTranslation, trackNodeTranslation } from "./node-translation-lifecycle"
 import {
   createPageTranslationRequest,
   getDisplayTranslation,
@@ -75,6 +76,7 @@ import {
   getVirtualParagraphGroupForSource,
   isBilingualTranslationStateCurrent,
   isBilingualWrapperContentTampered,
+  isTranslationOnlySwapRecordCurrent,
   isVirtualParagraphGroupCurrent,
   markExtensionDrivenNodeRemoval,
   markVirtualParagraphGroupInserted,
@@ -84,6 +86,7 @@ import {
   registerVirtualParagraphGroup,
   registerVirtualParagraphWrapper,
   resetWrapperTamperRepairs,
+  takeTranslationOnlyOriginals,
   translatingNodes,
   unregisterBilingualTranslationState,
   type BilingualTranslationState,
@@ -199,6 +202,12 @@ async function translateVirtualParagraphs(
     wrapperPlacements: new Map(),
   }
   registerVirtualParagraphGroup(group)
+  trackNodeTranslation(walkId, {
+    source: layoutSource,
+    isCurrent: () => isVirtualParagraphGroupCurrent(group),
+    dispose: () => disposeVirtualParagraphGroup(group),
+    canHandOffToPage: () => getVirtualParagraphGroupForSource(layoutSource) === group,
+  })
 
   const sourceTextSnapshot = collectSourceTextExcludingWrappers(layoutSource)
   let includedUnits: VirtualParagraphUnit[]
@@ -295,6 +304,8 @@ export async function translateNodesBilingualMode(
   forceBlockTranslation: boolean = false,
   forceRetranslation: boolean = false,
 ): Promise<void> {
+  const nodeTranslation = getNodeTranslation(walkId)
+  if (nodeTranslation && !nodeTranslation.active) return
   const transNodes = nodes.filter((node) => isTransNode(node))
   if (transNodes.length === 0) {
     return
@@ -440,6 +451,7 @@ export async function translateNodesBilingualMode(
     const atomExtraction = preparePageTranslationSource(transNodes, config)
     if (!atomExtraction) return
     const requestText = atomExtraction.requestText
+    const sourceSnapshot = snapshotSourceTextNodes(transNodes)
 
     let bilingualState: BilingualTranslationState | undefined
     if (isHTMLElement(layoutSource) && sourceTextBeforeFilter !== null) {
@@ -452,6 +464,16 @@ export async function translateNodesBilingualMode(
         wrapperTextContent: null,
       }
       registerBilingualTranslationState(bilingualState)
+      const state = bilingualState
+      trackNodeTranslation(walkId, {
+        source: state.layoutSource,
+        isCurrent: () => isBilingualTranslationStateCurrent(state),
+        dispose: () => {
+          if (state.wrapper) removeTranslatedWrapperWithRestore(state.wrapper)
+          else unregisterBilingualTranslationState(state)
+        },
+        canHandOffToPage: () => getBilingualTranslationStateForSource(state.layoutSource) === state,
+      })
     }
 
     let shouldFilter: boolean
@@ -462,6 +484,14 @@ export async function translateNodesBilingualMode(
     } catch (error) {
       if (bilingualState) unregisterBilingualTranslationState(bilingualState)
       throw error
+    }
+
+    if (
+      nodeTranslation &&
+      (!nodeTranslation.active || !verifySourceSnapshot(transNodes, sourceSnapshot))
+    ) {
+      if (bilingualState) unregisterBilingualTranslationState(bilingualState)
+      return
     }
 
     if (bilingualState && !isBilingualTranslationStateCurrent(bilingualState)) {
@@ -525,10 +555,21 @@ export async function translateNodesBilingualMode(
       unregisterBilingualTranslationState(bilingualState)
       bilingualState = undefined
     }
+    let disposed = false
     const isCurrent = () =>
-      bilingualState
+      !disposed &&
+      (bilingualState
         ? isBilingualTranslationStateCurrent(bilingualState)
-        : translatedWrapperNode.isConnected
+        : translatedWrapperNode.isConnected && verifySourceSnapshot(transNodes, sourceSnapshot))
+    if (!bilingualState)
+      trackNodeTranslation(walkId, {
+        source: isHTMLElement(layoutSource) ? layoutSource : layoutSource.parentElement!,
+        isCurrent,
+        dispose: () => {
+          disposed = true
+          removeTranslatedWrapperWithRestore(translatedWrapperNode)
+        },
+      })
 
     // Newline-preserving containers render single "\n" as real line breaks
     // (an X tweet whose lines have no blank-line separators is ONE unit here,
@@ -785,6 +826,15 @@ async function maybeTranslateVirtualUnitRuns(
     state.virtualGeneration = generation
     const isCurrent = () =>
       getTranslationOnlyAnchorState(layoutSource)?.virtualGeneration === generation
+    const disposeGeneration = () => {
+      if (isCurrent()) teardownVirtualTranslationOnlyGeneration(layoutSource)
+    }
+    trackNodeTranslation(walkId, {
+      source: layoutSource,
+      isCurrent: () => layoutSource.isConnected && isCurrent(),
+      dispose: disposeGeneration,
+      canHandOffToPage: isCurrent,
+    })
 
     const runs = materializeVirtualParagraphUnitRuns(layoutSource, plan, config, state.splitRecords)
     if (!runs) {
@@ -803,6 +853,7 @@ async function maybeTranslateVirtualUnitRuns(
           false,
           forceRetranslation,
           isCurrent,
+          getNodeTranslation(walkId) ? disposeGeneration : undefined,
         ),
       ),
     )
@@ -867,7 +918,10 @@ async function translateTranslationOnlyRun(
   toggle: boolean = false,
   forceRetranslation: boolean = false,
   isCurrent: () => boolean = () => true,
+  disposeGeneration?: () => void,
 ): Promise<void> {
+  const nodeTranslation = getNodeTranslation(walkId)
+  if (nodeTranslation && !nodeTranslation.active) return
   const isTransNodeAndNotTranslatedWrapper = (node: Node): node is TransNode => {
     if (isHTMLElement(node) && node.classList.contains(CONTENT_WRAPPER_CLASS)) return false
     return isTransNode(node)
@@ -909,7 +963,7 @@ async function translateTranslationOnlyRun(
     if (!toggle) {
       const retryNodes = restored.filter((node) => node.isConnected)
       if (retryNodes.length > 0) {
-        void translateTranslationOnlyRun(retryNodes, walkId, config, toggle, forceRetranslation)
+        await translateTranslationOnlyRun(retryNodes, walkId, config, toggle, forceRetranslation)
       }
     }
     return
@@ -971,7 +1025,7 @@ async function translateTranslationOnlyRun(
         ? nodes
         : restoredNodes.filter((node) => node.isConnected)
       if (retryNodes.length > 0) {
-        void translateTranslationOnlyRun(retryNodes, walkId, config, toggle, forceRetranslation)
+        await translateTranslationOnlyRun(retryNodes, walkId, config, toggle, forceRetranslation)
       }
       return
     }
@@ -980,8 +1034,20 @@ async function translateTranslationOnlyRun(
       return
     }
 
+    // Capture before filtering as well as the provider round-trip: both await.
+    const sourceSnapshot = snapshotSourceTextNodes(transNodes)
+    let disposed = false
+    const isRunCurrent = () =>
+      !disposed &&
+      nodeTranslation?.active !== false &&
+      isCurrent() &&
+      verifySourceSnapshot(transNodes, sourceSnapshot)
     const source = preparePageTranslationSource(transNodes, config)
     if (!source || (await shouldSkipPageTranslationText(source.filterText, config))) return
+    if (!isRunCurrent()) {
+      disposeGeneration?.()
+      return
+    }
 
     const ownerDoc = getOwnerDocument(targetNode)
     // The translation is swapped into the run's own text nodes, so their
@@ -993,11 +1059,6 @@ async function translateTranslationOnlyRun(
       forceRetranslation,
     })
     if (!request.sourceText) return
-
-    // Taken before the provider request; the response handler compares against
-    // it to detect host mutations that happened while the request was in
-    // flight (never swap over content the host has since rewritten).
-    const sourceSnapshot = snapshotSourceTextNodes(transNodes)
 
     const translatedWrapperNode = ownerDoc.createElement("span")
     translatedWrapperNode.className = `${NOTRANSLATE_CLASS} ${CONTENT_WRAPPER_CLASS}`
@@ -1011,12 +1072,26 @@ async function translateTranslationOnlyRun(
     const spinner = createSpinnerInside(translatedWrapperNode)
 
     // Batch DOM insertion to reduce layout thrashing
+    let wrapperInserted = false
+    const trackedUnit = {
+      source: parentNode,
+      isCurrent: () => isRunCurrent() && (!wrapperInserted || translatedWrapperNode.isConnected),
+      dispose: () => {
+        disposed = true
+        removeTranslatedWrapperWithRestore(translatedWrapperNode)
+        disposeGeneration?.()
+      },
+      canHandOffToPage: () => false,
+    }
+    trackNodeTranslation(walkId, trackedUnit)
     const insertOperation = () => {
+      if (!isRunCurrent()) return
       if (isTextNode(targetNode) || transNodes.length > 1) {
         targetNode.parentNode?.insertBefore(translatedWrapperNode, targetNode.nextSibling)
       } else {
         targetNode.appendChild(translatedWrapperNode)
       }
+      wrapperInserted = true
     }
     batchDOMOperation(insertOperation)
 
@@ -1025,10 +1100,14 @@ async function translateTranslationOnlyRun(
       request.sourceText,
       spinner,
       translatedWrapperNode,
-      isCurrent,
+      isRunCurrent,
       request.textFormat,
       request.translate,
     )
+    if (!isRunCurrent()) {
+      trackedUnit.dispose()
+      return
+    }
     const translatedText = request.getDisplayText(realTranslatedText)
 
     if (!translatedText) {
@@ -1052,13 +1131,12 @@ async function translateTranslationOnlyRun(
         // flight, or the host re-rendered the region — leave originals alone.
         // A superseded run (its generation torn down) is stale for the same
         // reason even when its wrapper survived the round trip.
-        if (!translatedWrapperNode.isConnected || !isCurrent()) return
+        if (!translatedWrapperNode.isConnected || !isRunCurrent()) {
+          trackedUnit.dispose()
+          return
+        }
         markExtensionDrivenNodeRemoval(translatedWrapperNode)
         translatedWrapperNode.remove()
-        // Host mutated the run mid-flight: the translation is stale, drop it.
-        // Any kept (restore-first) records still reference the run, so the
-        // staleness pipeline retries with the host's fresh text.
-        if (!verifySourceSnapshot(transNodes, sourceSnapshot)) return
         applyInPlaceTextSwap(
           swapPlan,
           transNodes,
@@ -1067,6 +1145,30 @@ async function translateTranslationOnlyRun(
           config,
           getTranslationOnlyAnchorState,
         )
+        const state = getTranslationOnlyAnchorState(parentNode)!
+        const record = state.swaps.find(
+          (item) => item.walkId === walkId && item.runNodes[0] === transNodes[0],
+        )!
+        trackedUnit.canHandOffToPage = () =>
+          getTranslationOnlyAnchorState(parentNode) === state && state.swaps.includes(record)
+        trackedUnit.isCurrent = () =>
+          parentNode.isConnected &&
+          getTranslationOnlyAnchorState(parentNode) === state &&
+          state.swaps.includes(record) &&
+          isTranslationOnlySwapRecordCurrent(record)
+        trackedUnit.dispose = () => {
+          disposed = true
+          if (disposeGeneration) {
+            disposeGeneration()
+            return
+          }
+          // A later page/hover translation may already own the same run.
+          if (getTranslationOnlyAnchorState(parentNode) === state && state.swaps.includes(record)) {
+            restoreTranslationOnlySwapsForAnchor(parentNode, transNodes)
+            if (state.virtualGeneration !== undefined)
+              endVirtualTranslationOnlyGeneration(parentNode)
+          }
+        }
       })
       return
     }
@@ -1080,7 +1182,10 @@ async function translateTranslationOnlyRun(
       // Wrapper gone from the document: a global cleanup ran while the provider
       // call was in flight, or the host re-rendered the region. The originals
       // are the live content — don't remove them to apply a stale translation.
-      if (!translatedWrapperNode.isConnected || !isCurrent()) return
+      if (!translatedWrapperNode.isConnected || !isRunCurrent()) {
+        trackedUnit.dispose()
+        return
+      }
 
       // Insert translated content after the last node
       const lastChildNode = allChildNodes.at(-1)!
@@ -1092,6 +1197,19 @@ async function translateTranslationOnlyRun(
       // retranslation) would reference displaced nodes and read as
       // permanently stale — drop them.
       if (swapAnchor) dropTranslationOnlySwapRecordsForNodes(swapAnchor, transNodes)
+      const expectedHostText = collectSourceTextExcludingWrappers(parentNode)
+      const isFallbackSourceCurrent = () =>
+        translatedWrapperNode.parentNode === parentNode &&
+        collectSourceTextExcludingWrappers(parentNode) === expectedHostText
+      trackedUnit.isCurrent = () => translatedWrapperNode.isConnected && isFallbackSourceCurrent()
+      trackedUnit.dispose = () => {
+        disposed = true
+        // The site rebuilt the source around this fallback. Its displaced
+        // originals must never be re-inserted beside the site's new content.
+        if (!isFallbackSourceCurrent()) takeTranslationOnlyOriginals(translatedWrapperNode)
+        removeTranslatedWrapperWithRestore(translatedWrapperNode)
+        disposeGeneration?.()
+      }
     })
   } finally {
     nodes.forEach((node) => translatingNodes.delete(node))
