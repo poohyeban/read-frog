@@ -3,10 +3,8 @@ import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { TranslationCancelledError } from "./cancellation"
 
 export class BatchCountMismatchError extends Error {
-  constructor(expected: number, got: number, results: unknown[]) {
-    super(
-      `Batch result count mismatch: expected ${expected}, got ${got}.\nResults: ["${results.join('",\n"')}"]`,
-    )
+  constructor(expected: number, got: number) {
+    super(`Batch result count mismatch: expected ${expected}, got ${got}.`)
     this.name = "BatchCountMismatchError"
   }
 }
@@ -34,6 +32,8 @@ export interface DispatchGate {
    * 0 = a slot is available now.
    */
   nextDispatchEtaMs: () => number
+  /** Optional wakeup for a released attempt or changed queue settings. */
+  subscribe?: (listener: () => void) => () => void
 }
 
 interface BatchTask<T, R> {
@@ -97,6 +97,7 @@ export class BatchQueue<T, R> {
   private maxRetries: number
   private enableFallbackToIndividual: boolean
   private dispatchGate?: DispatchGate
+  private unsubscribeGate?: () => void
   private getBatchKey: (data: T) => string
   private getCharacters: (data: T) => number
   private getDedupKey?: (data: T) => string | undefined
@@ -229,7 +230,17 @@ export class BatchQueue<T, R> {
       clearTimeout(this.nextScheduleTimer)
       this.nextScheduleTimer = null
     }
+    this.updateGateSubscription()
     return cancelled
+  }
+
+  private updateGateSubscription() {
+    if (this.pendingBatchMap.size > 0) {
+      this.unsubscribeGate ??= this.dispatchGate?.subscribe?.(() => this.schedule())
+    } else {
+      this.unsubscribeGate?.()
+      this.unsubscribeGate = undefined
+    }
   }
 
   private schedule() {
@@ -283,6 +294,7 @@ export class BatchQueue<T, R> {
         Number.isFinite(nextWakeMs) ? nextWakeMs : this.batchDelay,
       )
     }
+    this.updateGateSubscription()
   }
 
   private addTaskToBatch(task: BatchTask<T, R>, batchKey: string) {
@@ -366,7 +378,7 @@ export class BatchQueue<T, R> {
       }
 
       if (results.length !== tasks.length) {
-        throw new BatchCountMismatchError(tasks.length, results.length, results)
+        throw new BatchCountMismatchError(tasks.length, results.length)
       }
 
       tasks.forEach((task, index) => task.resolve(results[index]!))

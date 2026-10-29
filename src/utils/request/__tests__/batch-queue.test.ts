@@ -942,6 +942,49 @@ describe("batchQueue – dispatch gate", () => {
     })
   }
 
+  it("wakes immediately on slot release and removes its subscription when empty", async () => {
+    vi.useFakeTimers()
+    let eta = Infinity
+    const listeners = new Set<() => void>()
+    const executeBatch = vi.fn<(data: GateItem[]) => Promise<string[]>>(async (data) =>
+      data.map((item) => item.text),
+    )
+    const queue = new BatchQueue<GateItem, string>({
+      maxCharactersPerBatch: 1000,
+      maxItemsPerBatch: 5,
+      batchDelay: 100,
+      dispatchGate: {
+        nextDispatchEtaMs: () => eta,
+        subscribe: (listener) => {
+          listeners.add(listener)
+          return () => {
+            listeners.delete(listener)
+          }
+        },
+      },
+      getBatchKey: () => "wake",
+      getCharacters: (data) => data.text.length,
+      getScope: (data) => data.scope,
+      executeBatch,
+    })
+    const pending = queue.enqueue({ text: "hello", hash: "hello" })
+    expect(listeners.size).toBe(1)
+    await vi.advanceTimersByTimeAsync(150)
+    expect(executeBatch).not.toHaveBeenCalled()
+    eta = 0
+    for (const listener of [...listeners]) listener()
+    await expect(pending).resolves.toBe("hello")
+    expect(listeners.size).toBe(0)
+    expect(vi.getTimerCount()).toBe(0)
+    eta = Infinity
+    const cancelled = queue.enqueue({ text: "next", hash: "next", scope: "stop" })
+    void cancelled.catch(() => {})
+    queue.cancelByScope("stop")
+    await expect(cancelled).rejects.toThrow(/cancelled/)
+    expect(listeners.size).toBe(0)
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
   it("flushes at batchDelay when the gate reports a free slot", async () => {
     vi.useFakeTimers()
     const executeBatch = vi.fn<(dataList: GateItem[]) => Promise<string[]>>(async (dataList) =>

@@ -300,7 +300,10 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     // Narrow port, not the whole queue: while the rate limiter has no free
     // slot, pending batches keep filling to maxItems/maxChars instead of
     // flushing tiny every batchDelay (they'd only freeze in the queue).
-    dispatchGate: { nextDispatchEtaMs: () => requestQueue.nextDispatchEtaMs() },
+    dispatchGate: {
+      nextDispatchEtaMs: () => requestQueue.nextDispatchEtaMs(),
+      subscribe: (listener) => requestQueue.subscribeDispatch(listener),
+    },
     getBatchKey: getTranslationBatchIdentity,
     getCharacters: (data) => data.text.length,
     getDedupKey: (data) => data.hash,

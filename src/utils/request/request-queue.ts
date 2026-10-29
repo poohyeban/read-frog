@@ -52,6 +52,7 @@ export class RequestQueue {
   private nextScheduleTimer: NodeJS.Timeout | null = null
   private retryPolicy: RequestRetryPolicy
   private activeAttempts = new Set<symbol>()
+  private dispatchListeners = new Set<() => void>()
 
   // token bucket
   private bucketTokens: number
@@ -123,6 +124,17 @@ export class RequestQueue {
     return promise
   }
 
+  subscribeDispatch(listener: () => void): () => void {
+    this.dispatchListeners.add(listener)
+    return () => {
+      this.dispatchListeners.delete(listener)
+    }
+  }
+
+  private notifyDispatch() {
+    for (const listener of [...this.dispatchListeners]) listener()
+  }
+
   setQueueOptions(options: Partial<QueueOptions>) {
     if (Object.hasOwn(options, "maxConcurrent")) this.validateConcurrency(options.maxConcurrent)
     const { retryPolicy, ...queueOptions } = options
@@ -142,6 +154,7 @@ export class RequestQueue {
     this.bucketTokens = Math.min(this.bucketTokens, this.options.capacity)
     // The pending timer's delay was computed under the old rate — recompute.
     this.schedule()
+    this.notifyDispatch()
   }
 
   /**
@@ -391,6 +404,7 @@ export class RequestQueue {
       this.activeAttempts.delete(attempt)
       // Re-enqueued retries cannot begin until this attempt's cleanup finishes.
       this.schedule()
+      this.notifyDispatch()
     }
   }
 
