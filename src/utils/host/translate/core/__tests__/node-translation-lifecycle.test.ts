@@ -25,7 +25,7 @@ const { translate, filter } = vi.hoisted(() => ({
   filter: vi.fn<() => Promise<boolean>>(),
 }))
 vi.mock("@/utils/host/translate/translate-variants", () => ({ translateTextForPage: translate }))
-vi.mock("@/utils/host/translate/translate-text", () => ({
+vi.mock("@/utils/host/translate/ui/validate-config", () => ({
   validateTranslationConfigAndToast: () => true,
 }))
 vi.mock("@/utils/host/translate/filter-small-paragraph", () => ({

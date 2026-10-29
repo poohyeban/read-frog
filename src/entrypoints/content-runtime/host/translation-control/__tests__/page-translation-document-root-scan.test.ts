@@ -50,7 +50,7 @@ vi.mock("@/utils/host/translate/node-manipulation", () => ({
   translateNodesBilingualMode: mockTranslateNodesBilingualMode,
   translateWalkedElement: mockTranslateWalkedElement,
 }))
-vi.mock("@/utils/host/translate/translate-text", () => ({
+vi.mock("@/utils/host/translate/ui/validate-config", () => ({
   validateTranslationConfigAndToast: mockValidateTranslationConfigAndToast,
 }))
 vi.mock("@/utils/host/translate/translate-variants", () => ({

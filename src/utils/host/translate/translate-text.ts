@@ -1,23 +1,18 @@
-import type { Config } from "@/types/config/config"
 import type { TranslateProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { WebPagePromptContext } from "@/types/content"
 import type { LangCodeISO6393, LangLevel } from "@/utils/languages"
 import type { TranslatePromptResult } from "@/utils/prompts/translate"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
-import { toastManager } from "@/components/ui/base-ui/toast"
-import { isAPIProviderConfig, isLLMProviderConfig } from "@/types/config/provider"
+import { isLLMProviderConfig } from "@/types/config/provider"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { isNoTranslationSentinel } from "@/utils/constants/prompt"
 import { detectLanguage } from "@/utils/content/language"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
-import { i18n } from "@/utils/i18n"
-import { logger } from "@/utils/logger"
 import { normalizePromptContextValue } from "@/utils/prompts/context"
 import { getTranslationRequestHash } from "@/utils/prompts/request-identity"
 import { selectPagePrompt } from "@/utils/prompts/translate"
 import { serializeProviderRef } from "@/utils/providers/provider-ref"
-import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
 import { sendMessage } from "../../message"
 import { getInMemoryTranslation, storeInMemoryTranslation } from "./in-memory-translation-cache"
@@ -222,38 +217,4 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
   // "" gracefully. Mapping earlier — in the background — would fall out of
   // the truthy-only cache write and re-hit the provider on every request.
   return isNoTranslationSentinel(result) ? "" : result
-}
-
-export function validateTranslationConfigAndToast(
-  config: Pick<Config, "providersConfig" | "pageTranslation" | "language">,
-): boolean {
-  const { providersConfig, pageTranslation: translateConfig, language: languageConfig } = config
-  const provider = resolveProviderRefForCapability(
-    "pageTranslation",
-    providersConfig,
-    translateConfig.providerId,
-  )
-  if (!provider) {
-    return false
-  }
-
-  if (languageConfig.sourceCode === languageConfig.targetCode) {
-    toastManager.add({ type: "error", title: i18n.t("translation.sameLanguage") })
-    logger.info("validateTranslationConfig: returning false (same language)")
-    return false
-  }
-
-  // check if the API key is configured
-  if (
-    provider.kind === "local" &&
-    isAPIProviderConfig(provider.config) &&
-    !provider.config.apiKey?.trim() &&
-    !["deeplx", "ollama"].includes(provider.config.provider)
-  ) {
-    toastManager.add({ type: "error", title: i18n.t("noAPIKeyConfig.warning") })
-    logger.info("validateTranslationConfig: returning false (no API key)")
-    return false
-  }
-
-  return true
 }

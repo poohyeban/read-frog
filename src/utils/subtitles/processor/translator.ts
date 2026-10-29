@@ -3,7 +3,6 @@ import type { Config } from "@/types/config/config"
 import type { SubtitlePromptContext } from "@/types/content"
 import type { TranslatePromptResult } from "@/utils/prompts/translate"
 import type { PromptableProviderRef, SerializableProviderRef } from "@/utils/providers/provider-ref"
-import { APICallError } from "ai"
 import { isLLMProviderConfig } from "@/types/config/provider"
 import { getLocalConfig } from "@/utils/config/storage"
 import { cleanText } from "@/utils/content/utils"
@@ -22,6 +21,7 @@ import {
   serializeProviderRef,
 } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
+import { getRequestErrorMeta } from "@/utils/request/retry-policy"
 
 /**
  * One toast for the whole run, not one per batch: the provider is re-resolved
@@ -44,8 +44,9 @@ export type SubtitlesTask = "lineTranslation" | "summary" | "segmentation"
  */
 
 function toFriendlyErrorMessage(error: unknown): string {
-  if (error instanceof APICallError) {
-    switch (error.statusCode) {
+  const statusCode = getRequestErrorMeta(error).statusCode
+  if (statusCode !== undefined) {
+    switch (statusCode) {
       case 429:
         return i18n.t("subtitles.errors.aiRateLimited")
       case 401:
