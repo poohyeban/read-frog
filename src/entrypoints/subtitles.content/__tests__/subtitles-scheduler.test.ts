@@ -5,6 +5,7 @@ import {
   currentTimeMsAtom,
   subtitlesStateAtom,
   subtitlesStore,
+  translatedTrackAtom,
 } from "../atoms"
 import { SubtitlesScheduler } from "../subtitles-scheduler"
 
@@ -102,6 +103,26 @@ describe("subtitles scheduler", () => {
     expect(subtitlesStore.get(subtitlesStateAtom)?.state).toBe("loading")
     expect(vi.getTimerCount()).toBe(0)
     replacement.stop()
+  })
+
+  it("reuses unchanged translated records and publishes only changed track versions", () => {
+    const scheduler = new SubtitlesScheduler({ videoElement: createVideo() })
+    const cues = [
+      { text: "one", start: 0, end: 10, translation: "一" },
+      { text: "two", start: 10, end: 20, translation: "二" },
+    ]
+    scheduler.supplementSubtitles(cues)
+    const first = subtitlesStore.get(translatedTrackAtom)
+    scheduler.supplementSubtitles(cues.map((cue) => ({ ...cue })))
+    expect(subtitlesStore.get(translatedTrackAtom)).toBe(first)
+    scheduler.supplementSubtitles([
+      { ...cues[1]!, translation: "second" },
+      { ...cues[1]!, translation: "latest" },
+    ])
+    const next = subtitlesStore.get(translatedTrackAtom)
+    expect(next[0]).toBe(first[0])
+    expect(next[1]?.translation).toBe("latest")
+    scheduler.stop()
   })
 
   it("auto-hides error state after a delay", () => {

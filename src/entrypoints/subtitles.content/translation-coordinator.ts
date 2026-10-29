@@ -207,18 +207,21 @@ export class TranslationCoordinator {
       this.getVideoElement()?.playbackRate,
     )
 
-    const batch = fragments
-      .filter(
-        (f) =>
-          !this.translatedStarts.has(f.start) &&
-          !this.translatingStarts.has(f.start) &&
-          !this.failedStarts.has(f.start) &&
-          // A long cue can still be on screen after its start is outside the
-          // look-back window (especially after seeking or a slow earlier batch).
-          f.end > currentTimeMs - 5000 &&
-          f.start <= currentTimeMs + lookAheadMs,
-      )
-      .slice(0, TRANSLATION_BATCH_SIZE)
+    // Stop once the original first-N rule is satisfied instead of allocating a
+    // filtered copy of the whole track on every scheduling tick.
+    const batch: SubtitlesFragment[] = []
+    for (const fragment of fragments) {
+      if (
+        !this.translatedStarts.has(fragment.start) &&
+        !this.translatingStarts.has(fragment.start) &&
+        !this.failedStarts.has(fragment.start) &&
+        fragment.end > currentTimeMs - 5000 &&
+        fragment.start <= currentTimeMs + lookAheadMs
+      ) {
+        batch.push(fragment)
+        if (batch.length === TRANSLATION_BATCH_SIZE) break
+      }
+    }
 
     if (batch.length === 0) {
       return

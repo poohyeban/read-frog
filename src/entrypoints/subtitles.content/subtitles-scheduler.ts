@@ -51,32 +51,38 @@ export class SubtitlesScheduler {
       return
     }
 
-    const existingMap = new Map(this.subtitles.map((s) => [s.start, s]))
+    const existingMap = new Map(this.subtitles.map((cue, index) => [cue.start, index]))
+    let changed = false
+    let inserted = false
     let currentSubtitleUpdated = false
     const previousCurrentStart =
       this.currentIndex >= 0 ? (this.subtitles[this.currentIndex]?.start ?? null) : null
 
     for (const newSub of subtitles) {
-      const existing = existingMap.get(newSub.start)
-
-      if (!existing) {
+      const index = existingMap.get(newSub.start)
+      if (index === undefined) {
+        existingMap.set(newSub.start, this.subtitles.length)
         this.subtitles.push(newSub)
-        existingMap.set(newSub.start, newSub)
+        inserted = true
+        changed = true
         continue
       }
+      const existing = this.subtitles[index]!
 
-      if (newSub.translation !== undefined) {
+      if (
+        newSub.translation !== undefined &&
+        (existing.text !== newSub.text ||
+          existing.end !== newSub.end ||
+          existing.translation !== newSub.translation)
+      ) {
         const updatedSub = {
           ...existing,
           text: newSub.text,
           end: newSub.end,
           translation: newSub.translation,
         }
-        const idx = this.subtitles.findIndex((s) => s.start === existing.start)
-        if (idx >= 0) {
-          this.subtitles[idx] = updatedSub
-          existingMap.set(existing.start, updatedSub)
-        }
+        this.subtitles[index] = updatedSub
+        changed = true
 
         if (previousCurrentStart !== null && existing.start === previousCurrentStart) {
           currentSubtitleUpdated = true
@@ -84,8 +90,8 @@ export class SubtitlesScheduler {
       }
     }
 
-    this.subtitles.sort((a, b) => a.start - b.start)
-    this.publishTranslatedTrack()
+    if (inserted) this.subtitles.sort((a, b) => a.start - b.start)
+    if (changed) this.publishTranslatedTrack()
     this.updateSubtitles(this.videoElement.currentTime)
 
     if (currentSubtitleUpdated) {
