@@ -1,7 +1,7 @@
 import type { TTSConfig } from "@/types/config/tts"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useAtomValue } from "jotai"
-import { useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { toastManager } from "@/components/ui/base-ui/toast"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { detectLanguage } from "@/utils/content/language"
@@ -62,7 +62,7 @@ export function useTextToSpeech() {
   const shouldStopRef = useRef(false)
   const activeRequestIdRef = useRef<string | null>(null)
 
-  const stop = () => {
+  const cancelActiveRequest = useCallback(() => {
     shouldStopRef.current = true
 
     const activeRequestId = activeRequestIdRef.current
@@ -71,7 +71,12 @@ export function useTextToSpeech() {
       void sendMessage("cancelSpeech", { requestId: activeRequestId }).catch(() => {})
       void sendMessage("ttsPlaybackStop", { requestId: activeRequestId }).catch(() => {})
     }
+  }, [])
 
+  useEffect(() => cancelActiveRequest, [cancelActiveRequest])
+
+  const stop = () => {
+    cancelActiveRequest()
     setIsPlaying(false)
     setCurrentChunk(0)
     setTotalChunks(0)

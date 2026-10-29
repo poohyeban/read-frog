@@ -165,3 +165,29 @@ describe("useTextToSpeech failures", () => {
     expect(toastManager.add).toHaveBeenCalledOnce()
   })
 })
+
+it("cancels an unmounted owner and ignores late synthesized audio", async () => {
+  const pending = deferred<{ audioBase64: string; contentType: string }>()
+  detectLanguageMock.mockResolvedValue("eng")
+  sendMessageMock.mockImplementation(async (type) => {
+    if (type === "synthesizeSpeech") return pending.promise
+    return undefined
+  })
+  const { result, unmount } = renderHook(() => useTextToSpeech(), { wrapper })
+  let playback!: Promise<void>
+  act(() => {
+    playback = result.current.play("Pending audio", ttsConfig)
+  })
+  await waitFor(() =>
+    expect(sendMessageMock).toHaveBeenCalledWith("synthesizeSpeech", expect.anything()),
+  )
+  const request = sendMessageMock.mock.calls.find(([type]) => type === "synthesizeSpeech")![1]
+  unmount()
+  expect(sendMessageMock).toHaveBeenCalledWith("cancelSpeech", { requestId: request.requestId })
+  expect(sendMessageMock).toHaveBeenCalledWith("ttsPlaybackStop", { requestId: request.requestId })
+  await act(async () => {
+    pending.resolve({ audioBase64: "late", contentType: "audio/mpeg" })
+    await playback
+  })
+  expect(sendMessageMock.mock.calls.some(([type]) => type === "ttsPlaybackStart")).toBe(false)
+})
