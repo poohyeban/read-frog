@@ -1,5 +1,7 @@
 # Read Frog Lite 0.2.0
 
+[直接下载扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.0/read-frog-lite-0.2.0-chrome.zip) · [下载 SHA256 校验文件](https://github.com/poohyeban/read-frog/releases/download/v0.2.0/SHA256SUMS.txt)
+
 基于 Read Frog v1.54.1 的独立 Chromium MV3 翻译扩展。无需 Read Frog 账户、订阅或官方云服务；使用用户自己的 API / 本地服务，没有遥测或隐式在线备用服务。
 
 ## 下载与安装
