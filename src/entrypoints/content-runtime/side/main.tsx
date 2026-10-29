@@ -44,6 +44,7 @@ export let shadowWrapper: HTMLElement | null = null
 // which the loader content script imports (see entrypoints/content-runtime).
 export async function runSideContent(ctx: ContentScriptContext) {
   const config = (await getLocalConfig()) ?? DEFAULT_CONFIG
+  if (ctx.isInvalid) return
 
   // Check global site control
   if (!isSiteEnabled(window.location.href, config)) {
@@ -51,8 +52,10 @@ export async function runSideContent(ctx: ContentScriptContext) {
   }
 
   await initI18n(config.uiLanguage)
+  if (ctx.isInvalid) return
 
   const themeMode = await getLocalThemeMode()
+  if (ctx.isInvalid) return
 
   const ui = await createShadowRootUi(ctx, {
     name: kebabCase(APP_NAME),
@@ -110,6 +113,7 @@ export async function runSideContent(ctx: ContentScriptContext) {
     },
   })
 
+  if (ctx.isInvalid) return
   ui.mount()
   ctx.onInvalidated(keepShadowHostRendered(ui.shadowHost))
 }

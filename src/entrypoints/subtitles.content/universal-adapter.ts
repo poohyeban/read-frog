@@ -17,6 +17,7 @@ import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { getDocumentDescription } from "@/utils/content/metadata"
 import { resolveLanguageCodeFromLocale } from "@/utils/content/page-language"
 import { waitForElement } from "@/utils/dom/wait-for-element"
+import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { i18n } from "@/utils/i18n"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { removeReactShadowHost } from "@/utils/react-shadow-host/create-shadow-host"
@@ -338,10 +339,15 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
   }
 
   private async restorePosition() {
-    const config = await getLocalConfig()
-    const position = config?.videoSubtitles?.position
-    if (position) {
-      subtitlesStore.set(subtitlesPositionAtom, { ...position })
+    try {
+      const config = await getLocalConfig()
+      if (this.destroyed) return
+      const position = config?.videoSubtitles?.position
+      if (position) {
+        subtitlesStore.set(subtitlesPositionAtom, { ...position })
+      }
+    } catch (error) {
+      if (!isExtensionContextInvalidatedError(error)) throw error
     }
   }
 
@@ -672,7 +678,13 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
   }
 
   private async tryAutoStartSubtitles() {
-    const config = await getLocalConfig()
+    let config: Config | null
+    try {
+      config = await getLocalConfig()
+    } catch (error) {
+      if (isExtensionContextInvalidatedError(error)) return
+      throw error
+    }
     if (this.destroyed) return
     const autoStart = config?.videoSubtitles?.autoStart?.[this.config.platform] ?? false
 

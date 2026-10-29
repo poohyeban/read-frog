@@ -49,6 +49,7 @@ declare global {
 
 async function mountSelectionUI(ctx: ContentScriptContext) {
   const themeMode = await getLocalThemeMode()
+  if (ctx.isInvalid) return
 
   const ui = await createShadowRootUi(ctx, {
     name: `${kebabCase(APP_NAME)}-selection`,
@@ -86,6 +87,7 @@ async function mountSelectionUI(ctx: ContentScriptContext) {
     },
   })
 
+  if (ctx.isInvalid) return
   ui.mount()
   ctx.onInvalidated(keepShadowHostRendered(ui.shadowHost))
 }
@@ -104,6 +106,7 @@ export async function runSelectionContent(ctx: ContentScriptContext) {
 
   // Check global site control
   const config = await getLocalConfig()
+  if (ctx.isInvalid) return
   if (config?.glossary.enabled) primeGlossaryMatcher(config.language.targetCode)
   const siteControlUrl = getEffectiveSiteControlUrl(window.location.href)
   if (!isSiteEnabled(siteControlUrl, config)) {
@@ -129,5 +132,5 @@ export async function runSelectionContent(ctx: ContentScriptContext) {
 
   await initI18n(config?.uiLanguage)
 
-  void mountSelectionUI(ctx)
+  if (!ctx.isInvalid) await mountSelectionUI(ctx)
 }

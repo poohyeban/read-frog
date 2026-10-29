@@ -1,5 +1,5 @@
 // Shared by the loader content script, the content runtime and the background,
-// so it must stay free of imports: the loader is injected into every page.
+// so it must stay free of runtime/UI imports.
 
 /** The parts of the content runtime, each formerly its own content script. */
 export const CONTENT_RUNTIME_PARTS = ["host", "selection", "side"] as const
@@ -8,9 +8,6 @@ export type ContentRuntimePart = (typeof CONTENT_RUNTIME_PARTS)[number]
 
 /** The script the manifest injects into every page and the background into iframes. */
 export const CONTENT_LOADER_SCRIPT_FILE = "/content-scripts/loader.js" as const
-
-/** The shared ES module the loader imports; listed in web_accessible_resources. */
-export const CONTENT_RUNTIME_MODULE_FILE = "/content-runtime.js" as const
 
 // The background writes the parts an iframe needs here before it injects the
 // loader. The manifest injects only the top frame, which runs every part.
@@ -32,8 +29,4 @@ export function takeRequestedParts(
   delete scriptGlobal[CONTENT_RUNTIME_PARTS_WINDOW_KEY]
   if (Array.isArray(requested)) return requested as ContentRuntimePart[]
   return isTopFrame ? CONTENT_RUNTIME_PARTS : []
-}
-
-export interface ContentRuntime {
-  runContentParts: (parts: readonly ContentRuntimePart[]) => Promise<void>
 }
