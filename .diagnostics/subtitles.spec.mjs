@@ -12,6 +12,7 @@ const cueText = (index) =>
 const cues = [
   ...Array.from({ length: 26 }, (_, index) => ({ index, start: index * 6, duration: 5 })),
   { index: 99, start: 180, duration: 40 },
+  { index: 100, start: 300, duration: 5 },
 ]
 
 // Only YouTube's page/player and the paid API are controlled fixtures. The
@@ -68,7 +69,7 @@ test("subtitles continue across batches, translate long active cues and clean up
       args: [`--disable-extensions-except=${extension}`, `--load-extension=${extension}`],
     })
     await context.tracing.start({ screenshots: true, snapshots: true })
-    let worker = context.serviceWorkers()[0] ?? (await context.waitForEvent("serviceworker"))
+    const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent("serviceworker"))
     await expect
       .poll(() =>
         worker.evaluate(async () =>
@@ -176,21 +177,21 @@ test("subtitles continue across batches, translate long active cues and clean up
       requested: requests.some((request) => request.indices.includes(99)),
     }
     await page.screenshot({ path: `${artifactDir}/long-active-cue.png` })
-    const replacement = context.waitForEvent("serviceworker", {
-      predicate: (next) => next !== worker,
-    })
+    const otherTab = await context.newPage()
+    await otherTab.goto("about:blank")
+    await otherTab.bringToFront()
     await worker.evaluate(() => {
       setTimeout(() => chrome.runtime.reload(), 0)
     })
-    worker = await replacement
+    await expect.poll(() => worker.evaluate(() => chrome.runtime.id).catch(() => null)).toBeNull()
     const errorsBefore = evidence.pageErrors.length
-    await moveTo(201)
+    await page.bringToFront()
+    await page.waitForTimeout(300)
+    await moveTo(301)
     if (oldRelease) {
       await expect(translation).toHaveAttribute("data-pending", "true")
-      await moveTo(145)
       await page.waitForTimeout(800)
-      await moveTo(240)
-      await page.waitForTimeout(800)
+      expect(evidence.pageErrors.slice(errorsBefore)).toContain("Extension context invalidated.")
     } else {
       await expect(page.locator("#read-frog-subtitles-ui-host")).toHaveCount(0)
       await expect(page.locator("#read-frog-hide-native-captions")).toHaveCount(0)
