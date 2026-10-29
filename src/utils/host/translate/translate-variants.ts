@@ -1,13 +1,17 @@
+import type { LangCodeISO6393 } from "@read-frog/definitions"
+import type { InputTranslationLang } from "@/types/config/config"
 import type { Config } from "@/types/config/config"
 import type { TranslateProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
+import { getDetectedCodeFromStorage, getFinalSourceCode } from "@/utils/config/languages"
 import { logger } from "@/utils/logger"
 import { serializeProviderRef } from "@/utils/providers/provider-ref"
 import {
   canResolvedProviderRefGenerateText,
   resolvePageTranslationProvider,
 } from "@/utils/providers/provider-ref"
+import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { getLocalConfig } from "../../config/storage"
 import { shouldSkipAsTargetLanguage } from "./target-language-skip"
 import { prepareTranslationText } from "./text-preparation"
@@ -126,6 +130,7 @@ async function translateTextUsingPageConfig(
     providerConfig,
 
     enableAIContentAware: config.pageTranslation.enableAIContentAware,
+    glossaryEnabled: config.glossary.enabled,
 
     extraHashTags: options.extraHashTags,
     webPageContext: options.webPageContext,
@@ -199,3 +204,70 @@ export async function translateTextForPageTitle(text: string): Promise<string> {
 /**
  * Input translation — uses FEATURE_PROVIDER_DEFS['inputTranslation'].
  */
+
+async function resolveInputLang(
+  lang: InputTranslationLang,
+  globalLangConfig: Config["language"],
+): Promise<LangCodeISO6393> {
+  if (lang === "sourceCode") {
+    const detectedCode = await getDetectedCodeFromStorage()
+    return getFinalSourceCode(globalLangConfig.sourceCode, detectedCode)
+  }
+  if (lang === "targetCode") {
+    return globalLangConfig.targetCode
+  }
+  return lang
+}
+
+/**
+ * Input translation — uses FEATURE_PROVIDER_DEFS['inputTranslation'].
+ */
+export async function translateTextForInput(
+  text: string,
+  fromLang: InputTranslationLang,
+  toLang: InputTranslationLang,
+  onTargetLanguageResolved?: (targetLanguage: LangCodeISO6393) => void,
+): Promise<string> {
+  const config = await getConfigOrThrow()
+  // Capability-based, not resolveProviderConfig: that helper looks the id up in
+  // providersConfig and throws for a built-in provider, which is never a row
+  // there.
+  const resolved = resolveProviderRefForCapability(
+    "inputTranslation",
+    config.providersConfig,
+    config.inputTranslation.providerId,
+  )
+  if (!resolved) {
+    throw new Error(`No input translation provider for id "${config.inputTranslation.providerId}"`)
+  }
+
+  const resolvedFromLang = await resolveInputLang(fromLang, config.language)
+  const resolvedToLang = await resolveInputLang(toLang, config.language)
+  onTargetLanguageResolved?.(resolvedToLang)
+
+  if (resolvedFromLang === resolvedToLang) {
+    return ""
+  }
+
+  const webPageContext = await getWebPagePromptContext(
+    resolved,
+    config.pageTranslation.enableAIContentAware,
+    true,
+  )
+
+  return translateTextCore({
+    text,
+    langConfig: {
+      sourceCode: resolvedFromLang,
+      targetCode: resolvedToLang,
+      level: config.language.level,
+    },
+    extraHashTags: [`inputTranslation:${fromLang}->${toLang}`],
+    providerConfig: resolved,
+    enableAIContentAware: config.pageTranslation.enableAIContentAware,
+    glossaryEnabled: config.glossary.enabled,
+    webPageContext,
+    // User-typed newlines are always meaningful.
+    preserveLineBreaks: true,
+  })
+}

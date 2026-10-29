@@ -103,3 +103,71 @@ export async function openOptionsPage(options?: OpenOptionsPageOptions) {
 
   await browser.runtime.openOptionsPage()
 }
+
+export const CUSTOM_ACTION_EDITOR_TABS = ["config"] as const
+export type CustomActionEditorTab = (typeof CUSTOM_ACTION_EDITOR_TABS)[number]
+export const CUSTOM_ACTION_ID_QUERY_PARAM = "actionId"
+export const CUSTOM_ACTION_TAB_QUERY_PARAM = "tab"
+export const CUSTOM_ACTION_ADD_QUERY_PARAM = "addAction"
+export interface CustomActionOptionsRouteOptions {
+  /** Left out, the editor opens on its first tab. */
+  tab?: CustomActionEditorTab
+  /**
+   * Prefix the route with `/options.html#`, for callers that build the extension URL themselves
+   * instead of going through `openOptionsPage`.
+   */
+  full?: boolean
+}
+export function buildCustomActionOptionsRoute(
+  actionId: string,
+  options?: CustomActionOptionsRouteOptions & { full?: false },
+): `/${string}`
+export function buildCustomActionOptionsRoute(
+  actionId: string,
+  options: CustomActionOptionsRouteOptions & { full: true },
+): `/options.html#/${string}`
+export function buildCustomActionOptionsRoute(
+  actionId: string,
+  options?: CustomActionOptionsRouteOptions,
+): `/${string}` {
+  // encodeURIComponent rather than URLSearchParams: existing links spell a space `%20`, not `+`.
+  const id = encodeURIComponent(actionId)
+  let route: `/${string}` = `/custom-actions?${CUSTOM_ACTION_ID_QUERY_PARAM}=${id}`
+  if (options?.tab) {
+    route = `${route}&${CUSTOM_ACTION_TAB_QUERY_PARAM}=${options.tab}`
+  }
+  return options?.full ? `/options.html#${route}` : route
+}
+export function buildAddCustomActionOptionsRoute(): `/${string}` {
+  return `/custom-actions?${CUSTOM_ACTION_ADD_QUERY_PARAM}=1`
+}
+function parseCustomActionEditorTab(value: string | null): CustomActionEditorTab | null {
+  const tab = value?.trim()
+  return CUSTOM_ACTION_EDITOR_TABS.find((item) => item === tab) ?? null
+}
+export interface CustomActionDeepLink {
+  actionId: string | null
+  /** Null when the link names no tab, or one this version does not have. */
+  tab: CustomActionEditorTab | null
+  /** `search` with the custom action params removed: `""` or `?…`. */
+  remainingSearch: string
+}
+export function consumeCustomActionDeepLink(search: string): CustomActionDeepLink | null {
+  const params = new URLSearchParams(search)
+  const keys = [
+    CUSTOM_ACTION_ID_QUERY_PARAM,
+    CUSTOM_ACTION_TAB_QUERY_PARAM,
+    CUSTOM_ACTION_ADD_QUERY_PARAM,
+  ]
+  if (!keys.some((key) => params.has(key))) {
+    return null
+  }
+
+  const actionId = params.get(CUSTOM_ACTION_ID_QUERY_PARAM)?.trim() || null
+  const tab = parseCustomActionEditorTab(params.get(CUSTOM_ACTION_TAB_QUERY_PARAM))
+  for (const key of keys) {
+    params.delete(key)
+  }
+  const remaining = params.toString()
+  return { actionId, tab, remainingSearch: remaining ? `?${remaining}` : "" }
+}

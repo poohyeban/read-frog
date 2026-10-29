@@ -13,13 +13,14 @@ import {
   SELECTION_CONTENT_OVERLAY_LAYERS,
   SELECTION_CONTENT_OVERLAY_ROOT_ATTRIBUTE,
 } from "@/utils/constants/selection-overlay-layers"
-import { getSelectionToolbarActions } from "@/utils/custom-actions"
+import { getSelectionToolbarItems } from "@/utils/selection-toolbar-items"
 import { cn } from "@/utils/styles/utils"
 import { urlMatchesPattern } from "@/utils/url-pattern"
 import { buildContextSnapshot, readSelectionSnapshot } from "../utils"
 import { clearSelectionStateAtom, isSelectionToolbarOpenAtom, setSelectionStateAtom } from "./atoms"
 import { CloseButton, DropEvent } from "./close-button"
 import { createModalDialogHostController } from "./modal-dialog-host"
+import { SelectionToolbarMoreMenu } from "./more-menu"
 import { SelectionToolbarPinnedItems } from "./pinned-items"
 import {
   collectSelectionScrollTargets,
@@ -217,10 +218,9 @@ export function SelectionToolbar() {
   )
   // With nothing pinned the toolbar still shows its "more" menu; with nothing
   // enabled there is nothing to show.
-  const hasAnyEnabledItem =
-    selectionToolbar.features.translate.enabled ||
-    getSelectionToolbarActions(selectionToolbar).some((action) => action.enabled !== false)
-  const hasAnyPinnedItem = hasAnyEnabledItem
+  const toolbarItems = getSelectionToolbarItems(selectionToolbar)
+  const hasAnyEnabledItem = toolbarItems.some((item) => item.enabled)
+  const hasAnyPinnedItem = toolbarItems.some((item) => item.enabled && item.pinned)
   const isSelectionToolbarVisible =
     isSelectionToolbarOpen && selectionToolbar.enabled && !isSiteDisabled && hasAnyEnabledItem
   const dropdownOpenRef = useRef(false)
@@ -572,6 +572,7 @@ export function SelectionToolbar() {
             </div>
             {hasAnyPinnedItem && <div className="w-px shrink-0 self-stretch bg-border" />}
 
+            <SelectionToolbarMoreMenu />
             <CloseButton />
           </div>
         </div>

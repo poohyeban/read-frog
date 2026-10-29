@@ -6,10 +6,16 @@ import type {
 import type { Config } from "@/types/config/config"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { ProviderRequestRouting } from "@/types/provider-request"
+import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
+import type { MatchedTerm } from "@/utils/glossary/types"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
 interface ProtocolMap {
+  getGlossarySnapshot: (data: {
+    url: string | undefined
+    targetLang: LangCodeISO6393
+  }) => Promise<GlossarySnapshot>
   openPage: (data: { url: string; active?: boolean }) => void
   openOptionsPage: (data?: { route?: `/${string}` }) => void
 
@@ -44,6 +50,8 @@ interface ProtocolMap {
 
   enqueueTranslateRequest: (
     data: ProviderRequestRouting & {
+      glossaryTerms?: MatchedTerm[]
+      glossaryRevision?: number
       text: string
       langConfig: Config["language"]
       scheduleAt: number

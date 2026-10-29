@@ -157,9 +157,11 @@ options:
       features:
         pageTranslation: Sayfa çevirisi
         selectionTranslation: Seçim araç çubuğu çevirisi
+        inputTranslation: Giriş çevirisi
       descriptions:
         pageTranslation: Sayfanın tamamını iki dilli ya da değiştirme modunda çevirir.
         selectionTranslation: Seçim araç çubuğundan, seçtiğiniz metni çevirir.
+        inputTranslation: Bir metin kutusuna yazdıklarınızı göndermeden önce çevirir.
     aiContentAware:
       title: AI akıllı bağlam çevirisi
       description: Sayfanın ya da videonun bağlamını yapay zekâya vererek çeviriyi daha isabetli hale getirin
@@ -279,15 +281,198 @@ options:
       providerDisabled: Seçilen sağlayıcı devre dışı
       providerUnavailable: Seçilen sağlayıcı kullanılamıyor
     customActions:
-      title: AI explanations
+      title: Özel AI Eylemleri
+      pageDescription: Kendi istemlerinizi yazın ve seçim araç çubuğundan seçili metin üzerinde çalıştırın. Her sonucun verileri, stili ve etkileşimleri tamamen özelleştirilebilir.
       description: Seçilen metin için kendi yapılandırılmış AI eylemlerinizi ekleyin
+      configTitle: Eylem yapılandırması
+      introVideo:
+        trigger: Videoyu izle
+        title: 30 saniyede Özel AI Eylemleri
+      builtIn: Yerleşik
+      add: AI eylemi ekle
+      edit: AI eylemini düzenle
+      empty: Henüz özel AI eylemi yok
+      noEnabledLlmProvider: Özel AI eylemleri oluşturmadan önce en az bir LLM sağlayıcısını etkinleştirin
+      tabs:
+        config: Yapılandırma
+        notebase: Notebase
+        hasErrors: Hatalar var
+        connected: Bağlı
+        needsAttention: İlgilenilmesi gerekiyor
       form:
+        name: Ad
+        customize: Özelleştir
+        customizeTooltip: Yerleşik eylemin istemleri değiştirilemez. Düzenlenebilir bir kopya oluşturup istemleri değiştirmek için bu düğmeye tıklayın.
+        aiConfigHelper:
+          trigger: Yapay zekâyla yapılandır
+          title: Yapay zekâyla yapılandır
+          description: Aşağıdaki istemi kopyalayıp kullandığınız yapay zekâ sohbet asistanına (ChatGPT, Claude, DeepSeek, Kimi…) yapıştırın. Önce ne istediğinizi sorar, ardından her ayara ne yazmanız gerektiğini söyler. İstem bu eylemin mevcut ayarlarını içerir ama API anahtarlarını içermez.
+          copy: İstemi kopyala
+          copyFailed: İstem kopyalanamadı. Tekrar deneyin.
+        icon: Simge
+        iconField:
+          chooseAriaLabel: Simge seç
+          chooseTitle: Bir simge seçin
+          inputPlaceholder: Simge adını girin
+          helpAriaLabel: Daha fazla simge yardımı
+          helpTitle: Aradığınız simgeyi bulamadınız mı?
+          helpStepBrowsePrefix: ""
+          helpStepBrowseSuffix: üzerinde simgelere göz atın
+          helpStepCopyPrefix: "Örneğin "
+          helpStepCopySuffix: " simge adını kopyalayıp alana yapıştırın."
+        provider: Sağlayıcı (yapılandırılmış çıktı desteği gerekir)
         selectProvider: Sağlayıcı seçin
+        systemPrompt: Sistem promptu
+        prompt: Prompt
+        outputSchema: Çıkış şeması
+        addField: Alan ekle
+        fieldName: Alan adı
+        fieldType: Alan türü
+        fieldDescription: Açıklama
+        fieldDescriptionPlaceholder: Bu alanın ne içermesi gerektiğini açıklayın...
+        actions: İşlemler
+        cancel: İptal
+        save: Kaydet
         defaultFieldName: sonuç
+        fieldNamePlaceholder: alan_adı
+        selectionField: Seçilen metin
+        selectionFieldDescription: Seçtiğiniz metin olduğu gibi kaydedilir. Yapay zekâ yazmaz.
+        autoFieldPrefix: alan
+        addFieldDialog:
+          title: Çıktı alanı ekle
+        editFieldDialog:
+          title: Çıktı alanını düzenle
+          save: Kaydet
+        deleteFieldDialog:
+          title: Çıktı alanı silinsin mi?
+          description: Bu çıktı alanı kaldırılacaktır.
+          confirm: Sil
+          cancel: İptal
+        layout:
+          title: Düzen
+          description: Sonucun açılır pencerede nasıl göründüğü. Liquid ile HTML; yanıt akarken alanlar dolar.
+          reset: Varsayılana döndür
+          resetFieldList: Alan listesi
+          resetDictionary: Sözlük kartı
+          resetSentenceAnalysis: Cümle analizi kartı
+          resetImproveWriting: Yazı iyileştirme kartı
+          resetConfirmTitle: Bu düzen değiştirilsin mi?
+          resetConfirmDescription: Düzenleyicinin içeriği değiştirilecek. Daha sonra düzenleyicide geri alabilirsiniz.
+          resetConfirm: Değiştir
+          edit: Düzenle
+          preview: Önizleme
+          width: Genişlik
+          themeLight: Açık
+          themeDark: Koyu
+          replay: Yeniden oynat
+          sampleData: Örnek veriler
+          sampleDataHint: Yalnızca bu önizlemede kullanılır ve kaydedilmez.
+          sampleDataSavedHint: Yalnızca bu önizlemede kullanılır ve bu eylemle birlikte kaydedilir.
+          sampleDataReset: Örnekleri sıfırla
+          sampleSelection: Seçili metin
+          sampleTargetLanguage: Hedef dil
+          insertField: Alan
+          insertSpeak: Seslendirme düğmesi
+          insertCondition: Doluysa
+          insertContext: Bağlam
+          insertLoop: Tüm alanlar
+          syntaxHelp: Sözdizimi
+          builtInHint: Yerleşik eylemin düzeni düzenlenemez. Bir kopyasını düzenlemek için özelleştirin.
+          viewSource: Kaynağı görüntüle
+          emptyNotice: Bu düzen boş olduğu için açılır pencerede varsayılan alan listesi gösterilir.
+          fallbackBanner: Bu düzen gösterilemediği için varsayılan düzen kullanılıyor. $1
+          sanitized: "Güvenlik için kaldırıldı: $1"
+          unusedFields: "Bu düzende yok:"
+          tooLong: Bir düzen en fazla $1 karakter olabilir.
+          renameSkipped: Düzen hâlâ "$1" alanına başvuruyor. Elle güncelleyin.
+          reservedName: '"ctx" ve "forloop" düzenlerde ayrılmış adlardır. Başka bir ad seçin.'
+          help:
+            output: Bir alanın değerini gösterir. Değerdeki HTML kaçışlanır.
+            condition: İçeriği yalnızca alanın bir değeri olduğunda gösterir.
+            loop: Her alan için sırayla tekrarlanır. f.name, f.value ve f.type kullanılabilir.
+            speak: data-speak içeren her öğe, yanıt tamamlandığında değeri (değer boşsa kendi metnini) sesli okur.
+            speakLang: data-speak-lang okuma dilini belirtir (es veya en-US gibi bir kod), böylece o dilin sesi kullanılır. Belirtilmezse dil otomatik algılanır; tek bir kelimede bu çoğu zaman yanılır.
+            speakAutoplay: data-speak-autoplay içeren öğe, yanıt tamamlandığında kendiliğinden sesli okunur. Yalnızca ilk böyle öğe çalınır.
+            status: Duruma göre stil verir. Kapsayıcının data-status değeri streaming, done veya error olur.
+            filters: newline_to_br satır sonlarını korur (en sona koyun); lines metni satır listesine böler.
+            styles: <style> bloğundaki CSS yalnızca bu sonucun içinde geçerlidir. --rf-* renkleri açık ve koyu temayı izler.
+          lint:
+            parseError: "Liquid sözdizimi hatası: $1"
+            unknownField: '"$1" adında bir alan yok.'
+            unknownContextKey: 'ctx içinde "$1" yok. Kullanılabilir: $2.'
+            fieldShadowedByLocal: Bu düzen "$1" adına değer atıyor; bu, aynı adlı alanı gizler.
+            liquidInStyle: <style> içinde Liquid çalışmaz; bu düz metin olarak kalır.
+            styleInConditional: Bir <style> bloğu, "$1" etiketinin içinde olsa bile her zaman uygulanır.
+            cssImport: "@import kaldırılır. Düzenler dış stilleri yükleyemez."
+            cssFontFace: "@font-face kaldırılır. Cihazda zaten bulunan yazı tiplerini kullanın."
+            unquotedAttributeOutput: Bu öznitelik değerini tırnak içine alın, yoksa değer öznitelikten taşabilir.
+            filterIgnored: '"$1" etiketinde filtreler yok sayılır. Önce filtrelenmiş değeri atayın.'
+            newlineToBrNotLast: newline_to_br yalnızca bir çıktının son filtresi olarak çalışır.
+            tooLong: Bu düzen $1 karakterden uzun ve kaydedilemez.
+            fieldNotShown: '"$1" bu düzende gösterilmiyor.'
+            reservedFieldName: '"$1" alan adı düzenlerde ayrılmıştır. Alanı yeniden adlandırın.'
+        notebase:
+          title: Notebase bağlantısı
+          description: Bu eylemin yapılandırılmış sonuçlarını uzak bir Notebase'e kaydedin.
+          loginRequiredTitle: Notebase yapılandırmak için giriş yapın
+          loginRequiredDescription: notebase seçmeden veya eşlemeleri düzenlemeden önce readfrog.app'te oturum açın.
+          loginRequiredConnectedDescription: Bu bağlantı aşağıdaki hesapla oluşturuldu. Aynı hesapla giriş yaparsanız alan eşlemeleri geri yüklenir. Başka bir hesapla giriş yaparsanız Notebase oluştururken veya bağlarken önceki eşlemeler temizlenir.
+          loginAction: Giriş yap
+          connectedAccountLabel: Bağlı hesap
+          currentAccountLabel: Geçerli hesap
+          unknownConnectedAccount: Bilinmeyen hesap
+          tableLabel: Notebase
+          tablePlaceholder: Bir notebase seçin
+          tableClearOption: Notebase bağlama
+          clearConnectionAction: Bağlantıyı temizle
+          refreshAction: Yenile
+          emptyTitle: Henüz Notebase yok
+          emptyDescription: readfrog.app'te bir notebase oluşturun, sonra alanları eşlemek için buraya dönün.
+          openNotebaseAction: Notebase'i aç
+          accessDeniedTitle: Notebase'e erişilemiyor
+          accessDeniedDescription: Bu hesabın Notebase verilerini yükleme izni yok.
+          listErrorTitle: Notebase listesi yüklenemedi
+          listErrorDescription: Biraz sonra Notebase listesini yeniden yenilemeyi deneyin.
+          accountMismatchTitle: Notebase bağlantısı başka bir hesaba ait
+          accountMismatchDescription: Bu bağlantı aşağıdaki bağlı hesaba aittir. Bağlantıyı temizleyin veya geçerli hesabın erişebildiği bir Notebase seçin.
+          tableUnavailableTitle: Seçilen notebase artık kullanılamıyor
+          tableUnavailableDescription: Bu Notebase artık yok veya açılamıyor. Bağlantıyı temizleyin veya başka bir Notebase seçin.
+          tableUnavailableOption: kullanılamıyor
+          schemaErrorTitle: notebase şeması yüklenemedi
+          schemaErrorDescription: Kısa süre sonra yeniden yenilemeyi deneyin.
+          schemaLoading: notebase şeması yükleniyor...
+          mappingsLabel: Alan eşlemeleri
+          localFieldLabel: Eylem alanı
+          remoteFieldLabel: Notebase alanı
+          columnUnavailableOption: silinmiş
+          invalidMappingsTitle: Bazı eşlemeler ilgi gerektiriyor
+          invalidMappingsDescription: Geçersiz eşlemeler korunur. Notebase'e kaydetmeden önce düzeltin.
+          noFieldSavedTitle: Bu Notebase'e hiçbir alan kaydedilmiyor
+          noFieldSavedDescription: Not kaydetmek için en az bir alana bir Notebase alanı seçin.
+          mappingSummary: Kaydedilen $1 · Atlanan $2 · Kararsız $3
+          skipFieldOption: Kaydetme
+          undecidedFieldPlaceholder: Bir Notebase alanı seçin ya da kaydetmeyin
+          mappingMissingLocal: Eşlenen eylem alanı artık yok.
+          mappingMissingRemote: Eşlenen notebase alanı artık yok.
+          mappingMissingSchema: Bu eşlemeyi doğrulamak için notebase şemasını yenileyin.
+          mappingIncompatible: Alan türleri artık eşleşmiyor.
+        tokens:
+          selection: Seçilen metin içeriği
+          paragraphs: Seçimle kesişen paragraf metni; boş satırlarla birleştirilir ve özel AI eylemlerine gönderilirken ilk 2000 karaktere kısaltılır
+          targetLanguage: Kullanıcının hedef dili
+          webTitle: Web sayfası başlığı
+          webUrl: Geçerli sayfanın tam URL'si
+          webContent: Geçerli sayfadan çıkarılan ve ilk 2000 karaktere kısaltılan web sayfası içeriği
+        delete: Sil
+        deleteDialog:
+          title: Özel eylem silinsin mi?
+          description: Bu işlem geri alınamaz.
+          confirm: Sil
+          cancel: İptal
       templates:
         dictionary:
-          name: "Sözlük"
-          description: "Sözcükleri tanım, okunuş ve paragraf çevirisiyle arayın"
+          name: Sözlük
+          description: Sözcükleri tanım, okunuş ve paragraf çevirisiyle arayın
           systemPrompt: |-
             Dil öğrenenler için bir sözlük asistanısınız.
 
@@ -353,96 +538,133 @@ options:
             Seçim: {{selection}}
             Paragraflar: {{paragraphs}}
             Hedef dil: {{targetLanguage}}
-          fieldTerm: "Sözcük"
-          fieldTermDescription: "Seçilen sözcüğün temel/sözlük biçimi."
-          fieldPhonetic: "Okunuş"
-          fieldPhoneticDescription: "Sözcüğün dili için standart okunuş gösterimi (örneğin İngilizce için IPA, Mandarin Çincesi için pinyin, Japonca için romaji)."
-          fieldPartOfSpeech: "Sözcük türü"
-          fieldPartOfSpeechDescription: "Dilbilgisel kategori (örneğin noun, verb, adjective)."
-          fieldSentence: "Cümle"
-          fieldSentenceDescription: "Yukarıdaki paragraflarda seçilen sözcüğü içeren tam cümle. Önceki ve sonraki cümleleri eklemeyin."
-          fieldSentenceTerm: "Cümledeki biçim"
+          fieldTerm: Sözcük
+          fieldTermDescription: Seçilen sözcüğün temel/sözlük biçimi.
+          fieldPhonetic: Okunuş
+          fieldPhoneticDescription: Sözcüğün dili için standart okunuş gösterimi (örneğin İngilizce için IPA, Mandarin Çincesi için pinyin, Japonca için romaji).
+          fieldPartOfSpeech: Sözcük türü
+          fieldPartOfSpeechDescription: Dilbilgisel kategori (örneğin noun, verb, adjective).
+          fieldSentence: Cümle
+          fieldSentenceDescription: Yukarıdaki paragraflarda seçilen sözcüğü içeren tam cümle. Önceki ve sonraki cümleleri eklemeyin.
+          fieldSentenceTerm: Cümledeki biçim
           fieldSentenceTermDescription: 'Seçilen sözcüğün Cümledeki yeri: dizeye dönüştürülmüş bir JSON dizisi; sözcüğün her parçası için bir {"text": dize} öğesi, her biri Cümleden birebir alıntı (örneğin [{"text":"blossoms"}]).'
-          fieldDefinition: "Tanım"
-          fieldDefinitionDescription: "Bağlamdaki anlam için kısa bir tanım."
-          fieldSentenceTranslation: "Cümle çevirisi"
-          fieldSentenceTranslationDescription: "Yalnızca Cümlenin çevirisi."
-          fieldMemoryTips: "Akılda tutma ipuçları"
+          fieldDefinition: Tanım
+          fieldDefinitionDescription: Bağlamdaki anlam için kısa bir tanım.
+          fieldSentenceTranslation: Cümle çevirisi
+          fieldSentenceTranslationDescription: Yalnızca Cümlenin çevirisi.
+          fieldMemoryTips: Akılda tutma ipuçları
           fieldMemoryTipsDescription: "Sözcüğü hatırlamanın yolları: en fazla 3 ipucu, her satırda bir tane, her biri teknik adı ve iki nokta ile başlar (ör. Sözcük yapısı: …); gerçekten işe yarayan bir şey yoksa boş dize."
-          fieldDifficulty: "Zorluk"
+          fieldDifficulty: Zorluk
           fieldDifficultyDescription: "Tahmini CEFR zorluk düzeyi: A1, A2, B1, B2, C1 veya C2."
         sentenceAnalysis:
-          name: "Cümle Analizi"
+          name: Cümle Analizi
           description: "Uzun bir cümleyi öğretmen gibi işaretler: çekirdeği, her yan cümleyi ve zor noktaları"
-          fieldSentence: "Cümle"
-          fieldAnnotations: "Açıklamalar"
-          fieldTranslation: "Çeviri"
+          fieldSentence: Cümle
+          fieldAnnotations: Açıklamalar
+          fieldTranslation: Çeviri
           roles:
-            subject: "Özne"
-            predicate: "Yüklem"
-            object: "Nesne"
-            complement: "Tümleç"
-            attributive: "Niteleyici"
-            adverbial: "Zarf tümleci"
-            appositive: "Açıklayıcı"
-            connector: "Bağlaç"
+            subject: Özne
+            predicate: Yüklem
+            object: Nesne
+            complement: Tümleç
+            attributive: Niteleyici
+            adverbial: Zarf tümleci
+            appositive: Açıklayıcı
+            connector: Bağlaç
           clauses:
-            subject: "Özne yan cümlesi"
-            object: "Nesne yan cümlesi"
-            complement: "Tümleç yan cümlesi"
-            attributive: "Sıfat yan cümlesi"
-            adverbial: "Zarf yan cümlesi"
-            appositive: "Açıklama yan cümlesi"
-            clause: "Yan cümle"
+            subject: Özne yan cümlesi
+            object: Nesne yan cümlesi
+            complement: Tümleç yan cümlesi
+            attributive: Sıfat yan cümlesi
+            adverbial: Zarf yan cümlesi
+            appositive: Açıklama yan cümlesi
+            clause: Yan cümle
           adverbialClauses:
-            time: "Zaman yan cümlesi"
-            place: "Yer yan cümlesi"
-            cause: "Sebep yan cümlesi"
-            condition: "Koşul yan cümlesi"
-            concession: "Karşıtlık yan cümlesi"
-            purpose: "Amaç yan cümlesi"
-            result: "Sonuç yan cümlesi"
-            manner: "Tarz yan cümlesi"
-            comparison: "Karşılaştırma yan cümlesi"
+            time: Zaman yan cümlesi
+            place: Yer yan cümlesi
+            cause: Sebep yan cümlesi
+            condition: Koşul yan cümlesi
+            concession: Karşıtlık yan cümlesi
+            purpose: Amaç yan cümlesi
+            result: Sonuç yan cümlesi
+            manner: Tarz yan cümlesi
+            comparison: Karşılaştırma yan cümlesi
           forms:
-            infinitive: "Mastar"
-            gerund: "İsim-fiil"
-            presentParticiple: "-ing"
-            pastParticiple: "V3"
+            infinitive: Mastar
+            gerund: İsim-fiil
+            presentParticiple: -ing
+            pastParticiple: V3
           senses:
-            time: "Zaman"
-            place: "Yer"
-            cause: "Sebep"
-            condition: "Koşul"
-            concession: "Karşıtlık"
-            purpose: "Amaç"
-            result: "Sonuç"
-            manner: "Tarz"
-            comparison: "Karşılaştırma"
+            time: Zaman
+            place: Yer
+            cause: Sebep
+            condition: Koşul
+            concession: Karşıtlık
+            purpose: Amaç
+            result: Sonuç
+            manner: Tarz
+            comparison: Karşılaştırma
           obstacles:
-            inversion: "Devrik"
-            fronting: "Öne alma"
-            ellipsis: "Eksiltme"
-            passive: "Edilgen"
-            subjunctive: "Dilek kipi"
-            parenthesis: "Ara söz"
-            dummyIt: "Sahte özne"
-            postponedSubject: "Gerçek özne"
-            cleft: "Vurgu yapısı"
-            comparison: "Karşılaştırma"
-            negation: "Olumsuzluk"
-            split: "Ayrık"
-            idiom: "Deyim"
+            inversion: Devrik
+            fronting: Öne alma
+            ellipsis: Eksiltme
+            passive: Edilgen
+            subjunctive: Dilek kipi
+            parenthesis: Ara söz
+            dummyIt: Sahte özne
+            postponedSubject: Gerçek özne
+            cleft: Vurgu yapısı
+            comparison: Karşılaştırma
+            negation: Olumsuzluk
+            split: Ayrık
+            idiom: Deyim
           restoreLabel: "Düz sıra:"
-          hardLabel: "Zor"
-          trunkLabel: "Sadece iskelet"
-          slashesLabel: "Duraklar"
+          hardLabel: Zor
+          trunkLabel: Sadece iskelet
+          slashesLabel: Duraklar
+        improveWriting:
+          name: Yazıyı iyileştir
+          description: Bir öğretmen gibi hataları ve doğal olmayan ifadeleri işaretler, metni duruma göre düzeltir
+          fieldOriginal: Orijinal metin
+          fieldSetting: Bağlam
+          fieldAnnotations: İşaretler
+          fieldImproved: Düzeltilmiş metin
+          fieldSummary: Özet
+          types:
+            spelling: Yazım
+            grammar: Dil bilgisi
+            punctuation: Noktalama
+            wordChoice: Sözcük seçimi
+            logic: Mantık
+            unnatural: Doğal değil
+            register: Üslup
+            clarity: Açıklık
+            good: İyi seçim
+          tiers:
+            error: Hata
+            awkward: Pürüzlü
+            good: İyi
+          hideFixesLabel: Düzeltmeleri gizle
+          hiddenHintLabel: Önce kendiniz düzeltmeyi deneyin.
+          showImprovedLabel: Göster
+          improvedLabel: Düzeltilmiş metin
+          copyLabel: Kopyala
+          unchangedLabel: Değiştirilecek bir şey yok
+          removeLabel: sil
         blank:
           prompt: |-
             ## Girdi
             Seçim: {{selection}}
             Paragraflar: {{paragraphs}}
             Hedef dil: {{targetLanguage}}
+      errors:
+        nameRequired: Ad gerekli
+        duplicateName: Yinelenen eylem adı "$1"
+        invalidIcon: Geçersiz Iconify simge metni
+        providerRequired: Etkin bir LLM sağlayıcısı seçin
+        outputSchemaRequired: En az bir çıktı alanı ekleyin
+        fieldKeyRequired: Alan adı gerekli
+        duplicateFieldKey: Alan adları benzersiz olmalıdır
   contextMenu:
     title: Bağlam Menüsü
     pageDescription: Tarayıcının sağ tık menüsündeki Read Frog Lite seçeneklerini yönetin.
@@ -651,6 +873,169 @@ options:
       searchPlaceholder: id, açıklama veya URL kalıbına göre ara
       showMore: Daha fazla göster
       count: $2 kuraldan $1 tanesi gösteriliyor
+  inputTranslation:
+    title: Giriş Çevirisi
+    pageDescription: Giriş kutularına yazdıklarınızı göndermeden önce çevirin.
+    trigger:
+      title: Tetikleme
+      enable:
+        title: Etkinleştir
+        description: Herhangi bir giriş alanında boşluk tuşuna hızlıca üç kez basarak yazdıklarınızı çevirin.
+      threshold:
+        title: Tetikleme eşiği
+        description: Basışlar arasında izin verilen süre, milisaniye cinsinden. Çeviri tetiklenmiyorsa artırın, yazarken kendiliğinden tetikleniyorsa azaltın.
+        error: $1 ile $2 arasında bir değer girin
+    languages:
+      title: Çeviri dilleri
+      pair:
+        title: Dil çifti
+        description: Yazdığınız metnin hangi dil olarak okunacağı ve hangi dile çevrileceği. Her iki taraf da sayfaları çevirirken kullandığınız kaynak ve hedef dilleri izleyebilir.
+      sourceCode: Sayfa kaynak dili
+      targetCode: Çeviri hedef dili
+      cycle:
+        title: Her seferinde yönü değiştir
+        description: Her tetikleme iki dili yer değiştirir; tekrar tetiklediğinizde metin yazdığınız dile geri döner.
+  floatingButton:
+    title: Yüzen Buton
+    pageDescription: Yüzen düğmenin hangi tarafta duracağını, tıklamanın ne yapacağını ve nerede gizleneceğini ayarlayın.
+    demoImageAlt: Yüzen buton demosu
+    enable:
+      title: Yüzen butonu etkinleştir
+      description: Read Frog özelliklerine hızlı erişim için web sayfalarında yüzen butonu görüntüle
+    display:
+      title: Görünüm
+      side:
+        title: Düğme tarafı
+        description: Yüzen düğmenin sayfanın hangi kenarına sabitleneceğini seçin
+        left: Sol
+        right: Sağ
+      disabledSites:
+        title: Devre dışı siteler
+        description: Yüzen butonun devre dışı bırakılması gereken web sitelerini yapılandırın
+        enterUrlPattern: URL kalıbı girin
+        urlPattern: URL kalıbı
+    clickAction:
+      title: Tıklama eylemi
+      description: Yüzen butona tıklandığında gerçekleştirilecek eylemi seçin
+      panel: Yan paneli aç
+      translate: Sayfa çevirisini aç/kapat
+    closeMenu:
+      disableForSite: Bu site için devre dışı bırak
+      disableGlobally: Genel olarak devre dışı bırak
+    tooltips:
+      togglePageTranslation: Sayfa çevirisini aç/kapat
+      floatingButtonOptions: Kayan düğme seçenekleri
+      lockPosition: Konumu kilitle
+      unlockPosition: Konum kilidini aç
+      settings: Ayarlar
+      feedback: Geri bildirim gönder
+  advanced:
+    glossary:
+      title: Terim sözlüğü
+      pageDescription: Sizin için önemli olan sözcüklere sabit bir çeviri verin ve her listenin nerede geçerli olacağını seçin.
+      untitled: Adsız terim sözlüğü
+      noGlossaries: Henüz terim sözlüğü yok.
+      enable:
+        title: Etkinleştir
+        description: Eşleşen terimleri LLM'ye gönderir, böylece onları istediğiniz gibi çevirir. Terim sözlüğü istemin içinde gönderilir, bu yüzden yalnızca LLM sağlayıcısı üzerinde çalışan özellikler için geçerlidir.
+      library:
+        title: Terim sözlükleriniz
+        description: Her terim sözlüğünün kendi terimleri ve kendi site listesi vardır; böylece iş için hazırladığınız terimler diğer her yerde karşınıza çıkmaz.
+        button: Terim sözlüğü ekle
+        capReached: En fazla $1 terim sözlüğünüz olabilir.
+        termUsage: Tüm terim sözlükleriniz için ayrılan toplam $2 terimin $1 tanesi kullanıldı.
+      summary:
+        terms: $1 terim
+        termsOne: 1 terim
+        allSites: Tüm web siteleri
+        sites: $1 web sitesi
+        sitesOne: 1 web sitesi
+      editor:
+        docsLink: Nasıl çalışır?
+        sections:
+          terms: Terimler
+          maintenance: Yedekleme ve silme
+        details:
+          title: Ad ve açıklama
+          descriptionPlaceholder: Açıklama (isteğe bağlı)
+        enable:
+          title: Etkinleştir
+          description: Devre dışı bırakılan bir terim sözlüğü terimlerini korur ama hiçbirini göndermez.
+        sites:
+          title: Web siteleri
+          description: Bu terim sözlüğünü belirli web siteleriyle sınırlayın. example.com yalnızca o adres; *.example.com alt alan adlarını ekler; example.com/docs/* siteyi tek bir bölüme daraltır.
+          allSites: Burayı boş bırakırsanız terim sözlüğü her yerde geçerli olur.
+          header: Web sitesi
+        delete:
+          title: Bu terim sözlüğünü sil
+          description: Terim sözlüğünü ve içindeki tüm terimleri kaldırır. Terimlere sonra ihtiyacınız olabilirse önce dışa aktarın — bu işlem geri alınamaz.
+          dialog:
+            trigger: Sil
+            title: Bu terim sözlüğü silinsin mi?
+            description: Terim sözlüğü ve içindeki $1 terimin tamamı kalıcı olarak silinecek. Bu işlem geri alınamaz.
+            confirm: Sil
+            cancel: İptal
+      addTerm:
+        title: Terim ekle
+        description: Bir terime istediğiniz çeviriyi verin ya da özgün hâlini korumak için çeviriyi boş bırakın.
+      list:
+        title: Terimleriniz
+        description: Bir paragrafla yalnızca o paragrafta geçen terimler gönderilir.
+      importExport:
+        title: İçe ve dışa aktarma
+        description: Terimler source, target, targetLanguage ve caseSensitive sütunlarından oluşan bir CSV dosyasıdır — Dışa aktar bu dosyayı yazar.
+      sourcePlaceholder: Terim
+      targetPlaceholder: Çeviri (özgün hâlini korumak için boş bırakın)
+      caseSensitive: Büyük/küçük harfe duyarlı
+      add: Ekle
+      searchPlaceholder: Terim ara
+      columnEnabled: Etkin
+      columnSource: Terim
+      columnTarget: Çeviri
+      columnTargetLanguage: Hedef dil
+      allLanguages: Tüm diller
+      toggleTerm: $1 terimini kullan
+      editTerm: $1 terimini düzenle
+      keepOriginal: Özgün hâlini koru
+      delete: Sil
+      save: Kaydet
+      cancel: İptal
+      loading: Yükleniyor...
+      empty: Henüz terim yok. Yukarıdan ekleyin veya bir CSV dosyası içe aktarın.
+      noMatches: Aramanızla eşleşen terim yok.
+      previous: Önceki
+      next: Sonraki
+      pageOf: $1 / $2
+      addError:
+        emptySource: Önce bir terim girin.
+        tooLong: Bu terim çok uzun.
+        capReached: Tüm terim sözlüklerinizdeki toplam terim sayısı $1 limitine ulaştı.
+        duplicate: Bu terim zaten sözlüğünüzde var.
+      import: İçe aktar
+      export: Dışa aktar
+      importModeMerge: Listeye ekle
+      importModeReplace: Listeyi değiştir
+      importEmpty: Bu dosyada terim bulunamadı.
+      importMissingHeader: "Bu dosya bir Read Frog sözlük dışa aktarımı değil. Şu sütunlar gerekli:"
+      importOverflow: Bu içe aktarma limiti $1 terim aşacak. Hiçbir şey değiştirilmedi.
+      importSuccess: $1 yeni terim içe aktarıldı, $2 terim güncellendi.
+      importSkipped: $1 geçersiz satır ve $2 yinelenen terim atlandı.
+      importNoValidRows: Bu satırların hiçbiri içe aktarılamadı. Hiçbir şey değiştirilmedi.
+      importReplaceConfirm:
+        title: Listenin tamamı değiştirilsin mi?
+        description: Bu sözlükteki $1 terimin tamamı silinecek — yalnızca seçili dil değil, tüm hedef diller — ve bu dosyanın içeriğiyle değiştirilecek. Bu işlem geri alınamaz.
+        confirm: Değiştir
+        cancel: İptal
+      deleteAll:
+        title: Tüm terimleri sil
+        description: Terim sözlüğünüzü boşaltır. Terimlere sonra ihtiyacınız olabilirse önce dışa aktarın — silme işlemi geri alınamaz.
+        deleting: Siliniyor...
+        dialog:
+          title: Tüm terimleri sil
+          trigger: Tümünü sil
+          confirm: Onayla
+          cancel: İptal
+          description: $1 terimin tamamı kalıcı olarak silinecek. Bu işlem geri alınamaz.
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -671,6 +1056,11 @@ action:
   contextDetailsTitleLabel: Başlık
   contextDetailsParagraphsLabel: Paragraflar
   translation: Çeviri
+  moreActions: Diğer eylemler
+  addCustomAction: Özel AI eylemi ekle
+  unpinFromToolbar: Araç çubuğundan kaldır
+  pinToToolbar: Araç çubuğuna sabitle
+  dragToReorder: Sıralamak için sürükleyin
 thinking:
   label: Düşünüyor
   complete: Düşünme tamamlandı
@@ -872,3 +1262,6 @@ translationHub:
   noLanguagesFound: Dil bulunamadı
   translationFailed: Çeviri Başarısız
   translationFailedFallback: Çeviri başarısız
+dataTypes:
+  string: Metin
+  number: Sayı

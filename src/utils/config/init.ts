@@ -52,6 +52,10 @@ export async function initializeConfig(): Promise<InitializeConfigResult> {
     // Stored as every reader gets it: defaults filled in, the selection
     // toolbar's order and pins in step with its actions.
     config = parsedConfig.data
+    if (currentVersion < CONFIG_SCHEMA_VERSION) {
+      currentVersion = CONFIG_SCHEMA_VERSION
+      didConfigChange = true
+    }
   } else {
     logger.warn("Config is invalid, using default config")
     await initI18n(DEFAULT_CONFIG.uiLanguage)

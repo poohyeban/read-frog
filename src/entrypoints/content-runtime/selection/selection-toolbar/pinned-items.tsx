@@ -1,18 +1,20 @@
 import { useAtomValue } from "jotai"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
-import { getSelectionToolbarActions } from "@/utils/custom-actions"
+import { getSelectionToolbarItems } from "@/utils/selection-toolbar-items"
 import { SelectionToolbarCustomActionTrigger } from "./custom-action-button/custom-action-trigger"
 import { TranslateButton } from "./translate-button"
+
+// The buttons of the enabled items pinned to the toolbar, in the toolbar's
+// order. The other enabled items are in its "more" menu only.
 export function SelectionToolbarPinnedItems() {
-  const config = useAtomValue(configFieldsAtomMap.selectionToolbar)
-  return (
-    <>
-      {config.features.translate.enabled && <TranslateButton />}
-      {getSelectionToolbarActions(config)
-        .filter((action) => action.enabled !== false)
-        .map((action) => (
-          <SelectionToolbarCustomActionTrigger key={action.id} action={action} />
-        ))}
-    </>
-  )
+  const selectionToolbar = useAtomValue(configFieldsAtomMap.selectionToolbar)
+
+  return getSelectionToolbarItems(selectionToolbar)
+    .filter((item) => item.enabled && item.pinned)
+    .map((item) => {
+      if (item.kind === "action") {
+        return <SelectionToolbarCustomActionTrigger key={item.id} action={item.action} />
+      }
+      return <TranslateButton key={item.id} />
+    })
 }

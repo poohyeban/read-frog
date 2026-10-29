@@ -68,8 +68,30 @@ const ExtensionActivationPage = lazy(() =>
   })),
 )
 
+const InputTranslationPage = lazy(() =>
+  import("./pages/input-translation").then((module) => ({ default: module.InputTranslationPage })),
+)
+const FloatingButtonPage = lazy(() =>
+  import("./pages/floating-button").then((module) => ({ default: module.FloatingButtonPage })),
+)
+const GlossaryPage = lazy(() =>
+  import("./pages/advanced/glossary").then((module) => ({ default: module.GlossaryPage })),
+)
+const GlossaryEditorPage = lazy(() =>
+  import("./pages/advanced/glossary/editor-page").then((module) => ({
+    default: module.GlossaryEditorPage,
+  })),
+)
+const CustomActionsPage = lazy(() =>
+  import("./pages/custom-actions").then((module) => ({ default: module.CustomActionsPage })),
+)
 const ROUTE_COMPONENTS: Record<RoutePath, ComponentType> = {
   "/": ApiProvidersPage,
+  "/custom-actions": CustomActionsPage,
+  "/input-translation": InputTranslationPage,
+  "/floating-button": FloatingButtonPage,
+  "/advanced/glossary": GlossaryPage,
+  "/advanced/glossary/:glossaryId": GlossaryEditorPage,
   "/preference": PreferencePage,
   "/shortcuts": ShortcutsPage,
   "/api-providers": ApiProvidersPage,

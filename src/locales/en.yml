@@ -158,9 +158,11 @@ options:
       features:
         pageTranslation: Page translation
         selectionTranslation: Selection toolbar translation
+        inputTranslation: Input translation
       descriptions:
         pageTranslation: Translates the whole page in bilingual or replace mode.
         selectionTranslation: Translates the text you select from the selection toolbar.
+        inputTranslation: Translates what you type into an input box before you send it.
     aiContentAware:
       title: AI smart context translation
       description: Give the AI context from the page or video so it translates more accurately
@@ -280,11 +282,199 @@ options:
       providerDisabled: Selected provider is disabled
       providerUnavailable: Selected provider is unavailable
     customActions:
-      title: AI explanations
+      title: Custom AI Actions
+      pageDescription: Write your own prompts and run them on selected text from the selection toolbar. The data, style and interactions of each result are all yours to customize.
       description: Add your own structured AI actions for selected text
+      configTitle: Action config
+      introVideo:
+        trigger: Watch video
+        title: Custom AI Actions in 30 seconds
+      builtIn: Built-in
+      badges:
+        new: New
+        updated: Updated
+        createdFrom: Created from $1
+        updatedFrom: Updated from $1
+      add: Add AI action
+      edit: Edit AI action
+      empty: No custom AI actions yet
+      noEnabledLlmProvider: Enable at least one LLM provider before creating custom AI actions
+      tabs:
+        config: Config
+        notebase: Notebase
+        hasErrors: Has errors
+        connected: Connected
+        needsAttention: Needs attention
       form:
+        name: Name
+        customize: Customize
+        customizeTooltip: Built-in instructions do not allow prompt changes. Click here to create an editable copy and modify the prompts.
+        aiConfigHelper:
+          trigger: Configure with AI
+          title: Configure with AI
+          description: Copy the prompt below and paste it into your AI chat assistant (ChatGPT, Claude, DeepSeek, Kimi…). It asks what you want first, then tells you what to put in each setting. The prompt includes this action's current settings, but no API keys.
+          copy: Copy prompt
+          copyFailed: Couldn't copy the prompt. Try again.
+        icon: Icon
+        iconField:
+          chooseAriaLabel: Choose icon
+          chooseTitle: Choose an icon
+          inputPlaceholder: Enter an icon name
+          helpAriaLabel: More icon help
+          helpTitle: Can't find the icon you want?
+          helpStepBrowsePrefix: "Browse icons on "
+          helpStepBrowseSuffix: ""
+          helpStepCopyPrefix: "Copy the icon name, for example "
+          helpStepCopySuffix: ", then paste it into the field."
+        provider: Provider (requires structured output support)
         selectProvider: Select a provider
+        systemPrompt: System prompt
+        prompt: Prompt
+        outputSchema: Output schema
+        addField: Add field
+        fieldName: Field name
+        fieldType: Field type
+        fieldDescription: Description
+        fieldDescriptionPlaceholder: Describe what this field should contain...
+        actions: Actions
+        cancel: Cancel
+        save: Save
         defaultFieldName: Result
+        fieldNamePlaceholder: Field name
+        selectionField: Selected text
+        selectionFieldDescription: The text you selected, saved as it is. The AI doesn't write it.
+        autoFieldPrefix: Field
+        addFieldDialog:
+          title: Add output field
+        editFieldDialog:
+          title: Edit output field
+          save: Save
+        deleteFieldDialog:
+          title: Delete output field?
+          description: This output field will be removed.
+          confirm: Delete
+          cancel: Cancel
+        layout:
+          title: Layout
+          description: How the result shows in the popup. HTML with Liquid; fields fill in as the answer streams.
+          reset: Restore default
+          resetFieldList: Field list
+          resetDictionary: Dictionary card
+          resetSentenceAnalysis: Sentence analysis card
+          resetImproveWriting: Improve Writing card
+          resetConfirmTitle: Replace this layout?
+          resetConfirmDescription: The editor's contents will be replaced. You can still undo it in the editor afterwards.
+          resetConfirm: Replace
+          edit: Edit
+          preview: Preview
+          width: Width
+          themeLight: Light
+          themeDark: Dark
+          replay: Replay
+          sampleData: Sample data
+          sampleDataHint: Only used in this preview and never saved.
+          sampleDataSavedHint: Only used in this preview, and saved with this action.
+          sampleDataReset: Reset samples
+          sampleSelection: Selected text
+          sampleTargetLanguage: Target language
+          insertField: Field
+          insertSpeak: Speak button
+          insertCondition: If filled
+          insertContext: Context
+          insertLoop: Every field
+          syntaxHelp: Syntax
+          builtInHint: A built-in action's layout can't be edited. Customize it to edit a copy.
+          viewSource: View source
+          emptyNotice: This layout is empty, so the popup shows the default field list.
+          fallbackBanner: This layout can't be shown, so the default layout is used instead. $1
+          sanitized: "Removed for safety: $1"
+          unusedFields: "Not in this layout:"
+          tooLong: A layout can be at most $1 characters.
+          renameSkipped: The layout still refers to “$1”. Update it by hand.
+          reservedName: “ctx” and “forloop” are reserved in layouts. Choose another name.
+          help:
+            output: Shows a field's value. HTML in the value is escaped.
+            condition: Shows the content only when the field has a value.
+            loop: Repeats for every field, in order. f.name, f.value and f.type are available.
+            speak: Any element with data-speak reads the value aloud (or its own text if the value is empty) once the answer is done.
+            speakLang: data-speak-lang names the language to read in (a code such as es or en-US), so it gets that language's voice. Without it the language is detected, which often fails for a single word.
+            speakAutoplay: An element with data-speak-autoplay is read aloud on its own once the answer is done. Only the first such element plays.
+            status: Styles by state. The host's data-status is streaming, done or error.
+            filters: newline_to_br keeps line breaks (use it last); lines splits text into a list of lines.
+            styles: CSS in a <style> block only applies inside this result. The --rf-* colors follow the light and dark themes.
+          lint:
+            parseError: "Liquid syntax error: $1"
+            unknownField: There's no field named “$1”.
+            unknownContextKey: "ctx has no “$1”. Available: $2."
+            fieldShadowedByLocal: “$1” is assigned in this layout, which hides the field with that name.
+            liquidInStyle: Liquid doesn't run inside <style>. This is kept as plain text.
+            styleInConditional: A <style> block always applies, even inside a “$1” tag.
+            cssImport: "@import is removed. Layouts can't load outside styles."
+            cssFontFace: "@font-face is removed. Use fonts already on the device."
+            unquotedAttributeOutput: Quote this attribute value, or the value can break out of it.
+            filterIgnored: Filters are ignored in a “$1” tag. Assign the filtered value first.
+            newlineToBrNotLast: newline_to_br only works as the last filter of an output.
+            tooLong: This layout is longer than $1 characters and can't be saved.
+            fieldNotShown: “$1” isn't shown in this layout.
+            reservedFieldName: The field name “$1” is reserved in layouts. Rename the field.
+        notebase:
+          title: Notebase connection
+          description: Save this action's structured results to a remote notebase.
+          loginRequiredTitle: Log in to configure Notebase
+          loginRequiredDescription: Sign in on readfrog.app before choosing a notebase or editing mappings.
+          loginRequiredConnectedDescription: This connection was created by the account below. If you log in as the same account, field mappings will be restored. If you log in as another account, the previous mappings will be cleared when you create or connect a Notebase.
+          loginAction: Log in
+          connectedAccountLabel: Connected account
+          currentAccountLabel: Current account
+          unknownConnectedAccount: Unknown account
+          tableLabel: Notebase
+          tablePlaceholder: Select a notebase
+          tableClearOption: Disconnect notebase
+          clearConnectionAction: Clear connection
+          refreshAction: Refresh
+          emptyTitle: No notebases yet
+          emptyDescription: Create a notebase on readfrog.app, then come back here to map fields.
+          openNotebaseAction: Open Notebase
+          accessDeniedTitle: Cannot access Notebase
+          accessDeniedDescription: This account does not have permission to load Notebase data.
+          listErrorTitle: Failed to load notebases
+          listErrorDescription: Try refreshing the Notebase list again in a moment.
+          accountMismatchTitle: Notebase connection belongs to another account
+          accountMismatchDescription: This connection is tied to the connected account below. Clear it, or choose a Notebase available to the current account.
+          tableUnavailableTitle: Selected notebase is no longer available
+          tableUnavailableDescription: This Notebase no longer exists or cannot be opened. Clear the connection or choose another Notebase.
+          tableUnavailableOption: unavailable
+          schemaErrorTitle: Failed to load notebase schema
+          schemaErrorDescription: Try refreshing the schema again in a moment.
+          schemaLoading: Loading notebase schema...
+          mappingsLabel: Field mappings
+          localFieldLabel: Action field
+          remoteFieldLabel: Notebase field
+          columnUnavailableOption: removed
+          invalidMappingsTitle: Some mappings need attention
+          invalidMappingsDescription: Invalid mappings are preserved. Fix them before saving to Notebase.
+          noFieldSavedTitle: No field is saved to this Notebase
+          noFieldSavedDescription: Pick a Notebase field for at least one field to save notes here.
+          mappingSummary: Saved $1 · Skipped $2 · Undecided $3
+          skipFieldOption: Don't save
+          undecidedFieldPlaceholder: Pick a notebase field or don't save
+          mappingMissingLocal: The mapped action field no longer exists.
+          mappingMissingRemote: The mapped notebase field no longer exists.
+          mappingMissingSchema: Refresh the notebase schema to validate this mapping.
+          mappingIncompatible: The field types no longer match.
+        tokens:
+          selection: Selected text content
+          paragraphs: Intersecting paragraph text joined with blank lines, truncated to the first 2000 characters when sent to custom AI actions
+          targetLanguage: User's target language
+          webTitle: Webpage title
+          webUrl: Full URL of the current page
+          webContent: Webpage content extracted from the current page, truncated to the first 2000 characters
+        delete: Delete
+        deleteDialog:
+          title: Delete custom action?
+          description: This action cannot be undone.
+          confirm: Delete
+          cancel: Cancel
       templates:
         dialogTitle: Choose a template
         dialogDescription: Select a template to quickly create a new AI action, or start from scratch.
@@ -370,12 +560,12 @@ options:
           fieldDefinitionDescription: One concise definition for the contextual sense.
           fieldSentenceTranslation: Sentence Translation
           fieldSentenceTranslationDescription: The translation of Sentence only.
-          fieldMemoryTips: "Memory Tips"
+          fieldMemoryTips: Memory Tips
           fieldMemoryTipsDescription: "Ways to remember the term: up to 3 tips, one per line, each beginning with its technique and a colon (e.g. Word parts: …); an empty string when nothing really helps."
           fieldDifficulty: Difficulty
           fieldDifficultyDescription: Estimated CEFR difficulty level A1, A2, B1, B2, C1, or C2.
         sentenceAnalysis:
-          name: "Sentence Analysis"
+          name: Sentence Analysis
           description: "Mark up a long sentence like a teacher: its core, every clause, and what makes it hard"
           systemPrompt: |-
             You are a grammar tutor. Mark up the Selection (a sentence in any language) so a learner sees its structure at a glance: the core of the main clause, every clause and longer phrase, and whatever makes the sentence hard to read.
@@ -430,71 +620,182 @@ options:
             Selection: {{selection}}
             Paragraphs: {{paragraphs}}
             Target language: {{targetLanguage}}
-          fieldSentence: "Sentence"
-          fieldAnnotations: "Annotations"
-          fieldAnnotationsDescription: 'A compact JSON array serialized as a string. Each item has "text" and "type", plus only the optional keys that apply ("form", "sense", "head", "obstacle", "restore", "note", "occurrence").'
-          fieldTranslation: "Translation"
-          fieldTranslationDescription: "A natural translation of the whole Selection in {{targetLanguage}}."
+          fieldSentence: Sentence
+          fieldAnnotations: Annotations
+          fieldAnnotationsDescription: A compact JSON array serialized as a string. Each item has "text" and "type", plus only the optional keys that apply ("form", "sense", "head", "obstacle", "restore", "note", "occurrence").
+          fieldTranslation: Translation
+          fieldTranslationDescription: A natural translation of the whole Selection in {{targetLanguage}}.
           roles:
-            subject: "Subject"
-            predicate: "Predicate"
-            object: "Object"
-            complement: "Complement"
-            attributive: "Attributive"
-            adverbial: "Adverbial"
-            appositive: "Appositive"
-            connector: "Connector"
+            subject: Subject
+            predicate: Predicate
+            object: Object
+            complement: Complement
+            attributive: Attributive
+            adverbial: Adverbial
+            appositive: Appositive
+            connector: Connector
           clauses:
-            subject: "Subject clause"
-            object: "Object clause"
-            complement: "Complement clause"
-            attributive: "Relative clause"
-            adverbial: "Adverbial clause"
-            appositive: "Appositive clause"
-            clause: "Clause"
+            subject: Subject clause
+            object: Object clause
+            complement: Complement clause
+            attributive: Relative clause
+            adverbial: Adverbial clause
+            appositive: Appositive clause
+            clause: Clause
           adverbialClauses:
-            time: "Time clause"
-            place: "Place clause"
-            cause: "Reason clause"
-            condition: "Condition clause"
-            concession: "Concession clause"
-            purpose: "Purpose clause"
-            result: "Result clause"
-            manner: "Manner clause"
-            comparison: "Comparison clause"
+            time: Time clause
+            place: Place clause
+            cause: Reason clause
+            condition: Condition clause
+            concession: Concession clause
+            purpose: Purpose clause
+            result: Result clause
+            manner: Manner clause
+            comparison: Comparison clause
           forms:
-            infinitive: "Infinitive"
-            gerund: "Gerund"
-            presentParticiple: "-ing"
-            pastParticiple: "-ed"
+            infinitive: Infinitive
+            gerund: Gerund
+            presentParticiple: -ing
+            pastParticiple: -ed
           senses:
-            time: "Time"
-            place: "Place"
-            cause: "Reason"
-            condition: "If"
-            concession: "Though"
-            purpose: "Purpose"
-            result: "Result"
-            manner: "Manner"
-            comparison: "Compare"
+            time: Time
+            place: Place
+            cause: Reason
+            condition: If
+            concession: Though
+            purpose: Purpose
+            result: Result
+            manner: Manner
+            comparison: Compare
           obstacles:
-            inversion: "Inverted"
-            fronting: "Fronted"
-            ellipsis: "Omitted"
-            passive: "Passive"
-            subjunctive: "Unreal"
-            parenthesis: "Aside"
-            dummyIt: "Dummy it"
-            postponedSubject: "Real subject"
-            cleft: "Cleft"
-            comparison: "Compare"
-            negation: "Negation"
-            split: "Split"
-            idiom: "Idiom"
+            inversion: Inverted
+            fronting: Fronted
+            ellipsis: Omitted
+            passive: Passive
+            subjunctive: Unreal
+            parenthesis: Aside
+            dummyIt: Dummy it
+            postponedSubject: Real subject
+            cleft: Cleft
+            comparison: Compare
+            negation: Negation
+            split: Split
+            idiom: Idiom
           restoreLabel: "Plain order:"
-          hardLabel: "Difficult"
-          trunkLabel: "Skeleton"
-          slashesLabel: "Breaks"
+          hardLabel: Difficult
+          trunkLabel: Skeleton
+          slashesLabel: Breaks
+        improveWriting:
+          name: Improve Writing
+          description: Mark mistakes and awkward phrasing like a teacher, and fix them for the setting
+          systemPrompt: |-
+            You are a writing teacher. Judge the setting of the Selection first, then mark what a native writer would change for that setting, and give the Selection back corrected.
+
+            Write the $1, every "tag" and "note", and the $4 in {{targetLanguage}}, even when the Selection is in another language; write every "fix" and the $3 in the Selection's own language.
+
+            ## $1
+            How formal the setting is and what the text is, in {{targetLanguage}}: "<formality> · <what it is>", at most 16 characters, where the formality is formal, neutral or casual (e.g. "Formal · email to a professor", "Casual · tweet"). Judge it from the Page title, the Page URL, the Paragraphs and the Selection itself. Everything below is judged against this setting: what is natural in a group chat is not natural in a weekly report, and the other way round.
+
+            ## $2
+            Each annotation quotes one span of the Selection, with these keys only:
+            - "text": the span, copied character for character from the Selection: the same words in the same order, with nothing left out, added or replaced (no "…"), and no spaces at either end. When the change touches one short word, or adds a missing one, quote a neighboring word too (quote "to beach" to add "the"), so the span can be found.
+            - "fix": the span as it should read, in the Selection's language; "" deletes it. Leave it out only for "good".
+            - "type": exactly one of
+              - wrong in any setting: spelling, grammar, punctuation, word-choice, logic;
+              - not what a native writer would write in this setting: unnatural (a literal translation, a stiff or wordy phrase), register (too casual or too formal, impolite, wrong honorifics), clarity (ambiguous or confusing);
+              - worth keeping: good.
+            - "tag": optional, at most 6 characters in {{targetLanguage}}: the short name of the rule (a tense, an article, a particle, honorifics, too formal).
+            - "note": at most 20 words in {{targetLanguage}}. For an error, the rule; otherwise, what a native writer would write here and why.
+            - "occurrence": only when the same text appears more than once in the Selection: 1 for the first appearance, 2 for the second, and so on.
+            Leave out every optional key that does not apply; never add a key of your own.
+
+            ## What to mark
+            1. Everything wrong, then what a native writer would not write in this setting. Nothing else: never an upgrade to fancier words or more complex sentences, and never a change of formality the setting does not call for.
+            2. At most 8 annotations. When several problems touch the same words, merge them into one annotation, typed by the most serious. Annotations never overlap; list them in the order they appear.
+            3. At most one "good", for a choice genuinely worth keeping.
+            4. Never mark names, brands, code, URLs, @mentions, #tags or emoji; slang, abbreviations or mixed languages the setting allows; accepted expressions ("Long time no see"); the language's own conventions (a space before "!" in French).
+            5. When nothing needs changing, $2 is "[]".
+
+            ## $3
+            The whole Selection as a native writer would write it in this setting, in the Selection's language, keeping the writer's meaning and voice. Apply every fix, and change nothing the setting does not call for. Identical to the Selection when nothing needs changing.
+
+            ## $4
+            One sentence in {{targetLanguage}}: what works, and the one thing to work on.
+
+            ## Format
+            The $2 value is a STRING holding a compact JSON array; escape its inner double quotes as \". Do not wrap it in markdown.
+
+            ## Examples
+            Selection: I very like this movie, it make me feel very touching.
+            Page title: Official Trailer - YouTube
+            Target language: Simplified Chinese
+            $1: 随意 · 视频评论
+            $2: "[{\"text\":\"I very like\",\"fix\":\"I really like\",\"type\":\"grammar\",\"tag\":\"副词位置\",\"note\":\"very 不能直接修饰动词，用 really like\"},{\"text\":\"movie, it\",\"fix\":\"movie. It\",\"type\":\"punctuation\",\"tag\":\"逗号连句\",\"note\":\"两个完整的句子不能只用逗号连接\"},{\"text\":\"make me feel very touching\",\"fix\":\"was so moving\",\"type\":\"grammar\",\"tag\":\"-ing/-ed\",\"note\":\"touching 指令人感动的事物，人被感动用 moved；it 后要用 makes\"}]"
+            $3: I really like this movie. It was so moving.
+            $4: 意思清楚，问题在中文句式直译：very 修饰动词、逗号连句。
+
+            Selection: pls check the attached file and give me ur feedback asap. thx!
+            Paragraphs: Dear Professor Smith, pls check the attached file and give me ur feedback asap. thx!
+            Page title: Draft - Gmail
+            Target language: English
+            $1: Formal · email to a professor
+            $2: "[{\"text\":\"pls check\",\"fix\":\"Could you please take a look at\",\"type\":\"register\",\"tag\":\"tone\",\"note\":\"Sounds like an order to a professor; pls is chat shorthand\"},{\"text\":\"give me ur feedback asap.\",\"fix\":\"share your feedback when you have a chance?\",\"type\":\"register\",\"note\":\"asap sounds pushy here, and ur is chat shorthand\"},{\"text\":\"thx!\",\"fix\":\"Thank you!\",\"type\":\"register\",\"note\":\"Too casual for this email\"}]"
+            $3: Could you please take a look at the attached file and share your feedback when you have a chance? Thank you!
+            $4: The request is clear, but the shorthand and the orders sound rude to a professor.
+
+            Selection: pls check the attached file and give me ur feedback asap. thx!
+            Paragraphs: hey, report's done. pls check the attached file and give me ur feedback asap. thx!
+            Page title: Tom (DM) - Slack
+            Target language: English
+            $1: Casual · message to a teammate
+            $2: "[]"
+            $3: pls check the attached file and give me ur feedback asap. thx!
+            $4: Natural for a quick message to a teammate: nothing to change.
+
+            Selection: 部長がおっしゃられたように、会議は延期するになりました。
+            Page title: 受信トレイ - Outlook
+            Target language: Simplified Chinese
+            $1: 正式 · 写给上级的邮件
+            $2: "[{\"text\":\"おっしゃられた\",\"fix\":\"おっしゃった\",\"type\":\"register\",\"tag\":\"二重敬语\",\"note\":\"おっしゃる已是尊敬语，再加られる成了二重敬语\"},{\"text\":\"延期するになりました\",\"fix\":\"延期することになりました\",\"type\":\"grammar\",\"tag\":\"ことになる\",\"note\":\"动词接になる要先名词化：〜することになる\"}]"
+            $3: 部長がおっしゃったように、会議は延期することになりました。
+            $4: 语法只错一处，另有一处二重敬语。
+          prompt: |-
+            ## Input
+            Selection: {{selection}}
+            Paragraphs: {{paragraphs}}
+            Page title: {{webTitle}}
+            Page URL: {{webUrl}}
+            Target language: {{targetLanguage}}
+          fieldOriginal: Original
+          fieldSetting: Setting
+          fieldSettingDescription: 'How formal the setting is and what the text is, in {{targetLanguage}}: "<formality> · <what it is>", at most 16 characters.'
+          fieldAnnotations: Annotations
+          fieldAnnotationsDescription: A compact JSON array serialized as a string. Each item has "text", "type" and "note", "fix" unless the type is "good", and only the optional keys that apply ("tag", "occurrence").
+          fieldImproved: Improved
+          fieldImprovedDescription: The whole Selection as a native writer would write it in this setting, in the Selection's language.
+          fieldSummary: Summary
+          fieldSummaryDescription: "One sentence in {{targetLanguage}}: what works, and the one thing to work on."
+          types:
+            spelling: Spelling
+            grammar: Grammar
+            punctuation: Punctuation
+            wordChoice: Word choice
+            logic: Logic
+            unnatural: Unidiomatic
+            register: Register
+            clarity: Clarity
+            good: Nice
+          tiers:
+            error: Error
+            awkward: Awkward
+            good: Nice
+          hideFixesLabel: Hide fixes
+          hiddenHintLabel: Try fixing it yourself first.
+          showImprovedLabel: Show improved
+          improvedLabel: Improved
+          copyLabel: Copy
+          unchangedLabel: Nothing to change
+          removeLabel: delete
         blank:
           name: Blank
           description: Start from scratch with an empty action
@@ -503,6 +804,14 @@ options:
             Selection: {{selection}}
             Paragraphs: {{paragraphs}}
             Target language: {{targetLanguage}}
+      errors:
+        nameRequired: Name is required
+        duplicateName: Duplicate action name "$1"
+        invalidIcon: Invalid Iconify icon string
+        providerRequired: Please select an enabled LLM provider
+        outputSchemaRequired: Add at least one output field
+        fieldKeyRequired: Field name is required
+        duplicateFieldKey: Field names must be unique
   contextMenu:
     title: Context Menu
     pageDescription: Control the Read Frog Lite entries in the browser's right-click menu.
@@ -711,6 +1020,169 @@ options:
       searchPlaceholder: Search by id, description, or URL pattern
       showMore: Show more
       count: Showing $1 of $2 rules
+  inputTranslation:
+    title: Input Translation
+    pageDescription: Translate what you type in input boxes before you send it.
+    trigger:
+      title: Trigger
+      enable:
+        title: Enable
+        description: Press the space bar three times quickly in any input box to translate what you typed there.
+      threshold:
+        title: Trigger threshold
+        description: How long the presses may be apart, in milliseconds. Raise it if the trigger keeps missing, lower it if it fires while you are still typing.
+        error: Enter a value between $1 and $2
+    languages:
+      title: Translation languages
+      pair:
+        title: Language pair
+        description: What the typed text is read as, and what it is translated into. Either side can follow the source and target languages you translate pages with.
+      sourceCode: Page source language
+      targetCode: Translation target language
+      cycle:
+        title: Swap direction each time
+        description: Every trigger swaps the two languages, so triggering again brings the text back to the language you typed in.
+  floatingButton:
+    title: Floating Button
+    pageDescription: Set which side the floating button sits on, what a click does, and where it stays hidden.
+    demoImageAlt: Floating button demo
+    enable:
+      title: Enable floating button
+      description: Display the floating button on web pages for quick access to Read Frog features
+    display:
+      title: Display
+      side:
+        title: Button side
+        description: Choose which side of the page the floating button is docked to
+        left: Left
+        right: Right
+      disabledSites:
+        title: Disabled sites
+        description: Configure websites where the floating button should be disabled
+        enterUrlPattern: Enter URL pattern
+        urlPattern: URL pattern
+    clickAction:
+      title: Click action
+      description: Choose the action when clicking the floating button
+      panel: Open side panel
+      translate: Toggle page translation
+    closeMenu:
+      disableForSite: Disable for this site
+      disableGlobally: Disable globally
+    tooltips:
+      togglePageTranslation: Toggle page translation
+      floatingButtonOptions: Floating button options
+      lockPosition: Lock position
+      unlockPosition: Unlock position
+      settings: Settings
+      feedback: Send feedback
+  advanced:
+    glossary:
+      title: Glossary
+      pageDescription: Give the words that matter to you a fixed translation, and choose where each list applies.
+      untitled: Untitled glossary
+      noGlossaries: No glossaries yet.
+      enable:
+        title: Enable
+        description: Send matching terms to the LLM so it renders them your way. The glossary travels in the prompt, so it only applies to features running on an LLM provider.
+      library:
+        title: Your glossaries
+        description: Each glossary has its own terms and its own list of websites, so a set of terms for work does not follow you onto everything else.
+        button: Add a glossary
+        capReached: You can have at most $1 glossaries.
+        termUsage: $1 of $2 terms used across all glossaries
+      summary:
+        terms: $1 terms
+        termsOne: 1 term
+        allSites: All websites
+        sites: $1 websites
+        sitesOne: 1 website
+      editor:
+        docsLink: How does it work?
+        sections:
+          terms: Terms
+          maintenance: Backup and deletion
+        details:
+          title: Name and description
+          descriptionPlaceholder: Description (optional)
+        enable:
+          title: Enable
+          description: A disabled glossary keeps its terms but sends none of them.
+        sites:
+          title: Websites
+          description: Restrict this glossary to certain websites. example.com is that address alone; *.example.com adds subdomains; example.com/docs/* narrows to one part of a site.
+          allSites: Leave this empty and the glossary applies everywhere.
+          header: Website
+        delete:
+          title: Delete this glossary
+          description: Removes the glossary and every term in it. Export first if you might want the terms back — this cannot be undone.
+          dialog:
+            trigger: Delete
+            title: Delete this glossary?
+            description: The glossary and all $1 terms in it will be permanently deleted. This action cannot be undone.
+            confirm: Delete
+            cancel: Cancel
+      addTerm:
+        title: Add a term
+        description: Give a term the wording you want, or leave the translation empty to keep it unchanged.
+      list:
+        title: Your terms
+        description: Only the terms that appear in a paragraph are sent with it.
+      importExport:
+        title: Import and export
+        description: Terms are a CSV of source, target, targetLanguage and caseSensitive columns — the file Export writes.
+      sourcePlaceholder: Term
+      targetPlaceholder: Translation (leave empty to keep the original)
+      caseSensitive: Match case
+      add: Add
+      searchPlaceholder: Search terms
+      columnEnabled: Enabled
+      columnSource: Term
+      columnTarget: Translation
+      columnTargetLanguage: Target language
+      allLanguages: All languages
+      toggleTerm: Use $1
+      editTerm: Edit $1
+      keepOriginal: Keep the original
+      delete: Delete
+      save: Save
+      cancel: Cancel
+      loading: Loading...
+      empty: No terms yet. Add one above, or import a CSV file.
+      noMatches: No terms match your search.
+      previous: Previous
+      next: Next
+      pageOf: $1 / $2
+      addError:
+        emptySource: Enter a term first.
+        tooLong: That term is too long.
+        capReached: Your glossaries have reached the limit of $1 terms in total.
+        duplicate: That term is already in your glossary.
+      import: Import
+      export: Export
+      importModeMerge: Add to list
+      importModeReplace: Replace list
+      importEmpty: No terms found in that file.
+      importMissingHeader: "That file is not a Read Frog glossary export. It needs these columns:"
+      importOverflow: That import would exceed the limit by $1 terms. Nothing was changed.
+      importSuccess: Imported $1 new and updated $2 terms.
+      importSkipped: Skipped $1 invalid rows and $2 duplicates.
+      importNoValidRows: None of those rows could be imported. Nothing was changed.
+      importReplaceConfirm:
+        title: Replace the whole list?
+        description: All $1 terms in this glossary will be deleted — every target language, not just the one selected — and replaced with the contents of this file. This cannot be undone.
+        confirm: Replace
+        cancel: Cancel
+      deleteAll:
+        title: Delete all terms
+        description: Empty your glossary. Export first if you might want the terms back — deleting them cannot be undone.
+        deleting: Deleting...
+        dialog:
+          title: Delete all terms
+          trigger: Delete all
+          confirm: Confirm
+          cancel: Cancel
+          description: All $1 terms will be permanently deleted. This action cannot be undone.
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -731,6 +1203,11 @@ action:
   contextDetailsTitleLabel: Title
   contextDetailsParagraphsLabel: Paragraphs
   translation: Translation
+  moreActions: More actions
+  addCustomAction: Add custom AI action
+  unpinFromToolbar: Unpin from toolbar
+  pinToToolbar: Pin to toolbar
+  dragToReorder: Drag to reorder
 thinking:
   label: Thinking
   complete: Thinking complete
@@ -932,3 +1409,6 @@ translationHub:
   noLanguagesFound: No languages found
   translationFailed: Translation Failed
   translationFailedFallback: Translation failed
+dataTypes:
+  string: Text
+  number: Number

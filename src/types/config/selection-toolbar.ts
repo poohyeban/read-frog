@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { isBuiltInActionId } from "@/utils/constants/custom-action"
 import { shortcutSchema } from "./shortcut"
 
 // Upper bound (UTF-16 code units) of a custom action's HTML layout. NEVER lower
@@ -39,19 +40,28 @@ export const selectionToolbarBuiltInActionStateSchema = z.object({
   shortcut: shortcutSchema.optional(),
 })
 
-export const selectionToolbarBuiltInActionsSchema = z.object({
-  dictionary: selectionToolbarBuiltInActionStateSchema,
-  // `.default()` is load-bearing: a config stored before v104 still parses in
-  // UI contexts that load ahead of the background migration, instead of
-  // falling back to DEFAULT_CONFIG and writing that over the user's settings.
-  sentenceAnalysis: selectionToolbarBuiltInActionStateSchema.default(() => ({
-    enabled: true,
-    providerId: "openai-default",
-  })),
-  // For the same reason as above. Off: a config stored before v105 has not
-  // been through v106 either, which turns it on and unpins it, so it must not
-  // land on the toolbar in the meantime.
-})
+export const selectionToolbarBuiltInActionsSchema = z
+  .object({
+    improveWriting: selectionToolbarBuiltInActionStateSchema.optional(),
+    dictionary: selectionToolbarBuiltInActionStateSchema,
+    // `.default()` is load-bearing: a config stored before v104 still parses in
+    // UI contexts that load ahead of the background migration, instead of
+    // falling back to DEFAULT_CONFIG and writing that over the user's settings.
+    sentenceAnalysis: selectionToolbarBuiltInActionStateSchema.default(() => ({
+      enabled: true,
+      providerId: "openai-default",
+    })),
+    // For the same reason as above. Off: a config stored before v105 has not
+    // been through v106 either, which turns it on and unpins it, so it must not
+    // land on the toolbar in the meantime.
+  })
+  .transform((actions) => ({
+    ...actions,
+    improveWriting: actions.improveWriting ?? {
+      enabled: false,
+      providerId: actions.dictionary.providerId,
+    },
+  }))
 
 export const selectionToolbarCustomActionSchema = z
   .object({
@@ -96,3 +106,39 @@ export type SelectionToolbarBuiltInActionState = z.infer<
 >
 export type SelectionToolbarBuiltInActions = z.infer<typeof selectionToolbarBuiltInActionsSchema>
 export type SelectionToolbarCustomAction = z.infer<typeof selectionToolbarCustomActionSchema>
+
+export const selectionToolbarCustomActionsSchema = z
+  .array(selectionToolbarCustomActionSchema)
+  .superRefine((actions, ctx) => {
+    const idSet = new Set<string>()
+    actions.forEach((action, index) => {
+      if (isBuiltInActionId(action.id)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `Action id "${action.id}" is reserved for a built-in action.`,
+          path: [index, "id"],
+        })
+      }
+
+      if (idSet.has(action.id)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `Duplicate action id "${action.id}"`,
+          path: [index, "id"],
+        })
+      }
+      idSet.add(action.id)
+    })
+
+    const nameSet = new Set<string>()
+    actions.forEach((action, index) => {
+      if (nameSet.has(action.name)) {
+        ctx.addIssue({
+          code: "custom",
+          message: `Duplicate action name "${action.name}"`,
+          path: [index, "name"],
+        })
+      }
+      nameSet.add(action.name)
+    })
+  })

@@ -157,9 +157,11 @@ options:
       features:
         pageTranslation: Dịch trang
         selectionTranslation: Dịch thanh công cụ chọn
+        inputTranslation: Dịch đầu vào
       descriptions:
         pageTranslation: Dịch toàn bộ trang ở chế độ song ngữ hoặc thay thế bản gốc.
         selectionTranslation: Dịch đoạn văn bản bạn chọn từ thanh công cụ bôi đen.
+        inputTranslation: Dịch nội dung bạn gõ trong ô nhập trước khi gửi.
     aiContentAware:
       title: Dịch ngữ cảnh thông minh AI
       description: Cung cấp cho AI ngữ cảnh của trang hoặc video để dịch chính xác hơn
@@ -279,15 +281,198 @@ options:
       providerDisabled: Nhà cung cấp đã chọn bị tắt
       providerUnavailable: Nhà cung cấp đã chọn không khả dụng
     customActions:
-      title: AI explanations
+      title: Hành động AI tùy chỉnh
+      pageDescription: Viết prompt của riêng bạn và chạy trên văn bản đã chọn từ thanh công cụ chọn văn bản. Dữ liệu, kiểu dáng và cách tương tác của kết quả đều có thể tùy chỉnh.
       description: Thêm các hành động AI có cấu trúc của riêng bạn cho văn bản được chọn
+      configTitle: Cấu hình hành động
+      introVideo:
+        trigger: Xem video
+        title: Hành động AI tùy chỉnh trong 30 giây
+      builtIn: Tích hợp
+      add: Thêm hành động AI
+      edit: Chỉnh sửa hành động AI
+      empty: Chưa có hành động AI tùy chỉnh
+      noEnabledLlmProvider: Hãy bật ít nhất một nhà cung cấp LLM trước khi tạo hành động AI tùy chỉnh
+      tabs:
+        config: Cấu hình
+        notebase: Notebase
+        hasErrors: Có lỗi
+        connected: Đã kết nối
+        needsAttention: Cần chú ý
       form:
+        name: Tên
+        customize: Tùy chỉnh
+        customizeTooltip: Không thể thay đổi prompt của tác vụ tích hợp. Nhấp vào nút này để tạo bản sao có thể chỉnh sửa và thay đổi prompt.
+        aiConfigHelper:
+          trigger: Cấu hình bằng AI
+          title: Cấu hình bằng AI
+          description: Sao chép prompt bên dưới và dán vào trợ lý AI bạn hay dùng (ChatGPT, Claude, DeepSeek, Kimi…). Nó sẽ hỏi bạn muốn gì trước, rồi hướng dẫn bạn điền từng mục. Prompt có kèm cấu hình hiện tại của tác vụ này, nhưng không có khóa API.
+          copy: Sao chép prompt
+          copyFailed: Không sao chép được prompt. Hãy thử lại.
+        icon: Biểu tượng
+        iconField:
+          chooseAriaLabel: Chọn biểu tượng
+          chooseTitle: Chọn một biểu tượng
+          inputPlaceholder: Nhập tên biểu tượng
+          helpAriaLabel: Trợ giúp thêm về biểu tượng
+          helpTitle: Không tìm thấy biểu tượng bạn muốn?
+          helpStepBrowsePrefix: Duyệt biểu tượng trên
+          helpStepBrowseSuffix: ""
+          helpStepCopyPrefix: "Sao chép tên biểu tượng, ví dụ "
+          helpStepCopySuffix: ", rồi dán vào ô nhập liệu."
+        provider: Nhà cung cấp (yêu cầu hỗ trợ đầu ra có cấu trúc)
         selectProvider: Chọn nhà cung cấp
+        systemPrompt: System Prompt
+        prompt: Prompt
+        outputSchema: Schema đầu ra
+        addField: Thêm trường
+        fieldName: Tên trường
+        fieldType: Loại trường
+        fieldDescription: Mô tả
+        fieldDescriptionPlaceholder: Mô tả nội dung mà trường này nên chứa...
+        actions: Thao tác
+        cancel: Hủy
+        save: Lưu
         defaultFieldName: kết quả
+        fieldNamePlaceholder: tên_trường
+        selectionField: Văn bản đã chọn
+        selectionFieldDescription: Văn bản bạn đã chọn, được lưu nguyên văn. AI không viết phần này.
+        autoFieldPrefix: trường
+        addFieldDialog:
+          title: Thêm trường đầu ra
+        editFieldDialog:
+          title: Chỉnh sửa trường đầu ra
+          save: Lưu
+        deleteFieldDialog:
+          title: Xóa trường đầu ra?
+          description: Trường đầu ra này sẽ bị xóa.
+          confirm: Xóa
+          cancel: Hủy
+        layout:
+          title: Bố cục
+          description: Cách kết quả hiển thị trong cửa sổ bật lên. HTML kèm Liquid; các trường được điền dần khi câu trả lời được truyền về.
+          reset: Khôi phục mặc định
+          resetFieldList: Danh sách trường
+          resetDictionary: Thẻ từ điển
+          resetSentenceAnalysis: Thẻ phân tích câu
+          resetImproveWriting: Thẻ cải thiện bài viết
+          resetConfirmTitle: Thay thế bố cục này?
+          resetConfirmDescription: Nội dung trong trình soạn thảo sẽ bị thay thế. Sau đó bạn vẫn có thể hoàn tác trong trình soạn thảo.
+          resetConfirm: Thay thế
+          edit: Chỉnh sửa
+          preview: Xem trước
+          width: Chiều rộng
+          themeLight: Sáng
+          themeDark: Tối
+          replay: Phát lại
+          sampleData: Dữ liệu mẫu
+          sampleDataHint: Chỉ dùng cho bản xem trước này và không được lưu.
+          sampleDataSavedHint: Chỉ dùng cho bản xem trước này và được lưu cùng tác vụ này.
+          sampleDataReset: Đặt lại mẫu
+          sampleSelection: Văn bản đã chọn
+          sampleTargetLanguage: Ngôn ngữ đích
+          insertField: Trường
+          insertSpeak: Nút đọc
+          insertCondition: Khi có giá trị
+          insertContext: Ngữ cảnh
+          insertLoop: Mọi trường
+          syntaxHelp: Cú pháp
+          builtInHint: Không thể chỉnh sửa bố cục của tác vụ tích hợp. Hãy tùy chỉnh để chỉnh sửa một bản sao.
+          viewSource: Xem mã nguồn
+          emptyNotice: Bố cục này trống nên cửa sổ bật lên hiển thị danh sách trường mặc định.
+          fallbackBanner: Không thể hiển thị bố cục này nên bố cục mặc định được dùng thay thế. $1
+          sanitized: "Đã gỡ bỏ vì lý do an toàn: $1"
+          unusedFields: "Không có trong bố cục này:"
+          tooLong: Bố cục chỉ được dài tối đa $1 ký tự.
+          renameSkipped: Bố cục vẫn tham chiếu đến "$1". Hãy cập nhật thủ công.
+          reservedName: '"ctx" và "forloop" là tên dành riêng trong bố cục. Hãy chọn tên khác.'
+          help:
+            output: Hiển thị giá trị của một trường. HTML trong giá trị sẽ được thoát ký tự.
+            condition: Chỉ hiển thị nội dung khi trường có giá trị.
+            loop: Lặp lại cho từng trường theo thứ tự. Có thể dùng f.name, f.value và f.type.
+            speak: Mọi phần tử có data-speak sẽ đọc to giá trị (hoặc văn bản của chính nó nếu giá trị trống) khi câu trả lời hoàn tất.
+            speakLang: data-speak-lang chỉ định ngôn ngữ đọc (mã như es hoặc en-US) để dùng giọng của ngôn ngữ đó. Nếu không có, ngôn ngữ được tự động nhận diện, thường sai với một từ đơn lẻ.
+            speakAutoplay: Phần tử có data-speak-autoplay sẽ tự đọc to khi câu trả lời hoàn tất. Chỉ phần tử đầu tiên như vậy được phát.
+            status: Tạo kiểu theo trạng thái. data-status của phần tử chứa là streaming, done hoặc error.
+            filters: newline_to_br giữ ngắt dòng (đặt ở cuối); lines tách văn bản thành danh sách dòng.
+            styles: CSS trong khối <style> chỉ áp dụng bên trong kết quả này. Các màu --rf-* theo giao diện sáng và tối.
+          lint:
+            parseError: "Lỗi cú pháp Liquid: $1"
+            unknownField: Không có trường nào tên "$1".
+            unknownContextKey: 'ctx không có "$1". Có sẵn: $2.'
+            fieldShadowedByLocal: Bố cục này gán giá trị cho "$1", làm che mất trường cùng tên.
+            liquidInStyle: Liquid không chạy trong <style>; phần này được giữ nguyên dạng văn bản.
+            styleInConditional: Khối <style> luôn được áp dụng, kể cả khi nằm trong thẻ "$1".
+            cssImport: "@import bị gỡ bỏ. Bố cục không thể tải kiểu từ bên ngoài."
+            cssFontFace: "@font-face bị gỡ bỏ. Hãy dùng phông chữ có sẵn trên thiết bị."
+            unquotedAttributeOutput: Hãy đặt giá trị thuộc tính này trong dấu ngoặc kép, nếu không giá trị có thể thoát ra ngoài thuộc tính.
+            filterIgnored: Bộ lọc bị bỏ qua trong thẻ "$1". Hãy gán giá trị đã lọc trước.
+            newlineToBrNotLast: newline_to_br chỉ hoạt động khi là bộ lọc cuối cùng của một đầu ra.
+            tooLong: Bố cục này dài hơn $1 ký tự và không thể lưu.
+            fieldNotShown: '"$1" không được hiển thị trong bố cục này.'
+            reservedFieldName: Tên trường "$1" là tên dành riêng trong bố cục. Hãy đổi tên trường.
+        notebase:
+          title: Kết nối Notebase
+          description: Lưu kết quả có cấu trúc của hành động này vào Notebase từ xa.
+          loginRequiredTitle: Đăng nhập để cấu hình Notebase
+          loginRequiredDescription: Hãy đăng nhập trên readfrog.app trước khi chọn notebase hoặc chỉnh sửa ánh xạ.
+          loginRequiredConnectedDescription: Kết nối này được tạo bởi tài khoản bên dưới. Nếu đăng nhập bằng cùng tài khoản, ánh xạ trường sẽ được khôi phục. Nếu đăng nhập bằng tài khoản khác, các ánh xạ cũ sẽ bị xóa khi bạn tạo hoặc kết nối Notebase.
+          loginAction: Đăng nhập
+          connectedAccountLabel: Tài khoản đã kết nối
+          currentAccountLabel: Tài khoản hiện tại
+          unknownConnectedAccount: Tài khoản không xác định
+          tableLabel: Notebase
+          tablePlaceholder: Chọn một notebase
+          tableClearOption: Không kết nối notebase
+          clearConnectionAction: Xóa kết nối
+          refreshAction: Làm mới
+          emptyTitle: Chưa có Notebase nào
+          emptyDescription: Hãy tạo một notebase trên readfrog.app rồi quay lại đây để ánh xạ các trường.
+          openNotebaseAction: Mở Notebase
+          accessDeniedTitle: Không thể truy cập Notebase
+          accessDeniedDescription: Tài khoản này không có quyền tải dữ liệu Notebase.
+          listErrorTitle: Không tải được danh sách Notebase
+          listErrorDescription: Hãy thử làm mới danh sách Notebase sau ít phút nữa.
+          accountMismatchTitle: Kết nối Notebase thuộc tài khoản khác
+          accountMismatchDescription: Kết nối này gắn với tài khoản bên dưới. Hãy xóa kết nối hoặc chọn một Notebase mà tài khoản hiện tại có thể truy cập.
+          tableUnavailableTitle: Notebase đã chọn không còn khả dụng
+          tableUnavailableDescription: Notebase này không còn tồn tại hoặc không mở được. Hãy xóa kết nối hoặc chọn một Notebase khác.
+          tableUnavailableOption: không khả dụng
+          schemaErrorTitle: Không tải được schema notebase
+          schemaErrorDescription: Hãy thử làm mới lại sau ít phút nữa.
+          schemaLoading: Đang tải schema notebase...
+          mappingsLabel: Ánh xạ trường
+          localFieldLabel: Trường của hành động
+          remoteFieldLabel: Trường Notebase
+          columnUnavailableOption: đã xóa
+          invalidMappingsTitle: Một số ánh xạ cần được xử lý
+          invalidMappingsDescription: Các ánh xạ không hợp lệ vẫn được giữ lại. Hãy sửa chúng trước khi lưu vào Notebase.
+          noFieldSavedTitle: Không có trường nào được lưu vào Notebase này
+          noFieldSavedDescription: Hãy chọn trường Notebase cho ít nhất một trường để lưu ghi chú.
+          mappingSummary: Lưu $1 · Bỏ qua $2 · Chưa quyết định $3
+          skipFieldOption: Không lưu
+          undecidedFieldPlaceholder: Chọn một trường Notebase hoặc không lưu
+          mappingMissingLocal: Trường của hành động đã ánh xạ không còn tồn tại.
+          mappingMissingRemote: Trường notebase đã ánh xạ không còn tồn tại.
+          mappingMissingSchema: Hãy làm mới schema notebase để xác thực ánh xạ này.
+          mappingIncompatible: Kiểu trường không còn khớp nữa.
+        tokens:
+          selection: Nội dung văn bản đã chọn
+          paragraphs: Nội dung các đoạn giao với vùng chọn, được nối bằng dòng trống, sẽ bị cắt còn 2000 ký tự đầu khi gửi vào hành động AI tùy chỉnh
+          targetLanguage: Ngôn ngữ đích của người dùng
+          webTitle: Tiêu đề trang web
+          webUrl: URL đầy đủ của trang hiện tại
+          webContent: Nội dung trang web được trích xuất từ trang hiện tại (bị cắt còn 2000 ký tự đầu)
+        delete: Xóa
+        deleteDialog:
+          title: Xóa hành động tùy chỉnh?
+          description: Hành động này không thể hoàn tác.
+          confirm: Xóa
+          cancel: Hủy
       templates:
         dictionary:
-          name: "Từ điển"
-          description: "Tra từ kèm định nghĩa, phiên âm và bản dịch đoạn văn"
+          name: Từ điển
+          description: Tra từ kèm định nghĩa, phiên âm và bản dịch đoạn văn
           systemPrompt: |-
             Bạn là trợ lý từ điển dành cho người học ngôn ngữ.
 
@@ -353,96 +538,133 @@ options:
             Văn bản chọn: {{selection}}
             Đoạn văn: {{paragraphs}}
             Ngôn ngữ đích: {{targetLanguage}}
-          fieldTerm: "Mục từ"
-          fieldTermDescription: "Dạng cơ bản/dạng gốc của từ được chọn."
-          fieldPhonetic: "Phiên âm"
-          fieldPhoneticDescription: "Phiên âm chuẩn cho ngôn ngữ của từ (ví dụ IPA cho tiếng Anh, pinyin cho tiếng Trung, romaji cho tiếng Nhật)."
-          fieldPartOfSpeech: "Từ loại"
-          fieldPartOfSpeechDescription: "Loại ngữ pháp (ví dụ noun, verb, adjective)."
-          fieldSentence: "Câu"
-          fieldSentenceDescription: "Câu hoàn chỉnh trong các đoạn văn ở trên có chứa từ được chọn. Không kèm các câu trước và sau."
-          fieldSentenceTerm: "Dạng trong câu"
+          fieldTerm: Mục từ
+          fieldTermDescription: Dạng cơ bản/dạng gốc của từ được chọn.
+          fieldPhonetic: Phiên âm
+          fieldPhoneticDescription: Phiên âm chuẩn cho ngôn ngữ của từ (ví dụ IPA cho tiếng Anh, pinyin cho tiếng Trung, romaji cho tiếng Nhật).
+          fieldPartOfSpeech: Từ loại
+          fieldPartOfSpeechDescription: Loại ngữ pháp (ví dụ noun, verb, adjective).
+          fieldSentence: Câu
+          fieldSentenceDescription: Câu hoàn chỉnh trong các đoạn văn ở trên có chứa từ được chọn. Không kèm các câu trước và sau.
+          fieldSentenceTerm: Dạng trong câu
           fieldSentenceTermDescription: 'Vị trí của từ được chọn trong Câu: một mảng JSON được tuần tự hóa thành chuỗi, mỗi phần của từ là một phần tử {"text": chuỗi}, mỗi phần tử trích nguyên văn Câu (ví dụ [{"text":"blossoms"}]).'
-          fieldDefinition: "Định nghĩa"
-          fieldDefinitionDescription: "Một định nghĩa ngắn gọn cho nghĩa trong ngữ cảnh."
-          fieldSentenceTranslation: "Bản dịch câu"
-          fieldSentenceTranslationDescription: "Bản dịch chỉ của Câu."
-          fieldMemoryTips: "Mẹo ghi nhớ"
+          fieldDefinition: Định nghĩa
+          fieldDefinitionDescription: Một định nghĩa ngắn gọn cho nghĩa trong ngữ cảnh.
+          fieldSentenceTranslation: Bản dịch câu
+          fieldSentenceTranslationDescription: Bản dịch chỉ của Câu.
+          fieldMemoryTips: Mẹo ghi nhớ
           fieldMemoryTipsDescription: "Cách ghi nhớ từ: tối đa 3 mẹo, mỗi mẹo một dòng, mỗi dòng bắt đầu bằng tên kỹ thuật và dấu hai chấm (ví dụ: Cấu tạo từ: …); chuỗi rỗng nếu không có gì thật sự hữu ích."
-          fieldDifficulty: "Độ khó"
+          fieldDifficulty: Độ khó
           fieldDifficultyDescription: "Cấp độ khó CEFR ước tính: A1, A2, B1, B2, C1 hoặc C2."
         sentenceAnalysis:
-          name: "Phân tích câu"
+          name: Phân tích câu
           description: "Đánh dấu câu dài như giáo viên: nòng cốt, từng mệnh đề và chỗ khó"
-          fieldSentence: "Câu"
-          fieldAnnotations: "Chú thích"
-          fieldTranslation: "Bản dịch"
+          fieldSentence: Câu
+          fieldAnnotations: Chú thích
+          fieldTranslation: Bản dịch
           roles:
-            subject: "Chủ ngữ"
-            predicate: "Vị ngữ"
-            object: "Tân ngữ"
-            complement: "Bổ ngữ"
-            attributive: "Định ngữ"
-            adverbial: "Trạng ngữ"
-            appositive: "Đồng vị ngữ"
-            connector: "Liên từ"
+            subject: Chủ ngữ
+            predicate: Vị ngữ
+            object: Tân ngữ
+            complement: Bổ ngữ
+            attributive: Định ngữ
+            adverbial: Trạng ngữ
+            appositive: Đồng vị ngữ
+            connector: Liên từ
           clauses:
-            subject: "Mệnh đề chủ ngữ"
-            object: "Mệnh đề tân ngữ"
-            complement: "Mệnh đề bổ ngữ"
-            attributive: "Mệnh đề quan hệ"
-            adverbial: "Mệnh đề trạng ngữ"
-            appositive: "Mệnh đề đồng vị"
-            clause: "Mệnh đề"
+            subject: Mệnh đề chủ ngữ
+            object: Mệnh đề tân ngữ
+            complement: Mệnh đề bổ ngữ
+            attributive: Mệnh đề quan hệ
+            adverbial: Mệnh đề trạng ngữ
+            appositive: Mệnh đề đồng vị
+            clause: Mệnh đề
           adverbialClauses:
-            time: "Mệnh đề thời gian"
-            place: "Mệnh đề nơi chốn"
-            cause: "Mệnh đề nguyên nhân"
-            condition: "Mệnh đề điều kiện"
-            concession: "Mệnh đề nhượng bộ"
-            purpose: "Mệnh đề mục đích"
-            result: "Mệnh đề kết quả"
-            manner: "Mệnh đề cách thức"
-            comparison: "Mệnh đề so sánh"
+            time: Mệnh đề thời gian
+            place: Mệnh đề nơi chốn
+            cause: Mệnh đề nguyên nhân
+            condition: Mệnh đề điều kiện
+            concession: Mệnh đề nhượng bộ
+            purpose: Mệnh đề mục đích
+            result: Mệnh đề kết quả
+            manner: Mệnh đề cách thức
+            comparison: Mệnh đề so sánh
           forms:
-            infinitive: "Nguyên mẫu"
-            gerund: "Danh động từ"
-            presentParticiple: "V-ing"
-            pastParticiple: "V-ed"
+            infinitive: Nguyên mẫu
+            gerund: Danh động từ
+            presentParticiple: V-ing
+            pastParticiple: V-ed
           senses:
-            time: "Thời gian"
-            place: "Nơi chốn"
-            cause: "Nguyên nhân"
-            condition: "Điều kiện"
-            concession: "Nhượng bộ"
-            purpose: "Mục đích"
-            result: "Kết quả"
-            manner: "Cách thức"
-            comparison: "So sánh"
+            time: Thời gian
+            place: Nơi chốn
+            cause: Nguyên nhân
+            condition: Điều kiện
+            concession: Nhượng bộ
+            purpose: Mục đích
+            result: Kết quả
+            manner: Cách thức
+            comparison: So sánh
           obstacles:
-            inversion: "Đảo ngữ"
-            fronting: "Đưa lên đầu"
-            ellipsis: "Tỉnh lược"
-            passive: "Bị động"
-            subjunctive: "Giả định"
-            parenthesis: "Chèn"
-            dummyIt: "It giả"
-            postponedSubject: "Chủ ngữ thật"
-            cleft: "Câu chẻ"
-            comparison: "So sánh"
-            negation: "Phủ định"
-            split: "Tách rời"
-            idiom: "Thành ngữ"
+            inversion: Đảo ngữ
+            fronting: Đưa lên đầu
+            ellipsis: Tỉnh lược
+            passive: Bị động
+            subjunctive: Giả định
+            parenthesis: Chèn
+            dummyIt: It giả
+            postponedSubject: Chủ ngữ thật
+            cleft: Câu chẻ
+            comparison: So sánh
+            negation: Phủ định
+            split: Tách rời
+            idiom: Thành ngữ
           restoreLabel: "Trật tự thường:"
-          hardLabel: "Khó"
-          trunkLabel: "Chỉ xem nòng cốt"
-          slashesLabel: "Ngắt câu"
+          hardLabel: Khó
+          trunkLabel: Chỉ xem nòng cốt
+          slashesLabel: Ngắt câu
+        improveWriting:
+          name: Cải thiện bài viết
+          description: "Chấm như giáo viên: đánh dấu lỗi và cách diễn đạt chưa tự nhiên, sửa lại cho hợp hoàn cảnh"
+          fieldOriginal: Bản gốc
+          fieldSetting: Ngữ cảnh
+          fieldAnnotations: Chú thích
+          fieldImproved: Bản đã sửa
+          fieldSummary: Nhận xét
+          types:
+            spelling: Chính tả
+            grammar: Ngữ pháp
+            punctuation: Dấu câu
+            wordChoice: Dùng từ
+            logic: Logic
+            unnatural: Thiếu tự nhiên
+            register: Văn phong
+            clarity: Rõ ràng
+            good: Điểm hay
+          tiers:
+            error: Lỗi
+            awkward: Chưa ổn
+            good: Điểm hay
+          hideFixesLabel: Ẩn đáp án
+          hiddenHintLabel: Hãy tự sửa trước đã.
+          showImprovedLabel: Hiện bản đã sửa
+          improvedLabel: Bản đã sửa
+          copyLabel: Sao chép
+          unchangedLabel: Không cần sửa
+          removeLabel: xóa
         blank:
           prompt: |-
             ## Đầu vào
             Văn bản chọn: {{selection}}
             Đoạn văn: {{paragraphs}}
             Ngôn ngữ đích: {{targetLanguage}}
+      errors:
+        nameRequired: Tên là bắt buộc
+        duplicateName: Tên hành động trùng lặp "$1"
+        invalidIcon: Chuỗi biểu tượng Iconify không hợp lệ
+        providerRequired: Vui lòng chọn một nhà cung cấp LLM đã bật
+        outputSchemaRequired: Thêm ít nhất một trường đầu ra
+        fieldKeyRequired: Tên trường là bắt buộc
+        duplicateFieldKey: Tên trường phải là duy nhất
   contextMenu:
     title: Menu ngữ cảnh
     pageDescription: Kiểm soát các mục Read Frog Lite trong menu chuột phải của trình duyệt.
@@ -651,6 +873,169 @@ options:
       searchPlaceholder: Tìm theo id, mô tả hoặc mẫu URL
       showMore: Hiển thị thêm
       count: Đang hiển thị $1 / $2 quy tắc
+  inputTranslation:
+    title: Dịch đầu vào
+    pageDescription: Dịch nội dung bạn gõ trong ô nhập trước khi gửi đi.
+    trigger:
+      title: Kích hoạt
+      enable:
+        title: Bật
+        description: Nhấn phím cách nhanh ba lần trong bất kỳ ô nhập nào để dịch nội dung bạn vừa gõ.
+      threshold:
+        title: Ngưỡng kích hoạt
+        description: Khoảng cách tối đa giữa các lần nhấn, tính bằng mili giây. Tăng lên nếu không kích hoạt được, giảm xuống nếu bị kích hoạt khi đang gõ.
+        error: Nhập giá trị từ $1 đến $2
+    languages:
+      title: Ngôn ngữ dịch
+      pair:
+        title: Cặp ngôn ngữ
+        description: Văn bản bạn gõ được đọc theo ngôn ngữ nào và dịch sang ngôn ngữ nào. Cả hai bên đều có thể theo ngôn ngữ nguồn và đích bạn dùng khi dịch trang.
+      sourceCode: Ngôn ngữ nguồn trang
+      targetCode: Ngôn ngữ đích của bản dịch
+      cycle:
+        title: Đổi hướng mỗi lần
+        description: Mỗi lần kích hoạt sẽ hoán đổi hai ngôn ngữ, nên lần kích hoạt sau sẽ đưa văn bản về ngôn ngữ bạn đã gõ.
+  floatingButton:
+    title: Nút nổi
+    pageDescription: Đặt vị trí nút nổi, hành động khi nhấp và những trang web cần ẩn nút.
+    demoImageAlt: Demo nút nổi
+    enable:
+      title: Bật nút nổi
+      description: Hiển thị nút nổi trên các trang web để truy cập nhanh các tính năng Read Frog
+    display:
+      title: Hiển thị
+      side:
+        title: Vị trí nút
+        description: Chọn cạnh của trang để ghim nút nổi
+        left: Bên trái
+        right: Bên phải
+      disabledSites:
+        title: Trang web đã tắt
+        description: Cấu hình các trang web mà nút nổi nên bị tắt
+        enterUrlPattern: Nhập mẫu URL
+        urlPattern: Mẫu URL
+    clickAction:
+      title: Hành động khi nhấn
+      description: Chọn hành động khi nhấn vào nút nổi
+      panel: Mở bảng điều khiển bên
+      translate: Bật/tắt dịch trang
+    closeMenu:
+      disableForSite: Tắt cho trang web này
+      disableGlobally: Tắt toàn cục
+    tooltips:
+      togglePageTranslation: Bật/tắt dịch trang
+      floatingButtonOptions: Tùy chọn nút nổi
+      lockPosition: Khóa vị trí
+      unlockPosition: Mở khóa vị trí
+      settings: Cài đặt
+      feedback: Gửi phản hồi
+  advanced:
+    glossary:
+      title: Bảng thuật ngữ
+      pageDescription: Đặt bản dịch cố định cho những từ quan trọng với bạn, và chọn nơi áp dụng cho từng danh sách.
+      untitled: Bảng thuật ngữ chưa đặt tên
+      noGlossaries: Chưa có bảng thuật ngữ nào.
+      enable:
+        title: Bật
+        description: Gửi các thuật ngữ khớp cho LLM để dịch đúng theo cách bạn muốn. Bảng thuật ngữ được gửi kèm trong câu lệnh, nên nó chỉ áp dụng cho các tính năng chạy trên nhà cung cấp LLM.
+      library:
+        title: Bảng thuật ngữ của bạn
+        description: Mỗi bảng thuật ngữ có thuật ngữ riêng và danh sách trang web riêng, nên bộ thuật ngữ dùng cho công việc sẽ không đi theo bạn sang mọi nơi khác.
+        button: Thêm bảng thuật ngữ
+        capReached: Bạn chỉ có thể có tối đa $1 bảng thuật ngữ.
+        termUsage: Đã dùng $1/$2 thuật ngữ, tính chung cho tất cả bảng thuật ngữ
+      summary:
+        terms: $1 thuật ngữ
+        termsOne: 1 thuật ngữ
+        allSites: Tất cả trang web
+        sites: $1 trang web
+        sitesOne: 1 trang web
+      editor:
+        docsLink: Nó hoạt động thế nào?
+        sections:
+          terms: Thuật ngữ
+          maintenance: Sao lưu và xóa
+        details:
+          title: Tên và mô tả
+          descriptionPlaceholder: Mô tả (tùy chọn)
+        enable:
+          title: Bật
+          description: Bảng thuật ngữ đã tắt vẫn giữ các thuật ngữ nhưng không gửi thuật ngữ nào.
+        sites:
+          title: Trang web
+          description: Giới hạn bảng thuật ngữ này cho một số trang web nhất định. example.com chỉ là địa chỉ đó; *.example.com thêm tên miền phụ; example.com/docs/* thu hẹp vào một phần của trang.
+          allSites: Để trống thì bảng thuật ngữ sẽ áp dụng ở mọi nơi.
+          header: Trang web
+        delete:
+          title: Xóa bảng thuật ngữ này
+          description: Xóa bảng thuật ngữ này cùng toàn bộ thuật ngữ trong đó. Hãy xuất trước nếu bạn có thể cần dùng lại — việc xóa không thể hoàn tác.
+          dialog:
+            trigger: Xóa
+            title: Xóa bảng thuật ngữ này?
+            description: Bảng thuật ngữ và toàn bộ $1 thuật ngữ trong đó sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.
+            confirm: Xóa
+            cancel: Hủy
+      addTerm:
+        title: Thêm thuật ngữ
+        description: Đặt bản dịch bạn muốn cho một thuật ngữ, hoặc để trống bản dịch để giữ nguyên bản gốc.
+      list:
+        title: Thuật ngữ của bạn
+        description: Chỉ những thuật ngữ xuất hiện trong đoạn văn mới được gửi kèm đoạn đó.
+      importExport:
+        title: Nhập và xuất
+        description: Thuật ngữ là tệp CSV gồm các cột source, target, targetLanguage và caseSensitive — đúng tệp mà Xuất tạo ra.
+      sourcePlaceholder: Thuật ngữ
+      targetPlaceholder: Bản dịch (để trống để giữ nguyên bản gốc)
+      caseSensitive: Phân biệt chữ hoa/thường
+      add: Thêm
+      searchPlaceholder: Tìm thuật ngữ
+      columnEnabled: Bật
+      columnSource: Thuật ngữ
+      columnTarget: Bản dịch
+      columnTargetLanguage: Ngôn ngữ đích
+      allLanguages: Tất cả ngôn ngữ
+      toggleTerm: Dùng $1
+      editTerm: Sửa $1
+      keepOriginal: Giữ nguyên bản gốc
+      delete: Xóa
+      save: Lưu
+      cancel: Hủy
+      loading: Đang tải...
+      empty: Chưa có thuật ngữ nào. Thêm ở trên hoặc nhập từ tệp CSV.
+      noMatches: Không có thuật ngữ nào khớp với tìm kiếm.
+      previous: Trước
+      next: Sau
+      pageOf: $1 / $2
+      addError:
+        emptySource: Hãy nhập thuật ngữ trước.
+        tooLong: Thuật ngữ này quá dài.
+        capReached: Tất cả bảng thuật ngữ của bạn cộng lại đã đạt giới hạn $1 thuật ngữ.
+        duplicate: Thuật ngữ này đã có trong bảng thuật ngữ.
+      import: Nhập
+      export: Xuất
+      importModeMerge: Thêm vào danh sách
+      importModeReplace: Thay thế danh sách
+      importEmpty: Không tìm thấy thuật ngữ nào trong tệp đó.
+      importMissingHeader: "Tệp đó không phải là tệp xuất bộ thuật ngữ của Read Frog. Nó cần các cột sau:"
+      importOverflow: Lần nhập này sẽ vượt giới hạn $1 thuật ngữ. Không có gì thay đổi.
+      importSuccess: Đã nhập $1 thuật ngữ mới và cập nhật $2 thuật ngữ.
+      importSkipped: Đã bỏ qua $1 dòng không hợp lệ và $2 mục trùng lặp.
+      importNoValidRows: Không thể nhập bất kỳ dòng nào trong số đó. Không có gì thay đổi.
+      importReplaceConfirm:
+        title: Thay thế toàn bộ danh sách?
+        description: Toàn bộ $1 thuật ngữ trong bảng thuật ngữ này sẽ bị xóa — ở mọi ngôn ngữ đích, không chỉ ngôn ngữ đang chọn — và được thay bằng nội dung của tệp này. Không thể hoàn tác.
+        confirm: Thay thế
+        cancel: Hủy
+      deleteAll:
+        title: Xóa tất cả thuật ngữ
+        description: Làm trống bảng thuật ngữ của bạn. Hãy xuất trước nếu bạn có thể cần dùng lại — việc xóa không thể hoàn tác.
+        deleting: Đang xóa...
+        dialog:
+          title: Xóa tất cả thuật ngữ
+          trigger: Xóa tất cả
+          confirm: Xác nhận
+          cancel: Hủy
+          description: Toàn bộ $1 thuật ngữ sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -671,6 +1056,11 @@ action:
   contextDetailsTitleLabel: Tiêu đề
   contextDetailsParagraphsLabel: Các đoạn văn
   translation: Dịch
+  moreActions: Thêm thao tác
+  addCustomAction: Thêm hành động AI tùy chỉnh
+  unpinFromToolbar: Bỏ ghim khỏi thanh công cụ
+  pinToToolbar: Ghim vào thanh công cụ
+  dragToReorder: Kéo để sắp xếp lại
 thinking:
   label: Đang suy luận
   complete: Suy luận hoàn tất
@@ -872,3 +1262,6 @@ translationHub:
   noLanguagesFound: Không tìm thấy ngôn ngữ
   translationFailed: Dịch Thất Bại
   translationFailedFallback: Dịch thất bại
+dataTypes:
+  string: Văn bản
+  number: Số

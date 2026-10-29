@@ -158,9 +158,11 @@ options:
       features:
         pageTranslation: Traducción de página
         selectionTranslation: Traducción de la barra de selección
+        inputTranslation: Traducción de entrada
       descriptions:
         pageTranslation: Traduce la página completa en modo bilingüe o de reemplazo.
         selectionTranslation: Traduce el texto que seleccionas desde la barra de selección.
+        inputTranslation: Traduce lo que escribes en un campo de texto antes de enviarlo.
     aiContentAware:
       title: Traducción con contexto inteligente de IA
       description: Da a la IA contexto de la página o el video para que traduzca con más precisión
@@ -280,11 +282,194 @@ options:
       providerDisabled: El proveedor seleccionado está desactivado
       providerUnavailable: El proveedor seleccionado no está disponible
     customActions:
-      title: AI explanations
+      title: Acciones AI personalizadas
+      pageDescription: Escribe tus propios prompts y ejecútalos sobre el texto seleccionado desde la barra de selección. Los datos, el estilo y la interacción de cada resultado son totalmente personalizables.
       description: Añade tus propias acciones AI estructuradas para texto seleccionado
+      configTitle: Configuración de acciones
+      introVideo:
+        trigger: Ver vídeo
+        title: Acciones AI personalizadas en 30 segundos
+      builtIn: Integrada
+      add: Añadir acción AI
+      edit: Editar acción AI
+      empty: Aún no hay acciones AI personalizadas
+      noEnabledLlmProvider: Activa al menos un proveedor LLM antes de crear acciones AI personalizadas
+      tabs:
+        config: Configuración
+        notebase: Notebase
+        hasErrors: Hay errores
+        connected: Conectado
+        needsAttention: Requiere atención
       form:
+        name: Nombre
+        customize: Personalizar
+        customizeTooltip: Las instrucciones integradas no permiten cambiar los prompts. Haz clic aquí para crear una copia editable y modificar los prompts.
+        aiConfigHelper:
+          trigger: Configurar con IA
+          title: Configurar con IA
+          description: Copia el prompt de abajo y pégalo en tu asistente de IA (ChatGPT, Claude, DeepSeek, Kimi…). Primero te preguntará qué quieres y luego te dirá qué poner en cada ajuste. El prompt incluye la configuración actual de esta acción, pero no las claves de API.
+          copy: Copiar prompt
+          copyFailed: No se pudo copiar el prompt. Inténtalo de nuevo.
+        icon: Icono
+        iconField:
+          chooseAriaLabel: Elegir icono
+          chooseTitle: Elegir un icono
+          inputPlaceholder: Introduce el nombre del icono
+          helpAriaLabel: Más ayuda sobre iconos
+          helpTitle: ¿No encuentras el icono que quieres?
+          helpStepBrowsePrefix: Busca iconos en
+          helpStepBrowseSuffix: ""
+          helpStepCopyPrefix: "Copia el nombre del icono, por ejemplo "
+          helpStepCopySuffix: ", y pégalo en el campo."
+        provider: Proveedor (requiere compatibilidad con salida estructurada)
         selectProvider: Selecciona un proveedor
+        systemPrompt: Prompt del sistema
+        prompt: Prompt
+        outputSchema: Esquema de salida
+        addField: Añadir campo
+        fieldName: Nombre del campo
+        fieldType: Tipo de campo
+        fieldDescription: Descripción
+        fieldDescriptionPlaceholder: Describe qué debe contener este campo...
+        actions: Acciones
+        cancel: Cancelar
+        save: Guardar
         defaultFieldName: Resultado
+        fieldNamePlaceholder: Nombre del campo
+        selectionField: Texto seleccionado
+        selectionFieldDescription: El texto que seleccionaste, guardado tal cual. La IA no lo escribe.
+        autoFieldPrefix: Campo
+        addFieldDialog:
+          title: Añadir campo de salida
+        editFieldDialog:
+          title: Editar campo de salida
+          save: Guardar
+        deleteFieldDialog:
+          title: ¿Eliminar campo de salida?
+          description: Este campo de salida se eliminará.
+          confirm: Eliminar
+          cancel: Cancelar
+        layout:
+          title: Diseño
+          description: Cómo se muestra el resultado en la ventana emergente. HTML con Liquid; los campos se rellenan a medida que llega la respuesta.
+          reset: Restaurar predeterminado
+          resetFieldList: Lista de campos
+          resetDictionary: Tarjeta de diccionario
+          resetSentenceAnalysis: Tarjeta de análisis de oraciones
+          resetImproveWriting: Tarjeta de mejora de escritura
+          resetConfirmTitle: ¿Reemplazar este diseño?
+          resetConfirmDescription: Se reemplazará el contenido del editor. Después aún podrás deshacerlo en el editor.
+          resetConfirm: Reemplazar
+          edit: Editar
+          preview: Vista previa
+          width: Ancho
+          themeLight: Claro
+          themeDark: Oscuro
+          replay: Reproducir
+          sampleData: Datos de ejemplo
+          sampleDataHint: Solo se usan en esta vista previa y nunca se guardan.
+          sampleDataSavedHint: Solo se usan en esta vista previa y se guardan con esta instrucción.
+          sampleDataReset: Restablecer ejemplos
+          sampleSelection: Texto seleccionado
+          sampleTargetLanguage: Idioma de destino
+          insertField: Campo
+          insertSpeak: Botón de lectura
+          insertCondition: Si tiene valor
+          insertContext: Contexto
+          insertLoop: Todos los campos
+          syntaxHelp: Sintaxis
+          builtInHint: El diseño de una acción integrada no se puede editar. Personalízala para editar una copia.
+          viewSource: Ver código
+          emptyNotice: Este diseño está vacío, así que la ventana emergente muestra la lista de campos predeterminada.
+          fallbackBanner: Este diseño no se puede mostrar, así que se usa el diseño predeterminado. $1
+          sanitized: "Eliminado por seguridad: $1"
+          unusedFields: "No aparecen en este diseño:"
+          tooLong: Un diseño puede tener como máximo $1 caracteres.
+          renameSkipped: El diseño aún hace referencia a «$1». Actualízalo a mano.
+          reservedName: «ctx» y «forloop» están reservados en los diseños. Elige otro nombre.
+          help:
+            output: Muestra el valor de un campo. El HTML del valor se escapa.
+            condition: Muestra el contenido solo cuando el campo tiene un valor.
+            loop: Se repite para cada campo, en orden. Puedes usar f.name, f.value y f.type.
+            speak: Cualquier elemento con data-speak lee en voz alta el valor (o su propio texto si el valor está vacío) cuando la respuesta termina.
+            speakLang: data-speak-lang indica el idioma de lectura (un código como es o en-US) para usar la voz de ese idioma. Sin él, el idioma se detecta, algo que suele fallar con una sola palabra.
+            speakAutoplay: Un elemento con data-speak-autoplay se lee en voz alta por sí solo cuando la respuesta termina. Solo suena el primero.
+            status: Aplica estilos según el estado. El data-status del contenedor es streaming, done o error.
+            filters: newline_to_br conserva los saltos de línea (úsalo al final); lines divide el texto en una lista de líneas.
+            styles: El CSS de un bloque <style> solo se aplica dentro de este resultado. Los colores --rf-* siguen los temas claro y oscuro.
+          lint:
+            parseError: "Error de sintaxis de Liquid: $1"
+            unknownField: No hay ningún campo llamado «$1».
+            unknownContextKey: "ctx no tiene «$1». Disponibles: $2."
+            fieldShadowedByLocal: Este diseño asigna «$1», lo que oculta el campo con ese nombre.
+            liquidInStyle: Liquid no se ejecuta dentro de <style>; esto se conserva como texto.
+            styleInConditional: Un bloque <style> siempre se aplica, aunque esté dentro de una etiqueta «$1».
+            cssImport: "@import se elimina. Los diseños no pueden cargar estilos externos."
+            cssFontFace: "@font-face se elimina. Usa fuentes que ya estén en el dispositivo."
+            unquotedAttributeOutput: Pon comillas alrededor de este valor de atributo, o el valor podría salirse de él.
+            filterIgnored: Los filtros se ignoran en una etiqueta «$1». Asigna primero el valor filtrado.
+            newlineToBrNotLast: newline_to_br solo funciona como último filtro de una salida.
+            tooLong: Este diseño supera los $1 caracteres y no se puede guardar.
+            fieldNotShown: «$1» no aparece en este diseño.
+            reservedFieldName: El nombre de campo «$1» está reservado en los diseños. Cambia el nombre del campo.
+        notebase:
+          title: Conexión de Notebase
+          description: Guarda los resultados estructurados de esta acción en una Notebase remota.
+          loginRequiredTitle: Inicia sesión para configurar Notebase
+          loginRequiredDescription: Inicia sesión en readfrog.app antes de elegir una Notebase o editar asignaciones.
+          loginRequiredConnectedDescription: Esta conexión fue creada por la cuenta de abajo. Si inicias sesión con la misma cuenta, se restaurarán las asignaciones de campos. Si inicias sesión con otra cuenta, las asignaciones anteriores se borrarán al crear o conectar una Notebase.
+          loginAction: Iniciar sesión
+          connectedAccountLabel: Cuenta conectada
+          currentAccountLabel: Cuenta actual
+          unknownConnectedAccount: Cuenta desconocida
+          tableLabel: Notebase
+          tablePlaceholder: Selecciona una Notebase
+          tableClearOption: Desconectar Notebase
+          clearConnectionAction: Borrar conexión
+          refreshAction: Actualizar
+          emptyTitle: Aún no hay Notebases
+          emptyDescription: Crea una Notebase en readfrog.app y vuelve aquí para asignar campos.
+          openNotebaseAction: Abrir Notebase
+          accessDeniedTitle: No se puede acceder a Notebase
+          accessDeniedDescription: Esta cuenta no tiene permiso para cargar datos de Notebase.
+          listErrorTitle: No se pudieron cargar las Notebases
+          listErrorDescription: Intenta actualizar la lista de Notebase de nuevo en un momento.
+          accountMismatchTitle: La conexión de Notebase pertenece a otra cuenta
+          accountMismatchDescription: Esta conexión está vinculada a la cuenta conectada de abajo. Bórrala o elige una Notebase disponible para la cuenta actual.
+          tableUnavailableTitle: La Notebase seleccionada ya no está disponible
+          tableUnavailableDescription: Esta Notebase ya no existe o no se puede abrir. Borra la conexión o elige otra Notebase.
+          tableUnavailableOption: no disponible
+          schemaErrorTitle: No se pudo cargar el esquema de la Notebase
+          schemaErrorDescription: Intenta actualizar el esquema de nuevo en un momento.
+          schemaLoading: Cargando esquema de la Notebase...
+          mappingsLabel: Asignaciones de campos
+          localFieldLabel: Campo de acción
+          remoteFieldLabel: Campo de Notebase
+          columnUnavailableOption: eliminado
+          invalidMappingsTitle: Algunas asignaciones requieren atención
+          invalidMappingsDescription: Las asignaciones no válidas se conservan. Corrígelas antes de guardar en Notebase.
+          noFieldSavedTitle: Ningún campo se guarda en esta Notebase
+          noFieldSavedDescription: Elige un campo de Notebase para al menos un campo y así poder guardar notas.
+          mappingSummary: Se guardan $1 · Omitidos $2 · Sin decidir $3
+          skipFieldOption: No guardar
+          undecidedFieldPlaceholder: Elige un campo de Notebase o no guardar
+          mappingMissingLocal: El campo de acción asignado ya no existe.
+          mappingMissingRemote: El campo de Notebase asignado ya no existe.
+          mappingMissingSchema: Actualiza el esquema de la Notebase para validar esta asignación.
+          mappingIncompatible: Los tipos de campo ya no coinciden.
+        tokens:
+          selection: Contenido del texto seleccionado
+          paragraphs: Texto de párrafos intersectados unido con líneas en blanco, truncado a los primeros 2000 caracteres cuando se envía a acciones AI personalizadas
+          targetLanguage: Idioma de destino del usuario
+          webTitle: Título de la página web
+          webUrl: URL completa de la página actual
+          webContent: Contenido de la página web extraído de la página actual, truncado a los primeros 2000 caracteres
+        delete: Eliminar
+        deleteDialog:
+          title: ¿Eliminar acción personalizada?
+          description: Esta acción no se puede deshacer.
+          confirm: Eliminar
+          cancel: Cancelar
       templates:
         dialogTitle: Elegir una plantilla
         dialogDescription: Selecciona una plantilla para crear rápidamente una nueva acción AI, o empieza desde cero.
@@ -370,76 +555,105 @@ options:
           fieldDefinitionDescription: Una definición concisa para el sentido contextual.
           fieldSentenceTranslation: Traducción de la oración
           fieldSentenceTranslationDescription: La traducción únicamente de la Oración.
-          fieldMemoryTips: "Trucos para recordar"
+          fieldMemoryTips: Trucos para recordar
           fieldMemoryTipsDescription: "Formas de recordar el término: hasta 3 trucos, uno por línea, cada uno empieza con su técnica y dos puntos (p. ej., Formación: …); una cadena vacía si nada ayuda de verdad."
           fieldDifficulty: Dificultad
           fieldDifficultyDescription: Nivel de dificultad CEFR estimado A1, A2, B1, B2, C1 o C2.
         sentenceAnalysis:
-          name: "Análisis de oraciones"
+          name: Análisis de oraciones
           description: "Marca una oración larga como un profesor: su núcleo, cada cláusula y lo que la hace difícil"
-          fieldSentence: "Oración"
-          fieldAnnotations: "Anotaciones"
-          fieldTranslation: "Traducción"
+          fieldSentence: Oración
+          fieldAnnotations: Anotaciones
+          fieldTranslation: Traducción
           roles:
-            subject: "Sujeto"
-            predicate: "Predicado"
-            object: "Objeto"
-            complement: "Complemento"
-            attributive: "Atributivo"
-            adverbial: "Adverbial"
-            appositive: "Aposición"
-            connector: "Conector"
+            subject: Sujeto
+            predicate: Predicado
+            object: Objeto
+            complement: Complemento
+            attributive: Atributivo
+            adverbial: Adverbial
+            appositive: Aposición
+            connector: Conector
           clauses:
-            subject: "Cláusula sujeto"
-            object: "Cláusula objeto"
-            complement: "Cláusula complemento"
-            attributive: "Cláusula de relativo"
-            adverbial: "Cláusula adverbial"
-            appositive: "Cláusula apositiva"
-            clause: "Cláusula"
+            subject: Cláusula sujeto
+            object: Cláusula objeto
+            complement: Cláusula complemento
+            attributive: Cláusula de relativo
+            adverbial: Cláusula adverbial
+            appositive: Cláusula apositiva
+            clause: Cláusula
           adverbialClauses:
-            time: "Cláusula temporal"
-            place: "Cláusula de lugar"
-            cause: "Cláusula causal"
-            condition: "Cláusula condicional"
-            concession: "Cláusula concesiva"
-            purpose: "Cláusula final"
-            result: "Cláusula consecutiva"
-            manner: "Cláusula modal"
-            comparison: "Cláusula comparativa"
+            time: Cláusula temporal
+            place: Cláusula de lugar
+            cause: Cláusula causal
+            condition: Cláusula condicional
+            concession: Cláusula concesiva
+            purpose: Cláusula final
+            result: Cláusula consecutiva
+            manner: Cláusula modal
+            comparison: Cláusula comparativa
           forms:
-            infinitive: "Infinitivo"
-            gerund: "Gerundio"
-            presentParticiple: "-ing"
-            pastParticiple: "Participio"
+            infinitive: Infinitivo
+            gerund: Gerundio
+            presentParticiple: -ing
+            pastParticiple: Participio
           senses:
-            time: "Tiempo"
-            place: "Lugar"
-            cause: "Causa"
-            condition: "Condición"
-            concession: "Concesión"
-            purpose: "Finalidad"
-            result: "Resultado"
-            manner: "Modo"
-            comparison: "Comparación"
+            time: Tiempo
+            place: Lugar
+            cause: Causa
+            condition: Condición
+            concession: Concesión
+            purpose: Finalidad
+            result: Resultado
+            manner: Modo
+            comparison: Comparación
           obstacles:
-            inversion: "Inversión"
-            fronting: "Anteposición"
-            ellipsis: "Elipsis"
-            passive: "Pasiva"
-            subjunctive: "Subjuntivo"
-            parenthesis: "Inciso"
-            dummyIt: "Sujeto formal"
-            postponedSubject: "Sujeto real"
-            cleft: "Escindida"
-            comparison: "Comparación"
-            negation: "Negación"
-            split: "Separado"
-            idiom: "Modismo"
+            inversion: Inversión
+            fronting: Anteposición
+            ellipsis: Elipsis
+            passive: Pasiva
+            subjunctive: Subjuntivo
+            parenthesis: Inciso
+            dummyIt: Sujeto formal
+            postponedSubject: Sujeto real
+            cleft: Escindida
+            comparison: Comparación
+            negation: Negación
+            split: Separado
+            idiom: Modismo
           restoreLabel: "Orden normal:"
-          hardLabel: "Difícil"
-          trunkLabel: "Esqueleto"
-          slashesLabel: "Pausas"
+          hardLabel: Difícil
+          trunkLabel: Esqueleto
+          slashesLabel: Pausas
+        improveWriting:
+          name: Mejorar escritura
+          description: Marca errores y expresiones poco naturales como un profesor, y los corrige según la situación
+          fieldOriginal: Versión original
+          fieldSetting: Contexto
+          fieldAnnotations: Anotaciones
+          fieldImproved: Versión mejorada
+          fieldSummary: Resumen
+          types:
+            spelling: Ortografía
+            grammar: Gramática
+            punctuation: Puntuación
+            wordChoice: Léxico
+            logic: Lógica
+            unnatural: Poco natural
+            register: Registro
+            clarity: Claridad
+            good: Acierto
+          tiers:
+            error: Error
+            awkward: Mejorable
+            good: Acierto
+          hideFixesLabel: Ocultar correcciones
+          hiddenHintLabel: Primero intenta corregirlo tú.
+          showImprovedLabel: Mostrar versión mejorada
+          improvedLabel: Versión mejorada
+          copyLabel: Copiar
+          unchangedLabel: No hay nada que cambiar
+          removeLabel: eliminar
         blank:
           name: En blanco
           description: Empieza desde cero con una acción vacía
@@ -448,6 +662,14 @@ options:
             Selección: {{selection}}
             Párrafos: {{paragraphs}}
             Idioma de destino: {{targetLanguage}}
+      errors:
+        nameRequired: El nombre es obligatorio
+        duplicateName: Nombre de acción duplicado "$1"
+        invalidIcon: Cadena de icono Iconify no válida
+        providerRequired: Selecciona un proveedor LLM activado
+        outputSchemaRequired: Añade al menos un campo de salida
+        fieldKeyRequired: El nombre del campo es obligatorio
+        duplicateFieldKey: Los nombres de campo deben ser únicos
   contextMenu:
     title: Menú contextual
     pageDescription: Controla las opciones de Read Frog Lite en el menú contextual del navegador.
@@ -656,6 +878,169 @@ options:
       searchPlaceholder: Buscar por id, descripción o patrón de URL
       showMore: Mostrar más
       count: Mostrando $1 de $2 reglas
+  inputTranslation:
+    title: Traducción de entrada
+    pageDescription: Traduce lo que escribes en los campos de texto antes de enviarlo.
+    trigger:
+      title: Activación
+      enable:
+        title: Activar
+        description: Pulsa la barra espaciadora tres veces seguidas en cualquier campo de entrada para traducir lo que has escrito.
+      threshold:
+        title: Umbral de activación
+        description: Cuánto pueden separarse las pulsaciones, en milisegundos. Auméntalo si la traducción no llega a activarse; redúcelo si salta mientras escribes.
+        error: Introduce un valor entre $1 y $2
+    languages:
+      title: Idiomas de traducción
+      pair:
+        title: Par de idiomas
+        description: En qué idioma se lee el texto que escribes y a cuál se traduce. Ambos lados pueden seguir los idiomas de origen y destino con los que traduces páginas.
+      sourceCode: Idioma de origen de la página
+      targetCode: Idioma de destino de la traducción
+      cycle:
+        title: Intercambiar dirección cada vez
+        description: Cada activación intercambia los dos idiomas, así que la siguiente devuelve el texto al idioma en el que escribiste.
+  floatingButton:
+    title: Botón flotante
+    pageDescription: Elige en qué lado se coloca el botón flotante, qué hace al pulsarlo y dónde permanece oculto.
+    demoImageAlt: Demostración del botón flotante
+    enable:
+      title: Activar botón flotante
+      description: Muestra el botón flotante en páginas web para acceder rápidamente a las funciones de Read Frog
+    display:
+      title: Visualización
+      side:
+        title: Lado del botón
+        description: Elige en qué lado de la página se fija el botón flotante
+        left: Izquierda
+        right: Derecha
+      disabledSites:
+        title: Sitios desactivados
+        description: Configura los sitios web donde se debe desactivar el botón flotante
+        enterUrlPattern: Introduce patrón de URL
+        urlPattern: Patrón de URL
+    clickAction:
+      title: Acción al hacer clic
+      description: Elige la acción al hacer clic en el botón flotante
+      panel: Abrir panel lateral
+      translate: Alternar traducción de página
+    closeMenu:
+      disableForSite: Desactivar para este sitio
+      disableGlobally: Desactivar globalmente
+    tooltips:
+      togglePageTranslation: Alternar traducción de página
+      floatingButtonOptions: Opciones del botón flotante
+      lockPosition: Bloquear posición
+      unlockPosition: Desbloquear posición
+      settings: Ajustes
+      feedback: Enviar comentarios
+  advanced:
+    glossary:
+      title: Glosario
+      pageDescription: Da una traducción fija a las palabras que te importan y elige dónde se aplica cada lista.
+      untitled: Glosario sin título
+      noGlossaries: Aún no hay glosarios.
+      enable:
+        title: Activar
+        description: Envía los términos coincidentes al LLM para que los traduzca a tu manera. El glosario viaja dentro del prompt, así que solo se aplica a las funciones que usan un proveedor LLM.
+      library:
+        title: Tus glosarios
+        description: Cada glosario tiene sus propios términos y su propia lista de sitios web, así que un conjunto de términos para el trabajo no te acompaña en todo lo demás.
+        button: Añadir un glosario
+        capReached: Puedes tener como máximo $1 glosarios.
+        termUsage: $1 de $2 términos usados entre todos tus glosarios
+      summary:
+        terms: $1 términos
+        termsOne: 1 término
+        allSites: Todos los sitios web
+        sites: $1 sitios web
+        sitesOne: 1 sitio web
+      editor:
+        docsLink: ¿Cómo funciona?
+        sections:
+          terms: Términos
+          maintenance: Copia de seguridad y eliminación
+        details:
+          title: Nombre y descripción
+          descriptionPlaceholder: Descripción (opcional)
+        enable:
+          title: Activar
+          description: Un glosario desactivado conserva sus términos, pero no envía ninguno.
+        sites:
+          title: Sitios web
+          description: Limita este glosario a determinados sitios web. example.com es solo esa dirección; *.example.com añade subdominios; example.com/docs/* acota a una parte del sitio.
+          allSites: Déjalo vacío y el glosario se aplicará en todas partes.
+          header: Sitio web
+        delete:
+          title: Eliminar este glosario
+          description: Elimina el glosario y todos los términos que contiene. Expórtalo primero si crees que vas a necesitar los términos — esto no se puede deshacer.
+          dialog:
+            trigger: Eliminar
+            title: ¿Eliminar este glosario?
+            description: Se eliminarán permanentemente el glosario y los $1 términos que contiene. Esta acción no se puede deshacer.
+            confirm: Eliminar
+            cancel: Cancelar
+      addTerm:
+        title: Añadir un término
+        description: Dale a un término la traducción que quieras, o déjala vacía para conservar el original.
+      list:
+        title: Tus términos
+        description: Solo se envían los términos que aparecen en un párrafo.
+      importExport:
+        title: Importar y exportar
+        description: "Los términos son un CSV con las columnas source, target, targetLanguage y caseSensitive: el archivo que escribe Exportar."
+      sourcePlaceholder: Término
+      targetPlaceholder: Traducción (déjala vacía para conservar el original)
+      caseSensitive: Distinguir mayúsculas
+      add: Añadir
+      searchPlaceholder: Buscar términos
+      columnEnabled: Activado
+      columnSource: Término
+      columnTarget: Traducción
+      columnTargetLanguage: Idioma de destino
+      allLanguages: Todos los idiomas
+      toggleTerm: Usar $1
+      editTerm: Editar $1
+      keepOriginal: Conservar el original
+      delete: Eliminar
+      save: Guardar
+      cancel: Cancelar
+      loading: Cargando...
+      empty: Aún no hay términos. Añade uno arriba o importa un archivo CSV.
+      noMatches: Ningún término coincide con tu búsqueda.
+      previous: Anterior
+      next: Siguiente
+      pageOf: $1 / $2
+      addError:
+        emptySource: Escribe primero un término.
+        tooLong: Ese término es demasiado largo.
+        capReached: Entre todos tus glosarios has alcanzado el límite de $1 términos.
+        duplicate: Ese término ya está en tu glosario.
+      import: Importar
+      export: Exportar
+      importModeMerge: Añadir a la lista
+      importModeReplace: Reemplazar la lista
+      importEmpty: No se encontraron términos en ese archivo.
+      importMissingHeader: "Ese archivo no es una exportación de glosario de Read Frog. Necesita estas columnas:"
+      importOverflow: Esa importación superaría el límite en $1 términos. No se ha cambiado nada.
+      importSuccess: Se han importado $1 términos nuevos y actualizado $2.
+      importSkipped: Se han omitido $1 filas no válidas y $2 duplicados.
+      importNoValidRows: No se pudo importar ninguna de esas filas. No se cambió nada.
+      importReplaceConfirm:
+        title: ¿Reemplazar toda la lista?
+        description: Se eliminarán los $1 términos de este glosario —en todos los idiomas de destino, no solo en el seleccionado— y se reemplazarán por el contenido de este archivo. Esta acción no se puede deshacer.
+        confirm: Reemplazar
+        cancel: Cancelar
+      deleteAll:
+        title: Eliminar todos los términos
+        description: Vacía tu glosario. Expórtalo primero si crees que vas a necesitar los términos — eliminarlos no se puede deshacer.
+        deleting: Eliminando...
+        dialog:
+          title: Eliminar todos los términos
+          trigger: Eliminar todo
+          confirm: Confirmar
+          cancel: Cancelar
+          description: Se eliminarán permanentemente los $1 términos. Esta acción no se puede deshacer.
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -676,6 +1061,11 @@ action:
   contextDetailsTitleLabel: Título
   contextDetailsParagraphsLabel: Párrafos
   translation: Traducción
+  moreActions: Más acciones
+  addCustomAction: Añadir acción AI personalizada
+  unpinFromToolbar: Quitar de la barra
+  pinToToolbar: Fijar en la barra
+  dragToReorder: Arrastra para reordenar
 thinking:
   label: Pensando
   complete: Razonamiento completo
@@ -877,3 +1267,6 @@ translationHub:
   noLanguagesFound: No se encontraron idiomas
   translationFailed: Falló la traducción
   translationFailedFallback: Falló la traducción
+dataTypes:
+  string: Texto
+  number: Número

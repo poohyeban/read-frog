@@ -1,15 +1,18 @@
 import type { Config } from "@/types/config/config"
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
 import type { PageTranslateRange } from "@/types/config/translate"
+import { BUILT_IN_IMPROVE_WRITING_ACTION_ID } from "./custom-action"
 import {
   BUILT_IN_ACTION_DEFAULT_SHORTCUTS,
   BUILT_IN_DICTIONARY_ACTION_ID,
   BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID,
 } from "./custom-action"
+import { createImproveWritingDefinition } from "./custom-action-templates"
 import {
   createDictionaryDefinition,
   createSentenceAnalysisDefinition,
 } from "./custom-action-templates"
+import { DEFAULT_GLOSSARY_CONFIG } from "./glossary"
 import { DEFAULT_NODE_TRANSLATION_SHORTCUT_KEY } from "./hotkeys"
 import { DEFAULT_TRANSLATE_PROMPTS_CONFIG } from "./prompt"
 import {
@@ -18,6 +21,7 @@ import {
   DEFAULT_PROVIDER_CONFIG_LIST,
   DEFAULT_TRANSLATE_PROVIDER_ID,
 } from "./providers"
+import { DEFAULT_INPUT_TRANSLATION_CONFIG, DEFAULT_FLOATING_BUTTON_CONFIG } from "./restored-config"
 import { DEFAULT_SELECTION_OVERLAY_OPACITY } from "./selection"
 import {
   DEFAULT_AUTO_TRANSLATE_SHORTCUT_KEY,
@@ -37,7 +41,7 @@ export { CONFIG_STORAGE_KEY } from "./config-storage-key"
 
 export const THEME_STORAGE_KEY = "theme"
 export const DEFAULT_DETECTED_CODE = "eng" as const
-export const CONFIG_SCHEMA_VERSION = 1
+export const CONFIG_SCHEMA_VERSION = 2
 
 // A built-in action's card, rebuilt only when its fields' ids change: it is
 // resolved on every read of the action. Cards place fields by id and hold no
@@ -126,6 +130,9 @@ export const DEFAULT_CONFIG: Config = {
   },
 
   selectionToolbar: {
+    customActions: [],
+    order: [],
+    unpinned: [BUILT_IN_IMPROVE_WRITING_ACTION_ID],
     enabled: true,
     disabledSelectionToolbarPatterns: [],
     opacity: DEFAULT_SELECTION_OVERLAY_OPACITY,
@@ -137,6 +144,7 @@ export const DEFAULT_CONFIG: Config = {
       },
     },
     builtInActions: {
+      improveWriting: { enabled: true, providerId: DEFAULT_PROVIDER_CONFIG.openai.id },
       dictionary: {
         enabled: true,
         providerId: DEFAULT_PROVIDER_CONFIG.openai.id,
@@ -150,6 +158,9 @@ export const DEFAULT_CONFIG: Config = {
     },
   },
 
+  inputTranslation: { ...DEFAULT_INPUT_TRANSLATION_CONFIG },
+  floatingButton: { ...DEFAULT_FLOATING_BUTTON_CONFIG },
+  glossary: { ...DEFAULT_GLOSSARY_CONFIG },
   contextMenu: {
     enabled: true,
   },
@@ -173,6 +184,7 @@ export function buildFreshDefaultConfig(): Config {
     selectionToolbar: {
       ...DEFAULT_CONFIG.selectionToolbar,
       builtInActions: {
+        improveWriting: { enabled: true, providerId: DEFAULT_PROVIDER_CONFIG.openai.id },
         dictionary: {
           enabled: true,
           providerId: DEFAULT_PROVIDER_CONFIG.openai.id,
@@ -189,4 +201,18 @@ export function buildFreshDefaultConfig(): Config {
 export const PAGE_TRANSLATE_RANGE_ITEMS: Record<PageTranslateRange, { label: string }> = {
   main: { label: "Main" },
   all: { label: "All" },
+}
+
+export function createDefaultImproveWritingAction(): SelectionToolbarCustomAction {
+  const action = createImproveWritingDefinition(DEFAULT_PROVIDER_CONFIG.openai.id)
+  const outputSchema = action.outputSchema.map((field) => ({
+    ...field,
+    id: `default-${field.id}`,
+  }))
+  return {
+    ...action,
+    id: BUILT_IN_IMPROVE_WRITING_ACTION_ID,
+    enabled: false,
+    outputSchema,
+  }
 }

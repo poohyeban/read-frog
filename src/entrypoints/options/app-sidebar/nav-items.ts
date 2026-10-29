@@ -1,4 +1,9 @@
 export const ROUTE_DEFS = [
+  { path: "/custom-actions" },
+  { path: "/input-translation" },
+  { path: "/floating-button" },
+  { path: "/advanced/glossary" },
+  { path: "/advanced/glossary/:glossaryId" },
   { path: "/" },
   { path: "/preference" },
   { path: "/shortcuts" },

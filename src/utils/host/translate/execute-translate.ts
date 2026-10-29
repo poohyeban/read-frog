@@ -2,6 +2,7 @@ import type { PromptResolver } from "./api/ai"
 import type { Config } from "@/types/config/config"
 import type { ProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
+import type { MatchedTerm } from "@/utils/glossary/types"
 import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { isLLMProviderConfig } from "@/types/config/provider"
 import { aiTranslate } from "./api/ai"
@@ -20,6 +21,7 @@ export async function executeTranslate<TContext>(
     // "\n" as HTML whitespace. Microsoft preserves newlines in both textTypes
     // (live-verified); LLM prompts already mandate format preservation.
     preserveLineBreaks?: boolean
+    glossaryTerms?: readonly MatchedTerm[]
     signal?: AbortSignal
   },
 ) {

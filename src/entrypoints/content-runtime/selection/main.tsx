@@ -12,6 +12,7 @@ import { baseThemeModeAtom } from "@/utils/atoms/theme"
 import { getLocalConfig } from "@/utils/config/storage"
 import { APP_NAME } from "@/utils/constants/app"
 import { SELECTION_UI_CSS } from "@/utils/content-ui-css"
+import { primeGlossaryMatcher } from "@/utils/glossary/active-matcher"
 import { initI18n } from "@/utils/i18n"
 import { LocaleBoundary } from "@/utils/i18n/locale-boundary"
 import { ShadowWrapperContext } from "@/utils/react-shadow-host/create-shadow-host"
@@ -103,6 +104,7 @@ export async function runSelectionContent(ctx: ContentScriptContext) {
 
   // Check global site control
   const config = await getLocalConfig()
+  if (config?.glossary.enabled) primeGlossaryMatcher(config.language.targetCode)
   const siteControlUrl = getEffectiveSiteControlUrl(window.location.href)
   if (!isSiteEnabled(siteControlUrl, config)) {
     window.__READ_FROG_SELECTION_INJECTED__ = false

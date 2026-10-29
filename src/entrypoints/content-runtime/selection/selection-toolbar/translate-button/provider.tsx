@@ -32,6 +32,7 @@ import { configFieldsAtomMap, writeConfigAtom } from "@/utils/atoms/config"
 import { buildFeatureProviderPatch } from "@/utils/constants/feature-providers"
 import { streamBackgroundText } from "@/utils/content-script/background-stream-client"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
+import { resolveGlossaryTermsFromCache } from "@/utils/glossary/active-matcher"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
 import { getOrGenerateWebPageSummary } from "@/utils/host/translate/webpage-summary"
@@ -119,11 +120,17 @@ async function translateWithTextStream({
 
   // Read from the already-compiled matcher — no await on this path. See
 
+  const glossaryTerms = resolveGlossaryTermsFromCache(
+    preparedText,
+    translateRequest.glossaryEnabled,
+    translateRequest.language.targetCode,
+  )
   const { systemPrompt, prompt } = getTranslatePromptFromConfig(
     { customPromptsConfig: translateRequest.customPromptsConfig },
     targetLangName,
     preparedText,
     {
+      glossaryTerms,
       ...(webPageContext
         ? {
             context: {

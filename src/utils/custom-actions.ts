@@ -4,10 +4,12 @@ import type {
   SelectionToolbarCustomAction,
 } from "@/types/config/selection-toolbar"
 import type { BuiltInActionId } from "@/utils/constants/custom-action"
+import { createDefaultImproveWritingAction } from "@/utils/constants/config"
 import {
   createDefaultDictionaryAction,
   createDefaultSentenceAnalysisAction,
 } from "@/utils/constants/config"
+import { BUILT_IN_IMPROVE_WRITING_ACTION_ID } from "@/utils/constants/custom-action"
 import {
   BUILT_IN_ACTION_DEFAULT_SHORTCUTS,
   BUILT_IN_ACTION_IDS,
@@ -16,10 +18,13 @@ import {
   BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID,
   isBuiltInActionId,
 } from "@/utils/constants/custom-action"
+import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { getUniqueName } from "@/utils/name"
 
 type SelectionToolbarConfig = Config["selectionToolbar"]
 
 const BUILT_IN_ACTION_DEFINITIONS: Record<BuiltInActionId, () => SelectionToolbarCustomAction> = {
+  [BUILT_IN_IMPROVE_WRITING_ACTION_ID]: createDefaultImproveWritingAction,
   [BUILT_IN_DICTIONARY_ACTION_ID]: createDefaultDictionaryAction,
   [BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID]: createDefaultSentenceAnalysisAction,
 }
@@ -59,7 +64,7 @@ export function getBuiltInActions(
 export function getSelectionToolbarActions(
   selectionToolbar: SelectionToolbarConfig,
 ): SelectionToolbarCustomAction[] {
-  return getBuiltInActions(selectionToolbar)
+  return [...getBuiltInActions(selectionToolbar), ...selectionToolbar.customActions]
 }
 
 export function findSelectionToolbarAction(
@@ -69,7 +74,7 @@ export function findSelectionToolbarAction(
   if (isBuiltInActionId(actionId)) {
     return getBuiltInAction(selectionToolbar, actionId)
   }
-  return undefined
+  return selectionToolbar.customActions.find((action) => action.id === actionId)
 }
 
 // A state without a key reads as the action's default key, and is written
@@ -105,7 +110,12 @@ export function replaceSelectionToolbarAction(
     }
   }
 
-  return selectionToolbar
+  return {
+    ...selectionToolbar,
+    customActions: selectionToolbar.customActions.map((current) =>
+      current.id === action.id ? action : current,
+    ),
+  }
 }
 
 export function patchSelectionToolbarAction(
@@ -122,3 +132,15 @@ export function patchSelectionToolbarAction(
 }
 
 // A copy starts without a key: one key runs one action.
+
+export function duplicateSelectionToolbarAction(
+  action: SelectionToolbarCustomAction,
+  allActions: SelectionToolbarCustomAction[],
+): SelectionToolbarCustomAction {
+  const { shortcut: _shortcut, ...copy } = structuredClone(action)
+  return {
+    ...copy,
+    id: getRandomUUID(),
+    name: getUniqueName(action.name, new Set(allActions.map((candidate) => candidate.name))),
+  }
+}

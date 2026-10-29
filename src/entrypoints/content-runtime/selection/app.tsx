@@ -6,6 +6,7 @@ import {
   SELECTION_CONTENT_OVERLAY_LAYERS,
   SELECTION_CONTENT_OVERLAY_ROOT_ATTRIBUTE,
 } from "@/utils/constants/selection-overlay-layers"
+import { useInputTranslation } from "./input-translation/use-input-translation"
 import { SelectionToolbar } from "./selection-toolbar"
 import { SelectionCustomActionProvider } from "./selection-toolbar/custom-action-button/provider"
 import { SelectionTranslationProvider } from "./selection-toolbar/translate-button/provider"
@@ -17,6 +18,7 @@ export default function App({
   uiContainer: HTMLElement
   portalContainer: ShadowRoot
 }) {
+  useInputTranslation()
   const opacity = useAtomValue(configFieldsAtomMap.selectionToolbar).opacity / 100
 
   useEffect(() => {

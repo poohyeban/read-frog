@@ -18,6 +18,26 @@ export function FeaturesNav() {
         <SidebarMenu>
           {[
             {
+              path: "/custom-actions",
+              label: i18n.t("options.selectionToolbar.customActions.title"),
+              icon: "tabler:sparkles",
+            },
+            {
+              path: "/input-translation",
+              label: i18n.t("options.inputTranslation.title"),
+              icon: "tabler:keyboard",
+            },
+            {
+              path: "/floating-button",
+              label: i18n.t("options.floatingButton.title"),
+              icon: "tabler:click",
+            },
+            {
+              path: "/advanced/glossary",
+              label: i18n.t("options.advanced.glossary.title"),
+              icon: "tabler:book",
+            },
+            {
               path: "/page-translation",
               label: i18n.t("options.translation.title"),
               icon: "tabler:language",

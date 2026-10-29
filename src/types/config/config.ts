@@ -3,6 +3,10 @@ import { z } from "zod"
 import { BUILT_IN_ACTION_IDS, BUILT_IN_ACTION_KEYS } from "@/utils/constants/custom-action"
 import { FEATURE_KEYS, FEATURE_PROVIDER_DEFS } from "@/utils/constants/feature-providers"
 import {
+  DEFAULT_INPUT_TRANSLATION_CONFIG,
+  DEFAULT_FLOATING_BUTTON_CONFIG,
+} from "@/utils/constants/restored-config"
+import {
   MAX_SELECTION_OVERLAY_OPACITY,
   MIN_SELECTION_OVERLAY_OPACITY,
 } from "@/utils/constants/selection"
@@ -10,7 +14,11 @@ import {
   doesProviderSupportsCapability,
   getProviderIdsForCapability,
 } from "@/utils/providers/provider-registry"
+import { normalizeSelectionToolbarLists } from "@/utils/selection-toolbar-order"
+import { floatingButtonSchema } from "./floating-button"
+import { glossaryConfigSchema } from "./glossary"
 import { providersConfigSchema } from "./provider"
+import { selectionToolbarCustomActionsSchema } from "./selection-toolbar"
 import { selectionToolbarBuiltInActionsSchema } from "./selection-toolbar"
 import { shortcutSchema } from "./shortcut"
 import { siteRulesConfigSchema } from "./site-rules"
@@ -30,15 +38,20 @@ const selectionToolbarFeatureSchema = z.object({
 })
 
 // Text selection toolbar schema
-const selectionToolbarSchema = z.object({
-  enabled: z.boolean(),
-  disabledSelectionToolbarPatterns: z.array(z.string()),
-  opacity: z.number().min(MIN_SELECTION_OVERLAY_OPACITY).max(MAX_SELECTION_OVERLAY_OPACITY),
-  features: z.object({
-    translate: selectionToolbarFeatureSchema,
-  }),
-  builtInActions: selectionToolbarBuiltInActionsSchema,
-})
+const selectionToolbarSchema = z
+  .object({
+    enabled: z.boolean(),
+    disabledSelectionToolbarPatterns: z.array(z.string()),
+    opacity: z.number().min(MIN_SELECTION_OVERLAY_OPACITY).max(MAX_SELECTION_OVERLAY_OPACITY),
+    features: z.object({
+      translate: selectionToolbarFeatureSchema,
+    }),
+    builtInActions: selectionToolbarBuiltInActionsSchema,
+    customActions: selectionToolbarCustomActionsSchema.default([]),
+    order: z.array(z.string()).optional(),
+    unpinned: z.array(z.string()).optional(),
+  })
+  .transform(normalizeSelectionToolbarLists)
 
 // side content schema
 
@@ -60,6 +73,20 @@ const contextMenuSchema = z.object({
 
 // Export types for use in components
 
+const inputTranslationLangSchema = z.union([
+  z.literal("sourceCode"),
+  z.literal("targetCode"),
+  langCodeISO6393Schema,
+])
+const inputTranslationSchema = z.object({
+  enabled: z.boolean(),
+  providerId: z.string().nonempty(),
+  fromLang: inputTranslationLangSchema,
+  toLang: inputTranslationLangSchema,
+  enableCycle: z.boolean(),
+  timeThreshold: z.number().min(100).max(1000),
+})
+export type InputTranslationLang = z.infer<typeof inputTranslationLangSchema>
 // site control schema
 const siteControlSchema = z.object({
   mode: z.enum(["blacklist", "whitelist"]),
@@ -88,11 +115,21 @@ export const configSchema = z
     selectionToolbar: selectionToolbarSchema,
 
     contextMenu: contextMenuSchema,
+    inputTranslation: inputTranslationSchema.optional(),
+    floatingButton: floatingButtonSchema.default(DEFAULT_FLOATING_BUTTON_CONFIG),
+    glossary: glossaryConfigSchema,
 
     siteControl: siteControlSchema,
     siteRules: siteRulesConfigSchema,
     uiLanguage: uiLanguageSchema,
   })
+  .transform((data) => ({
+    ...data,
+    inputTranslation: data.inputTranslation ?? {
+      ...DEFAULT_INPUT_TRANSLATION_CONFIG,
+      providerId: data.pageTranslation.providerId,
+    },
+  }))
   .superRefine((data, ctx) => {
     for (const featureKey of FEATURE_KEYS) {
       const def = FEATURE_PROVIDER_DEFS[featureKey]
@@ -118,6 +155,10 @@ export const configSchema = z
     // Validate languageDetection: when mode is "llm", providerId must be a valid enabled LLM provider
 
     const actionProviderEntries = [
+      ...data.selectionToolbar.customActions.map((action, index) => ({
+        providerId: action.providerId,
+        path: ["selectionToolbar", "customActions", index, "providerId"] as const,
+      })),
       ...BUILT_IN_ACTION_IDS.map((id) => {
         const key = BUILT_IN_ACTION_KEYS[id]
         return {

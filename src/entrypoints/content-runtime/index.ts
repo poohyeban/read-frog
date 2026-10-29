@@ -4,6 +4,7 @@ import { ContentScriptContext, defineUnlistedScript } from "#imports"
 import { logger } from "@/utils/logger"
 import { runHostContent } from "./host/main"
 import { runSelectionContent } from "./selection/main"
+import { runSideContent } from "./side/main"
 import "@/utils/iconify/local-icons"
 
 // The shared ES module behind every page's content scripts. The manifest only
@@ -14,6 +15,7 @@ import "@/utils/iconify/local-icons"
 
 const RUNNERS: Record<ContentRuntimePart, (ctx: ContentScriptContext) => Promise<void>> = {
   host: runHostContent,
+  side: runSideContent,
   selection: runSelectionContent,
 }
 

@@ -16,6 +16,7 @@ import {
   cleanupAllTranslationCache,
   setUpDatabaseCleanup,
 } from "./db-cleanup"
+import { setupGlossaryMessageHandlers } from "./glossary"
 import { setupIframeInjection } from "./iframe-injection"
 import { setupLLMGenerateTextMessageHandlers } from "./llm-generate-text"
 import { setupPageTranslationHandlers } from "./page-translation"
@@ -63,6 +64,7 @@ export default defineBackground({
     // Synchronous: all translation and summary handlers register in the first turn of
     // the SW so wake-triggering messages are never dropped during init.
     setupPageTranslationHandlers()
+    setupGlossaryMessageHandlers()
 
     void setUpDatabaseCleanup()
 

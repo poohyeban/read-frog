@@ -158,9 +158,11 @@ options:
       features:
         pageTranslation: Səhifə tərcüməsi
         selectionTranslation: Seçim alətlər panelində tərcümə
+        inputTranslation: Daxil edilən mətnin tərcüməsi
       descriptions:
         pageTranslation: Bütün səhifəni ikidilli və ya əvəzetmə rejimində tərcümə edir.
         selectionTranslation: Seçdiyiniz mətni seçim alətlər paneli vasitəsilə tərcümə edir.
+        inputTranslation: Mətn sahəsinə yazdığınızı göndərməzdən əvvəl tərcümə edir.
     aiContentAware:
       title: Süni intellektlə kontekstə uyğun tərcümə
       description: Daha dəqiq tərcümə üçün süni intellektə səhifə və ya video kontekstini təqdim edin
@@ -280,11 +282,194 @@ options:
       providerDisabled: Seçilmiş provayder deaktivdir
       providerUnavailable: Seçilmiş provayder əlçatan deyil
     customActions:
-      title: AI explanations
+      title: Fərdi süni intellekt əməliyyatları
+      pageDescription: Öz təlimatlarınızı yazın və seçim alətlər panelindən seçilmiş mətnə tətbiq edin. Hər nəticənin məlumatları, üslubu və qarşılıqlı əlaqəsi tam fərdiləşdirilə bilər.
       description: Seçilmiş mətn üçün strukturlaşdırılmış fərdi süni intellekt əməliyyatları əlavə edin
+      configTitle: Əməliyyat konfiqurasiyası
+      introVideo:
+        trigger: Videoya baxın
+        title: 30 saniyədə fərdi süni intellekt əməliyyatları
+      builtIn: Daxili
+      add: Süni intellekt əməliyyatı əlavə et
+      edit: Süni intellekt əməliyyatını redaktə et
+      empty: Hələ fərdi süni intellekt əməliyyatı yoxdur
+      noEnabledLlmProvider: Fərdi süni intellekt əməliyyatları yaratmazdan əvvəl ən azı bir LLM provayderini aktiv edin
+      tabs:
+        config: Konfiqurasiya
+        notebase: Notebase
+        hasErrors: Xətalar var
+        connected: Qoşulub
+        needsAttention: Diqqət tələb edir
       form:
+        name: Ad
+        customize: Fərdiləşdir
+        customizeTooltip: Daxili təlimatları dəyişmək mümkün deyil. Redaktə edilə bilən surət yaratmaq və təlimatları dəyişmək üçün buraya klikləyin.
+        aiConfigHelper:
+          trigger: Süni intellektlə qur
+          title: Süni intellektlə qur
+          description: Aşağıdakı təlimatı kopyalayıb istifadə etdiyiniz süni intellekt köməkçisinə (ChatGPT, Claude, DeepSeek, Kimi…) yapışdırın. Əvvəlcə nə istədiyinizi soruşacaq, sonra hər ayara nə yazmalı olduğunuzu deyəcək. Təlimatda bu əməliyyatın cari ayarları var, API açarları isə yoxdur.
+          copy: Təlimatı kopyala
+          copyFailed: Təlimatı kopyalamaq mümkün olmadı. Yenidən cəhd edin.
+        icon: İşarə
+        iconField:
+          chooseAriaLabel: İşarə seç
+          chooseTitle: İşarə seçin
+          inputPlaceholder: İşarənin adını daxil edin
+          helpAriaLabel: İşarələr haqqında əlavə kömək
+          helpTitle: İstədiyiniz işarəni tapa bilmirsiniz?
+          helpStepBrowsePrefix: ""
+          helpStepBrowseSuffix: " saytında işarələrə baxın"
+          helpStepCopyPrefix: "Məsələn, "
+          helpStepCopySuffix: " işarəsinin adını köçürüb sahəyə yapışdırın."
+        provider: Provayder (strukturlaşdırılmış nəticə dəstəyi tələb olunur)
         selectProvider: Provayder seçin
+        systemPrompt: Sistem təlimatı
+        prompt: Təlimat
+        outputSchema: Nəticə sxemi
+        addField: Sahə əlavə et
+        fieldName: Sahənin adı
+        fieldType: Sahənin növü
+        fieldDescription: Təsvir
+        fieldDescriptionPlaceholder: Bu sahədə nəyin olacağını təsvir edin...
+        actions: Əməliyyatlar
+        cancel: Ləğv et
+        save: Yadda saxla
         defaultFieldName: Nəticə
+        fieldNamePlaceholder: Sahənin adı
+        selectionField: Seçilmiş mətn
+        selectionFieldDescription: Seçdiyiniz mətn olduğu kimi saxlanılır. Süni intellekt onu yazmır.
+        autoFieldPrefix: Sahə
+        addFieldDialog:
+          title: Nəticə sahəsi əlavə et
+        editFieldDialog:
+          title: Nəticə sahəsini redaktə et
+          save: Yadda saxla
+        deleteFieldDialog:
+          title: Nəticə sahəsi silinsin?
+          description: Bu nəticə sahəsi silinəcək.
+          confirm: Sil
+          cancel: Ləğv et
+        layout:
+          title: Tərtibat
+          description: Nəticənin açılan pəncərədə necə göründüyü. Liquid ilə HTML; cavab axdıqca sahələr doldurulur.
+          reset: Defolta qaytar
+          resetFieldList: Sahə siyahısı
+          resetDictionary: Lüğət kartı
+          resetSentenceAnalysis: Cümlə təhlili kartı
+          resetImproveWriting: Yazı təkmilləşdirmə kartı
+          resetConfirmTitle: Bu tərtibat əvəz edilsin?
+          resetConfirmDescription: Redaktordakı məzmun əvəz ediləcək. Sonra redaktorda geri qaytara bilərsiniz.
+          resetConfirm: Əvəz et
+          edit: Redaktə et
+          preview: Önizləmə
+          width: En
+          themeLight: Açıq
+          themeDark: Tünd
+          replay: Yenidən oynat
+          sampleData: Nümunə məlumat
+          sampleDataHint: Yalnız bu önizləmədə istifadə olunur və yadda saxlanılmır.
+          sampleDataSavedHint: Yalnız bu önizləmədə istifadə olunur və bu təlimatla birlikdə yadda saxlanılır.
+          sampleDataReset: Nümunələri sıfırla
+          sampleSelection: Seçilmiş mətn
+          sampleTargetLanguage: Hədəf dili
+          insertField: Sahə
+          insertSpeak: Səsləndirmə düyməsi
+          insertCondition: Doludursa
+          insertContext: Kontekst
+          insertLoop: Bütün sahələr
+          syntaxHelp: Sintaksis
+          builtInHint: Daxili əməliyyatın tərtibatı redaktə edilə bilməz. Surətini redaktə etmək üçün fərdiləşdirin.
+          viewSource: Mənbəyə bax
+          emptyNotice: Bu tərtibat boşdur, ona görə açılan pəncərədə defolt sahə siyahısı göstərilir.
+          fallbackBanner: Bu tərtibat göstərilə bilmir, ona görə defolt tərtibat istifadə olunur. $1
+          sanitized: "Təhlükəsizlik üçün silindi: $1"
+          unusedFields: "Bu tərtibatda yoxdur:"
+          tooLong: Tərtibat ən çox $1 simvol ola bilər.
+          renameSkipped: Tərtibat hələ də "$1" sahəsinə istinad edir. Onu əl ilə yeniləyin.
+          reservedName: '"ctx" və "forloop" tərtibatlarda ehtiyatda saxlanılır. Başqa ad seçin.'
+          help:
+            output: Sahənin dəyərini göstərir. Dəyərdəki HTML ekranlaşdırılır.
+            condition: Məzmunu yalnız sahənin dəyəri olduqda göstərir.
+            loop: Hər sahə üçün ardıcıl təkrarlanır. f.name, f.value və f.type istifadə edilə bilər.
+            speak: data-speak olan istənilən element cavab hazır olduqda dəyəri (dəyər boşdursa, öz mətnini) səsli oxuyur.
+            speakLang: data-speak-lang oxunuş dilini göstərir (es və ya en-US kimi kod), beləliklə həmin dilin səsi istifadə olunur. Göstərilməsə, dil avtomatik təyin edilir; tək söz üçün bu çox vaxt səhv olur.
+            speakAutoplay: data-speak-autoplay olan element cavab hazır olduqda özü səsli oxunur. Yalnız ilk belə element səslənir.
+            status: Vəziyyətə görə üslub verir. Konteynerin data-status dəyəri streaming, done və ya error olur.
+            filters: newline_to_br sətir keçidlərini saxlayır (sonda istifadə edin); lines mətni sətir siyahısına bölür.
+            styles: <style> blokundakı CSS yalnız bu nəticənin daxilində tətbiq olunur. --rf-* rəngləri açıq və tünd temaya uyğunlaşır.
+          lint:
+            parseError: "Liquid sintaksis xətası: $1"
+            unknownField: '"$1" adlı sahə yoxdur.'
+            unknownContextKey: 'ctx daxilində "$1" yoxdur. Mövcud olanlar: $2.'
+            fieldShadowedByLocal: Bu tərtibat "$1" adına dəyər mənimsədir və bu, eyniadlı sahəni gizlədir.
+            liquidInStyle: <style> daxilində Liquid işləmir; bu, adi mətn kimi qalır.
+            styleInConditional: <style> bloku "$1" teqinin içində olsa belə həmişə tətbiq olunur.
+            cssImport: "@import silinir. Tərtibatlar xarici üslubları yükləyə bilməz."
+            cssFontFace: "@font-face silinir. Cihazda artıq olan şriftlərdən istifadə edin."
+            unquotedAttributeOutput: Bu atribut dəyərini dırnaq içinə alın, əks halda dəyər atributdan kənara çıxa bilər.
+            filterIgnored: '"$1" teqində filtrlər nəzərə alınmır. Əvvəlcə filtrlənmiş dəyəri mənimsədin.'
+            newlineToBrNotLast: newline_to_br yalnız çıxışın son filtri olduqda işləyir.
+            tooLong: Bu tərtibat $1 simvoldan uzundur və yadda saxlanıla bilməz.
+            fieldNotShown: '"$1" bu tərtibatda göstərilmir.'
+            reservedFieldName: '"$1" sahə adı tərtibatlarda ehtiyatda saxlanılır. Sahənin adını dəyişin.'
+        notebase:
+          title: Notebase qoşulması
+          description: Bu əməliyyatın strukturlaşdırılmış nəticələrini uzaqdakı Notebase daxilində saxlayın.
+          loginRequiredTitle: Notebase parametrlərini tənzimləmək üçün daxil olun
+          loginRequiredDescription: Notebase seçməzdən və ya uyğunlaşdırmaları redaktə etməzdən əvvəl readfrog.app saytında daxil olun.
+          loginRequiredConnectedDescription: Bu qoşulma aşağıdakı hesab tərəfindən yaradılıb. Eyni hesabla daxil olsanız, sahə uyğunlaşdırmaları bərpa ediləcək. Başqa hesabla daxil olsanız, Notebase yaradarkən və ya qoşarkən əvvəlki uyğunlaşdırmalar silinəcək.
+          loginAction: Daxil ol
+          connectedAccountLabel: Qoşulmuş hesab
+          currentAccountLabel: Cari hesab
+          unknownConnectedAccount: Naməlum hesab
+          tableLabel: Notebase
+          tablePlaceholder: Notebase seçin
+          tableClearOption: Notebase ilə əlaqəni kəs
+          clearConnectionAction: Qoşulmanı sil
+          refreshAction: Yenilə
+          emptyTitle: Hələ Notebase yoxdur
+          emptyDescription: readfrog.app saytında Notebase yaradın, sonra sahələri uyğunlaşdırmaq üçün buraya qayıdın.
+          openNotebaseAction: Notebase səhifəsini aç
+          accessDeniedTitle: Notebase əlçatan deyil
+          accessDeniedDescription: Bu hesabın Notebase məlumatlarını yükləməyə icazəsi yoxdur.
+          listErrorTitle: Notebase siyahısını yükləmək mümkün olmadı
+          listErrorDescription: Bir qədər sonra Notebase siyahısını yenidən yeniləməyə çalışın.
+          accountMismatchTitle: Notebase qoşulması başqa hesaba aiddir
+          accountMismatchDescription: Bu qoşulma aşağıdakı hesaba bağlıdır. Onu silin və ya cari hesab üçün əlçatan Notebase seçin.
+          tableUnavailableTitle: Seçilmiş Notebase artıq əlçatan deyil
+          tableUnavailableDescription: Bu Notebase artıq mövcud deyil və ya açıla bilmir. Qoşulmanı silin və ya başqa Notebase seçin.
+          tableUnavailableOption: əlçatan deyil
+          schemaErrorTitle: Notebase sxemini yükləmək mümkün olmadı
+          schemaErrorDescription: Bir qədər sonra sxemi yenidən yeniləməyə çalışın.
+          schemaLoading: Notebase sxemi yüklənir...
+          mappingsLabel: Sahə uyğunlaşdırmaları
+          localFieldLabel: Əməliyyat sahəsi
+          remoteFieldLabel: Notebase sahəsi
+          columnUnavailableOption: silinib
+          invalidMappingsTitle: Bəzi uyğunlaşdırmaları yoxlamaq lazımdır
+          invalidMappingsDescription: Yanlış uyğunlaşdırmalar saxlanılır. Notebase daxilində yadda saxlamazdan əvvəl onları düzəldin.
+          noFieldSavedTitle: Bu Notebase-ə heç bir sahə yadda saxlanılmır
+          noFieldSavedDescription: Qeydləri yadda saxlamaq üçün ən azı bir sahəyə Notebase sahəsi seçin.
+          mappingSummary: Saxlanılır $1 · Ötürülür $2 · Qərarsız $3
+          skipFieldOption: Saxlama
+          undecidedFieldPlaceholder: Notebase sahəsi seçin və ya saxlamayın
+          mappingMissingLocal: Uyğunlaşdırılmış əməliyyat sahəsi artıq mövcud deyil.
+          mappingMissingRemote: Uyğunlaşdırılmış Notebase sahəsi artıq mövcud deyil.
+          mappingMissingSchema: Bu uyğunlaşdırmanı yoxlamaq üçün Notebase sxemini yeniləyin.
+          mappingIncompatible: Sahə növləri artıq uyğun gəlmir.
+        tokens:
+          selection: Seçilmiş mətnin məzmunu
+          paragraphs: Boş sətirlərlə birləşdirilmiş, seçimlə kəsişən abzasların mətni; fərdi süni intellekt əməliyyatlarına göndərilərkən ilk 2000 simvolla məhdudlaşdırılır
+          targetLanguage: İstifadəçinin hədəf dili
+          webTitle: Veb səhifənin başlığı
+          webUrl: Cari səhifənin tam URL-i
+          webContent: Cari səhifədən çıxarılan, ilk 2000 simvolla məhdudlaşdırılmış veb səhifə məzmunu
+        delete: Sil
+        deleteDialog:
+          title: Fərdi əməliyyat silinsin?
+          description: Bu əməliyyatı geri qaytarmaq mümkün deyil.
+          confirm: Sil
+          cancel: Ləğv et
       templates:
         dialogTitle: Şablon seçin
         dialogDescription: Yeni süni intellekt əməliyyatını sürətlə yaratmaq üçün şablon seçin və ya sıfırdan başlayın.
@@ -370,76 +555,105 @@ options:
           fieldDefinitionDescription: Kontekstdəki mənaya uyğun bir qısa tərif.
           fieldSentenceTranslation: Cümlənin tərcüməsi
           fieldSentenceTranslationDescription: Yalnız cümlənin tərcüməsi.
-          fieldMemoryTips: "Yadda saxlama üsulları"
+          fieldMemoryTips: Yadda saxlama üsulları
           fieldMemoryTipsDescription: "Sözü yadda saxlamağın yolları: ən çox 3 məsləhət, hər sətirdə bir, hər biri üsulun adı və iki nöqtə ilə başlayır (məsələn, Söz quruluşu: …); həqiqətən kömək edən heç nə yoxdursa, boş sətir."
           fieldDifficulty: Çətinlik
           fieldDifficultyDescription: Təxmini CEFR çətinlik səviyyəsi A1, A2, B1, B2, C1 və ya C2.
         sentenceAnalysis:
-          name: "Cümlə təhlili"
+          name: Cümlə təhlili
           description: "Uzun cümləni müəllim kimi işarələyir: əsası, hər budaq cümləni və çətin yerləri"
-          fieldSentence: "Cümlə"
-          fieldAnnotations: "Annotasiyalar"
-          fieldTranslation: "Tərcümə"
+          fieldSentence: Cümlə
+          fieldAnnotations: Annotasiyalar
+          fieldTranslation: Tərcümə
           roles:
-            subject: "Mübtəda"
-            predicate: "Xəbər"
-            object: "Tamamlıq"
-            complement: "Tamamlayıcı"
-            attributive: "Təyin"
-            adverbial: "Zərflik"
-            appositive: "Əlavə"
-            connector: "Bağlayıcı"
+            subject: Mübtəda
+            predicate: Xəbər
+            object: Tamamlıq
+            complement: Tamamlayıcı
+            attributive: Təyin
+            adverbial: Zərflik
+            appositive: Əlavə
+            connector: Bağlayıcı
           clauses:
-            subject: "Mübtəda budaq cümləsi"
-            object: "Tamamlıq budaq cümləsi"
-            complement: "Xəbər budaq cümləsi"
-            attributive: "Təyin budaq cümləsi"
-            adverbial: "Zərflik budaq cümləsi"
-            appositive: "Əlavə budaq cümləsi"
-            clause: "Budaq cümlə"
+            subject: Mübtəda budaq cümləsi
+            object: Tamamlıq budaq cümləsi
+            complement: Xəbər budaq cümləsi
+            attributive: Təyin budaq cümləsi
+            adverbial: Zərflik budaq cümləsi
+            appositive: Əlavə budaq cümləsi
+            clause: Budaq cümlə
           adverbialClauses:
-            time: "Zaman budaq cümləsi"
-            place: "Yer budaq cümləsi"
-            cause: "Səbəb budaq cümləsi"
-            condition: "Şərt budaq cümləsi"
-            concession: "Güzəşt budaq cümləsi"
-            purpose: "Məqsəd budaq cümləsi"
-            result: "Nəticə budaq cümləsi"
-            manner: "Tərz budaq cümləsi"
-            comparison: "Müqayisə budaq cümləsi"
+            time: Zaman budaq cümləsi
+            place: Yer budaq cümləsi
+            cause: Səbəb budaq cümləsi
+            condition: Şərt budaq cümləsi
+            concession: Güzəşt budaq cümləsi
+            purpose: Məqsəd budaq cümləsi
+            result: Nəticə budaq cümləsi
+            manner: Tərz budaq cümləsi
+            comparison: Müqayisə budaq cümləsi
           forms:
-            infinitive: "Məsdər"
-            gerund: "Feili isim"
-            presentParticiple: "-ing"
-            pastParticiple: "V3"
+            infinitive: Məsdər
+            gerund: Feili isim
+            presentParticiple: -ing
+            pastParticiple: V3
           senses:
-            time: "Zaman"
-            place: "Yer"
-            cause: "Səbəb"
-            condition: "Şərt"
-            concession: "Güzəşt"
-            purpose: "Məqsəd"
-            result: "Nəticə"
-            manner: "Tərz"
-            comparison: "Müqayisə"
+            time: Zaman
+            place: Yer
+            cause: Səbəb
+            condition: Şərt
+            concession: Güzəşt
+            purpose: Məqsəd
+            result: Nəticə
+            manner: Tərz
+            comparison: Müqayisə
           obstacles:
-            inversion: "İnversiya"
-            fronting: "Önə çəkmə"
-            ellipsis: "Ellipsis"
-            passive: "Məchul"
-            subjunctive: "Arzu şəkli"
-            parenthesis: "Ara söz"
-            dummyIt: "Formal it"
-            postponedSubject: "Həqiqi mübtəda"
-            cleft: "Vurğu quruluşu"
-            comparison: "Müqayisə"
-            negation: "İnkar"
-            split: "Ayrılma"
-            idiom: "İdiom"
+            inversion: İnversiya
+            fronting: Önə çəkmə
+            ellipsis: Ellipsis
+            passive: Məchul
+            subjunctive: Arzu şəkli
+            parenthesis: Ara söz
+            dummyIt: Formal it
+            postponedSubject: Həqiqi mübtəda
+            cleft: Vurğu quruluşu
+            comparison: Müqayisə
+            negation: İnkar
+            split: Ayrılma
+            idiom: İdiom
           restoreLabel: "Düz sıra:"
-          hardLabel: "Çətin"
-          trunkLabel: "Yalnız əsas"
-          slashesLabel: "Fasilələr"
+          hardLabel: Çətin
+          trunkLabel: Yalnız əsas
+          slashesLabel: Fasilələr
+        improveWriting:
+          name: Yazını təkmilləşdir
+          description: Müəllim kimi səhvləri və qeyri-təbii ifadələri işarələyir, mətni vəziyyətə uyğun düzəldir
+          fieldOriginal: Orijinal mətn
+          fieldSetting: Kontekst
+          fieldAnnotations: Qeydlər
+          fieldImproved: Düzəldilmiş mətn
+          fieldSummary: Xülasə
+          types:
+            spelling: Orfoqrafiya
+            grammar: Qrammatika
+            punctuation: Durğu işarələri
+            wordChoice: Söz seçimi
+            logic: Məntiq
+            unnatural: Qeyri-təbii
+            register: Üslub
+            clarity: Aydınlıq
+            good: Uğurlu seçim
+          tiers:
+            error: Səhv
+            awkward: Qüsurlu
+            good: Uğurlu
+          hideFixesLabel: Düzəlişləri gizlət
+          hiddenHintLabel: Əvvəlcə özünüz düzəltməyə çalışın.
+          showImprovedLabel: Göstər
+          improvedLabel: Düzəldilmiş mətn
+          copyLabel: Kopyala
+          unchangedLabel: Dəyişəcək heç nə yoxdur
+          removeLabel: sil
         blank:
           name: Boş
           description: Boş əməliyyatla sıfırdan başlayın
@@ -448,6 +662,14 @@ options:
             Seçim: {{selection}}
             Abzaslar: {{paragraphs}}
             Hədəf dili: {{targetLanguage}}
+      errors:
+        nameRequired: Ad tələb olunur
+        duplicateName: 'Təkrarlanan əməliyyat adı: "$1"'
+        invalidIcon: Yanlış Iconify işarə sətri
+        providerRequired: Aktiv LLM provayderi seçin
+        outputSchemaRequired: Ən azı bir nəticə sahəsi əlavə edin
+        fieldKeyRequired: Sahənin adı tələb olunur
+        duplicateFieldKey: Sahə adları unikal olmalıdır
   contextMenu:
     title: Kontekst menyusu
     pageDescription: Brauzerin sağ klik menyusundakı Read Frog Lite elementlərini idarə edin.
@@ -656,6 +878,169 @@ options:
       searchPlaceholder: İdentifikator, təsvir və ya URL şablonuna görə axtar
       showMore: Daha çox göstər
       count: $1 qayda göstərilir, cəmi $2 qayda var
+  inputTranslation:
+    title: Daxil edilən mətnin tərcüməsi
+    pageDescription: Mətn sahələrinə yazdıqlarınızı göndərməzdən əvvəl tərcümə edin.
+    trigger:
+      title: İşə salma
+      enable:
+        title: Aktiv et
+        description: İstənilən mətn sahəsində yazdığınızı tərcümə etmək üçün boşluq düyməsini sürətlə üç dəfə basın.
+      threshold:
+        title: İşə salma həddi
+        description: Düyməyə ardıcıl basmalar arasında icazə verilən ən uzun fasilə (millisaniyə ilə). Tərcümə başlamırsa, dəyəri artırın; hələ yazarkən başlayırsa, azaldın.
+        error: $1 ilə $2 arasında dəyər daxil edin
+    languages:
+      title: Tərcümə dilləri
+      pair:
+        title: Dil cütü
+        description: Yazılmış mətnin mənbə dili və tərcümə olunacağı dil. Hər biri üçün səhifə tərcüməsindəki müvafiq mənbə və hədəf dilindən istifadə edə bilərsiniz.
+      sourceCode: Səhifənin mənbə dili
+      targetCode: Tərcümənin hədəf dili
+      cycle:
+        title: Hər dəfə istiqaməti dəyiş
+        description: Hər işə salma iki dilin yerini dəyişir, beləliklə yenidən işə saldıqda mətn yazdığınız dilə qayıdır.
+  floatingButton:
+    title: Üzən düymə
+    pageDescription: Üzən düymənin hansı tərəfdə yerləşdiyini, kliklədikdə nə etdiyini və harada gizləndiyini təyin edin.
+    demoImageAlt: Üzən düymə nümunəsi
+    enable:
+      title: Üzən düyməni aktiv et
+      description: Read Frog funksiyalarına sürətli çıxış üçün veb səhifələrdə üzən düyməni göstərin
+    display:
+      title: Görünüş
+      side:
+        title: Düymənin tərəfi
+        description: Üzən düymənin səhifənin hansı tərəfinə bərkidildiyini seçin
+        left: Sol
+        right: Sağ
+      disabledSites:
+        title: Deaktiv olduğu saytlar
+        description: Üzən düymənin deaktiv olacağı saytları təyin edin
+        enterUrlPattern: URL şablonu daxil edin
+        urlPattern: URL şablonu
+    clickAction:
+      title: Klik əməliyyatı
+      description: Üzən düyməyə kliklədikdə icra ediləcək əməliyyatı seçin
+      panel: Yan paneli aç
+      translate: Səhifə tərcüməsini aktiv və ya deaktiv et
+    closeMenu:
+      disableForSite: Bu sayt üçün deaktiv et
+      disableGlobally: Hər yerdə deaktiv et
+    tooltips:
+      togglePageTranslation: Səhifə tərcüməsini aktiv və ya deaktiv et
+      floatingButtonOptions: Üzən düymə parametrləri
+      lockPosition: Mövqeyi kilidlə
+      unlockPosition: Mövqenin kilidini aç
+      settings: Parametrlər
+      feedback: Rəy göndər
+  advanced:
+    glossary:
+      title: Terminlər lüğəti
+      pageDescription: Sizin üçün vacib olan sözlərə sabit tərcümə təyin edin və hər siyahının harada tətbiq olunacağını seçin.
+      untitled: Adsız lüğət
+      noGlossaries: Hələ lüğət yoxdur.
+      enable:
+        title: Aktiv et
+        description: Uyğun gələn terminləri LLM-ə göndərir ki, onları istədiyiniz kimi tərcümə etsin. Lüğət sorğunun içində göndərilir, ona görə də yalnız LLM provayderi üzərində işləyən funksiyalara tətbiq olunur.
+      library:
+        title: Lüğətləriniz
+        description: Hər lüğətin öz terminləri və öz sayt siyahısı var, ona görə də iş üçün nəzərdə tutulmuş terminlər dəsti sizinlə birlikdə hər yerə keçmir.
+        button: Lüğət əlavə et
+        capReached: Ən çoxu $1 lüğətiniz ola bilər.
+        termUsage: Bütün lüğətlər üzrə $2 termindən $1 istifadə olunub
+      summary:
+        terms: $1 termin
+        termsOne: 1 termin
+        allSites: Bütün saytlar
+        sites: $1 sayt
+        sitesOne: 1 sayt
+      editor:
+        docsLink: Necə işləyir?
+        sections:
+          terms: Terminlər
+          maintenance: Ehtiyat nüsxə və silmə
+        details:
+          title: Ad və təsvir
+          descriptionPlaceholder: Təsvir (istəyə bağlı)
+        enable:
+          title: Aktiv et
+          description: Deaktiv lüğət terminlərini saxlayır, lakin onlardan heç birini göndərmir.
+        sites:
+          title: Saytlar
+          description: Bu lüğəti yalnız müəyyən saytlarla məhdudlaşdırın. example.com yalnız həmin ünvandır; *.example.com alt domenləri əlavə edir; example.com/docs/* saytın bir hissəsinə daraldır.
+          allSites: Bunu boş buraxsanız, lüğət hər yerdə tətbiq olunur.
+          header: Sayt
+        delete:
+          title: Bu lüğəti sil
+          description: Lüğəti və içindəki bütün terminləri silir. Terminlər sonra lazım ola bilərsə, əvvəlcə ixrac edin — bunu geri qaytarmaq mümkün deyil.
+          dialog:
+            trigger: Sil
+            title: Bu lüğət silinsin?
+            description: Lüğət və içindəki bütün $1 termin həmişəlik silinəcək. Bu əməliyyatı geri qaytarmaq mümkün deyil.
+            confirm: Sil
+            cancel: Ləğv et
+      addTerm:
+        title: Termin əlavə et
+        description: Termin üçün istədiyiniz tərcüməni yazın və ya orijinalı saxlamaq üçün tərcüməni boş buraxın.
+      list:
+        title: Terminləriniz
+        description: Yalnız abzasda rast gəlinən terminlər onunla birlikdə göndərilir.
+      importExport:
+        title: İdxal və ixrac
+        description: Terminlər source, target, targetLanguage və caseSensitive sütunlarından ibarət CSV faylıdır — İxrac məhz bunu yazır.
+      sourcePlaceholder: Termin
+      targetPlaceholder: Tərcümə (orijinalı saxlamaq üçün boş buraxın)
+      caseSensitive: Hərf registrini nəzərə al
+      add: Əlavə et
+      searchPlaceholder: Terminləri axtar
+      columnEnabled: Aktiv
+      columnSource: Termin
+      columnTarget: Tərcümə
+      columnTargetLanguage: Hədəf dili
+      allLanguages: Bütün dillər
+      toggleTerm: $1 terminini istifadə et
+      editTerm: $1 terminini redaktə et
+      keepOriginal: Orijinalı saxla
+      delete: Sil
+      save: Yadda saxla
+      cancel: Ləğv et
+      loading: Yüklənir...
+      empty: Hələ termin yoxdur. Yuxarıdan əlavə edin və ya CSV faylı idxal edin.
+      noMatches: Axtarışınıza uyğun termin yoxdur.
+      previous: Əvvəlki
+      next: Növbəti
+      pageOf: $1 / $2
+      addError:
+        emptySource: Əvvəlcə termin daxil edin.
+        tooLong: Bu termin çox uzundur.
+        capReached: Bütün lüğətləriniz birlikdə $1 terminlik limitə çatıb.
+        duplicate: Bu termin artıq lüğətinizdədir.
+      import: İdxal et
+      export: İxrac et
+      importModeMerge: Siyahıya əlavə et
+      importModeReplace: Siyahını əvəz et
+      importEmpty: Bu faylda termin tapılmadı.
+      importMissingHeader: "Bu fayl Read Frog lüğət ixracı deyil. Bu sütunlar tələb olunur:"
+      importOverflow: Bu idxal limiti $1 termin aşacaq. Heç nə dəyişdirilmədi.
+      importSuccess: $1 yeni termin idxal edildi, $2 termin yeniləndi.
+      importSkipped: $1 yanlış sətir və $2 təkrar buraxıldı.
+      importNoValidRows: Bu sətirlərin heç biri idxal edilə bilmədi. Heç nə dəyişdirilmədi.
+      importReplaceConfirm:
+        title: Bütün siyahı əvəz edilsin?
+        description: Bu lüğətdəki $1 terminin hamısı silinəcək — yalnız seçilmiş dil deyil, bütün hədəf dillər — və bu faylın məzmunu ilə əvəz olunacaq. Bu əməliyyat geri qaytarıla bilməz.
+        confirm: Əvəz et
+        cancel: Ləğv et
+      deleteAll:
+        title: Bütün terminləri sil
+        description: Terminlər lüğətinizi boşaldır. Terminlər sonra lazım ola bilərsə, əvvəlcə ixrac edin — silmə geri qaytarıla bilməz.
+        deleting: Silinir...
+        dialog:
+          title: Bütün terminləri sil
+          trigger: Hamısını sil
+          confirm: Təsdiqlə
+          cancel: Ləğv et
+          description: Bütün $1 termin həmişəlik silinəcək. Bu əməliyyatı geri qaytarmaq mümkün deyil.
 translateService:
   builtInModels: Daxili modellər
   llmModels: LLM modelləri
@@ -676,6 +1061,11 @@ action:
   contextDetailsTitleLabel: Başlıq
   contextDetailsParagraphsLabel: Abzaslar
   translation: Tərcümə
+  moreActions: Digər əməliyyatlar
+  addCustomAction: Fərdi süni intellekt əməliyyatı əlavə et
+  unpinFromToolbar: Alətlər panelindən ayır
+  pinToToolbar: Alətlər panelinə sabitlə
+  dragToReorder: Sıralamaq üçün sürükləyin
 thinking:
   label: Düşünür
   complete: Düşünmə tamamlandı
@@ -877,3 +1267,6 @@ translationHub:
   noLanguagesFound: Dil tapılmadı
   translationFailed: Tərcümə alınmadı
   translationFailedFallback: Tərcümə alınmadı
+dataTypes:
+  string: Mətn
+  number: Ədəd

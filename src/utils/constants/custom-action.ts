@@ -3,6 +3,7 @@ import type {
   SelectionToolbarCustomActionOutputType,
 } from "@/types/config/selection-toolbar"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { getUniqueName } from "@/utils/name"
 
 export const ICON_PATTERN = /^[^:\s]+:[^:\s]+$/
 export const DEFAULT_ACTION_NAME = "Custom AI Action"
@@ -12,7 +13,9 @@ export const BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID = "default-sentence-analysis"
 // The code-owned actions, by id → their key in `selectionToolbar.builtInActions`,
 
 // order they appear in, ahead of the user's own actions.
+export const BUILT_IN_IMPROVE_WRITING_ACTION_ID = "default-improve-writing"
 export const BUILT_IN_ACTION_KEYS = {
+  [BUILT_IN_IMPROVE_WRITING_ACTION_ID]: "improveWriting",
   [BUILT_IN_DICTIONARY_ACTION_ID]: "dictionary",
   [BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID]: "sentenceAnalysis",
 } as const
@@ -32,6 +35,7 @@ export function isBuiltInActionId(id: string): id is BuiltInActionId {
 // M, N, S and T for themselves, and the translation mode and the Translation
 // Hub already have M and H.
 export const BUILT_IN_ACTION_DEFAULT_SHORTCUTS: Record<BuiltInActionId, string> = {
+  [BUILT_IN_IMPROVE_WRITING_ACTION_ID]: "Alt+Shift+W",
   [BUILT_IN_DICTIONARY_ACTION_ID]: "Alt+Shift+D",
   [BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID]: "Alt+Shift+G",
 }
@@ -103,4 +107,45 @@ export function getSelectionToolbarCustomActionTokenCellText(
   token: SelectionToolbarCustomActionToken,
 ) {
   return `{{${token}}}`
+}
+
+export function getNextOutputFieldName(
+  fields: SelectionToolbarCustomActionOutputField[],
+  prefix: string,
+): string {
+  const existingNames = new Set(fields.map((f) => f.name))
+  existingNames.add(prefix)
+  return getUniqueName(prefix, existingNames, "")
+}
+export function normalizeOutputSchemaFieldName(name: string) {
+  return name.trim()
+}
+export function isDuplicateOutputSchemaFieldName(
+  name: string,
+  fields: SelectionToolbarCustomActionOutputField[],
+  currentFieldId?: string,
+) {
+  const normalizedName = normalizeOutputSchemaFieldName(name)
+  return fields.some(
+    (field) =>
+      field.id !== currentFieldId && normalizeOutputSchemaFieldName(field.name) === normalizedName,
+  )
+}
+export function getOutputSchemaFieldNameError(
+  name: string,
+  fields: SelectionToolbarCustomActionOutputField[],
+  currentFieldId?: string,
+): "blank" | "duplicate" | undefined {
+  if (isOutputSchemaFieldNameBlank(name)) {
+    return "blank"
+  }
+
+  if (isDuplicateOutputSchemaFieldName(name, fields, currentFieldId)) {
+    return "duplicate"
+  }
+
+  return undefined
+}
+export function isOutputSchemaFieldNameBlank(name: string) {
+  return normalizeOutputSchemaFieldName(name).length === 0
 }

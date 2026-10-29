@@ -157,9 +157,11 @@ options:
       features:
         pageTranslation: 페이지 번역
         selectionTranslation: 선택 툴바 번역
+        inputTranslation: 입력 번역
       descriptions:
         pageTranslation: 페이지 전체를 대역 또는 원문 대체 방식으로 번역합니다.
         selectionTranslation: 선택 도구 모음에서 선택한 텍스트를 번역합니다.
+        inputTranslation: 입력창에 쓴 내용을 보내기 전에 번역합니다.
     aiContentAware:
       title: AI 스마트 컨텍스트 번역
       description: 페이지나 영상의 맥락을 AI에 전달해 번역 정확도를 높입니다
@@ -279,15 +281,198 @@ options:
       providerDisabled: 선택한 제공업체가 비활성화되었습니다
       providerUnavailable: 선택한 제공업체를 사용할 수 없습니다
     customActions:
-      title: AI explanations
+      title: 커스텀 AI 액션
+      pageDescription: 직접 만든 프롬프트를 선택 도구 모음에서 선택한 텍스트에 실행하세요. 생성된 결과의 데이터, 스타일, 인터랙션을 모두 직접 설정할 수 있습니다.
       description: 선택한 텍스트에 대한 구조화된 AI 작업을 직접 추가하세요
+      configTitle: 액션 구성
+      introVideo:
+        trigger: 영상 보기
+        title: 30초 만에 보는 커스텀 AI 액션
+      builtIn: 기본 제공
+      add: AI 액션 추가
+      edit: AI 액션 편집
+      empty: 아직 커스텀 AI 액션이 없습니다
+      noEnabledLlmProvider: 커스텀 AI 액션을 만들기 전에 최소 하나의 LLM 제공업체를 활성화하세요
+      tabs:
+        config: 구성
+        notebase: Notebase
+        hasErrors: 오류 있음
+        connected: 연결됨
+        needsAttention: 확인 필요
       form:
+        name: 이름
+        customize: 사용자 지정
+        customizeTooltip: 기본 제공 작업의 프롬프트는 변경할 수 없습니다. 이 버튼을 클릭하여 편집 가능한 복사본을 만들고 프롬프트를 수정하세요.
+        aiConfigHelper:
+          trigger: AI로 설정하기
+          title: AI로 설정하기
+          description: 아래 프롬프트를 복사해 평소 쓰는 AI 어시스턴트(ChatGPT, Claude, DeepSeek, Kimi 등)에 붙여 넣으세요. 먼저 원하는 것을 물어본 다음, 각 항목에 무엇을 입력할지 알려 줍니다. 프롬프트에는 이 작업의 현재 설정이 포함되지만 API 키는 포함되지 않습니다.
+          copy: 프롬프트 복사
+          copyFailed: 프롬프트를 복사하지 못했습니다. 다시 시도하세요.
+        icon: 아이콘
+        iconField:
+          chooseAriaLabel: 아이콘 선택
+          chooseTitle: 아이콘 선택
+          inputPlaceholder: 아이콘 이름 입력
+          helpAriaLabel: 아이콘 도움말 더보기
+          helpTitle: 원하는 아이콘을 못 찾았나요?
+          helpStepBrowsePrefix: ""
+          helpStepBrowseSuffix: 에서 아이콘 찾아보기
+          helpStepCopyPrefix: "예를 들어 "
+          helpStepCopySuffix: " 같은 아이콘 이름을 복사해 입력란에 붙여넣으세요."
+        provider: 제공업체(구조화 출력 지원 필요)
         selectProvider: 제공업체 선택
+        systemPrompt: 시스템 프롬프트
+        prompt: 프롬프트
+        outputSchema: 출력 스키마
+        addField: 필드 추가
+        fieldName: 필드 이름
+        fieldType: 필드 유형
+        fieldDescription: 설명
+        fieldDescriptionPlaceholder: 이 필드에 포함할 내용을 설명하세요...
+        actions: 작업
+        cancel: 취소
+        save: 저장
         defaultFieldName: 결과
+        fieldNamePlaceholder: 필드명
+        selectionField: 선택한 텍스트
+        selectionFieldDescription: 선택한 텍스트를 그대로 저장합니다. AI가 작성하지 않습니다.
+        autoFieldPrefix: 필드
+        addFieldDialog:
+          title: 출력 필드 추가
+        editFieldDialog:
+          title: 출력 필드 편집
+          save: 저장
+        deleteFieldDialog:
+          title: 출력 필드를 삭제하시겠습니까?
+          description: 이 출력 필드가 제거됩니다.
+          confirm: 삭제
+          cancel: 취소
+        layout:
+          title: 레이아웃
+          description: 팝업에서 결과가 표시되는 방식입니다. HTML과 Liquid로 작성하며, 응답이 스트리밍되는 동안 필드가 채워집니다.
+          reset: 기본값으로 복원
+          resetFieldList: 필드 목록
+          resetDictionary: 사전 카드
+          resetSentenceAnalysis: 문장 분석 카드
+          resetImproveWriting: 글쓰기 첨삭 카드
+          resetConfirmTitle: 이 레이아웃을 바꿀까요?
+          resetConfirmDescription: 편집기의 내용이 바뀝니다. 이후에도 편집기에서 실행 취소할 수 있습니다.
+          resetConfirm: 바꾸기
+          edit: 편집
+          preview: 미리 보기
+          width: 너비
+          themeLight: 라이트
+          themeDark: 다크
+          replay: 다시 재생
+          sampleData: 샘플 데이터
+          sampleDataHint: 이 미리 보기에서만 사용되며 저장되지 않습니다.
+          sampleDataSavedHint: 이 미리 보기에서만 사용되며 이 작업과 함께 저장됩니다.
+          sampleDataReset: 샘플 초기화
+          sampleSelection: 선택한 텍스트
+          sampleTargetLanguage: 대상 언어
+          insertField: 필드
+          insertSpeak: 읽기 버튼
+          insertCondition: 값이 있을 때
+          insertContext: 컨텍스트
+          insertLoop: 모든 필드
+          syntaxHelp: 문법
+          builtInHint: 기본 제공 작업의 레이아웃은 편집할 수 없습니다. '사용자 지정'으로 사본을 만들어 편집하세요.
+          viewSource: 소스 보기
+          emptyNotice: 레이아웃이 비어 있어 팝업에 기본 필드 목록이 표시됩니다.
+          fallbackBanner: 이 레이아웃을 표시할 수 없어 기본 레이아웃을 대신 사용합니다. $1
+          sanitized: "안전을 위해 제거됨: $1"
+          unusedFields: "이 레이아웃에 없는 필드:"
+          tooLong: 레이아웃은 최대 $1자까지 가능합니다.
+          renameSkipped: 레이아웃이 아직 '$1'을(를) 참조합니다. 직접 수정하세요.
+          reservedName: "'ctx'와 'forloop'는 레이아웃 예약어입니다. 다른 이름을 선택하세요."
+          help:
+            output: 필드 값을 표시합니다. 값에 포함된 HTML은 이스케이프됩니다.
+            condition: 필드에 값이 있을 때만 내용을 표시합니다.
+            loop: 모든 필드에 대해 순서대로 반복합니다. f.name, f.value, f.type을 사용할 수 있습니다.
+            speak: data-speak가 있는 요소는 응답이 완료된 후 값(비어 있으면 요소 자신의 텍스트)을 읽어 줍니다.
+            speakLang: data-speak-lang에 언어 코드(es, en-US 등)를 지정하면 그 언어의 음성으로 읽어 줍니다. 지정하지 않으면 언어를 자동으로 감지하는데, 단어 하나는 잘못 감지되는 경우가 많습니다.
+            speakAutoplay: data-speak-autoplay가 있는 요소는 응답이 완료되면 자동으로 읽어 줍니다. 이런 요소가 여러 개면 첫 번째만 재생됩니다.
+            status: 상태별로 스타일을 지정합니다. 호스트의 data-status는 streaming, done, error 중 하나입니다.
+            filters: newline_to_br는 줄바꿈을 유지하고(마지막에 사용), lines는 텍스트를 줄 목록으로 나눕니다.
+            styles: <style> 블록의 CSS는 이 결과 안에서만 적용됩니다. --rf-* 색상은 라이트/다크 테마를 따릅니다.
+          lint:
+            parseError: "Liquid 문법 오류: $1"
+            unknownField: 이름이 '$1'인 필드가 없습니다.
+            unknownContextKey: "ctx에 '$1'이(가) 없습니다. 사용 가능: $2."
+            fieldShadowedByLocal: 이 레이아웃에서 '$1'에 값을 할당하므로 같은 이름의 필드가 가려집니다.
+            liquidInStyle: <style> 안에서는 Liquid가 실행되지 않고 일반 텍스트로 남습니다.
+            styleInConditional: <style> 블록은 '$1' 태그 안에 있어도 항상 적용됩니다.
+            cssImport: "@import는 제거됩니다. 레이아웃은 외부 스타일을 불러올 수 없습니다."
+            cssFontFace: "@font-face는 제거됩니다. 기기에 있는 글꼴을 사용하세요."
+            unquotedAttributeOutput: 이 속성 값을 따옴표로 감싸세요. 그렇지 않으면 값이 속성 밖으로 벗어날 수 있습니다.
+            filterIgnored: "'$1' 태그에서는 필터가 무시됩니다. 먼저 필터를 적용한 값을 할당하세요."
+            newlineToBrNotLast: newline_to_br는 출력의 마지막 필터일 때만 동작합니다.
+            tooLong: 이 레이아웃은 $1자를 넘어 저장할 수 없습니다.
+            fieldNotShown: "'$1'은(는) 이 레이아웃에 표시되지 않습니다."
+            reservedFieldName: 필드 이름 '$1'은(는) 레이아웃 예약어입니다. 필드 이름을 바꾸세요.
+        notebase:
+          title: Notebase 연결
+          description: 이 액션의 구조화된 결과를 원격 Notebase에 저장합니다.
+          loginRequiredTitle: Notebase를 설정하려면 로그인하세요
+          loginRequiredDescription: notebase를 선택하거나 매핑을 편집하기 전에 readfrog.app에 로그인하세요.
+          loginRequiredConnectedDescription: 이 연결은 아래 계정에서 만들어졌습니다. 같은 계정으로 로그인하면 필드 매핑이 복원됩니다. 다른 계정으로 로그인하면 Notebase를 만들거나 연결할 때 이전 매핑이 지워집니다.
+          loginAction: 로그인
+          connectedAccountLabel: 연결된 계정
+          currentAccountLabel: 현재 계정
+          unknownConnectedAccount: 알 수 없는 계정
+          tableLabel: Notebase
+          tablePlaceholder: notebase 선택
+          tableClearOption: notebase 연결 안 함
+          clearConnectionAction: 연결 지우기
+          refreshAction: 새로고침
+          emptyTitle: 아직 Notebase가 없습니다
+          emptyDescription: readfrog.app에서 notebase를 만든 뒤 여기로 돌아와 필드를 매핑하세요.
+          openNotebaseAction: Notebase 열기
+          accessDeniedTitle: Notebase에 접근할 수 없습니다
+          accessDeniedDescription: 이 계정에는 Notebase 데이터를 불러올 권한이 없습니다.
+          listErrorTitle: Notebase 목록을 불러오지 못했습니다
+          listErrorDescription: 잠시 후 Notebase 목록을 다시 새로고침해 보세요.
+          accountMismatchTitle: Notebase 연결이 다른 계정에 속해 있습니다
+          accountMismatchDescription: 이 연결은 아래 연결된 계정에 묶여 있습니다. 연결을 지우거나 현재 계정에서 사용할 수 있는 Notebase를 선택하세요.
+          tableUnavailableTitle: 선택한 notebase를 더 이상 사용할 수 없습니다
+          tableUnavailableDescription: 이 Notebase가 없거나 열 수 없습니다. 연결을 지우거나 다른 Notebase를 선택하세요.
+          tableUnavailableOption: 사용 불가
+          schemaErrorTitle: notebase 스키마를 불러오지 못했습니다
+          schemaErrorDescription: 잠시 후 다시 새로고침해 보세요.
+          schemaLoading: notebase 스키마를 불러오는 중...
+          mappingsLabel: 필드 매핑
+          localFieldLabel: 액션 필드
+          remoteFieldLabel: Notebase 필드
+          columnUnavailableOption: 삭제됨
+          invalidMappingsTitle: 일부 매핑을 확인해야 합니다
+          invalidMappingsDescription: 잘못된 매핑은 유지됩니다. Notebase에 저장하기 전에 수정하세요.
+          noFieldSavedTitle: 이 Notebase에 저장되는 필드가 없습니다
+          noFieldSavedDescription: 노트를 저장하려면 하나 이상의 필드에 Notebase 필드를 고르세요.
+          mappingSummary: 저장 $1 · 저장 안 함 $2 · 미정 $3
+          skipFieldOption: 저장 안 함
+          undecidedFieldPlaceholder: Notebase 필드를 고르거나 저장 안 함
+          mappingMissingLocal: 매핑된 액션 필드가 더 이상 존재하지 않습니다.
+          mappingMissingRemote: 매핑된 notebase 필드가 더 이상 존재하지 않습니다.
+          mappingMissingSchema: 이 매핑을 검증하려면 notebase 스키마를 새로고침하세요.
+          mappingIncompatible: 필드 타입이 더 이상 맞지 않습니다.
+        tokens:
+          selection: 선택한 텍스트 내용
+          paragraphs: 선택 영역과 겹치는 문단 내용을 빈 줄로 이어 붙인 값이며, 사용자 정의 AI 액션에 전달될 때는 앞의 2000자로 잘립니다
+          targetLanguage: 사용자의 대상 언어
+          webTitle: 웹페이지 제목
+          webUrl: 현재 페이지의 전체 URL
+          webContent: 현재 페이지에서 추출한 웹페이지 본문(앞의 2000자로 잘린 버전)
+        delete: 삭제
+        deleteDialog:
+          title: 사용자 정의 액션을 삭제하시겠습니까?
+          description: 이 작업은 취소할 수 없습니다.
+          confirm: 삭제
+          cancel: 취소
       templates:
         dictionary:
-          name: "사전"
-          description: "뜻, 발음, 문단 번역과 함께 단어 찾기"
+          name: 사전
+          description: 뜻, 발음, 문단 번역과 함께 단어 찾기
           systemPrompt: |-
             당신은 언어 학습자를 위한 사전 도우미입니다.
 
@@ -353,96 +538,133 @@ options:
             선택 텍스트: {{selection}}
             문단: {{paragraphs}}
             대상 언어: {{targetLanguage}}
-          fieldTerm: "표제어"
-          fieldTermDescription: "선택한 표제어의 기본형(원형)."
-          fieldPhonetic: "발음"
+          fieldTerm: 표제어
+          fieldTermDescription: 선택한 표제어의 기본형(원형).
+          fieldPhonetic: 발음
           fieldPhoneticDescription: "해당 언어의 표준 발음 표기(예: 영어는 IPA, 중국어는 병음, 일본어는 로마자)."
-          fieldPartOfSpeech: "품사"
+          fieldPartOfSpeech: 품사
           fieldPartOfSpeechDescription: "문법 범주(예: noun, verb, adjective)."
-          fieldSentence: "예문"
-          fieldSentenceDescription: "위 문단에서 선택한 표제어가 들어 있는 완전한 한 문장. 앞뒤 문장은 포함하지 마세요."
-          fieldSentenceTerm: "예문 속 형태"
+          fieldSentence: 예문
+          fieldSentenceDescription: 위 문단에서 선택한 표제어가 들어 있는 완전한 한 문장. 앞뒤 문장은 포함하지 마세요.
+          fieldSentenceTerm: 예문 속 형태
           fieldSentenceTermDescription: '예문에서 선택한 표제어의 위치: 문자열로 직렬화된 JSON 배열로, 표제어의 부분마다 {"text": 문자열} 항목 하나이며 각각 예문을 그대로 인용합니다(예: [{"text":"blossoms"}]).'
-          fieldDefinition: "뜻"
-          fieldDefinitionDescription: "문맥상 의미에 대한 간결한 정의 하나."
-          fieldSentenceTranslation: "예문 번역"
-          fieldSentenceTranslationDescription: "예문만 번역한 것."
-          fieldMemoryTips: "암기 팁"
+          fieldDefinition: 뜻
+          fieldDefinitionDescription: 문맥상 의미에 대한 간결한 정의 하나.
+          fieldSentenceTranslation: 예문 번역
+          fieldSentenceTranslationDescription: 예문만 번역한 것.
+          fieldMemoryTips: 암기 팁
           fieldMemoryTipsDescription: "단어를 기억하는 방법: 최대 3개, 한 줄에 하나씩, 각각 기법 이름과 콜론으로 시작합니다(예: 단어 구성: …). 정말 도움이 되는 것이 없으면 빈 문자열."
-          fieldDifficulty: "난이도"
+          fieldDifficulty: 난이도
           fieldDifficultyDescription: "추정 CEFR 난이도: A1, A2, B1, B2, C1 또는 C2."
         sentenceAnalysis:
-          name: "문장 구조 분석"
-          description: "긴 문장을 선생님처럼 표시해 뼈대, 절, 어려운 부분을 한눈에 보여 줍니다"
-          fieldSentence: "원문"
-          fieldAnnotations: "주석"
-          fieldTranslation: "번역"
+          name: 문장 구조 분석
+          description: 긴 문장을 선생님처럼 표시해 뼈대, 절, 어려운 부분을 한눈에 보여 줍니다
+          fieldSentence: 원문
+          fieldAnnotations: 주석
+          fieldTranslation: 번역
           roles:
-            subject: "주어"
-            predicate: "서술어"
-            object: "목적어"
-            complement: "보어"
-            attributive: "수식어"
-            adverbial: "부사어"
-            appositive: "동격어"
-            connector: "접속사"
+            subject: 주어
+            predicate: 서술어
+            object: 목적어
+            complement: 보어
+            attributive: 수식어
+            adverbial: 부사어
+            appositive: 동격어
+            connector: 접속사
           clauses:
-            subject: "주어절"
-            object: "목적어절"
-            complement: "보어절"
-            attributive: "관계사절"
-            adverbial: "부사절"
-            appositive: "동격절"
-            clause: "절"
+            subject: 주어절
+            object: 목적어절
+            complement: 보어절
+            attributive: 관계사절
+            adverbial: 부사절
+            appositive: 동격절
+            clause: 절
           adverbialClauses:
-            time: "시간 부사절"
-            place: "장소 부사절"
-            cause: "이유 부사절"
-            condition: "조건 부사절"
-            concession: "양보 부사절"
-            purpose: "목적 부사절"
-            result: "결과 부사절"
-            manner: "방법 부사절"
-            comparison: "비교 부사절"
+            time: 시간 부사절
+            place: 장소 부사절
+            cause: 이유 부사절
+            condition: 조건 부사절
+            concession: 양보 부사절
+            purpose: 목적 부사절
+            result: 결과 부사절
+            manner: 방법 부사절
+            comparison: 비교 부사절
           forms:
-            infinitive: "to부정사"
-            gerund: "동명사"
-            presentParticiple: "현재분사"
-            pastParticiple: "과거분사"
+            infinitive: to부정사
+            gerund: 동명사
+            presentParticiple: 현재분사
+            pastParticiple: 과거분사
           senses:
-            time: "시간"
-            place: "장소"
-            cause: "이유"
-            condition: "조건"
-            concession: "양보"
-            purpose: "목적"
-            result: "결과"
-            manner: "방법"
-            comparison: "비교"
+            time: 시간
+            place: 장소
+            cause: 이유
+            condition: 조건
+            concession: 양보
+            purpose: 목적
+            result: 결과
+            manner: 방법
+            comparison: 비교
           obstacles:
-            inversion: "도치"
-            fronting: "전치"
-            ellipsis: "생략"
-            passive: "수동태"
-            subjunctive: "가정법"
-            parenthesis: "삽입"
-            dummyIt: "가주어"
-            postponedSubject: "진주어"
-            cleft: "강조구문"
-            comparison: "비교"
-            negation: "부정"
-            split: "분리"
-            idiom: "관용구"
+            inversion: 도치
+            fronting: 전치
+            ellipsis: 생략
+            passive: 수동태
+            subjunctive: 가정법
+            parenthesis: 삽입
+            dummyIt: 가주어
+            postponedSubject: 진주어
+            cleft: 강조구문
+            comparison: 비교
+            negation: 부정
+            split: 분리
+            idiom: 관용구
           restoreLabel: "원래 어순:"
-          hardLabel: "어려움"
-          trunkLabel: "뼈대만"
-          slashesLabel: "끊어 읽기"
+          hardLabel: 어려움
+          trunkLabel: 뼈대만
+          slashesLabel: 끊어 읽기
+        improveWriting:
+          name: 글쓰기 첨삭
+          description: "선생님처럼 첨삭해요: 틀린 곳과 어색한 표현을 표시하고 상황에 맞게 고쳐 줍니다"
+          fieldOriginal: 원래 글
+          fieldSetting: 상황
+          fieldAnnotations: 첨삭
+          fieldImproved: 고친 글
+          fieldSummary: 총평
+          types:
+            spelling: 맞춤법
+            grammar: 문법
+            punctuation: 문장 부호
+            wordChoice: 어휘
+            logic: 논리
+            unnatural: 부자연스러움
+            register: 격식
+            clarity: 명확성
+            good: 좋은 표현
+          tiers:
+            error: 오류
+            awkward: 어색함
+            good: 좋은 표현
+          hideFixesLabel: 정답 숨기기
+          hiddenHintLabel: 먼저 직접 고쳐 보세요.
+          showImprovedLabel: 고친 글 보기
+          improvedLabel: 고친 글
+          copyLabel: 복사
+          unchangedLabel: 고칠 곳이 없어요
+          removeLabel: 삭제
         blank:
           prompt: |-
             ## 입력
             선택 텍스트: {{selection}}
             문단: {{paragraphs}}
             대상 언어: {{targetLanguage}}
+      errors:
+        nameRequired: 이름은 필수입니다
+        duplicateName: 중복된 액션 이름 "$1"
+        invalidIcon: 올바르지 않은 Iconify 아이콘 문자열입니다
+        providerRequired: 활성화된 LLM 제공업체를 선택하세요
+        outputSchemaRequired: 최소 하나의 출력 필드를 추가하세요
+        fieldKeyRequired: 필드 이름은 필수입니다
+        duplicateFieldKey: 필드 이름은 고유해야 합니다
   contextMenu:
     title: 컨텍스트 메뉴
     pageDescription: 브라우저 우클릭 메뉴에 표시되는 Read Frog Lite 항목을 설정하세요.
@@ -651,6 +873,169 @@ options:
       searchPlaceholder: id, 설명 또는 URL 패턴으로 검색
       showMore: 더 보기
       count: 규칙 $2개 중 $1개 표시
+  inputTranslation:
+    title: 입력 번역
+    pageDescription: 입력창에 쓴 내용을 보내기 전에 번역합니다.
+    trigger:
+      title: 트리거
+      enable:
+        title: 활성화
+        description: 입력 필드에서 스페이스바를 빠르게 3번 누르면 입력한 내용을 번역합니다.
+      threshold:
+        title: 트리거 임계값
+        description: 연속된 누름 사이에 허용되는 간격(밀리초)입니다. 잘 실행되지 않으면 늘리고, 입력하는 중에 실행되면 줄이세요.
+        error: $1에서 $2 사이의 값을 입력하세요
+    languages:
+      title: 번역 언어
+      pair:
+        title: 언어 방향
+        description: 입력한 텍스트를 어떤 언어로 인식하고 어떤 언어로 번역할지 정합니다. 양쪽 모두 페이지를 번역할 때 사용하는 소스 및 타겟 언어를 따를 수 있습니다.
+      sourceCode: 페이지 소스 언어
+      targetCode: 번역 타겟 언어
+      cycle:
+        title: 매번 방향 전환
+        description: 실행할 때마다 두 언어가 서로 바뀌므로, 한 번 더 실행하면 입력한 언어로 되돌아옵니다.
+  floatingButton:
+    title: 플로팅 버튼
+    pageDescription: 플로팅 버튼이 놓일 위치와 클릭 동작, 숨길 사이트를 설정하세요.
+    demoImageAlt: 플로팅 버튼 데모
+    enable:
+      title: 플로팅 버튼 활성화
+      description: 웹 페이지에 플로팅 버튼을 표시하여 Read Frog 기능에 빠르게 액세스
+    display:
+      title: 표시
+      side:
+        title: 버튼 위치
+        description: 플로팅 버튼을 페이지 어느 쪽에 고정할지 선택합니다
+        left: 왼쪽
+        right: 오른쪽
+      disabledSites:
+        title: 비활성화 사이트
+        description: 플로팅 버튼을 비활성화할 웹사이트를 설정합니다
+        enterUrlPattern: URL 패턴 입력
+        urlPattern: URL 패턴
+    clickAction:
+      title: 클릭 동작
+      description: 플로팅 버튼을 클릭할 때 실행할 동작 선택
+      panel: 사이드 패널 열기
+      translate: 페이지 번역 전환
+    closeMenu:
+      disableForSite: 이 사이트에서 비활성화
+      disableGlobally: 전역 비활성화
+    tooltips:
+      togglePageTranslation: 페이지 번역 전환
+      floatingButtonOptions: 플로팅 버튼 옵션
+      lockPosition: 위치 잠금
+      unlockPosition: 위치 잠금 해제
+      settings: 설정
+      feedback: 피드백 보내기
+  advanced:
+    glossary:
+      title: 용어집
+      pageDescription: 중요한 단어에 고정된 번역을 지정하고, 각 목록이 적용될 곳을 선택하세요.
+      untitled: 제목 없는 용어집
+      noGlossaries: 아직 용어집이 없습니다.
+      enable:
+        title: 사용
+        description: 일치하는 용어를 LLM에 함께 전달해 원하는 표현으로 번역하게 합니다. 용어집은 프롬프트에 담겨 전달되므로, LLM 제공업체로 실행되는 기능에만 적용됩니다.
+      library:
+        title: 내 용어집
+        description: 용어집마다 고유한 용어와 웹사이트 목록이 있으므로, 업무용 용어 모음이 다른 모든 곳까지 따라오지 않습니다.
+        button: 용어집 추가
+        capReached: 용어집은 최대 $1개까지 만들 수 있습니다.
+        termUsage: 모든 용어집을 통틀어 $2개 용어 중 $1개 사용 중
+      summary:
+        terms: $1개 용어
+        termsOne: 1개 용어
+        allSites: 모든 웹사이트
+        sites: $1개 웹사이트
+        sitesOne: 1개 웹사이트
+      editor:
+        docsLink: 어떻게 작동하나요?
+        sections:
+          terms: 용어
+          maintenance: 백업과 삭제
+        details:
+          title: 이름과 설명
+          descriptionPlaceholder: 설명 (선택 사항)
+        enable:
+          title: 사용
+          description: 사용하지 않는 용어집은 용어를 그대로 보관하지만 아무것도 전달하지 않습니다.
+        sites:
+          title: 웹사이트
+          description: 이 용어집을 특정 웹사이트에만 적용합니다. example.com은 그 주소만, *.example.com은 하위 도메인까지, example.com/docs/*는 사이트의 한 부분만 포함합니다.
+          allSites: 비워 두면 용어집이 모든 곳에 적용됩니다.
+          header: 웹사이트
+        delete:
+          title: 이 용어집 삭제
+          description: 용어집과 그 안의 모든 용어를 삭제합니다. 나중에 용어가 다시 필요할 수 있다면 먼저 내보내세요. 삭제는 되돌릴 수 없습니다.
+          dialog:
+            trigger: 삭제
+            title: 이 용어집을 삭제할까요?
+            description: 용어집과 그 안의 용어 $1개가 모두 영구히 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
+            confirm: 삭제
+            cancel: 취소
+      addTerm:
+        title: 용어 추가
+        description: 용어에 원하는 번역을 지정하거나, 번역을 비워 두면 원문을 그대로 유지합니다.
+      list:
+        title: 내 용어
+        description: 문단에 나타난 용어만 해당 문단과 함께 전달됩니다.
+      importExport:
+        title: 가져오기와 내보내기
+        description: 용어는 source, target, targetLanguage, caseSensitive 네 개 열로 이루어진 CSV입니다. 내보내기가 만드는 형식과 같습니다.
+      sourcePlaceholder: 용어
+      targetPlaceholder: 번역 (비워 두면 원문 유지)
+      caseSensitive: 대소문자 구분
+      add: 추가
+      searchPlaceholder: 용어 검색
+      columnEnabled: 사용
+      columnSource: 용어
+      columnTarget: 번역
+      columnTargetLanguage: 대상 언어
+      allLanguages: 모든 언어
+      toggleTerm: "'$1' 사용"
+      editTerm: "'$1' 편집"
+      keepOriginal: 원문 유지
+      delete: 삭제
+      save: 저장
+      cancel: 취소
+      loading: 불러오는 중...
+      empty: 아직 용어가 없습니다. 위에서 추가하거나 CSV 파일을 가져오세요.
+      noMatches: 검색과 일치하는 용어가 없습니다.
+      previous: 이전
+      next: 다음
+      pageOf: $1 / $2
+      addError:
+        emptySource: 먼저 용어를 입력하세요.
+        tooLong: 용어가 너무 깁니다.
+        capReached: 모든 용어집을 통틀어 용어 수가 한도인 $1개에 도달했습니다.
+        duplicate: 이미 용어집에 있는 용어입니다.
+      import: 가져오기
+      export: 내보내기
+      importModeMerge: 목록에 추가
+      importModeReplace: 목록 교체
+      importEmpty: 해당 파일에서 용어를 찾을 수 없습니다.
+      importMissingHeader: "이 파일은 Read Frog 용어집 내보내기 파일이 아닙니다. 다음 열이 필요합니다:"
+      importOverflow: 이 가져오기는 한도를 $1개 초과합니다. 아무것도 변경되지 않았습니다.
+      importSuccess: $1개를 새로 가져오고 $2개를 업데이트했습니다.
+      importSkipped: 잘못된 행 $1개와 중복 $2개를 건너뛰었습니다.
+      importNoValidRows: 해당 행을 하나도 가져올 수 없습니다. 변경된 내용이 없습니다.
+      importReplaceConfirm:
+        title: 목록 전체를 교체할까요?
+        description: 이 용어집의 $1개 용어가 모두 삭제되고(선택한 언어뿐 아니라 모든 대상 언어) 이 파일의 내용으로 교체됩니다. 이 작업은 되돌릴 수 없습니다.
+        confirm: 교체
+        cancel: 취소
+      deleteAll:
+        title: 모든 용어 삭제
+        description: 용어집을 비웁니다. 나중에 다시 필요할 수 있다면 먼저 내보내세요. 삭제는 되돌릴 수 없습니다.
+        deleting: 삭제하는 중...
+        dialog:
+          title: 모든 용어 삭제
+          trigger: 모두 삭제
+          confirm: 확인
+          cancel: 취소
+          description: $1개의 용어가 모두 영구히 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -671,6 +1056,11 @@ action:
   contextDetailsTitleLabel: 제목
   contextDetailsParagraphsLabel: 문단 내용
   translation: 번역
+  moreActions: 더 보기
+  addCustomAction: 커스텀 AI 액션 추가
+  unpinFromToolbar: 도구 모음에서 고정 해제
+  pinToToolbar: 도구 모음에 고정
+  dragToReorder: 드래그하여 순서 변경
 thinking:
   label: 사고 중
   complete: 사고 완료
@@ -872,3 +1262,6 @@ translationHub:
   noLanguagesFound: 언어를 찾을 수 없습니다
   translationFailed: 번역 실패
   translationFailedFallback: 번역 실패
+dataTypes:
+  string: 텍스트
+  number: 숫자

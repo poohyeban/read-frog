@@ -1,4 +1,5 @@
 import type { LLMProviderConfig } from "@/types/config/provider"
+import type { MatchedTerm } from "@/utils/glossary/types"
 import type { TranslatePromptOptions, TranslatePromptResult } from "@/utils/prompts/translate"
 import { generateText } from "ai"
 import { extractAISDKErrorMessage } from "@/utils/error/extract-message"
@@ -26,7 +27,9 @@ export async function aiTranslate<TContext>(
     context?: TContext
     signal?: AbortSignal
     // Forwarded verbatim to the prompt resolver: the terms were resolved by the
-    // context that knew the page URL
+    // context that knew the page URL, and re-resolving here would scope them
+    // wrong (see `TranslatePromptOptions.glossaryTerms`).
+    glossaryTerms?: readonly MatchedTerm[]
   },
 ) {
   const {
