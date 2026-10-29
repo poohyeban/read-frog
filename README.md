@@ -311,6 +311,8 @@ pnpm licenses list --prod --json | node scripts/generate-notices.mjs
 - 检查 ZIP 完整性、manifest、许可证和 `docs/restore/final-metrics.json` 中记录的 SHA256，生成 `SHA256SUMS.txt`。
 - 将 ZIP 与校验文件上传为草稿，再正式发布到本 Fork 的 Releases。
 
+注意：准备打版本标签的提交消息不要带 `[skip ci]`。它也会跳过 tag 的发布工作流；纯文档直接提交 main 本来就不触发构建。如果标签已经创建但发布未触发，在 Actions 打开 **Publish verified extension → Run workflow**，填写原标签即可，无需移动标签或重建 ZIP。
+
 维护者发布步骤：先完成 CI 和版本说明，记录实际 ZIP 校验值，提交后创建并推送版本 tag，例如：
 
 ```sh
@@ -318,7 +320,7 @@ git tag v0.2.0 <已确认的发布提交>
 git push origin v0.2.0
 ```
 
-`v0.2.0` 已用于本次版本，后续版本使用新的 tag，不移动已发布 tag，不覆盖已发布附件。没有匹配的成功 CI、Artifact 已过期或校验值不符时，发布会失败，应补齐对应验证 / 产物记录。工作流只对显式 tag 或手动发布生效，普通 main / README 提交不会发布 Release。
+示例中的 `v0.2.0` 已存在，实际发布应使用新的 tag，不移动已发布 tag，不覆盖已发布附件。没有匹配的成功 CI、Artifact 已过期或校验值不符时，发布会失败，应补齐对应验证 / 产物记录。工作流只对显式 tag 或手动发布生效，普通 main / README 提交不会发布 Release。
 
 0.2.0 参考指标：源码 992 文件，直接依赖 runtime 55 / dev 37，生产目录 14,543,554 字节，扩展 ZIP 4,598,062 字节；历史记录见 [`metrics-0.2.0.json`](docs/restore/metrics-0.2.0.json)。当前发布产物的精确大小和 SHA256 见 [`final-metrics.json`](docs/restore/final-metrics.json)，不能沿用旧版本的校验值。
 
