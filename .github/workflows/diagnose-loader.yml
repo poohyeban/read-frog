@@ -1,0 +1,45 @@
+name: Diagnose Chrome 156 loader
+on:
+  push:
+    branches: [codex/diagnose-loader-156]
+    paths: [".diagnostics/**", ".github/workflows/diagnose-loader.yml"]
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: ["156.4", "156.47"]
+    env:
+      DIAG_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --global pnpm@12.10.1
+      - run: pnpm install --frozen-lockfile
+      - name: Download unchanged 0.2.3 release
+        run: |
+          curl --fail --location https://github.com/poohyeban/read-frog/releases/download/v0.2.3/read-frog-lite-0.2.3-chrome.zip -o /tmp/extension.zip
+          echo '6340f99068b7b1fae80d8becd4c3a74db959befb2575be963eae4881607dd710  /tmp/extension.zip' | sha256sum --check
+          unzip -q /tmp/extension.zip -d .diagnostics/extension
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Install Chrome for Testing 156.0.8078.47
+        if: matrix.browser == '156.47'
+        run: |
+          curl --fail --location https://storage.googleapis.com/chrome-for-testing-public/156.0.8078.47/linux64/chrome-linux64.zip -o /tmp/chrome.zip
+          mkdir -p .diagnostics/chrome
+          unzip -q /tmp/chrome.zip -d .diagnostics/chrome
+      - name: Observe fresh pages and startup races
+        run: xvfb-run --auto-servernum pnpm exec playwright test --config .diagnostics/playwright.config.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: loader-diagnosis-${{ matrix.browser }}
+          path: .diagnostics/artifacts/
+          include-hidden-files: true
+          retention-days: 14
