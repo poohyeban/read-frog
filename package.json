@@ -22,7 +22,8 @@
     "zip": "wxt zip",
     "zip:edge": "wxt zip -b edge",
     "prepare": "husky",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "perf:report": "vitest run --config vitest.perf.config.ts"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "3.0.63",
