@@ -130,22 +130,6 @@ test("injected runtime survives website workers and handles missing or expired c
     expect(evidence.cases.at(-1).errors).toEqual([])
     expect(evidence.pageErrors).toEqual([])
 
-    if (process.env.RUN_LIVE_YOUTUBE === "true") {
-      for (let i = 0; i < 3; i++) {
-        await clearErrors()
-        await page.goto(`https://www.youtube.com/watch?v=7ARBJQn6QkM&runtimeRegression=${i}`, {
-          waitUntil: "domcontentloaded",
-        })
-        await page.waitForTimeout(4000)
-        await expect(page.locator("read-frog-lite")).toHaveCount(1)
-        const controller = await page.evaluate(() => navigator.serviceWorker.controller?.scriptURL)
-        if (i > 0) expect(controller).toBe("https://www.youtube.com/sw.js")
-        const extensionErrors = await errors()
-        evidence.cases.push({ label: `live YouTube ${i + 1}`, controller, errors: extensionErrors })
-        expect(extensionErrors).toEqual([])
-      }
-      await page.screenshot({ path: `${output}/youtube.png` })
-    }
     await page.close()
     await clearErrors()
     evidence.pageErrors = []
@@ -196,6 +180,29 @@ test("injected runtime survives website workers and handles missing or expired c
     } finally {
       await cdp.send("Debugger.resume").catch(() => {})
       await cdp.detach()
+    }
+    if (process.env.RUN_LIVE_YOUTUBE === "true") {
+      // Run live navigation last: its service worker must not intercept the
+      // controlled startup fixture used above.
+      await startup.close()
+      await context.unroute("https://www.youtube.com/**")
+      const livePage = await context.newPage()
+      for (let i = 0; i < 3; i++) {
+        await clearErrors()
+        await livePage.goto(`https://www.youtube.com/watch?v=7ARBJQn6QkM&runtimeRegression=${i}`, {
+          waitUntil: "domcontentloaded",
+        })
+        await livePage.waitForTimeout(4000)
+        await expect(livePage.locator("read-frog-lite")).toHaveCount(1)
+        const controller = await livePage.evaluate(
+          () => navigator.serviceWorker.controller?.scriptURL,
+        )
+        if (i > 0) expect(controller).toBe("https://www.youtube.com/sw.js")
+        const extensionErrors = await errors()
+        evidence.cases.push({ label: `live YouTube ${i + 1}`, controller, errors: extensionErrors })
+        expect(extensionErrors).toEqual([])
+      }
+      await livePage.screenshot({ path: `${output}/youtube.png` })
     }
   } finally {
     await writeFile(`${output}/runtime.json`, JSON.stringify(evidence, null, 2))
