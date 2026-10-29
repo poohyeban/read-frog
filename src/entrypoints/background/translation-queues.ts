@@ -1,16 +1,13 @@
-import type { HostedAiTextStreamRoute } from "@/types/background-stream"
 import type { Config } from "@/types/config/config"
 import type { ProviderConfig } from "@/types/config/provider"
 import type { BatchQueueConfig, RequestQueueConfig } from "@/types/config/translate"
 import type { WebPagePromptContext } from "@/types/content"
-import type { ProviderRequestRouting } from "@/types/hosted-request"
+import type { ProviderRequestRouting } from "@/types/provider-request"
 import type { MatchedTerm } from "@/utils/glossary/types"
 import type { PromptResolver } from "@/utils/host/translate/api/ai"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
-import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { storage } from "#imports"
 import { isLLMProviderConfig } from "@/types/config/provider"
-import { putBatchRequestRecord } from "@/utils/batch-request-record"
 import { CONFIG_STORAGE_KEY, DEFAULT_CONFIG } from "@/utils/constants/config"
 import { BATCH_SEPARATOR, BATCH_SEPARATOR_LINE_PATTERN } from "@/utils/constants/prompt"
 import {
@@ -18,54 +15,32 @@ import {
   BATCH_TIMEOUT_PER_CHAR_MS,
   MAX_BATCH_TIMEOUT_MS,
 } from "@/utils/constants/translate"
-import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
-import { requireHostedFeature } from "@/utils/hosted-ai/routing"
 import { logger } from "@/utils/logger"
 import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
 import { BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
 import { RequestQueue } from "@/utils/request/request-queue"
-import { runStreamTextInBackground } from "./background-stream"
 import { ensureInitializedConfig } from "./config"
 
 type QueuedTranslationProvider = ProviderConfig | SerializableProviderRef
 
-type QueuedTranslationRouting =
-  | { provider: QueuedTranslationProvider; hostedFeature: HostedAiTextStreamRoute }
-  | {
-      provider: ProviderConfig | Extract<SerializableProviderRef, { kind: "local" }>
-      hostedFeature?: undefined
-    }
+type QueuedTranslationRouting = { provider: QueuedTranslationProvider }
 
 export function getQueuedTranslationRouting(
   request: ProviderRequestRouting,
 ): QueuedTranslationRouting {
-  if (request.providerRef.kind === "local" && request.hostedFeature === undefined) {
-    return { provider: request.providerRef }
-  }
-  return {
-    provider: request.providerRef,
-    hostedFeature: requireHostedFeature(request.hostedFeature),
-  }
+  return { provider: request.providerRef }
 }
 
-function isSerializedPageProvider(
-  provider: QueuedTranslationProvider,
-): provider is SerializableProviderRef {
-  return "kind" in provider && (provider.kind === "local" || provider.kind === "system")
-}
-
-export function getLocalProviderConfig(provider: QueuedTranslationProvider): ProviderConfig | null {
-  if (!isSerializedPageProvider(provider)) return provider
-  return provider.kind === "local" ? provider.config : null
+export function getLocalProviderConfig(provider: QueuedTranslationProvider): ProviderConfig {
+  return "kind" in provider ? provider.config : provider
 }
 
 function getQueuedProviderId(provider: QueuedTranslationProvider): string {
-  const local = getLocalProviderConfig(provider)
-  return local?.id ?? (provider as Extract<SerializableProviderRef, { kind: "system" }>).providerId
+  return getLocalProviderConfig(provider).id
 }
 
 async function executeQueuedTranslation<TContext>(
@@ -79,39 +54,17 @@ async function executeQueuedTranslation<TContext>(
     textFormat?: import("@/types/config/translate").TranslationTextFormat
     preserveLineBreaks?: boolean
     signal?: AbortSignal
-    hostedRequestId?: string
+
     glossaryTerms?: readonly MatchedTerm[]
   } = {},
 ): Promise<string> {
-  const { provider, hostedFeature } = routing
-  const local = getLocalProviderConfig(provider)
-  if (local) {
-    return executeTranslate(text, langConfig, local, promptResolver, options)
-  }
-
-  const system = provider as Extract<SerializableProviderRef, { kind: "system" }>
-  if (!options.hostedRequestId) {
-    throw new Error("Hosted page translation requires a stable requestId")
-  }
-  const targetLangName = LANG_CODE_TO_EN_NAME[langConfig.targetCode]
-  const { systemPrompt, prompt } = await promptResolver(targetLangName, text, {
-    isBatch: options.isBatch,
-    context: options.context,
-    glossaryTerms: options.glossaryTerms,
-  })
-  const result = await runStreamTextInBackground(
-    {
-      providerKind: "system",
-      providerId: system.providerId,
-      modelTier: system.modelTier,
-      requestId: options.hostedRequestId,
-      hostedFeature: requireHostedFeature(hostedFeature),
-      instructions: systemPrompt,
-      prompt,
-    },
-    { signal: options.signal },
+  return executeTranslate(
+    text,
+    langConfig,
+    getLocalProviderConfig(routing.provider),
+    promptResolver,
+    options,
   )
-  return result.output.trim()
 }
 
 export function parseBatchResult(result: string): string[] {
@@ -220,7 +173,6 @@ export async function executeBatchTranslation<TContext>(
   dataList: TranslateBatchData<TContext>[],
   promptResolver: PromptResolver<TContext>,
   signal?: AbortSignal,
-  hostedRequestId?: string,
 ): Promise<string[]> {
   const { langConfig, context } = dataList[0]!
   const texts = dataList.map((d) => d.text)
@@ -235,7 +187,7 @@ export async function executeBatchTranslation<TContext>(
       isBatch: true,
       context,
       signal,
-      hostedRequestId,
+
       glossaryTerms: mergeBatchGlossaryTerms(dataList),
     },
   )
@@ -323,7 +275,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       return Sha256Hex(
         `${data.langConfig.sourceCode}-${data.langConfig.targetCode}-${getQueuedProviderId(data.provider)}`,
         data.context ? JSON.stringify(data.context) : "",
-        data.hostedFeature ?? "",
+
         // Not the terms — the REVISION. The terms differ per paragraph and
         // keying on them would end batching for glossary users; the revision is
         // one global counter that every paragraph of a page carries alike, so
@@ -338,12 +290,11 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     getScope: (data) => data.scope,
     isScopeCancelled,
     executeBatch: async (dataList, meta) => {
-      const { provider } = dataList[0]!
       // Stable for this RequestQueue task: automatic retries must reuse the
-      // idempotency key because the first hosted response may have been lost.
+
       // A BatchQueue retry/fallback invokes this adapter again and gets a new
       // key for that new real model call.
-      const hostedRequestId = getLocalProviderConfig(provider) ? undefined : getRandomUUID()
+
       const hash = Sha256Hex(...dataList.map((d) => d.hash))
       const earliestScheduleAt = Math.min(...dataList.map((d) => d.scheduleAt))
       const totalCharacters = dataList.reduce((sum, d) => sum + d.text.length, 0)
@@ -353,33 +304,21 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       )
 
       const batchThunk = async (signal?: AbortSignal): Promise<string[]> => {
-        const localProvider = getLocalProviderConfig(provider)
-        if (localProvider) {
-          await putBatchRequestRecord({
-            originalRequestCount: dataList.length,
-            providerConfig: localProvider,
-          })
-        }
-        // Homogeneous per batch: hostedFeature is part of the batch key.
-        return await executeBatchTranslation(dataList, promptResolver, signal, hostedRequestId)
+        return await executeBatchTranslation(dataList, promptResolver, signal)
       }
 
       return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, { timeoutMs })
     },
     executeIndividual: async (data) => {
-      const { text, langConfig, provider, hash, scheduleAt, context, scope, glossaryTerms } = data
+      const { text, langConfig, hash, scheduleAt, context, scope, glossaryTerms } = data
       // This individual fallback is its own model call, but any automatic
       // retries of its RequestQueue thunk reuse the same idempotency key.
-      const hostedRequestId = getLocalProviderConfig(provider) ? undefined : getRandomUUID()
+
       const thunk = async (signal?: AbortSignal) => {
-        const localProvider = getLocalProviderConfig(provider)
-        if (localProvider) {
-          await putBatchRequestRecord({ originalRequestCount: 1, providerConfig: localProvider })
-        }
         return executeQueuedTranslation(text, langConfig, data, promptResolver, {
           context,
           signal,
-          hostedRequestId,
+
           // The sender's own terms, NOT the batch union: this is one item again.
           // Dropping them here would let a batch that fell back translate
           // without the glossary and then cache that result under a hash taken
@@ -421,8 +360,8 @@ async function loadQueueSetupConfig(
   let config: Config | null = null
   try {
     config = await ensureInitializedConfig()
-  } catch (error) {
-    logger.error(`[translation-queues] failed to load config for ${queueName} queue`, error)
+  } catch {
+    logger.error(`[translation-queues] failed to load config for ${queueName} queue`)
   }
   return {
     ...selectConfig(config ?? DEFAULT_CONFIG),
@@ -459,8 +398,8 @@ function watchQueueConfig(
         batchQueue.setBatchConfig(selected.batchQueueConfig)
         lastAppliedJson = json
         logger.info(`[translation-queues] ${queueName} queue config updated`, selected)
-      } catch (error) {
-        logger.error(`[translation-queues] failed to apply ${queueName} queue config change`, error)
+      } catch {
+        logger.error(`[translation-queues] failed to apply ${queueName} queue config change`)
       }
     })
   })
@@ -498,14 +437,14 @@ export function createWebPageTranslationQueues() {
   return { queuesPromise, cancelledScopes }
 }
 
+/**
+ * Create subtitle translation queues and watch their configuration
+ */
+
 const selectSubtitlesQueueConfig = (config: Config) => ({
   requestQueueConfig: config.videoSubtitles.requestQueueConfig,
   batchQueueConfig: config.videoSubtitles.batchQueueConfig,
 })
-
-/**
- * Create subtitle translation queues and watch their configuration
- */
 export function createSubtitlesTranslationQueues() {
   const queuesPromise = loadQueueSetupConfig("subtitles", selectSubtitlesQueueConfig).then(
     ({ requestQueueConfig, batchQueueConfig, configSource }) =>

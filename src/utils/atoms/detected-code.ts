@@ -1,4 +1,4 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { atom } from "jotai"
 import { normalizeDetectedCode } from "@/utils/config/languages"
 import { DEFAULT_DETECTED_CODE } from "../constants/config"
@@ -21,8 +21,8 @@ baseDetectedCodeAtom.onMount = (setAtom: (newValue: LangCodeISO6393) => void) =>
   const refreshDetectedCode = () => {
     void sendMessage("getDetectedCode", undefined)
       .then((detectedCode) => setAtom(normalizeDetectedCode(detectedCode)))
-      .catch((error) => {
-        logger.warn("Failed to refresh active tab detected language", error)
+      .catch(() => {
+        logger.warn("Failed to refresh active tab detected language")
         setAtom(DEFAULT_DETECTED_CODE)
       })
   }

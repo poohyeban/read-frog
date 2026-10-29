@@ -1,6 +1,6 @@
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
 import type { CustomActionTemplate } from "@/utils/constants/custom-action-templates"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { useMemo, useState } from "react"
 import { useLocation } from "react-router"
@@ -9,15 +9,9 @@ import { SortableList } from "@/components/sortable-list"
 import { Button } from "@/components/ui/base-ui/button"
 import { Dialog, DialogTrigger } from "@/components/ui/base-ui/dialog"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
-import {
-  BUILT_IN_DICTIONARY_ACTION_ID,
-  BUILT_IN_IMPROVE_WRITING_ACTION_ID,
-  BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID,
-  DEFAULT_ACTION_NAME,
-} from "@/utils/constants/custom-action"
+import { DEFAULT_ACTION_NAME } from "@/utils/constants/custom-action"
 import { getBuiltInActions, patchSelectionToolbarAction } from "@/utils/custom-actions"
 import { i18n } from "@/utils/i18n"
-import { createLayoutSampleData } from "@/utils/layout-host/sample"
 import { getUniqueName } from "@/utils/name"
 import { CUSTOM_ACTION_ADD_QUERY_PARAM } from "@/utils/navigation"
 import { getSelectableProvidersForCapability } from "@/utils/providers/provider-registry"
@@ -26,7 +20,6 @@ import { EntityListItem } from "../../../components/entity-list-item"
 import { EntityListRail } from "../../../components/entity-list-rail"
 import { customActionEditorTabAtom, selectedCustomActionIdAtom } from "../atoms"
 import { AddActionDialog } from "./add-action-dialog"
-import { RecentChangeBadge } from "./recent-change-badge"
 
 export function CustomActionCardList() {
   const [selectionToolbarConfig, setSelectionToolbarConfig] = useAtom(
@@ -36,7 +29,7 @@ export function CustomActionCardList() {
   const setSelectedCustomActionId = useSetAtom(selectedCustomActionIdAtom)
   const setEditorTab = useSetAtom(customActionEditorTabAtom)
   const providersConfig = useAtomValue(configFieldsAtomMap.providersConfig)
-  const { targetCode } = useAtomValue(configFieldsAtomMap.language)
+
   const { search } = useLocation()
   // Read at mount only; `useCustomActionDeepLink` strips the param right after.
   const [dialogOpen, setDialogOpen] = useState(() =>
@@ -62,7 +55,6 @@ export function CustomActionCardList() {
           {
             ...newAction,
             name: getUniqueName(baseName, new Set(current.customActions.map((item) => item.name))),
-            sampleData: createLayoutSampleData(newAction.outputSchema, targetCode),
           },
         ],
       }))
@@ -144,17 +136,6 @@ function BuiltInActionCard({ action }: { action: SelectionToolbarCustomAction })
       className={action.enabled === false ? "opacity-70" : undefined}
       onClick={() => setSelectedCustomActionId(action.id)}
     >
-      <EntityListItem.Badges>
-        {action.id === BUILT_IN_DICTIONARY_ACTION_ID && (
-          <RecentChangeBadge kind="updated" date="2026-10-02" />
-        )}
-        {action.id === BUILT_IN_SENTENCE_ANALYSIS_ACTION_ID && (
-          <RecentChangeBadge kind="new" date="2026-09-27" />
-        )}
-        {action.id === BUILT_IN_IMPROVE_WRITING_ACTION_ID && (
-          <RecentChangeBadge kind="new" date="2026-09-27" />
-        )}
-      </EntityListItem.Badges>
       <EntityListItem.Content>
         <EntityListItem.Identity>
           <Icon icon={action.icon} className="size-4 shrink-0 text-zinc-600 dark:text-zinc-300" />

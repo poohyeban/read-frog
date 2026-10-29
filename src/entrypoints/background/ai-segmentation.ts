@@ -1,5 +1,4 @@
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
-import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { db } from "@/utils/db/dexie/db"
 import { Sha256Hex } from "@/utils/hash"
 import { logger } from "@/utils/logger"
@@ -60,7 +59,7 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
   }
 
   // The ref is resolved on the content side, where a session already holds one:
-  // resolving here would cost a hostedAi.status round trip per block.
+
   const cacheKey = Sha256Hex(Sha256Hex(jsonContent), getProviderCacheIdentity(providerRef))
   const cached = await db.aiSegmentationCache.get(cacheKey)
   if (cached) {
@@ -80,10 +79,9 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
       providerRef,
       // Its own route, not videoSubtitles: segmentation emits a whole WebVTT
       // block and needs the wider output budget that route reserves.
-      hostedFeature: "videoSubtitlesSegmentation",
+
       instructions: systemPrompt,
       prompt,
-      requestId: getRandomUUID(),
     })
 
     const result = cleanVttResponse(segmentedVtt)
@@ -104,7 +102,7 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
     logger.info("[Background] AI subtitle segmentation completed")
     return result
   } catch (error) {
-    logger.error("[Background] AI subtitle segmentation failed:", error)
+    logger.error("[Background] AI subtitle segmentation failed:")
     throw error
   }
 }

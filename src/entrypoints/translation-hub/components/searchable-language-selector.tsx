@@ -1,4 +1,4 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { LanguageCombobox } from "@/components/language-combobox"
 import { Field, FieldTitle } from "@/components/ui/base-ui/field"
 

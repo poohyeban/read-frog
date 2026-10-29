@@ -1,29 +1,11 @@
-name: 陪读蛙
-extName: "陪读蛙 - AI 双语翻译、视频字幕与背单词"
-extDescription: "用 AI 双语对照翻译网页，以及 YouTube、Netflix、X 的视频字幕。遇到生词一键保存，用闪卡复习。"
-uninstallSurveyUrl: https://tally.so/r/3E9XDL
-account:
-  login: 登录
-  webApp: 网页应用
-  logout: 退出登录
-  logoutError: 退出登录失败，请重试
-  grantAccess: 授予访问权限
-  grantAccessHint: 需要访问 readfrog.app
-  grantAccessError: 授予访问权限失败，请重试
-dataTypes:
-  string: 文本
-  number: 数字
+name: Read Frog Lite
+extName: "Read Frog Lite"
+extDescription: "Private page and selection translation with your own API."
 contextMenu:
   translate: 翻译
   translateSelection: 翻译”%s”
-  readAloudSelection: 朗读”%s”
   showOriginal: 显示原文
-sidePanel:
-  firefoxUserActionHint: 在 Firefox 中，请从浏览器侧边栏打开陪读蛙。
-  firefoxUserActionHelpText: 查看 Firefox 侧边栏说明
-  firefoxUserActionHelpUrl: https://support.mozilla.org/zh-CN/kb/use-sidebar-access-tools-and-vertical-tabs
 popup:
-  theme: 主题
   autoLang: 自动检测
   sourceLang: 来源语言
   targetLang: 目标语言
@@ -33,8 +15,6 @@ popup:
     open: 打开提供商设置
   translate: 翻译
   showOriginal: 显示原文
-  enabledFloatingButton: 启用悬浮按钮
-  enabledSelectionToolbar: 启用选择工具栏
   alwaysTranslate: 总是翻译这个网站
   addToWhitelist: 在此网站启用扩展
   addToBlacklist: 在此网站禁用扩展
@@ -49,31 +29,10 @@ popup:
       translationOnly:
         current: 当前为仅译文
         action: 点击切换为双语对照
-  hub:
-    tooltip: 一次性调用多个翻译模型翻译文本
-  discord:
-    tooltip: 加入 Discord 与开发者交流，抢先体验新功能
-  blog:
-    notification: 陪读蛙更新动态
   aiSmartContext: AI 智能上下文
   aiSmartContextDescription: 结合网页上下文提升翻译效果。需要配置 LLM 翻译服务商。
-  storeReview:
-    title: 用得还顺手吗？
-    description: 去商店留个评价，能帮更多人发现陪读蛙。
-    action: 去评价
-    dismiss: 关闭
-  more:
-    title: 更多
-    help: 帮助
-    tutorial: 使用教程
-    emailUs: 邮件联系
-    featureRequest: 功能建议
-    bugReport: 报告问题
-    community: 社区
-    joinDiscord: 加入 Discord
-    joinWechat: 加入微信群
-    starGithub: Github 加星
-    rateUs: 好评支持
+  hub:
+    tooltip: 一次性调用多个翻译模型翻译文本
 errorRecovery:
   title: 应用发生异常
   description: 已进入恢复模式。你可以先导出当前设置作为备份，再重置设置后重试。
@@ -101,8 +60,6 @@ options:
     leaveDescription: 你可以继续编辑并修正问题，或放弃尚未保存的修改。
     keepEditing: 继续编辑
     discard: 放弃未保存修改
-  batchSavings:
-    savedCost: 约省 $1% API 费用
   commandPalette:
     placeholder: 搜索设置...
     noResults: 未找到设置
@@ -111,71 +68,17 @@ options:
     toggle: 切换侧边栏
     settings: 设置
     features: 功能
-    translation: 翻译
-    product: 产品
-  tools:
-    translationHub: 翻译中心
-    pdfTranslation: PDF 翻译
-  product:
-    roadmap: 路线图
-  helpAndCommunity:
-    title: 帮助与社区
-    pageDescription: 了解怎么使用陪读蛙、向团队寻求帮助，或者加入社区和其他用户交流。
-    help:
-      title: 帮助
-    tutorial:
-      title: 使用教程
-      description: 阅读文档，了解怎么使用陪读蛙
-    email:
-      title: 邮件联系
-      description: 通过 contact@readfrog.app 直接联系团队
-    featureRequest:
-      title: 功能建议
-      description: 提出想法，并为团队接下来要做的功能投票
-    bugReport:
-      title: 报告问题
-      description: 提交工单，并跟进直到问题解决
-    community:
-      title: 社区
-    discord:
-      title: Discord
-      description: 与团队和其他用户实时交流
-    wechat:
-      title: 微信群
-      description: 扫描二维码进入微信讨论群
-      qrCodeAlt: 微信二维码
   apiProviders:
     title: API 提供商
-    pageDescription: 接入 Read Frog 调用的 AI 服务，并为每项功能指定使用哪一个。
-    description: 添加 Read Frog 可以调用的提供商。内置 20 多个，也可以添加兼容 Chat Completions 的自定义 API 和 Open Responses 自定义 API。
+    pageDescription: 接入 Read Frog Lite 调用的 AI 服务，并为每项功能指定使用哪一个。
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using
+      your own endpoint, model, and credentials.
     configTitle: 提供商配置
     addProvider: 添加提供商
-    builtInProvider: 内置提供商
-    builtInAiUsage:
-      title: 内置 AI 额度
-      remaining: "剩余 $1%"
-      supportedFeatures: "支持 $1 项功能"
-      resetsAt: "$1 重置"
-      daily: 每日额度
-      weekly: 每周额度
-      oneTime: 赠送额度
-      expiresAt: "$1 过期"
-      features:
-        pageTranslation: 网页翻译
-        customAction: 自定义 AI 指令
-        noteSuggestion: 猜你想存
-        selectionTranslation: 划词翻译
-        videoSubtitles: 视频字幕
-        inputTranslation: 输入翻译
-        languageDetection: 语言检测
-    sponsorCta: 获取高速性价比 AI
-    sponsorCtaJalapenoCloud: 获取 GLM 5.2 五折优惠
     setApiKeyWarning:
       message: 请在 $1 页面设置 API Key
     badges:
       featureCount: $1 个功能
-      sponsor: 赞助
-      sponsorJalapenoCloud: $$2 免费额度
     dialog:
       title: 添加新提供商
       groups:
@@ -184,7 +87,8 @@ options:
           description: 内置的大语言模型提供商，无需填写大部分配置比如 Base URL
         compatibleProviders:
           title: 兼容 API 提供商
-          description: 兼容 Chat Completions 的 API 使用自定义 Chat Complete，Open Responses API 使用自定义 Responses。
+          description: 兼容 Chat Completions 的 API 使用自定义 Chat Complete，Open Responses API
+            使用自定义 Responses。
         pureTranslationProviders:
           title: 纯翻译提供商
           description: 专注于翻译功能的提供商，没有大语言模型能力
@@ -192,9 +96,7 @@ options:
       fields:
         name: 名称
         description: 描述
-        apiKey: API Key
         baseURL: Base URL
-        url: URL
         optional: 可选
       duplicate: 复制
       delete: 删除
@@ -207,12 +109,8 @@ options:
       featureWouldLoseProvider: '无法删除："$1" 将没有任何可以运行它的提供商。'
       providerInUseCannotDisable: '无法禁用 "$1"，它当前正被 $2 个功能使用。'
       duplicateProviderName: '重复的提供商名称 "$1"'
-      defaultProvider:
-        translate: 设为默认翻译提供商
       models:
         translate:
-          title: 翻译模型
-          customTitle: 自定义翻译模型
           placeholder: 选择一个模型
         fetchModels: 获取可用模型
         fetchError: 获取模型失败
@@ -225,14 +123,6 @@ options:
         label: 模型
         enterCustomModel: 输入自定义模型名称
       advancedOptions: 高级选项
-      providerSettingLabels:
-        region: 区域
-        apiMode: API 模式
-        resourceName: Azure 资源名称（可选）
-        apiVersion: API 版本
-      providerSettingOptionLabels:
-        responses: Responses API
-        chatCompletions: Chat Completions
       temperature: 温度
       temperatureHint: 控制响应的随机性。较低的值（0）更确定性，较高的值更具创造性。范围因提供商而异。留空则使用提供商默认值。
       reasoning:
@@ -250,49 +140,15 @@ options:
       invalidJson: JSON 格式无效
     providers:
       name:
-        builtInAi: 内置 AI
-        builtInAiAdvance: 高级内置 AI
         customChatComplete: 自定义 Chat Complete
-        customResponses: 自定义 Responses
-      attribution:
-        builtInAi: 由 Read Frog 托管的普通模型。Pro 和 Ultra 用户可在全部功能上使用，消耗每周额度；免费用户仅支持在自定义 AI 指令使用。
-        builtInAiAdvance: 由 Read Frog 托管的高级模型，Ultra 会员专属。网页翻译、自定义 AI 指令等全部内置 AI 功能均可使用，共享每周额度，额度消耗比标准模型更快。
       description:
         openai: 提供 GPT-4o 等模型
-        azure: 通过 Azure 部署使用 OpenAI 模型
-        deepseek: 推荐在中国使用
-        openrouter: 多个 LLM 提供商的统一接口，按使用量付费
         ollama: 在本地机器上运行大语言模型，确保完全隐私
         google: 具有先进推理能力的谷歌旗舰 AI 模型
-        anthropic: 以安全性和推理能力著称的 Claude 模型
-        xai: 马斯克的 AI 公司，提供具有实时数据访问能力的 Grok 模型
-        atlascloud: 统一的 OpenAI 兼容模型平台，提供 DeepSeek、Kimi、Qwen、豆包、GLM 等较新模型
-        jalapenocloud: 顶尖团队都在用的企业级 AI，现在为你而来！
-        siliconflow: 面向中国和国际模型的高性能推理平台
-        tensdaq: 革命性竞价 AI MaaS 平台，价格由市场供需决定，告别高成本固定定价
         openaiCompatible: 连接兼容 OpenAI Chat Completions API 的自定义端点
-        openResponses: 连接兼容 Open Responses API 的自定义端点
-        deeplx: 非官方 DeepL API
-        deepl: 官方 DeepL API
-        bedrock: 面向企业级基础模型的 AWS 托管服务
-        groq: 专注于超高速 LLM 推理速度的专用硬件
-        deepinfra: 面向热门开源模型的经济高效云推理
-        mistral: 专注于高效多语言模型的欧洲 AI 公司
-        togetherai: 用于运行和微调开源模型的协作平台
-        cohere: 具有强大多语言和 RAG 能力的企业级 AI
-        fireworks: 面向开源模型的生产就绪推理平台
-        cerebras: 超快速 AI 推理，适合快速翻译和文本分析
-        replicate: 访问多样化开源模型，适合专业翻译任务
-        perplexity: 实时知识增强 AI，提供语境化翻译和阅读辅助
-        volcengine: 字节跳动旗下云平台，提供豆包系列大模型
-        minimax: MiniMax AI平台，提供先进的MiniMax-M2系列大模型
-        alibaba: 阿里云通义千问系列模型，具备先进的推理和多语言能力
-        moonshotai: 月之暗面Kimi系列模型，具备强大的推理和长上下文能力
-        huggingface: Hugging Face推理API，提供数千种开源模型访问
     apiKey:
       showAPIKey: 显示 API Key
       getAPIKey: 获取 API Key
-    howToConfigure: 如何配置?
     testConnection:
       button: 测试连接
       testing: 测试中...
@@ -308,26 +164,15 @@ options:
         selectionTranslation: 划词翻译
         inputTranslation: 输入翻译
         videoSubtitles: 视频字幕
-        noteSuggestion: 猜你想存
+        tts: 语音朗读
+        transcription: 音频转录
       descriptions:
         pageTranslation: 翻译整个网页，双语对照或直接替换原文。
         selectionTranslation: 通过划词工具栏翻译你选中的文本。
         inputTranslation: 在发送前翻译你写在输入框里的内容。
         videoSubtitles: 翻译视频播放器中随播放出现的字幕。
-        noteSuggestion: 划词翻译后，推荐值得存入笔记库的词条。
-    languageDetection:
-      title: 语言检测
-      description: 影响自动翻译语言检测和朗读语音选择的准确性。
-      mode:
-        basic: 基础
-        llm: LLM
-      provider:
-        label: 检测提供商
-        placeholder: 选择提供商
-      status:
-        noProviders: 请先配置 LLM 提供商
-        basicRecommend: 建议启用 LLM
-        llmEnabled: LLM 检测已启用
+        tts: 在语音朗读设置中选择模型、语音和语速。
+        transcription: 在语音转录设置中填写模型及语言。
     aiContentAware:
       title: AI 智能上下文翻译
       description: 把网页或视频的上下文提供给 AI，让翻译更准确
@@ -341,7 +186,7 @@ options:
     unsupported: 无法匹配这个地址。不支持端口，也不支持 http 和 https 以外的协议。
   preference:
     title: 偏好设置
-    pageDescription: 设置陪读蛙的外观与生效范围，以及配置的同步与备份方式。
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: 外观与语言
       theme:
@@ -377,152 +222,19 @@ options:
         urlPattern: URL 模式
     config:
       title: 配置
-      googleDrive:
-        title: Google Drive 云端同步
-        description: 远端配置较新时下载，本地配置较新时上传；术语库走单独一个文件，按条合并而不是整份覆盖。
-        sync: 同步到 Google Drive
-        syncing: 同步中...
-        syncSuccess:
-          uploaded: 本地配置已上传至云端
-          downloaded: 已应用远程配置
-          sameChanges: 两端配置改动相同，已同步
-          noChange: 配置已是最新状态
-          unresolved: 配置冲突已解决并同步
-        syncError: 配置同步失败，请重试
-        accountChangedError: 对话框打开期间登录的 Google 账号发生了变化，未上传任何内容，请重新同步。
-        metadataCorrupted: 同步数据损坏，已自动应用远端配置
-        lastSyncTime: 最后同步时间
-        logout: 登出账号
-        logoutSuccess: 已登出 Google 账号
-        unresolved:
-          title: 配置同步解决
-          description: 本地与云端配置存在差异，请选择每个字段要保留的版本。
-          resolved: 已解决
-          unresolved: 未解决
-          localValue: 本地值
-          remoteValue: 远端值
-          useLocal: 使用本地
-          useRemote: 使用远端
-          useAllLocal: 全选本地
-          useAllRemote: 全选远端
-          reset: 撤销选择
-          progress: 已解决 $1/$2 个更改
-          confirm: 确认同步
-          cancel: 取消
-          hasUnresolvedInChildren: ⚠ 包含待解决项
-          item: 项
-          items: 项
-          unresolvedPrompt: "[待解决 - 请选择]"
-          localLatest: 本地最新
-          remoteLatest: 远端最新
-          bothChanged: 双方已更改
-          localChanged: 本地已更改
-          remoteChanged: 远端已更改
-          configValid: 配置有效
-          configInvalid: 配置无效
-          resolveToContinue: 解决冲突后继续
-          validationAlert:
-            title: 合并后的配置存在验证错误
-            description: 请调整下方差异以修复：
-          moreErrors: ...还有 $1 个错误
-        glossary:
-          thisDevice: 本机
-          cloud: 云端
-          deleted: 已删除
-          disabled: 已停用
-          upToDate: 术语库已是最新
-          uploaded: 术语库已上传到云端
-          merged: "术语库已同步：新增 $1，更新 $2，删除 $3"
-          undo: 撤销
-          undone: 术语库已恢复到同步前的样子
-          undoUnavailable: 该撤销已失效 — 之后术语库已发生变化。
-          retry: 同步过程中术语库有改动，请再运行一次。
-          accountChangedRetry: 对话框打开期间登录的 Google 账号发生了变化，未上传任何内容，请重新同步。
-          busy: 另一个标签页正在同步你的术语库。
-          malformed: 云端的术语库文件无法读取，本次未做任何改动。
-          versionTooNew: 那个术语库文件由更新版本的 Read Frog 写入，请先升级扩展。
-          duplicateFiles: 你的云端存在多个术语库文件，本次未做任何改动，请先删掉多余的那个。
-          capExceeded: "合并后会超出术语库上限 $1 条，本次未做任何改动。"
-          failed: 术语库同步失败
-          review:
-            title: 确认这次术语库同步
-            description: 两边不一致的地方，请选择保留哪一个。
-            firstSync: "本机首次同步：从云端接收 $1 条，上传 $2 条。"
-            accountChanged: "当前登录的是 $1，和这台设备上次同步的账号不是同一个。本机的 $2 条术语库数据会被上传到这个账号。如果只想要这个账号的术语库，请取消、先把本机的删掉，再同步一次。"
-            destructive: "这次同步会删掉本机 $2 条术语库数据中的 $1 条。"
-            moreConflicts: "另有 $1 处差异未列出，均按合并结果处理。"
-            confirm: 同步
-            cancel: 取消
       manualSync:
         title: 手动配置同步
-        description: 手动导入导出你的配置，术语库也一并带走
-        import: 导入
-        export: 导出
-        importSuccess: 配置导入成功
+        description: Import or export your local configuration.
         exportSuccess: 配置导出成功
-        exportGlossaryFailed: 设置已导出，但术语库无法读取，未包含在文件中。
-        importError: 导入失败
-        glossaryImported: "已导入 $1 条术语，替换了原有的术语库。"
-        glossaryUndo: 撤销
-        glossaryUndone: 术语库已恢复到导入前的样子
-        glossaryUndoUnavailable: 该撤销已失效 — 之后术语库已发生变化。
-        glossaryMalformed: 那个文件里的术语库无法读取，本次未做任何改动。
-        glossaryVersionTooNew: 那个文件里的术语库由更新版本的 Read Frog 写入，请先升级扩展。
-        glossaryCapExceeded: "那个文件的术语库数据比上限 $2 条多出 $1 条，本次未做任何改动。"
-        exportOptions:
-          title: 选择导出选项
-          description: 请选择是否在导出的配置中包含 API Keys。包含 API Keys 可能会泄露敏感信息，建议仅在安全环境下使用。
-          includeAPIKeys: 包含 API Keys
-          excludeAPIKeys: 不包含 API Keys
-          cancel: 取消
-      viewConfig:
-        open: 打开配置
-        title: 配置
-        description: 查看当前配置的原始 JSON
-      backup:
-        title: 配置备份
-        description: 如果配置发生变化，每小时会自动创建备份。您可以在这里恢复之前的配置。（最多 $1 个备份）
-        loading: 正在加载备份...
-        backupNow: 立即备份
-        backupSuccess: 备份创建成功
-        restoreSuccess: 配置恢复成功
-        empty:
-          title: 暂无可用备份
-          description: 如果配置发生变化，每小时会自动创建备份。
-        item:
-          extensionVersion: 扩展版本：
-          schemaVersion: 配置版本：
-          restore: 恢复
-          export: 导出
-          delete: 删除
-        restore:
-          title: 恢复配置备份？
-          description: 如果当前配置与最新备份不同，将自动备份您的当前配置。如果备份数量超过限制，最旧的备份可能会被删除。
-          cancel: 取消
-          confirm: 恢复
-        delete:
-          title: 删除备份？
-          description: 您确定要删除此备份吗？此操作无法撤销。
-          cancel: 取消
-          confirm: 删除
       reset:
         title: 恢复默认配置
-        description: 将所有配置重置为默认，术语库不受影响
+        description: Reset local configuration to its defaults.
         dialog:
           title: 恢复默认配置
           trigger: 重置配置
           confirm: 确认
           cancel: 取消
-          description: 该操作将清空您的所有自定义配置，并将其重置为默认值。术语库会保留 — 如需删除请到术语库页面操作。请确认是否清除。
-    userExperience:
-      title: 使用体验
-      beta:
-        title: Beta 体验
-        description: 开启可能还不稳定的实验性功能
-      analytics:
-        title: 帮助改进用户体验
-        tooltip: 开启后，Read Frog 会发送匿名的产品使用信号，用于发现 bug、验证功能是否稳定、优化性能与交互细节，并帮助我们决定接下来优先投入的方向。
-        description: 通过帮助我们定位 bug、优化界面布局等改善 Read Frog
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: 快捷键
     pageDescription: 设置阅读时触发翻译、朗读和 AI 指令的按键。
@@ -536,19 +248,10 @@ options:
     selectionTranslation:
       title: 划词翻译
       description: 翻译选中的文本。
-    subtitlesToggle:
-      title: 字幕翻译
-      description: 打开或关闭视频的翻译字幕。
     nodeTranslation:
       title: 悬停翻译
       description: 悬停或长按段落，只翻译这一段。
       customDescription: 悬停在段落上时按下这组按键，即可翻译这一段。
-    translationHub:
-      title: 翻译中心
-      description: 在新标签页中打开翻译中心。
-    selectionSpeak:
-      title: "划词朗读"
-      description: "朗读选中的文本，再按一次停止。"
     actions:
       title: "AI 指令"
       description: "对选中的文本运行 AI 指令。自定义指令默认没有快捷键，在这里设置即可。"
@@ -556,64 +259,15 @@ options:
     turnOn: "去开启"
     clash: "与「$1」的快捷键相同，请修改其中一个。"
     taken: "$1 已被「$2」使用。"
-  overlayTools:
-    title: 悬浮工具
-  inputTranslation:
-    title: 输入翻译
-    pageDescription: 在发送之前，把你在输入框里写的内容翻译好。
-    trigger:
-      title: 触发方式
-      enable:
-        title: 启用
-        description: 在任意输入框中快速连按 3 次空格键，即可翻译你输入的内容。
-      threshold:
-        title: 触发阈值
-        description: 相邻两次按键之间最多可以间隔多少毫秒。经常触发不了就调大，打字时误触发就调小。
-        error: 请输入 $1 到 $2 之间的数值
-    languages:
-      title: 翻译语言
-      pair:
-        title: 语言方向
-        description: 输入的文字按哪种语言识别，又翻译成哪种语言。两侧都可以跟随你翻译网页时使用的源语言和目标语言。
-      sourceCode: 网页源语言
-      targetCode: 翻译目标语言
-      cycle:
-        title: 每次翻译时交换方向
-        description: 每次触发都会交换这两种语言，再触发一次就能把文字换回你输入时的语言。
-  floatingButton:
-    title: 悬浮按钮
-    pageDescription: 设置悬浮按钮停在哪一侧、点击后做什么，以及在哪些网站不显示。
-    demoImageAlt: 悬浮按钮演示
-    enable:
-      title: 启用悬浮按钮
-      description: 在网页上显示悬浮按钮，快速访问陪读蛙功能
-    display:
-      title: 显示
-      side:
-        title: 按钮位置
-        description: 选择悬浮按钮停靠在页面的哪一侧
-        left: 左侧
-        right: 右侧
-      disabledSites:
-        title: 禁用网站
-        description: 配置需要禁用悬浮按钮的网站
-        enterUrlPattern: 输入网址模式
-        urlPattern: 网址模式
-    clickAction:
-      title: 点击行为
-      description: 选择点击悬浮按钮时执行的操作
-      panel: 打开侧边栏
-      translate: 切换页面翻译
-    closeMenu:
-      disableForSite: 当前网站禁用
-      disableGlobally: 全局禁用
-    tooltips:
-      togglePageTranslation: 切换页面翻译
-      floatingButtonOptions: 悬浮按钮选项
-      lockPosition: 锁定位置
-      unlockPosition: 解锁位置
-      settings: 设置
-      feedback: 发送反馈
+    subtitlesToggle:
+      title: 字幕翻译
+      description: 打开或关闭视频的翻译字幕。
+    selectionSpeak:
+      title: 划词朗读
+      description: 朗读选中的文本，再按一次停止。
+    translationHub:
+      title: 翻译中心
+      description: 在新标签页中打开翻译中心。
   selectionToolbar:
     title: 选择工具栏
     pageDescription: 设置选中文本时出现哪些操作，以及工具栏在哪些网站显示。
@@ -629,13 +283,6 @@ options:
       speak:
         title: 朗读
         description: 在工具栏中显示朗读按钮，用于朗读选中的文本
-      noteSuggestion:
-        title: 猜你想存
-        description: 使用 AI 提供商进行划词翻译后，推荐可存入笔记库的词条
-        action: 指令
-        actionDescription: 用于生成「猜你想存」的指令
-        provider: 提供商
-        providerDescription: 用于生成「猜你想存」的 AI 提供商
     display:
       title: 显示
       opacity:
@@ -662,8 +309,8 @@ options:
       description: 为划词添加你自己的结构化 AI 操作
       configTitle: 指令配置
       introVideo:
-        trigger: "观看视频"
-        title: "30 秒了解自定义 AI 指令"
+        trigger: 观看视频
+        title: 30 秒了解自定义 AI 指令
       builtIn: 内置
       badges:
         new: 新增
@@ -676,7 +323,6 @@ options:
       noEnabledLlmProvider: 请先启用至少一个 LLM 提供商后再创建自定义 AI 指令
       tabs:
         config: 配置
-        notebase: 笔记库
         hasErrors: 有错误
         connected: 已连接
         needsAttention: 需要处理
@@ -685,11 +331,12 @@ options:
         customize: 定制化
         customizeTooltip: 内置指令不允许更改提示词，点此按钮来修改指令提示词
         aiConfigHelper:
-          trigger: "让 AI 帮我配置"
-          title: "让 AI 帮我配置"
-          description: "复制下面的提示词，发给你常用的 AI 助手（ChatGPT、Claude、DeepSeek、Kimi 等）。它会先问你想做什么，再告诉你每一项怎么填。提示词里带有这个动作当前的配置，但不含 API Key。"
-          copy: "复制提示词"
-          copyFailed: "复制失败，请重试"
+          trigger: 让 AI 帮我配置
+          title: 让 AI 帮我配置
+          description: 复制下面的提示词，发给你常用的 AI 助手（ChatGPT、Claude、DeepSeek、Kimi
+            等）。它会先问你想做什么，再告诉你每一项怎么填。提示词里带有这个动作当前的配置，但不含 API Key。
+          copy: 复制提示词
+          copyFailed: 复制失败，请重试
         icon: 图标
         iconField:
           chooseAriaLabel: 选择图标
@@ -716,8 +363,8 @@ options:
         save: 保存
         defaultFieldName: 结果
         fieldNamePlaceholder: 字段名
-        selectionField: "选中的文字"
-        selectionFieldDescription: "你选中的原文，原样保存，不由 AI 生成。"
+        selectionField: 选中的文字
+        selectionFieldDescription: 你选中的原文，原样保存，不由 AI 生成。
         autoFieldPrefix: 字段
         addFieldDialog:
           title: 添加输出字段
@@ -736,7 +383,7 @@ options:
           resetFieldList: 字段列表
           resetDictionary: 词典卡片
           resetSentenceAnalysis: 句子分析卡片
-          resetImproveWriting: "写作改进卡片"
+          resetImproveWriting: 写作改进卡片
           resetConfirmTitle: 替换当前版式？
           resetConfirmDescription: 编辑器中的内容将被替换，之后仍可在编辑器中撤销。
           resetConfirm: 替换
@@ -792,51 +439,6 @@ options:
             tooLong: 版式超过 $1 个字符，无法保存。
             fieldNotShown: 「$1」未在此版式中显示。
             reservedFieldName: 字段名「$1」是版式保留名，请重命名该字段。
-        notebase:
-          title: 笔记库连接
-          description: 将这个指令的结构化结果保存到远程笔记库。
-          loginRequiredTitle: 登录后才能配置笔记库
-          loginRequiredDescription: 先在 readfrog.app 登录，然后再选择笔记库和编辑映射。
-          loginRequiredConnectedDescription: 这个连接来自下面的账号。如果登录原账号，会恢复字段映射；如果登录其他账号，创建或连接笔记库时会清空之前的字段映射。
-          loginAction: 去登录
-          connectedAccountLabel: 已连接账号
-          currentAccountLabel: 当前账号
-          unknownConnectedAccount: 未知账号
-          tableLabel: 笔记库
-          tablePlaceholder: 选择一个笔记库
-          tableClearOption: 不连接笔记库
-          clearConnectionAction: 清空连接
-          refreshAction: 刷新
-          emptyTitle: 还没有笔记库
-          emptyDescription: 先去 readfrog.app 创建一个笔记库，再回来映射字段。
-          openNotebaseAction: 打开笔记库
-          accessDeniedTitle: 无法访问笔记库
-          accessDeniedDescription: 当前账号没有权限加载笔记库数据。
-          listErrorTitle: 加载笔记库失败
-          listErrorDescription: 请稍后再试一次。
-          accountMismatchTitle: 笔记库连接属于其他账号
-          accountMismatchDescription: 当前连接绑定到下面的已连接账号。你可以清空连接，或选择当前账号可访问的笔记库。
-          tableUnavailableTitle: 选中的笔记库已不可用
-          tableUnavailableDescription: 这个笔记库不存在或当前账号无法打开。可以清空连接，或重新选择一个笔记库。
-          tableUnavailableOption: 不可用
-          schemaErrorTitle: 加载笔记库 schema 失败
-          schemaErrorDescription: 请稍后再试一次刷新。
-          schemaLoading: 正在加载笔记库 schema...
-          mappingsLabel: 字段映射
-          localFieldLabel: 指令字段
-          remoteFieldLabel: 笔记库字段
-          columnUnavailableOption: 已删除
-          invalidMappingsTitle: 有些映射需要处理
-          invalidMappingsDescription: 无效映射会被保留。保存到笔记库前请先修复它们。
-          noFieldSavedTitle: "没有字段会存进这个笔记库"
-          noFieldSavedDescription: "至少给一个字段选一个笔记库字段，才能保存笔记。"
-          mappingSummary: "存 $1 · 不存 $2 · 待定 $3"
-          skipFieldOption: "不保存"
-          undecidedFieldPlaceholder: "选择笔记库字段或不保存"
-          mappingMissingLocal: 映射的指令字段已经不存在。
-          mappingMissingRemote: 映射的笔记库字段已经不存在。
-          mappingMissingSchema: 刷新笔记库 schema 后才能校验这个映射。
-          mappingIncompatible: 字段类型已经不匹配。
         tokens:
           selection: 选中的文本内容
           paragraphs: 与选区相交的段落内容，会以空行拼接，传给自定义 AI 指令时会截断到前 2000 个字符
@@ -930,110 +532,112 @@ options:
           fieldSentence: 句子
           fieldSentenceDescription: 提取上方段落中包含选中词语的完整句子，不要包含前后句。
           fieldSentenceTerm: 句中词形
-          fieldSentenceTermDescription: '选中词语在“句子”中的位置：序列化为字符串的 JSON 数组，词语的每个部分一项 {"text": 字符串}，逐字引用“句子”原文（如 [{"text":"blossoms"}]）。'
+          fieldSentenceTermDescription:
+            '选中词语在“句子”中的位置：序列化为字符串的 JSON 数组，词语的每个部分一项 {"text":
+            字符串}，逐字引用“句子”原文（如 [{"text":"blossoms"}]）。'
           fieldDefinition: 释义
           fieldDefinitionDescription: 针对语境含义的一条简洁释义。
           fieldSentenceTranslation: 句子翻译
           fieldSentenceTranslationDescription: 只翻译提取出的句子。
-          fieldMemoryTips: "记忆技巧"
-          fieldMemoryTipsDescription: "帮助记住词条的方法：最多 3 条，每条一行，以技巧名和冒号开头（如 词根词缀：…）；没有真正有用的就返回空字符串。"
+          fieldMemoryTips: 记忆技巧
+          fieldMemoryTipsDescription: 帮助记住词条的方法：最多 3 条，每条一行，以技巧名和冒号开头（如 词根词缀：…）；没有真正有用的就返回空字符串。
           fieldDifficulty: 难度
           fieldDifficultyDescription: 预估 CEFR 难度等级：A1、A2、B1、B2、C1 或 C2。
         sentenceAnalysis:
-          name: "长难句分析"
-          description: "像老师一样批注长难句：主干、从句和难点一目了然"
-          fieldSentence: "原句"
-          fieldAnnotations: "标注"
-          fieldTranslation: "译文"
+          name: 长难句分析
+          description: 像老师一样批注长难句：主干、从句和难点一目了然
+          fieldSentence: 原句
+          fieldAnnotations: 标注
+          fieldTranslation: 译文
           roles:
-            subject: "主语"
-            predicate: "谓语"
-            object: "宾语"
-            complement: "补语"
-            attributive: "定语"
-            adverbial: "状语"
-            appositive: "同位语"
-            connector: "连接词"
+            subject: 主语
+            predicate: 谓语
+            object: 宾语
+            complement: 补语
+            attributive: 定语
+            adverbial: 状语
+            appositive: 同位语
+            connector: 连接词
           clauses:
-            subject: "主语从句"
-            object: "宾语从句"
-            complement: "表语从句"
-            attributive: "定语从句"
-            adverbial: "状语从句"
-            appositive: "同位语从句"
-            clause: "从句"
+            subject: 主语从句
+            object: 宾语从句
+            complement: 表语从句
+            attributive: 定语从句
+            adverbial: 状语从句
+            appositive: 同位语从句
+            clause: 从句
           adverbialClauses:
-            time: "时间状从"
-            place: "地点状从"
-            cause: "原因状从"
-            condition: "条件状从"
-            concession: "让步状从"
-            purpose: "目的状从"
-            result: "结果状从"
-            manner: "方式状从"
-            comparison: "比较状从"
+            time: 时间状从
+            place: 地点状从
+            cause: 原因状从
+            condition: 条件状从
+            concession: 让步状从
+            purpose: 目的状从
+            result: 结果状从
+            manner: 方式状从
+            comparison: 比较状从
           forms:
-            infinitive: "不定式"
-            gerund: "动名词"
-            presentParticiple: "现在分词"
-            pastParticiple: "过去分词"
+            infinitive: 不定式
+            gerund: 动名词
+            presentParticiple: 现在分词
+            pastParticiple: 过去分词
           senses:
-            time: "时间"
-            place: "地点"
-            cause: "原因"
-            condition: "条件"
-            concession: "让步"
-            purpose: "目的"
-            result: "结果"
-            manner: "方式"
-            comparison: "比较"
+            time: 时间
+            place: 地点
+            cause: 原因
+            condition: 条件
+            concession: 让步
+            purpose: 目的
+            result: 结果
+            manner: 方式
+            comparison: 比较
           obstacles:
-            inversion: "倒装"
-            fronting: "前置"
-            ellipsis: "省略"
-            passive: "被动"
-            subjunctive: "虚拟"
-            parenthesis: "插入"
-            dummyIt: "形式主语"
-            postponedSubject: "真主语"
-            cleft: "强调句"
-            comparison: "比较"
-            negation: "否定"
-            split: "拆分"
-            idiom: "习语"
-          restoreLabel: "还原："
-          hardLabel: "难点"
-          trunkLabel: "只看主干"
-          slashesLabel: "断句"
+            inversion: 倒装
+            fronting: 前置
+            ellipsis: 省略
+            passive: 被动
+            subjunctive: 虚拟
+            parenthesis: 插入
+            dummyIt: 形式主语
+            postponedSubject: 真主语
+            cleft: 强调句
+            comparison: 比较
+            negation: 否定
+            split: 拆分
+            idiom: 习语
+          restoreLabel: 还原：
+          hardLabel: 难点
+          trunkLabel: 只看主干
+          slashesLabel: 断句
         improveWriting:
-          name: "写作改进"
-          description: "像老师一样批改：标出错误和不地道的表达，按场合给出改后版本"
-          fieldOriginal: "原文"
-          fieldSetting: "场合"
-          fieldAnnotations: "标注"
-          fieldImproved: "改后"
-          fieldSummary: "总评"
+          name: 写作改进
+          description: 像老师一样批改：标出错误和不地道的表达，按场合给出改后版本
+          fieldOriginal: 原文
+          fieldSetting: 场合
+          fieldAnnotations: 标注
+          fieldImproved: 改后
+          fieldSummary: 总评
           types:
-            spelling: "拼写"
-            grammar: "语法"
-            punctuation: "标点"
-            wordChoice: "用词"
-            logic: "逻辑"
-            unnatural: "不地道"
-            register: "得体"
-            clarity: "清晰"
-            good: "亮点"
+            spelling: 拼写
+            grammar: 语法
+            punctuation: 标点
+            wordChoice: 用词
+            logic: 逻辑
+            unnatural: 不地道
+            register: 得体
+            clarity: 清晰
+            good: 亮点
           tiers:
-            error: "错误"
-            awkward: "欠妥"
-            good: "亮点"
-          hideFixesLabel: "藏答案"
-          hiddenHintLabel: "先自己想想怎么改，再看答案。"
-          showImprovedLabel: "显示改后版本"
-          improvedLabel: "改后"
-          copyLabel: "复制"
-          unchangedLabel: "与原文相同，无需修改"
-          removeLabel: "删掉"
+            error: 错误
+            awkward: 欠妥
+            good: 亮点
+          hideFixesLabel: 藏答案
+          hiddenHintLabel: 先自己想想怎么改，再看答案。
+          showImprovedLabel: 显示改后版本
+          improvedLabel: 改后
+          copyLabel: 复制
+          unchangedLabel: 与原文相同，无需修改
+          removeLabel: 删掉
         blank:
           name: 空白
           description: 从空白模板开始创建指令
@@ -1044,124 +648,15 @@ options:
             目标语言：{{targetLanguage}}
       errors:
         nameRequired: 名称不能为空
-        duplicateName: '重复的指令名称 "$1"'
+        duplicateName: 重复的指令名称 "$1"
         invalidIcon: Iconify 图标字符串格式无效
         providerRequired: 请选择一个已启用的 LLM 提供商
         outputSchemaRequired: 至少需要一个输出字段
         fieldKeyRequired: 字段名不能为空
         duplicateFieldKey: 字段名不能重复
-  advanced:
-    title: 高级
-    pageDescription: 不属于日常路径的强大设置。
-    glossary:
-      title: 术语库
-      pageDescription: 给你在意的词固定一个译法，并选择每份术语库在哪些网站生效。
-      untitled: 未命名术语库
-      noGlossaries: 还没有术语库。
-      enable:
-        title: 启用
-        description: 把命中的术语一并发给 LLM，让它按你的写法翻译。术语库是随提示词一起发送的，所以只对运行在 LLM 提供商上的功能生效。
-      library:
-        title: 你的术语库
-        description: 每份术语库都有各自的术语和各自的网站列表，所以为工作准备的一组术语不会跟着你出现在其他所有地方。
-        button: 添加术语库
-        capReached: "最多只能创建 $1 份术语库。"
-        termUsage: "所有术语库合计已使用 $1 条术语，上限 $2 条"
-      summary:
-        terms: "$1 条术语"
-        termsOne: 1 条术语
-        allSites: 所有网站
-        sites: "$1 个网站"
-        sitesOne: 1 个网站
-      editor:
-        docsLink: 如何使用?
-        sections:
-          terms: 术语
-          maintenance: 备份与删除
-        details:
-          title: 名称与描述
-          descriptionPlaceholder: 描述（可选）
-        enable:
-          title: 启用
-          description: 停用后术语仍会保留，但一条都不会发送。
-        sites:
-          title: 网站
-          description: 限定这份术语库只在特定网站生效。example.com 仅匹配这一个地址；*.example.com 还包含子域名；example.com/docs/* 则只覆盖站点的某一部分。
-          allSites: 留空则这份术语库在所有网站生效。
-          header: 网站
-        delete:
-          title: 删除这份术语库
-          description: 删除这份术语库及其中的所有术语。如果以后可能还要用，请先导出——此操作无法撤销。
-          dialog:
-            trigger: 删除
-            title: 删除这份术语库？
-            description: "这份术语库及其中全部 $1 条术语将被永久删除。此操作无法撤销。"
-            confirm: 删除
-            cancel: 取消
-      addTerm:
-        title: 添加术语
-        description: 给术语指定你想要的译文；留空则保持原文不变。
-      list:
-        title: 你的术语
-        description: 只有出现在段落中的术语，才会随该段落一起发送。
-      importExport:
-        title: 导入与导出
-        description: 术语是一个 CSV 文件，包含 source、target、targetLanguage、caseSensitive 四列，即导出所生成的格式。
-      sourcePlaceholder: 术语
-      targetPlaceholder: 译文（留空则保持原文）
-      caseSensitive: 区分大小写
-      add: 添加
-      searchPlaceholder: 搜索术语
-      columnEnabled: 启用
-      columnSource: 术语
-      columnTarget: 译文
-      columnTargetLanguage: 目标语言
-      allLanguages: 所有语言
-      toggleTerm: "使用「$1」"
-      editTerm: "编辑「$1」"
-      keepOriginal: 保持原文
-      delete: 删除
-      save: 保存
-      cancel: 取消
-      loading: 正在加载...
-      empty: 还没有术语。在上方添加，或导入 CSV 文件。
-      noMatches: 没有与搜索匹配的术语。
-      previous: 上一页
-      next: 下一页
-      pageOf: "$1 / $2"
-      addError:
-        emptySource: 请先输入术语。
-        tooLong: 该术语过长。
-        capReached: "所有术语库的术语总数已达上限 $1 条。"
-        duplicate: 该术语已在术语库中。
-      import: 导入
-      export: 导出
-      importModeMerge: 追加到列表
-      importModeReplace: 替换列表
-      importEmpty: 该文件中没有找到术语。
-      importMissingHeader: 该文件不是 Read Frog 的术语库导出文件。它需要这些列：
-      importOverflow: "本次导入会超出上限 $1 条术语，未做任何更改。"
-      importSuccess: "已导入 $1 条新术语，更新 $2 条。"
-      importSkipped: "已跳过 $1 行无效数据和 $2 条重复项。"
-      importNoValidRows: 这些行都无法导入，未做任何更改。
-      importReplaceConfirm:
-        title: 替换整个列表？
-        description: "该术语库下的全部 $1 条术语都会被删除——包括所有目标语言，不只是当前选择的那个——然后用该文件的内容替换。此操作无法撤销。"
-        confirm: 替换
-        cancel: 取消
-      deleteAll:
-        title: 删除所有术语
-        description: 清空你的术语库。如果以后可能还要用,请先导出——删除后无法恢复。
-        deleting: 删除中...
-        dialog:
-          title: 删除所有术语
-          trigger: 全部删除
-          confirm: 确认
-          cancel: 取消
-          description: "全部 $1 条术语将被永久删除。此操作无法撤销。"
   contextMenu:
     title: 右键菜单
-    pageDescription: 控制浏览器右键菜单里的 Read Frog 选项。
+    pageDescription: 控制浏览器右键菜单里的 Read Frog Lite 选项。
     demoImageAlt: 右键菜单演示
     enable:
       title: 启用右键翻译
@@ -1178,7 +673,6 @@ options:
           bilingual: 双语对照
           translationOnly: 仅显示翻译
         switched: 翻译模式：$1
-        providerNotSupported: $1 不支持仅译文模式，若想开启请切换其他提供商。
       translateRange:
         title: 翻译范围
         description: 选择是仅翻译主要内容还是翻译页面上的所有内容。
@@ -1227,7 +721,6 @@ options:
               padding: 2px 4px;
               border-radius: 4px;
             }
-          docsLink: 如何配置?
           saveButton: 保存
           savedButton: 已保存
           validation:
@@ -1240,10 +733,6 @@ options:
       title: 自定义网页提示词
       description: 自定义不同类型的 Prompt，可以在翻译时自行调整 Prompt 类型。Prompt 表示以用户身份发送给 LLM 的文本。
       managePrompts: 管理 Prompt
-      communityPrompts: 获取或分享社区 Prompt
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/820
-      variableReference: 变量详解
-      variableReferenceUrl: https://readfrog.app/zh/docs/page-translation/prompts/variables
       addPrompt: 添加 Prompt
       default: 通用
       builtIn: 内置
@@ -1373,33 +862,171 @@ options:
       searchPlaceholder: 按 id、描述或网址模式搜索
       showMore: 显示更多
       count: 显示 $1 / $2 条规则
-  tts:
-    title: 文本转语音
-    pageDescription: 用自然的语音朗读任何选中的文本。
-    voice:
-      title: 语音
-      selectPlaceholder: 请选择一个声音
-      noVoicesFound: 未找到语音
-      language:
-        title: 语言语音
-        description: 先选择一种语言，再挑选朗读它时使用的语音。重置会换回陪读蛙为该语言选定的语音。
-        reset: 重置
-        previewSample: 来自 Read Frog 的问候！这是我朗读时的声音。
-      fallback:
-        title: 兜底语音
-        description: 你还没有单独指定语音的语言，都用这个语音朗读。
-    speech:
-      title: 朗读
-      rate:
-        title: 语速
-        description: 相对语音本身的语速快多少或慢多少，取值 -100 到 100 个百分点。
-      pitch:
-        title: 音高
-        description: 相对语音本身的音高高多少或低多少，取值 -100 到 100 赫兹。
-      volume:
-        title: 音量
-        description: 相对语音本身的音量大多少或小多少，取值 -100 到 100 个百分点。
-      error: 请输入 $1 到 $2 之间的整数
+  inputTranslation:
+    title: 输入翻译
+    pageDescription: 在发送之前，把你在输入框里写的内容翻译好。
+    trigger:
+      title: 触发方式
+      enable:
+        title: 启用
+        description: 在任意输入框中快速连按 3 次空格键，即可翻译你输入的内容。
+      threshold:
+        title: 触发阈值
+        description: 相邻两次按键之间最多可以间隔多少毫秒。经常触发不了就调大，打字时误触发就调小。
+        error: 请输入 $1 到 $2 之间的数值
+    languages:
+      title: 翻译语言
+      pair:
+        title: 语言方向
+        description: 输入的文字按哪种语言识别，又翻译成哪种语言。两侧都可以跟随你翻译网页时使用的源语言和目标语言。
+      sourceCode: 网页源语言
+      targetCode: 翻译目标语言
+      cycle:
+        title: 每次翻译时交换方向
+        description: 每次触发都会交换这两种语言，再触发一次就能把文字换回你输入时的语言。
+  floatingButton:
+    title: 悬浮按钮
+    pageDescription: 设置悬浮按钮停在哪一侧、点击后做什么，以及在哪些网站不显示。
+    demoImageAlt: 悬浮按钮演示
+    enable:
+      title: 启用悬浮按钮
+      description: 在网页上显示悬浮按钮，快速访问陪读蛙功能
+    display:
+      title: 显示
+      side:
+        title: 按钮位置
+        description: 选择悬浮按钮停靠在页面的哪一侧
+        left: 左侧
+        right: 右侧
+      disabledSites:
+        title: 禁用网站
+        description: 配置需要禁用悬浮按钮的网站
+        enterUrlPattern: 输入网址模式
+        urlPattern: 网址模式
+    clickAction:
+      title: 点击行为
+      description: 选择点击悬浮按钮时执行的操作
+      panel: 打开侧边栏
+      translate: 切换页面翻译
+    closeMenu:
+      disableForSite: 当前网站禁用
+      disableGlobally: 全局禁用
+    tooltips:
+      togglePageTranslation: 切换页面翻译
+      floatingButtonOptions: 悬浮按钮选项
+      lockPosition: 锁定位置
+      unlockPosition: 解锁位置
+      settings: 设置
+      feedback: 发送反馈
+  advanced:
+    glossary:
+      title: 术语库
+      pageDescription: 给你在意的词固定一个译法，并选择每份术语库在哪些网站生效。
+      untitled: 未命名术语库
+      noGlossaries: 还没有术语库。
+      enable:
+        title: 启用
+        description: 把命中的术语一并发给 LLM，让它按你的写法翻译。术语库是随提示词一起发送的，所以只对运行在 LLM 提供商上的功能生效。
+      library:
+        title: 你的术语库
+        description: 每份术语库都有各自的术语和各自的网站列表，所以为工作准备的一组术语不会跟着你出现在其他所有地方。
+        button: 添加术语库
+        capReached: 最多只能创建 $1 份术语库。
+        termUsage: 所有术语库合计已使用 $1 条术语，上限 $2 条
+      summary:
+        terms: $1 条术语
+        termsOne: 1 条术语
+        allSites: 所有网站
+        sites: $1 个网站
+        sitesOne: 1 个网站
+      editor:
+        docsLink: 如何使用?
+        sections:
+          terms: 术语
+          maintenance: 备份与删除
+        details:
+          title: 名称与描述
+          descriptionPlaceholder: 描述（可选）
+        enable:
+          title: 启用
+          description: 停用后术语仍会保留，但一条都不会发送。
+        sites:
+          title: 网站
+          description: 限定这份术语库只在特定网站生效。example.com 仅匹配这一个地址；*.example.com
+            还包含子域名；example.com/docs/* 则只覆盖站点的某一部分。
+          allSites: 留空则这份术语库在所有网站生效。
+          header: 网站
+        delete:
+          title: 删除这份术语库
+          description: 删除这份术语库及其中的所有术语。如果以后可能还要用，请先导出——此操作无法撤销。
+          dialog:
+            trigger: 删除
+            title: 删除这份术语库？
+            description: 这份术语库及其中全部 $1 条术语将被永久删除。此操作无法撤销。
+            confirm: 删除
+            cancel: 取消
+      addTerm:
+        title: 添加术语
+        description: 给术语指定你想要的译文；留空则保持原文不变。
+      list:
+        title: 你的术语
+        description: 只有出现在段落中的术语，才会随该段落一起发送。
+      importExport:
+        title: 导入与导出
+        description: 术语是一个 CSV 文件，包含 source、target、targetLanguage、caseSensitive
+          四列，即导出所生成的格式。
+      sourcePlaceholder: 术语
+      targetPlaceholder: 译文（留空则保持原文）
+      caseSensitive: 区分大小写
+      add: 添加
+      searchPlaceholder: 搜索术语
+      columnEnabled: 启用
+      columnSource: 术语
+      columnTarget: 译文
+      columnTargetLanguage: 目标语言
+      allLanguages: 所有语言
+      toggleTerm: 使用「$1」
+      editTerm: 编辑「$1」
+      keepOriginal: 保持原文
+      delete: 删除
+      save: 保存
+      cancel: 取消
+      loading: 正在加载...
+      empty: 还没有术语。在上方添加，或导入 CSV 文件。
+      noMatches: 没有与搜索匹配的术语。
+      previous: 上一页
+      next: 下一页
+      pageOf: $1 / $2
+      addError:
+        emptySource: 请先输入术语。
+        tooLong: 该术语过长。
+        capReached: 所有术语库的术语总数已达上限 $1 条。
+        duplicate: 该术语已在术语库中。
+      import: 导入
+      export: 导出
+      importModeMerge: 追加到列表
+      importModeReplace: 替换列表
+      importEmpty: 该文件中没有找到术语。
+      importMissingHeader: 该文件不是 Read Frog Lite 的术语库导出文件。它需要这些列：
+      importOverflow: 本次导入会超出上限 $1 条术语，未做任何更改。
+      importSuccess: 已导入 $1 条新术语，更新 $2 条。
+      importSkipped: 已跳过 $1 行无效数据和 $2 条重复项。
+      importNoValidRows: 这些行都无法导入，未做任何更改。
+      importReplaceConfirm:
+        title: 替换整个列表？
+        description: 该术语库下的全部 $1 条术语都会被删除——包括所有目标语言，不只是当前选择的那个——然后用该文件的内容替换。此操作无法撤销。
+        confirm: 替换
+        cancel: 取消
+      deleteAll:
+        title: 删除所有术语
+        description: 清空你的术语库。如果以后可能还要用,请先导出——删除后无法恢复。
+        deleting: 删除中...
+        dialog:
+          title: 删除所有术语
+          trigger: 全部删除
+          confirm: 确认
+          cancel: 取消
+          description: 全部 $1 条术语将被永久删除。此操作无法撤销。
   videoSubtitles:
     title: 视频字幕
     pageDescription: 边看边译视频字幕，并单独设置提供商、样式和请求参数。
@@ -1417,20 +1044,6 @@ options:
       wordLookupAction:
         title: 点词查询指令
         description: 点击字幕里的单词时运行的 AI 指令。默认是词典，也可以换成你自己的指令。
-    aiQuota:
-      title: AI 字幕额度
-      description: AI 利用语音转文字技术获取任何视频的准确字幕
-      launchBonusPromo: $1 之前购买会员额外赠送 300 分钟转录额度
-      loginRequired: 登录后查看你的 AI 字幕额度
-      upgradeRequired: AI 字幕需要 Pro 或 Ultra 订阅
-      pools:
-        subscription: 每月额度
-        launchBonus: 上线赠送
-      resetsOn: $1 重置
-      expiresOn: $1 过期
-      loadError: 无法加载额度，请稍后重试。
-      remainingOf: 剩余 $1 / $2 分钟
-      used: 已用 $1 分钟
     style:
       title: 字幕样式
       description: 显示模式、位置、字体、颜色和背景，都对着预览调
@@ -1524,20 +1137,27 @@ options:
           confirm: 确认
           cancel: 取消
           description: 这将删除所有已缓存的 AI 断句结果。下次播放启用 AI 断句的视频时，将重新处理字幕。
-  whatsNew:
-    title: 最近更新
-    postType:
-      promotion: 优惠
-      update: 更新
-  rateUs:
-    title: 好评支持
-  configMigration:
-    versionTooNew: 导入的配置版本较新，请升级 Read Frog 到最新版本
-    validationError: 配置验证失败
-side:
-  sourceLang: 来源语言
-  targetLang: 目标语言
-  fileExport: 文件导出
+  tts:
+    title: 文本转语音
+    pageDescription: 使用你配置的语音服务朗读文本；语音名称由服务定义。
+    voice:
+      title: 语音
+      selectPlaceholder: 请选择一个声音
+      noVoicesFound: 未找到语音
+      language:
+        title: 语言语音
+        description: 先选择一种语言，再挑选朗读它时使用的语音。重置会换回陪读蛙为该语言选定的语音。
+        reset: 重置
+        previewSample: 来自 Read Frog Lite 的问候！这是我朗读时的声音。
+      fallback:
+        title: 兜底语音
+        description: 你还没有单独指定语音的语言，都用这个语音朗读。
+    speech:
+      title: 朗读
+      rate:
+        title: 语速
+        description: 相对语音本身的语速快多少或慢多少，取值 -100 到 100 个百分点。
+      error: 请输入 $1 到 $2 之间的整数
 translateService:
   title: 翻译服务
   description: 仅用于翻译网页内容
@@ -1550,94 +1170,26 @@ translateService:
 translatePrompt:
   title: AI 翻译风格
   description: 选择在翻译时使用的 Prompt，可在选项页新增或修改自定义 Prompt
-languageLevel: 你的来源语言水平
-languageLevels:
-  beginner: 初级
-  intermediate: 中级
-  advanced: 高级
 noAPIKeyConfig:
   warning: 如果想要使用 AI 模型，请先在选项页设置 API Key
-  warningWithLink:
-    youMust: 您必须先
-    setTheAPIKey: 设置 API Key
-    firstOnThe: 在
-    optionsPage: 选项
-    page: 页
-languageDetection:
-  llmFailed: LLM 语言检测失败，已回退到基础检测
 translation:
   sameLanguage: 源语言和目标语言必须不同
-  autoModeSameLanguage: 检测到的语言 '$1' 与目标语言相同
   extensionContextInvalidated: 扩展已更新，请刷新此页面后重试。
-speak:
-  languageDetectionFallback: 已改用本地语言检测
-  languageDetectionSettingsHint: 可在设置中更换可用的大模型，或选择本地检测。
-  fetchingAudio: 正在获取音频...
-  playingAudio: 正在播放音频...
-  failedToGenerateSpeech: 语音生成失败
-  noTextSelected: 未选择文本
-  openaiNotConfigured: OpenAI 提供商未配置或未启用
-  openaiApiKeyNotConfigured: OpenAI API Key 未配置
 action:
   copy: 复制
   copied: 已复制
   regenerate: 重新生成
   viewContextDetails: 上下文
-  customizeCustomAction: 定制“$1”动作
-  customActionLayoutFallback: 此结果无法按版式显示，当前为简化显示。
-  saveToNotebase: 保存到笔记库
-  saveToNotebaseSaving: 保存中...
-  saveToNotebaseSuccess: 已保存到笔记库
-  saveToNotebaseFailed: 保存到笔记库失败
-  saveToNotebaseLoginRequired: 请先在 readfrog.app 登录后再保存到笔记库
-  saveToNotebaseAccessDenied: 当前账号无法访问选中的笔记库
-  saveToNotebaseLimitExceeded: 需要升级后才能保存更多笔记库内容
-  saveToNotebaseTableUnavailable: 选中的笔记库已不可用
-  saveToNotebaseConnectionInvalid: 当前笔记库连接已经过期，请到 Custom AI Actions 中刷新并修复映射
-  saveToNotebaseInvalidContent: "AI 返回的内容格式不对，没有保存。请重新运行一次再保存。"
-  saveToNotebaseNoFieldSaved: "没有保存：这个指令没有要存进笔记库的字段，请在设置里至少选一个。"
-  saveToNotebaseUndecidedTitle: "已保存。这些字段还没决定存不存"
-  saveToNotebaseSkipUndecided: "都不保存"
-  saveToNotebaseNoMappings: 至少添加一个有效映射后才能保存
-  saveToNotebaseCreateTitle: 创建笔记库？
-  saveToNotebaseCreateDescription: 创建一个与此 Custom Action 输出字段匹配的笔记库，并将当前结果保存为第一条笔记。
-  saveToNotebaseCreateAndSave: 直接创建并保存
-  saveToNotebaseCreateAndSaveShort: 创建并保存
-  saveToNotebaseLoginAndCreate: 登录并自动创建
-  saveToNotebaseLoginAndSave: 登录并保存
-  saveToNotebaseConnectExisting: 连接现有笔记库
-  saveToNotebaseGoConfigure: 去配置
-  saveToNotebaseLoginConnectedTitle: 登录后继续保存？
-  saveToNotebaseLoginConnectedDescription: 这个 Custom Action 已连接到下面的账号。登录后，如果可以使用原笔记库会直接保存；如果当前账号无法使用它，会创建新的笔记库并保存。
-  saveToNotebaseConnectionUnavailableTitle: 当前笔记库连接不可用
-  saveToNotebaseMissingNotebaseDescription: 旧笔记库不存在或当前账号无法打开。可以创建新的笔记库并保存当前结果，或去 Custom AI Actions 连接已有笔记库。
-  saveToNotebaseAccountUnavailableDescription: 当前登录账号和下方已连接账号不同。选择创建并保存会替换之前的连接配置和字段映射；也可以去 Custom AI Actions 连接已有笔记库。
-  saveToNotebasePendingLogin: 登录后继续保存
-  saveToNotebasePendingLoginDescription: 登录完成后，Read Frog 会自动创建笔记库并保存当前结果。
-  saveToNotebasePendingConnectedLoginDescription: 登录完成后，Read Frog 会优先保存到已连接的笔记库；如果当前账号无法使用它，会创建新的笔记库并保存当前结果。
-  upgrade: 升级
-  updatePayment: 更新支付方式
-  openCustomActions: 打开 Custom AI Actions
-  openNotebase: 打开笔记库
-  reviewDueOne: "$1 张卡片需复习"
-  reviewDueOther: "$1 张卡片需复习"
   contextDetailsTitleLabel: 标题
   contextDetailsParagraphsLabel: 段落内容
   translation: 翻译
+  moreActions: 更多操作
+  addCustomAction: 添加自定义 AI 指令
+  unpinFromToolbar: 从工具栏取消固定
+  pinToToolbar: 固定到工具栏
+  dragToReorder: 拖动以排序
   speak: 朗读
   playing: 播放中
-  moreActions: 更多操作
-  pinToToolbar: 固定到工具栏
-  unpinFromToolbar: 从工具栏取消固定
-  dragToReorder: 拖动以排序
-  addCustomAction: 添加自定义 AI 指令
-noteSuggestion:
-  title: 猜你想存
-  description: 选择要存入笔记库的词，将来随时复习
-  save: 保存
-  saved: 已保存
-  staleSuggestion: 该建议已过期
-  toggleLabel: 显示猜你想存
 thinking:
   label: 思考中
   complete: 思考完成
@@ -1645,88 +1197,6 @@ thinking:
   collapse: 收起思考
 shortcutKeySelector:
   placeholder: 请输入快捷键
-subtitles:
-  sidebar:
-    close: 关闭学习面板
-    needsSubtitles: 当前视频没有字幕，推荐先使用 AI 生成字幕。
-    menu:
-      label: 学习
-    summary:
-      tab: AI 总结
-      generating: 正在生成总结…
-      failedTitle: 生成失败
-      retry: 重试
-      needsModel: 请先为视频字幕选择一个 LLM 模型，才能总结这个视频。
-      openSettings: 去设置
-    transcript:
-      tab: 字幕
-      failedTitle: 字幕加载失败
-      retry: 重试
-      emptyTitle: 没有可显示的字幕
-      backToCurrent: 回到当前
-  loadingAiSubtitles: 正在加载 AI 字幕中（预计 3 分钟）
-  aiSubtitlesHint: 通过先进 AI 识别语音生成准确字幕，无官方字幕时依然可用。
-  requestAiSubtitles: 请求 AI 字幕
-  usingAiSubtitles: 正在使用 AI 字幕中
-  toggle:
-    enabled: 字幕翻译已开启
-    disabled: 字幕翻译已关闭
-  actions:
-    downloadTranslated: 下载翻译字幕
-    downloadTranslatedPreparing: 正在准备字幕，长视频可能需要更久
-    downloadTranslatedTranslating: 正在翻译字幕
-    downloadTranslatedComplete: 翻译字幕已下载
-    downloadSource: 下载原字幕
-  state:
-    loading: Read Frog 字幕加载中
-    translating: 翻译中…
-    error: 发生错误
-  errors:
-    http429: 429 youtube 字幕接口请求次数过多，请稍后再试
-    http404: 404 未找到 youtube 字幕
-    http403: 403 youtube 字幕访问被拒绝
-    http500: 500 youtube 服务器错误
-    httpUnknown: HTTP 错误 $1
-    invalidResponse: youtube 字幕响应格式无效
-    networkError: 获取字幕时发生网络错误
-    fetchSubTimeout: 获取字幕超时
-    buttonNotFound: 字幕按钮未找到
-    noSubtitlesFound: 当前视频没有字幕
-    trackFileNotLoaded: 字幕加载失败，请刷新页面后重试
-    videoNotFound: 视频元素未找到
-    controlsBarNotFound: 控制栏未找到
-    aiRateLimited: 请求过于频繁，请稍后再试
-    aiAuthFailed: API 认证失败，请检查您的 API 密钥
-    aiServiceUnavailable: 翻译服务暂时不可用
-    aiQuotaExceeded: 本月 AI 字幕额度已用完
-    aiQuotaExceededWithReset: 本月 AI 字幕额度已用完，$1 重置
-    aiLoginRequired: 登录后查看你的 AI 字幕额度
-    aiSubscriptionRequired: AI 字幕需要 Pro 或 Ultra 订阅
-    aiPaymentRequired: 请更新支付方式后继续生成 AI 字幕
-    aiVideoTooLong: 视频过长，暂不支持生成 AI 字幕
-    aiLiveReplayUnsupported: 暂不支持为直播回放生成 AI 字幕
-    aiStillProcessing: 转录仍在进行中，几分钟后再点一次即可继续获取
-    aiRequestFailed: AI 字幕请求失败，请稍后重试
-    aiNoResponse: AI 服务未响应，使用原文显示
-    translatedExportFailed: 生成翻译字幕失败
-    translatedExportIncomplete: 未能翻译所有字幕行
-    translatedExportSameLanguage: 源语言和目标语言相同
-hostedAi:
-  planBadge:
-    pro: 需开通 Pro 或 Ultra 套餐 · 点击徽章获取套餐
-    ultra: 需开通 Ultra 套餐 · 点击徽章获取套餐
-  availability:
-    authenticationRequired: 登录后可使用
-    ultraRequired: 需要 Ultra 套餐
-    proRequired: 需要 Pro 或 Ultra 套餐
-    quotaExhausted: 额度已用完
-    serviceUnavailable: 暂时不可用
-    usedPercent: "额度已使用 $1%"
-    resetsAt: "$1 重置"
-  errors:
-    rateLimited: 请求过于频繁，请稍后再试
-    guestRateLimited: 游客请求过于频繁，请稍后再试
-    userRateLimited: 请求过于频繁，请稍后再试
 hotkey:
   control: Ctrl
   alt: Option
@@ -1734,27 +1204,6 @@ hotkey:
   backtick: 反引号
   clickAndHold: 点击并按住
   custom: 自定义快捷键
-translationHub:
-  searchLanguages: 搜索语言...
-  noLanguagesFound: 未找到语言
-  exchangeLanguages: 交换语言
-  title: 多接口文本翻译
-  noServicesSelected: 未选择翻译服务
-  noServicesDescription: 请在上方选择翻译服务以查看翻译结果。
-  inputPlaceholder: 输入要翻译的文本...
-  translate: 翻译
-  copiedToClipboard: 翻译已复制到剪贴板！
-  copyTranslation: 复制翻译
-  speakSourceText: 朗读原文
-  speakTranslation: 朗读译文
-  expandCard: 展开卡片
-  collapseCard: 折叠卡片
-  expandAllCards: 全部展开
-  collapseAllCards: 全部折叠
-  deleteCard: 删除卡片
-  translationFailed: 翻译失败
-  translationFailedFallback: 翻译失败
-  retryTranslation: 重试翻译
 languages:
   eng: 英语
   cmn: 简体中文
@@ -1935,3 +1384,114 @@ languages:
   wls: 瓦利斯语
   rar: 拉罗汤加语
   hif: 斐济印地语
+side:
+  targetLang: 目标语言
+  sourceLang: 来源语言
+translationHub:
+  searchLanguages: 搜索语言...
+  noLanguagesFound: 未找到语言
+  exchangeLanguages: 交换语言
+  title: 多接口文本翻译
+  noServicesSelected: 未选择翻译服务
+  noServicesDescription: 请在上方选择翻译服务以查看翻译结果。
+  inputPlaceholder: 输入要翻译的文本...
+  translate: 翻译
+  copiedToClipboard: 翻译已复制到剪贴板！
+  copyTranslation: 复制翻译
+  speakSourceText: 朗读原文
+  speakTranslation: 朗读译文
+  expandCard: 展开卡片
+  collapseCard: 折叠卡片
+  expandAllCards: 全部展开
+  collapseAllCards: 全部折叠
+  deleteCard: 删除卡片
+  translationFailed: 翻译失败
+  translationFailedFallback: 翻译失败
+  retryTranslation: 重试翻译
+dataTypes:
+  string: 文本
+  number: 数字
+subtitles:
+  sidebar:
+    close: 关闭学习面板
+    needsSubtitles: 当前视频没有字幕，推荐先使用 AI 生成字幕。
+    menu:
+      label: 学习
+    summary:
+      tab: AI 总结
+      generating: 正在生成总结…
+      failedTitle: 生成失败
+      retry: 重试
+      needsModel: 请先为视频字幕选择一个 LLM 模型，才能总结这个视频。
+      openSettings: 去设置
+    transcript:
+      tab: 字幕
+      failedTitle: 字幕加载失败
+      retry: 重试
+      emptyTitle: 没有可显示的字幕
+      backToCurrent: 回到当前
+  loadingAiSubtitles: 正在加载 AI 字幕中（预计 3 分钟）
+  aiSubtitlesHint: 通过先进 AI 识别语音生成准确字幕，无官方字幕时依然可用。
+  requestAiSubtitles: 请求 AI 字幕
+  usingAiSubtitles: 正在使用 AI 字幕中
+  toggle:
+    enabled: 字幕翻译已开启
+    disabled: 字幕翻译已关闭
+  actions:
+    downloadTranslated: 下载翻译字幕
+    downloadTranslatedPreparing: 正在准备字幕，长视频可能需要更久
+    downloadTranslatedTranslating: 正在翻译字幕
+    downloadTranslatedComplete: 翻译字幕已下载
+    downloadSource: 下载原字幕
+  state:
+    loading: Read Frog Lite 字幕加载中
+    translating: 翻译中…
+    error: 发生错误
+  errors:
+    http429: 429 youtube 字幕接口请求次数过多，请稍后再试
+    http404: 404 未找到 youtube 字幕
+    http403: 403 youtube 字幕访问被拒绝
+    http500: 500 youtube 服务器错误
+    httpUnknown: HTTP 错误 $1
+    invalidResponse: youtube 字幕响应格式无效
+    networkError: 获取字幕时发生网络错误
+    fetchSubTimeout: 获取字幕超时
+    buttonNotFound: 字幕按钮未找到
+    noSubtitlesFound: 当前视频没有字幕
+    trackFileNotLoaded: 字幕加载失败，请刷新页面后重试
+    videoNotFound: 视频元素未找到
+    controlsBarNotFound: 控制栏未找到
+    aiRateLimited: 请求过于频繁，请稍后再试
+    aiAuthFailed: API 认证失败，请检查您的 API 密钥
+    aiServiceUnavailable: 翻译服务暂时不可用
+    aiLiveReplayUnsupported: 暂不支持为直播回放生成 AI 字幕
+    aiRequestFailed: AI 字幕请求失败，请稍后重试
+    aiNoResponse: AI 服务未响应，使用原文显示
+    translatedExportFailed: 生成翻译字幕失败
+    translatedExportIncomplete: 未能翻译所有字幕行
+    translatedExportSameLanguage: 源语言和目标语言相同
+speak:
+  languageDetectionFallback: 已改用本地语言检测
+  languageDetectionSettingsHint: 可在设置中更换可用的大模型，或选择本地检测。
+  fetchingAudio: 正在获取音频...
+  playingAudio: 正在播放音频...
+  failedToGenerateSpeech: 语音生成失败
+  noTextSelected: 未选择文本
+  openaiNotConfigured: OpenAI 提供商未配置或未启用
+  openaiApiKeyNotConfigured: OpenAI API Key 未配置
+audioServices:
+  service: 音频服务
+  provider: 服务 Provider
+  providerDescription: 在 API Provider 页面管理服务地址、密钥及请求头。此处支持 OpenAI 风格音频协议。
+  model: 音频模型名称
+  modelDescription: 填写服务接受的模型名称，与文本翻译模型独立。
+  timeout: 超时（毫秒，1000–600000）
+  notConfigured: 使用前请选择 Provider 并配置音频模型。
+  selected: 仅在主动使用时，向所选服务发送文本或音频。
+  clear: 清除选择
+  transcription: 语音转录（ASR）
+  transcriptionDescription: 配置音频转录接口。本版本不捕获视频音频，也不会自动提交视频转录任务。
+  language: 输入语言
+  languageDescription: 可选 ISO 639-1 代码，例如 en 或 zh；留空由服务识别。
+  responseFormat: 响应格式
+  outputFormat: 音频输出格式

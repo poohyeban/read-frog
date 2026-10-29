@@ -1,6 +1,6 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { ContentScriptContext } from "#imports"
 import type { Config } from "@/types/config/config"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { storage } from "#imports"
 import { configSchema } from "@/types/config/config"
 import { CONFIG_STORAGE_KEY, DEFAULT_CONFIG } from "@/utils/constants/config"
@@ -58,11 +58,10 @@ export async function bootstrapHostContent(
         })
       : () => {}
 
+  const cleanupHubShortcut = await bindTranslationHubShortcutKey()
   const cleanupTranslationShortcut = await bindTranslationShortcutKey(manager)
 
   const cleanupTranslationModeShortcut = await bindTranslationModeShortcutKey()
-
-  const cleanupTranslationHubShortcut = await bindTranslationHubShortcutKey()
 
   const detectAndReportPageLanguage = async (url: string) => {
     const generation = ++detectionGeneration
@@ -78,9 +77,9 @@ export async function bootstrapHostContent(
   let translationEnabled = false
   try {
     translationEnabled = await sendMessage("getEnablePageTranslationFromContentScript", undefined)
-  } catch (error) {
+  } catch {
     // Extension context may be invalidated during update, proceed without auto-start
-    logger.error("Failed to check translation state:", error)
+    logger.error("Failed to check translation state:")
   }
   if (translationEnabled) {
     void manager.start()
@@ -118,10 +117,10 @@ export async function bootstrapHostContent(
 
   // Listen for translation state changes from background
   const cleanupTranslationStateListener = onMessage("askManagerToTogglePageTranslation", (msg) => {
-    const { enabled, analyticsContext } = msg.data
+    const { enabled } = msg.data
     if (enabled === manager.isActive) return
     if (enabled) {
-      void manager.start(window === window.top ? analyticsContext : undefined)
+      void manager.start()
     } else {
       // Invariant: every sender of askManagerToTogglePageTranslation with
       // enabled=false is a user surface (popup button, floating button,
@@ -156,9 +155,9 @@ export async function bootstrapHostContent(
     teardownNodeTranslation()
     cleanupPageTranslationTriggers()
     cleanupTitleTranslationWatch()
+    cleanupHubShortcut()
     cleanupTranslationShortcut()
     cleanupTranslationModeShortcut()
-    cleanupTranslationHubShortcut()
     cleanupTranslationStateListener()
     cleanupFrameTranslationStateListener()
     cleanupDetectedLanguageRefreshListener()

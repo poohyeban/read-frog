@@ -60,10 +60,10 @@ describe("Translation Hub preferences", () => {
     expect(openHub().get(selectedProviderIdsAtom)).toEqual([])
 
     await first.set(selectedProviderIdsAtom, ["removed-provider", "read-frog-free-ai"])
-    expect(openHub().get(selectedProviderIdsAtom)).toEqual(["read-frog-free-ai"])
+    expect(openHub().get(selectedProviderIdsAtom)).toEqual([])
 
     const localId = DEFAULT_CONFIG.providersConfig.find(
-      (provider) => provider.enabled && provider.provider === "microsoft-translate",
+      (provider) => provider.enabled && provider.provider === "openai-compatible",
     )?.id
     expect(localId).toBeDefined()
     await first.set(selectedProviderIdsAtom, [localId!])

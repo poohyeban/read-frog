@@ -2,12 +2,9 @@ import type {
   APIProviderConfig,
   DedicatedLLMProviderConfig,
   LLMProviderConfig,
-  NonAPIProviderConfig,
   OpenAICompatibleLLMProviderConfig,
-  OpenResponsesLLMProviderConfig,
   ProtocolCompatibleLLMProviderConfig,
   ProviderConfig,
-  PureAPIProviderConfig,
   TopLevelReasoningProviderConfig,
   TranslateProviderConfig,
 } from "./schemas"
@@ -15,18 +12,14 @@ import {
   isAPIProvider,
   isDedicatedLLMProvider,
   isLLMProvider,
-  isNonAPIProvider,
   isOpenAICompatibleLLMProvider,
-  isOpenResponsesLLMProvider,
   isProtocolCompatibleLLMProvider,
-  isPureAPIProvider,
-  isPureTranslateProvider,
   isTranslateProvider,
   supportsTopLevelReasoning,
 } from "./constants"
 
 export * from "./constants"
-export * from "./provider-specific-settings"
+
 export * from "./schemas"
 
 export function isTranslateProviderConfig(
@@ -51,12 +44,6 @@ export function isOpenAICompatibleLLMProviderConfig(
   return isOpenAICompatibleLLMProvider(config.provider)
 }
 
-export function isOpenResponsesLLMProviderConfig(
-  config: ProviderConfig,
-): config is OpenResponsesLLMProviderConfig {
-  return isOpenResponsesLLMProvider(config.provider)
-}
-
 export function isProtocolCompatibleLLMProviderConfig(
   config: ProviderConfig,
 ): config is ProtocolCompatibleLLMProviderConfig {
@@ -73,14 +60,8 @@ export function isAPIProviderConfig(config: ProviderConfig): config is APIProvid
   return isAPIProvider(config.provider)
 }
 
-export function isPureAPIProviderConfig(config: ProviderConfig): config is PureAPIProviderConfig {
-  return isPureAPIProvider(config.provider)
-}
-
-export function isNonAPIProviderConfig(config: ProviderConfig): config is NonAPIProviderConfig {
-  return isNonAPIProvider(config.provider)
-}
-
-export function isPureTranslateProviderConfig(config: ProviderConfig): boolean {
-  return isTranslateProvider(config.provider) && isPureTranslateProvider(config.provider)
+export function isAudioProviderConfig(
+  config: ProviderConfig,
+): config is Extract<ProviderConfig, { provider: "openai" | "openai-compatible" }> {
+  return config.provider === "openai" || config.provider === "openai-compatible"
 }

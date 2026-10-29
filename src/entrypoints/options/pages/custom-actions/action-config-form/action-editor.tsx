@@ -25,20 +25,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/base-ui
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { patchActionConfigAtom } from "@/utils/atoms/entity-config"
 import {
-  BUILT_IN_DICTIONARY_ACTION_ID,
   getSelectionToolbarCustomActionTokenCellText,
   SELECTION_TOOLBAR_CUSTOM_ACTION_TOKENS,
 } from "@/utils/constants/custom-action"
 import { duplicateSelectionToolbarAction, getSelectionToolbarActions } from "@/utils/custom-actions"
 import { i18n } from "@/utils/i18n"
-import { syncLayoutSampleData } from "@/utils/layout-host/sample"
 import { customActionEditorTabAtom, selectedCustomActionIdAtom } from "../atoms"
-import { AiConfigHelperButton as AiConfigHelperPopover } from "./ai-config-helper-button"
 import { formOpts, useAppForm } from "./form"
 import { IconField as IconFormField } from "./icon-field"
-import { LayoutField as EditableLayoutFormField, ReadOnlyLayoutField } from "./layout-field"
 import { NameField as NameFormField } from "./name-field"
-import { NotebaseConnectionField as NotebaseConnectionFormField } from "./notebase-connection-field"
 import {
   OutputSchemaField as EditableOutputSchemaFormField,
   ReadOnlyOutputSchemaField,
@@ -149,11 +144,6 @@ function useActionEditorController(
           // none, so its copy gets a new one.
           const duplicatedAction = {
             ...duplicateSelectionToolbarAction(source, currentActions),
-            sampleData: syncLayoutSampleData(
-              source.sampleData,
-              source.outputSchema,
-              store.get(configFieldsAtomMap.language).targetCode,
-            ),
           }
           await setSelectionToolbar((latest) => ({
             ...latest,
@@ -209,13 +199,6 @@ function CustomProvider({
     await setSelectionToolbar({
       ...selectionToolbar,
       customActions: updatedActions,
-      noteSuggestion:
-        selectionToolbar.noteSuggestion.actionId === action.id
-          ? {
-              ...selectionToolbar.noteSuggestion,
-              actionId: BUILT_IN_DICTIONARY_ACTION_ID,
-            }
-          : selectionToolbar.noteSuggestion,
     })
     await setSelectedActionId(nextSelectedAction?.id)
   }
@@ -303,21 +286,7 @@ function ReadOnlyOutputSchema() {
   return <ReadOnlyOutputSchemaField outputSchema={action.outputSchema} />
 }
 
-function EditableLayout() {
-  const { form } = useActionEditor().state
-  return <EditableLayoutFormField form={form} />
-}
-
 // Built-in layouts are read-only; "Customize" makes an editable copy.
-function ReadOnlyLayout() {
-  const { action } = useActionEditor().state
-  return <ReadOnlyLayoutField action={action} customizeButton={<CustomizeButton />} />
-}
-
-function NotebaseConnectionField({ variant }: { variant?: "card" | "tab" }) {
-  const { form } = useActionEditor().state
-  return <NotebaseConnectionFormField form={form} variant={variant} />
-}
 
 function DuplicateButton() {
   const { duplicate } = useActionEditor().actions
@@ -350,11 +319,6 @@ function CustomizeButton() {
       </TooltipContent>
     </Tooltip>
   )
-}
-
-function AiConfigHelperButton() {
-  const { form } = useActionEditor().state
-  return <AiConfigHelperPopover getAction={() => form.state.values} />
 }
 
 function DeleteButton() {
@@ -399,13 +363,9 @@ export const ActionEditor = {
     Editable: EditableOutputSchema,
     ReadOnly: ReadOnlyOutputSchema,
   },
-  Layout: {
-    Editable: EditableLayout,
-    ReadOnly: ReadOnlyLayout,
-  },
-  NotebaseConnectionField,
+
   CustomizeButton,
-  AiConfigHelperButton,
+
   DuplicateButton,
   DeleteButton,
 }

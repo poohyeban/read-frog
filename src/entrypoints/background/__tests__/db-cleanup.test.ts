@@ -48,6 +48,12 @@ vi.mock("@/utils/logger", () => ({ logger: loggerMock }))
 
 const caches = [
   {
+    alarm: "ai-segmentation-cache-cleanup",
+    table: cacheTables.aiSegmentationCache,
+    label: "AI segmentation cache",
+    clear: "cleanupAllAiSegmentationCache",
+  },
+  {
     alarm: "cache-cleanup",
     table: cacheTables.translationCache,
     label: "Translation cache",
@@ -59,18 +65,9 @@ const caches = [
     label: "Summary cache",
     clear: "cleanupAllSummaryCache",
   },
-  {
-    alarm: "ai-segmentation-cache-cleanup",
-    table: cacheTables.aiSegmentationCache,
-    label: "AI segmentation cache",
-    clear: "cleanupAllAiSegmentationCache",
-  },
 ] as const
 
-const jobs = [
-  ...caches,
-  { alarm: "request-record-cleanup", table: requestTable, clear: "cleanupAllRequestRecords" },
-] as const
+const jobs = [...caches] as const
 
 async function setUpAlarmListener() {
   const { setUpDatabaseCleanup } = await import("../db-cleanup")
@@ -107,7 +104,7 @@ describe("database cleanup", () => {
   it("creates daily alarms with a one-minute delay without running cleanup on setup", async () => {
     await setUpAlarmListener()
 
-    expect(alarms.create).toHaveBeenCalledTimes(4)
+    expect(alarms.create).toHaveBeenCalledTimes(jobs.length)
     expect(alarms.onAlarm.addListener).toHaveBeenCalledTimes(1)
     for (const { alarm, table } of jobs) {
       expect(alarms.create).toHaveBeenCalledWith(alarm, {
@@ -201,10 +198,7 @@ describe("database cleanup", () => {
       const listener = await setUpAlarmListener()
 
       await expect(listener({ name: alarm })).resolves.toBeUndefined()
-      expect(loggerMock.error).toHaveBeenCalledExactlyOnceWith(
-        `Failed to cleanup old ${label}:`,
-        error,
-      )
+      expect(loggerMock.error).toHaveBeenCalledExactlyOnceWith(`Failed to cleanup old ${label}:`)
       expect(loggerMock.info).not.toHaveBeenCalled()
 
       table.delete.mockResolvedValueOnce(2)
@@ -213,43 +207,12 @@ describe("database cleanup", () => {
     },
   )
 
-  it("trims excess request records oldest first and also expires records older than 120 days", async () => {
-    requestTable.count.mockResolvedValue(10002)
-    requestTable.toArray.mockResolvedValue([{ key: "oldest" }, { key: "next-oldest" }])
-    const listener = await setUpAlarmListener()
-    await listener({ name: "request-record-cleanup" })
-
-    expect(requestTable.orderBy).toHaveBeenCalledExactlyOnceWith("createdAt")
-    expect(requestTable.limit).toHaveBeenCalledExactlyOnceWith(2)
-    expect(requestTable.bulkDelete).toHaveBeenCalledExactlyOnceWith(["oldest", "next-oldest"])
-    expect(requestTable.where).toHaveBeenCalledExactlyOnceWith("createdAt")
-    expect(requestTable.below).toHaveBeenCalledExactlyOnceWith(new Date("2026-05-08T12:30:00.000Z"))
-    expect(requestTable.delete).toHaveBeenCalledTimes(1)
-  })
-
-  it.each([9999, 10000])(
-    "still expires request records without trimming a count of %i",
-    async (count) => {
-      requestTable.count.mockResolvedValue(count)
-      const listener = await setUpAlarmListener()
-      await listener({ name: "request-record-cleanup" })
-
-      expect(requestTable.orderBy).not.toHaveBeenCalled()
-      expect(requestTable.bulkDelete).not.toHaveBeenCalled()
-      expect(requestTable.below).toHaveBeenCalledExactlyOnceWith(
-        new Date("2026-05-08T12:30:00.000Z"),
-      )
-      expect(requestTable.delete).toHaveBeenCalledTimes(1)
-    },
-  )
-
-  it("logs request cleanup failures without rejecting the alarm handler", async () => {
-    const error = new Error("Database unavailable")
-    requestTable.count.mockRejectedValueOnce(error)
+  it("ignores removed request statistics alarms", async () => {
     const listener = await setUpAlarmListener()
 
     await expect(listener({ name: "request-record-cleanup" })).resolves.toBeUndefined()
-    expect(loggerMock.error).toHaveBeenCalledWith("Failed to cleanup old request records:", error)
+    expect(requestTable.count).not.toHaveBeenCalled()
+    expect(loggerMock.error).not.toHaveBeenCalled()
   })
 
   it.each(jobs)("propagates manual $clear failures to the caller", async ({ table, clear }) => {

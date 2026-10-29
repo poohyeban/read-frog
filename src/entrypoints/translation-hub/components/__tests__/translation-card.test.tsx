@@ -273,85 +273,6 @@ describe("TranslationCard built-in translation", () => {
     streamBackgroundTextMock.mockReset()
   })
 
-  it("calls hosted page translation directly without the translation queue", async () => {
-    providerRefState.kind = "system"
-    streamBackgroundTextMock.mockResolvedValueOnce({ output: "Translated by built-in AI" })
-    render(
-      <TranslationCard
-        providerId="read-frog-free-ai"
-        isExpanded
-        onExpandedChange={vi.fn<(expanded: boolean) => void>()}
-      />,
-    )
-
-    const result = await mutationFnState.current!({
-      inputText: "Hello",
-      sourceLanguage: "eng",
-      targetLanguage: "cmn",
-      timestamp: 1,
-      promptConfig: { promptId: "default", patterns: [] },
-    })
-
-    expect(result).toBe("Translated by built-in AI")
-    expect(streamBackgroundTextMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        providerKind: "system",
-        providerId: "read-frog-free-ai",
-        modelTier: "normal",
-        hostedFeature: "pageTranslation",
-        requestId: expect.any(String),
-        instructions: expect.any(String),
-        prompt: expect.any(String),
-      }),
-      { signal: expect.any(AbortSignal) },
-    )
-  })
-
-  it("uses the Hub prompt snapshot and a fresh hosted request ID each time", async () => {
-    providerRefState.kind = "system"
-    streamBackgroundTextMock.mockResolvedValue({ output: " result " })
-    render(
-      <TranslationCard
-        providerId="read-frog-free-ai"
-        isExpanded
-        onExpandedChange={vi.fn<(expanded: boolean) => void>()}
-      />,
-    )
-    const request = {
-      inputText: "Hello",
-      sourceLanguage: "eng",
-      targetLanguage: "cmn",
-      timestamp: 1,
-      promptConfig: {
-        promptId: "hub-custom",
-        patterns: [
-          {
-            id: "hub-custom",
-            name: "Hub custom",
-            systemPrompt: "Hub system",
-            prompt: "Hub prompt",
-          },
-        ],
-      },
-    }
-
-    expect(await mutationFnState.current!(request)).toBe("result")
-    expect(await mutationFnState.current!({ ...request, timestamp: 2 })).toBe("result")
-
-    const first = streamBackgroundTextMock.mock.calls[0] as unknown as [
-      { requestId: string; instructions: string; prompt: string },
-      { signal: AbortSignal },
-    ]
-    const second = streamBackgroundTextMock.mock.calls[1] as unknown as [
-      { requestId: string },
-      { signal: AbortSignal },
-    ]
-    expect(first[0]).toMatchObject({ instructions: "Hub system", prompt: "Hub prompt" })
-    expect(first[0].requestId).not.toBe(second[0].requestId)
-    expect(first[1].signal.aborted).toBe(true)
-    expect(second[1].signal.aborted).toBe(false)
-  })
-
   it("passes the independent Hub prompt to local LLMs", async () => {
     providerRefState.kind = "local"
     executeTranslateMock.mockResolvedValueOnce("Local result")
@@ -406,7 +327,7 @@ describe("TranslationCard error display", () => {
     }
   })
 
-  it("renders long unbroken error messages with overflow-wrap so they stay inside the card", () => {
+  it("shows a safe error without reflecting the provider response", () => {
     render(
       <TranslationCard
         providerId="provider-1"
@@ -415,9 +336,7 @@ describe("TranslationCard error display", () => {
       />,
     )
 
-    const errorParagraph = screen.getByText(
-      "upstream_429_rate_limit_exceeded_for_provider_openai_completions_with_a_very_long_unbroken_token_stream_that_overflows_the_card_boundary",
-    )
+    const errorParagraph = screen.getByText("translationHub.translationFailedFallback")
     // break-words forces long unbreakable runs to wrap instead of overflowing
     expect(errorParagraph.className).toContain("break-words")
     // whitespace-pre-wrap preserves newlines in multi-line provider errors

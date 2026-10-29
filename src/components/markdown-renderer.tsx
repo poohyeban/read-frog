@@ -6,6 +6,7 @@ interface MarkdownRendererProps {
 }
 
 const MARKDOWN_COMPONENTS: Components = {
+  img: ({ alt }) => <span>{alt}</span>,
   h1: ({ children }) => (
     <h1 className="mt-6 mb-4 flex items-center border-b border-slate-200 pb-2 text-lg font-bold text-slate-800 first:mt-0 dark:border-slate-700 dark:text-slate-100">
       <span className="mr-3 h-2 w-2 rounded-full bg-blue-500"></span>

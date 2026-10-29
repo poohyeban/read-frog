@@ -1,5 +1,5 @@
 import type { CustomActionTemplate } from "@/utils/constants/custom-action-templates"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import {
   DialogContent,
   DialogDescription,

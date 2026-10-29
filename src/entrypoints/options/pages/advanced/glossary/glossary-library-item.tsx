@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { Fragment } from "react"
 import { useNavigate } from "react-router"
 import { Button } from "@/components/ui/base-ui/button"

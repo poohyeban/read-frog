@@ -1,5 +1,5 @@
 import type Glossary from "@/utils/db/dexie/tables/glossary"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { Link } from "react-router"
 import { Switch } from "@/components/ui/base-ui/switch"
 import { i18n } from "@/utils/i18n"

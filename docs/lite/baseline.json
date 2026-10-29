@@ -1,0 +1,25 @@
+{
+  "sha": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+  "source_files": 1592,
+  "source_bytes": 12898408,
+  "dependencies": 93,
+  "dev_dependencies": 41,
+  "build_bytes": 20452994,
+  "bundles": {
+    "content-scripts/subtitles.js": 4126284,
+    "content-runtime.js": 3353488,
+    "chunks/execute-translate-BnimSkkP.js": 1910926,
+    "content-scripts/guide.js": 1296885,
+    "chunks/jsx-runtime-R6IFpdSk.js": 1294310,
+    "content-runtime/index.full-DDIy1ZbL.js": 711517,
+    "background.js": 456923,
+    "chunks/esm-BNNo8Iz_.js": 434737,
+    "chunks/custom-actions-CnMD4f5E.js": 255440,
+    "chunks/language-BYE-4u-I.js": 249396,
+    "chunks/shadow-host-builder-CbiAWW4E.js": 236156,
+    "chunks/button-sUjtRC-i.js": 229663,
+    "chunks/theme-qWIOunOL.js": 216062,
+    "chunks/css-code-editor-IzYsXZrV.js": 208527,
+    "chunks/select-field-auto-save-D0OGhosm.js": 142754
+  }
+}

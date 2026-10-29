@@ -2,7 +2,6 @@ import floatingButtonDemoImage from "@/assets/demo/floating-button.png"
 import { GradientBackground } from "@/components/gradient-background"
 import { i18n } from "@/utils/i18n"
 import { PageLayout } from "../../components/page-layout"
-import { ClickActionSection } from "./click-action"
 import { DisplaySection } from "./display"
 import { EnableItem } from "./enable-item"
 
@@ -22,7 +21,7 @@ export function FloatingButtonPage() {
       </GradientBackground>
       <EnableItem />
       <DisplaySection />
-      <ClickActionSection />
+      <></>
     </PageLayout>
   )
 }

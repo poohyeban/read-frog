@@ -1,15 +1,16 @@
 import type { Config } from "@/types/config/config"
 import type { ProviderConfig } from "@/types/config/provider"
-import { isLLMProvider, isTranslateProvider } from "@/types/config/provider"
+import { isTranslateProvider } from "@/types/config/provider"
 import { mergeWithArrayOverwrite } from "../atoms/config"
 import { getProviderConfigById } from "../config/helpers"
 
 export const FEATURE_KEYS = [
+  "tts",
+  "transcription",
   "pageTranslation",
-  "videoSubtitles",
   "selectionTranslation",
   "inputTranslation",
-  "noteSuggestion",
+  "videoSubtitles",
 ] as const
 
 export type FeatureKey = (typeof FEATURE_KEYS)[number]
@@ -21,40 +22,48 @@ export interface FeatureProviderDef {
 }
 
 export const FEATURE_PROVIDER_DEFS = {
-  pageTranslation: {
-    isProvider: isTranslateProvider,
-    getProviderId: (c: Config) => c.pageTranslation.providerId,
-    configPath: ["pageTranslation", "providerId"],
+  tts: {
+    isProvider: (p: string) => p === "openai" || p === "openai-compatible",
+    getProviderId: (c: Config) => c.tts.providerId,
+    configPath: ["tts", "providerId"],
+  },
+  transcription: {
+    isProvider: (p: string) => p === "openai" || p === "openai-compatible",
+    getProviderId: (c: Config) => c.transcription.providerId,
+    configPath: ["transcription", "providerId"],
   },
   videoSubtitles: {
     isProvider: isTranslateProvider,
     getProviderId: (c: Config) => c.videoSubtitles.providerId,
     configPath: ["videoSubtitles", "providerId"],
   },
-  selectionTranslation: {
-    isProvider: isTranslateProvider,
-    getProviderId: (c: Config) => c.selectionToolbar.features.translate.providerId,
-    configPath: ["selectionToolbar", "features", "translate", "providerId"],
-  },
   inputTranslation: {
     isProvider: isTranslateProvider,
     getProviderId: (c: Config) => c.inputTranslation.providerId,
     configPath: ["inputTranslation", "providerId"],
   },
-  noteSuggestion: {
-    isProvider: isLLMProvider,
-    getProviderId: (c: Config) => c.selectionToolbar.noteSuggestion.providerId,
-    configPath: ["selectionToolbar", "noteSuggestion", "providerId"],
+  pageTranslation: {
+    isProvider: isTranslateProvider,
+    getProviderId: (c: Config) => c.pageTranslation.providerId,
+    configPath: ["pageTranslation", "providerId"],
+  },
+
+  selectionTranslation: {
+    isProvider: isTranslateProvider,
+    getProviderId: (c: Config) => c.selectionToolbar.features.translate.providerId,
+    configPath: ["selectionToolbar", "features", "translate", "providerId"],
   },
 } as const satisfies Record<FeatureKey, FeatureProviderDef>
 
 /** Maps FeatureKey (with dots) to i18n-safe key (with underscores) for `options.apiProviders.featureProviders.features.*` */
 export const FEATURE_KEY_I18N_MAP = {
-  pageTranslation: "pageTranslation",
+  tts: "tts",
+  transcription: "transcription",
   videoSubtitles: "videoSubtitles",
-  selectionTranslation: "selectionTranslation",
   inputTranslation: "inputTranslation",
-  noteSuggestion: "noteSuggestion",
+  pageTranslation: "pageTranslation",
+
+  selectionTranslation: "selectionTranslation",
 } as const satisfies Record<FeatureKey, string>
 
 export type FeatureLabelI18nKey =

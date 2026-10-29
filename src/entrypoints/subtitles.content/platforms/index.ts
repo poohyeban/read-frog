@@ -1,5 +1,4 @@
 import type { SubtitlesPlatform } from "@/types/config/subtitles"
-import type { AiSubtitlesContext } from "@/utils/subtitles/ai/request-ai-subtitles"
 
 export interface ControlsConfig {
   findVideoContainer?: () => HTMLElement | null
@@ -32,8 +31,6 @@ export interface PlatformConfig {
   supportsSidebar?: boolean
 
   getVideoId?: () => string | null
-
-  createAiSubtitlesContext?: () => AiSubtitlesContext | null
 
   isLiveContent?: () => Promise<boolean>
 

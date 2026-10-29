@@ -6,7 +6,6 @@ import { batchQueueConfigSchema } from "@/types/config/translate"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { MIN_BATCH_CHARACTERS, MIN_BATCH_ITEMS } from "@/utils/constants/translate"
 import { i18n } from "@/utils/i18n"
-import { BatchSavingsNote } from "../../../components/batch-savings-note"
 import { ConfigItem } from "../../../components/config-item"
 
 type KeyOfBatchQueueConfig = keyof BatchQueueConfig
@@ -20,7 +19,6 @@ export function BatchTranslationItems() {
         title={
           <span className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             {i18n.t("options.videoSubtitles.subtitlesQueue.batchQueueConfig.title")}
-            <BatchSavingsNote />
           </span>
         }
         description={i18n.t(

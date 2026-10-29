@@ -1,0 +1,2031 @@
+[
+  {
+    "path": "src/entrypoints/subtitles.content/universal-adapter.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/entrypoints/subtitles.content/platforms",
+      "@/types/analytics",
+      "@/types/config/config",
+      "@/types/config/subtitles",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/fetchers/types",
+      "@/utils/subtitles/processor/translator",
+      "@/utils/subtitles/types",
+      "@/components/ui/base-ui/toast",
+      "@/types/analytics",
+      "@/utils/analytics",
+      "@/utils/analytics-failure-reason",
+      "@/utils/analytics-provider",
+      "@/utils/config/storage",
+      "@/utils/constants/subtitles",
+      "@/utils/content/document-title",
+      "@/utils/content/metadata",
+      "@/utils/content/page-language",
+      "@/utils/dom/wait-for-element",
+      "@/utils/i18n",
+      "@/utils/providers/provider-ref",
+      "@/utils/providers/provider-registry",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "@/utils/subtitles/errors",
+      "@/utils/subtitles/processor/optimizer",
+      "@/utils/subtitles/processor/translator",
+      "@/utils/subtitles/srt",
+      "@/utils/subtitles/toast",
+      "@/utils/subtitles/video-summary",
+      "@/utils/tanstack-query",
+      "./atoms",
+      "./learning/atoms",
+      "./renderer/render-translate-button",
+      "./segmentation-pipeline",
+      "./subtitles-scheduler",
+      "./translated-subtitles-downloader",
+      "./translation-coordinator",
+      "./ui/subtitles-settings-panel/views"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/translation-coordinator.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "./segmentation-pipeline",
+      "@/utils/subtitles/processor/translator",
+      "@/utils/subtitles/types",
+      "@/utils/config/storage",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/lookahead",
+      "@/utils/subtitles/processor/translator",
+      "./atoms"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/translated-subtitles-downloader.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/entrypoints/subtitles.content/platforms",
+      "@/types/config/config",
+      "@/utils/providers/provider-ref",
+      "@/utils/subtitles/fetchers/types",
+      "@/utils/subtitles/processor/translator",
+      "@/utils/subtitles/types",
+      "@/components/ui/base-ui/toast",
+      "@/utils/config/storage",
+      "@/utils/constants/subtitles",
+      "@/utils/content/document-title",
+      "@/utils/content/page-language",
+      "@/utils/i18n",
+      "@/utils/providers/provider-ref",
+      "@/utils/subtitles/processor/ai-segmentation",
+      "@/utils/subtitles/processor/optimizer",
+      "@/utils/subtitles/processor/translator",
+      "@/utils/subtitles/srt",
+      "./atoms"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/subtitles-scheduler.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/subtitles/types", "./atoms"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/segmentation-pipeline.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/providers/provider-ref",
+      "@/utils/subtitles/types",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/lookahead",
+      "@/utils/subtitles/processor/ai-segmentation",
+      "@/utils/subtitles/processor/optimizer"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/runtime.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "#imports",
+      "./init-netflix-subtitles",
+      "./init-xcom-subtitles",
+      "./init-youtube-subtitles"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/init-youtube-subtitles.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "#imports",
+      "./platforms/youtube/config",
+      "@/utils/constants/subtitles",
+      "@/utils/logger",
+      "./bind-subtitles-toggle-shortcut",
+      "./platforms/youtube",
+      "./platforms/youtube/caption-track-listener",
+      "./platforms/youtube/config",
+      "./platforms/youtube/shorts-active-reel-watcher",
+      "./renderer/mount-shorts-translate-button",
+      "./renderer/mount-subtitles-sidebar",
+      "./renderer/mount-subtitles-ui"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/init-xcom-subtitles.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "#imports",
+      "@/utils/constants/subtitles",
+      "./bind-subtitles-toggle-shortcut",
+      "./platforms/xcom",
+      "./platforms/xcom/config",
+      "./platforms/xcom/dom",
+      "./platforms/xcom/overlay-entry",
+      "./platforms/xcom/watch-player",
+      "./renderer/mount-subtitles-sidebar",
+      "./renderer/mount-subtitles-ui"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/init-netflix-subtitles.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "#imports",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/fetchers",
+      "@/utils/subtitles/video-id",
+      "./bind-subtitles-toggle-shortcut",
+      "./platforms/netflix/config",
+      "./platforms/netflix/translate-button",
+      "./renderer/mount-subtitles-sidebar",
+      "./renderer/mount-subtitles-ui",
+      "./universal-adapter"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/zod-config",
+      "#imports",
+      "@/utils/config/storage",
+      "@/utils/i18n",
+      "./content-script-matches"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/content-script-matches.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/bind-subtitles-toggle-shortcut.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tanstack/hotkeys",
+      "./universal-adapter",
+      "@tanstack/hotkeys",
+      "@/components/ui/base-ui/toast",
+      "@/utils/config/storage",
+      "@/utils/i18n",
+      "@/utils/shortcut",
+      "./atoms"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/atoms.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "./ui/subtitles-settings-panel/views",
+      "./ui/subtitles-sidebar/sections",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/types",
+      "jotai",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/display-rules",
+      "./ui/subtitles-settings-panel/views",
+      "./ui/subtitles-sidebar/sections"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/use-vertical-drag.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "../atoms",
+      "jotai",
+      "react",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/host/dom/node",
+      "../atoms",
+      "../learning/atoms",
+      "./subtitles-ui-context",
+      "./use-controls-visible"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/use-subtitles-custom-css.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "react",
+      "@/utils/atoms/config",
+      "@/utils/host/translate/ui/style-injector",
+      "@/utils/react-shadow-host/create-shadow-host"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/use-controls-visible.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/entrypoints/subtitles.content/platforms",
+      "react",
+      "@/utils/constants/subtitles",
+      "@/utils/host/dom/node"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-view.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "jotai",
+      "react",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/styles/utils",
+      "../atoms",
+      "../learning/atoms",
+      "./subtitle-lines",
+      "./use-vertical-drag"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-ui-context.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/entrypoints/subtitles.content/platforms",
+      "@/entrypoints/subtitles.content/universal-adapter",
+      "@/types/config/config",
+      "@tanstack/react-query",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/tanstack-query",
+      "../atoms"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-translate-button.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/assets/icons/read-frog.png",
+      "@/utils/constants/subtitles",
+      "@/utils/styles/utils",
+      "../atoms",
+      "./subtitles-settings-panel/views"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-container.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/toast",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "../atoms",
+      "../learning/word-lookup-card",
+      "./state-message",
+      "./subtitles-settings-panel",
+      "./subtitles-settings-panel/menu-placement",
+      "./subtitles-ui-context",
+      "./subtitles-view",
+      "./use-subtitles-custom-css"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitle-pending-label.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/i18n", "@/utils/styles/utils"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitle-lines.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@/types/config/subtitles",
+      "jotai",
+      "react",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/content/language-direction",
+      "@/utils/styles/utils",
+      "@/utils/subtitles/display-rules",
+      "../atoms",
+      "../learning/subtitle-word-tokens",
+      "./subtitle-pending-label"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/state-message.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/subtitles/types", "@/utils/constants/subtitles", "@/utils/i18n"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/renderer/render-translate-button.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../universal-adapter",
+      "@/assets/styles/theme.css?inline",
+      "@/utils/constants/subtitles",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "../ui/subtitles-settings-panel",
+      "../ui/subtitles-settings-panel/menu-placement",
+      "../ui/subtitles-translate-button",
+      "../ui/subtitles-ui-context",
+      "./isolate-player-events"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/renderer/mount-subtitles-ui.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../universal-adapter",
+      "@/entrypoints/subtitles.content/platforms",
+      "react-dom/client",
+      "@/assets/styles/theme.css?inline",
+      "@/utils/constants/dom-labels",
+      "@/utils/constants/subtitles",
+      "@/utils/dom/wait-for-element",
+      "@/utils/i18n/locale-boundary",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "@/utils/react-shadow-host/shadow-host-builder",
+      "@/utils/theme",
+      "../ui/subtitles-container",
+      "../ui/subtitles-ui-context",
+      "./isolate-player-events",
+      "./mount-subtitles-toast"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/renderer/mount-subtitles-toast.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react-dom/client",
+      "@/assets/styles/theme.css?inline",
+      "@/components/ui/base-ui/toast",
+      "@/utils/constants/dom-labels",
+      "@/utils/constants/subtitles",
+      "@/utils/react-shadow-host/shadow-host-builder",
+      "@/utils/theme"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/renderer/mount-subtitles-sidebar.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../universal-adapter",
+      "@/assets/styles/theme.css?inline",
+      "@/utils/constants/subtitles",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "../ui/subtitles-sidebar",
+      "../ui/subtitles-ui-context"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/renderer/mount-shorts-translate-button.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../universal-adapter",
+      "@/utils/constants/subtitles",
+      "@/utils/dom/wait-for-element",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "./render-translate-button"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/renderer/isolate-player-events.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/types/config/subtitles", "@/utils/subtitles/ai/request-ai-subtitles"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/word-lookup-card.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/components/ui/selection-popover",
+      "jotai",
+      "react",
+      "@/components/custom-action/atoms",
+      "@/components/custom-action/custom-action-panel",
+      "@/components/custom-action/save-to-notebase-dialog-atom",
+      "@/components/custom-action/save-to-notebase-dialog-host",
+      "@/components/providers/theme-provider",
+      "@/components/ui/selection-popover",
+      "@/utils/constants/subtitles",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "../atoms",
+      "./atoms",
+      "./use-hold-playback",
+      "./use-top-layer-portal-container"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/use-top-layer-portal-container.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@/assets/styles/theme.css?inline",
+      "@/utils/constants/dom-labels",
+      "@/utils/react-shadow-host/shadow-host-builder"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/use-hold-playback.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["jotai", "react", "../ui/subtitles-ui-context", "./atoms"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/subtitle-word-tokens.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/utils/atoms/config",
+      "@/utils/custom-actions",
+      "@/utils/styles/utils",
+      "../atoms",
+      "./atoms"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/atoms.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/components/custom-action/atoms",
+      "@/types/analytics",
+      "@/utils/atoms/config",
+      "@/utils/custom-actions",
+      "@/utils/subtitles/segment-words",
+      "../atoms"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/universal-adapter.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "vitest",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/errors",
+      "../atoms",
+      "../learning/atoms",
+      "../translation-coordinator",
+      "../universal-adapter"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/universal-adapter-summary.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/subtitles/types",
+      "@tanstack/react-query",
+      "vitest",
+      "@/utils/constants/config",
+      "@/utils/subtitles/video-summary",
+      "../atoms",
+      "../universal-adapter"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/universal-adapter-destroy.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "vitest",
+      "@/utils/constants/subtitles",
+      "../atoms",
+      "../learning/atoms",
+      "../universal-adapter"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/translation-coordinator.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../translation-coordinator"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/translated-subtitles-downloader.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/config",
+      "@/utils/subtitles/types",
+      "vitest",
+      "@/utils/constants/config",
+      "@/utils/constants/providers",
+      "../atoms",
+      "../translated-subtitles-downloader"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/summary-navigation.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/subtitles/types",
+      "@tanstack/react-query",
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "@/utils/constants/config",
+      "@/utils/subtitles/toast",
+      "@/utils/subtitles/video-summary",
+      "@/utils/tanstack-query",
+      "../atoms",
+      "../ui/subtitles-settings-panel/components/subtitles-sidebar-item",
+      "../ui/subtitles-sidebar",
+      "../ui/subtitles-sidebar/sections/summary",
+      "../universal-adapter"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/subtitles-toggle-navigation.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@testing-library/react",
+      "vitest",
+      "../atoms",
+      "../ui/subtitles-settings-panel",
+      "../ui/subtitles-translate-button",
+      "../ui/subtitles-ui-context"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/subtitles-sidebar-atoms.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["jotai", "vitest", "../atoms", "../ui/subtitles-sidebar/sections"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/subtitles-scheduler.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../atoms", "../subtitles-scheduler"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/segmentation-pipeline.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", "../segmentation-pipeline"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/netflix-track-poll.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/subtitles/fetchers/netflix",
+      "vitest",
+      "@/utils/subtitles/fetchers/netflix",
+      "../universal-adapter"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/init-youtube-subtitles.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", "../init-youtube-subtitles"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/__tests__/display-subtitle-atom.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/atoms/config", "@/utils/constants/config", "../atoms"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/tab-bar.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/components/ui/base-ui/tabs", "./sections"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sidebar-shell.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "jotai",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/scroll-area",
+      "@/components/ui/base-ui/tabs",
+      "@/utils/i18n",
+      "../../atoms",
+      "./sections",
+      "./tab-bar"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["jotai", "../../atoms", "./sidebar-shell"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/panel-shell.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "react",
+      "@/components/ui/base-ui/button",
+      "@/utils/styles/utils",
+      "../subtitles-ui-context",
+      "../use-controls-visible",
+      "./components/use-subtitles-panel-dismiss",
+      "./menu-placement"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/menu-placement.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./views", "jotai", "react", "../../atoms", "./panel-shell", "./views"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/__tests__/use-vertical-drag.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "@/utils/constants/config",
+      "../../learning/atoms",
+      "../subtitles-ui-context",
+      "../use-vertical-drag"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/__tests__/use-controls-visible.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/entrypoints/subtitles.content/platforms",
+      "@testing-library/react",
+      "vitest",
+      "../use-controls-visible"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/__tests__/subtitles-view.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "@/utils/constants/config",
+      "@/utils/constants/subtitles",
+      "../../atoms",
+      "../../learning/atoms",
+      "../subtitles-view"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/__tests__/subtitle-lines.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "@/utils/constants/config",
+      "../../atoms",
+      "../subtitle-lines"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/summary.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "@tanstack/react-query",
+      "jotai",
+      "ts-pattern",
+      "#imports",
+      "@/components/markdown-renderer",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/skeleton",
+      "@/utils/atoms/config",
+      "@/utils/atoms/provider",
+      "@/utils/i18n",
+      "@/utils/message",
+      "@/utils/subtitles/video-summary",
+      "../../../atoms",
+      "../../subtitles-ui-context",
+      "./status-card"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/status-card.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/components/ui/base-ui/empty"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["react", "@tabler/icons-react", "@/utils/i18n", "./summary", "./transcript"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/use-transcript-lines.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tanstack/react-query",
+      "@/utils/subtitles/transcript",
+      "@tanstack/react-query",
+      "jotai",
+      "react",
+      "@/utils/subtitles/transcript",
+      "../../../../atoms",
+      "../../../subtitles-ui-context"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/use-follow-intent.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["react", "react"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/use-active-row-visibility.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["react", "react"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/row.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@/utils/subtitles/transcript",
+      "react",
+      "@/utils/styles/utils",
+      "@/utils/subtitles/transcript"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "react",
+      "ts-pattern",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/skeleton",
+      "@/utils/i18n",
+      "../../../subtitles-ui-context",
+      "../status-card",
+      "./row",
+      "./use-active-row-visibility",
+      "./use-follow-intent",
+      "./use-transcript-lines"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/__tests__/transcript.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/subtitles/types",
+      "@tanstack/react-query",
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "..",
+      "../../../../../atoms",
+      "../../../../subtitles-ui-context"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/views/style.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "type-fest",
+      "@/types/config/subtitles",
+      "@tabler/icons-react",
+      "deepmerge-ts",
+      "jotai",
+      "react",
+      "@/components/debounced-color-picker",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/select",
+      "@/components/ui/base-ui/slider",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/i18n",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "../../../atoms"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/views/main-menu.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      ".",
+      ".",
+      "../components/download-source-subtitles",
+      "../components/download-translated-subtitles",
+      "../components/request-ai-subtitles-item",
+      "../components/subpage-menu-entry",
+      "../components/subtitles-sidebar-item",
+      "../components/subtitles-toggle"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/views/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["react", "@tabler/icons-react", "@/utils/i18n", "./style", "./main-menu"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/use-subtitles-panel-dismiss.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["react", "react", "@/utils/constants/subtitles"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/use-download-translated-subtitles.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "./download-translated-subtitles.constants",
+      "jotai",
+      "react",
+      "@/utils/i18n",
+      "../../../atoms",
+      "../../subtitles-ui-context",
+      "./download-translated-subtitles.constants"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/subtitles-toggle.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "jotai",
+      "@/components/ui/base-ui/switch",
+      "@/utils/constants/app",
+      "@/utils/i18n",
+      "../../../atoms",
+      "../../subtitles-ui-context",
+      "./subtitles-settings-item"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/subtitles-sidebar-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "jotai",
+      "react",
+      "@/utils/i18n",
+      "@/utils/subtitles/errors",
+      "@/utils/subtitles/toast",
+      "../../../atoms",
+      "../../subtitles-ui-context",
+      "./subpage-menu-entry"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/subtitles-settings-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/components/ui/base-ui/label"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/subpage-menu-entry.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/label",
+      "@/utils/styles/utils"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/download-translated-subtitles.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "class-variance-authority",
+      "@/components/ui/base-ui/button",
+      "@/utils/i18n",
+      "@/utils/styles/utils",
+      "./download-translated-subtitles.constants",
+      "./subtitles-settings-item",
+      "./use-download-translated-subtitles"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/download-translated-subtitles.constants.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/download-source-subtitles.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "react",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/toast",
+      "@/utils/i18n",
+      "../../subtitles-ui-context",
+      "./subtitles-settings-item"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/__tests__/use-subtitles-panel-dismiss.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@testing-library/react", "react", "vitest", "../use-subtitles-panel-dismiss"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/__tests__/download-translated-subtitles.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "../../../../atoms",
+      "../download-translated-subtitles",
+      "../download-translated-subtitles.constants"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/renderer/__tests__/mount-shorts-translate-button.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", "../mount-shorts-translate-button"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/youtube/shorts-active-reel-watcher.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["debounce"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/youtube/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/entrypoints/subtitles.content/platforms",
+      "@/utils/subtitles/fetchers",
+      "../../universal-adapter"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/youtube/config.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/entrypoints/subtitles.content/platforms",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/fetchers/youtube",
+      "@/utils/subtitles/video-id"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/youtube/caption-track-listener.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/constants/subtitles", "@/utils/dom/wait-for-element"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/xcom/watch-player.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["debounce", "@/utils/constants/subtitles"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/xcom/overlay-entry.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../../universal-adapter",
+      "@/utils/constants/subtitles",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "../../renderer/render-translate-button",
+      "./dom"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/xcom/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/entrypoints/subtitles.content/platforms",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/fetchers",
+      "../../universal-adapter",
+      "./dom"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/xcom/dom.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/constants/subtitles", "@/utils/subtitles/video-id"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/xcom/config.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/entrypoints/subtitles.content/platforms", "@/utils/constants/subtitles", "./dom"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/netflix/translate-button.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../../universal-adapter",
+      "@/utils/constants/subtitles",
+      "@/utils/react-shadow-host/create-shadow-host",
+      "../../renderer/render-translate-button"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/netflix/config.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/entrypoints/subtitles.content/platforms",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/video-id"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/youtube/__tests__/shorts-active-reel-watcher.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../shorts-active-reel-watcher"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/youtube/__tests__/live-content.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", "../config"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/youtube/__tests__/controls-height.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", "../config"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/youtube/__tests__/caption-track-listener.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", "../caption-track-listener"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/platforms/youtube/__tests__/ad-playing.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../config"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/__tests__/word-lookup-card.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "@/utils/constants/subtitles",
+      "../../atoms",
+      "../../ui/subtitles-ui-context",
+      "../atoms",
+      "../word-lookup-card"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/__tests__/use-top-layer-portal-container.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@testing-library/react", "vitest", "../use-top-layer-portal-container"]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/__tests__/use-hold-playback.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "../../atoms",
+      "../../ui/subtitles-ui-context",
+      "../atoms",
+      "../use-hold-playback"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/__tests__/subtitle-word-tokens.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "@/components/custom-action/atoms",
+      "@/utils/atoms/config",
+      "@/utils/constants/config",
+      "../../atoms",
+      "../atoms",
+      "../subtitle-word-tokens"
+    ]
+  },
+  {
+    "path": "src/entrypoints/subtitles.content/learning/__tests__/atoms.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/components/custom-action/atoms", "../../atoms", "../atoms"]
+  },
+  {
+    "path": "src/utils/subtitles/video-summary.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "./types",
+      "@/types/background-stream",
+      "@/types/config/config",
+      "@/utils/providers/provider-registry",
+      "@read-frog/definitions",
+      "@/utils/config/storage",
+      "@/utils/constants/subtitles",
+      "@/utils/content-script/background-stream-client",
+      "@/utils/crypto-polyfill",
+      "@/utils/message",
+      "@/utils/prompts/summary",
+      "./processor/translator"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/utils.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/constants/subtitles"]
+  },
+  {
+    "path": "src/utils/subtitles/types.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/utils/subtitles/transcript.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./types", "the first line is"]
+  },
+  {
+    "path": "src/utils/subtitles/toast.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/error-action", "@/components/ui/base-ui/toast", "@/utils/message"]
+  },
+  {
+    "path": "src/utils/subtitles/srt.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/subtitles/types", "file-saver"]
+  },
+  {
+    "path": "src/utils/subtitles/segment-words.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/utils/subtitles/lookahead.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/constants/subtitles"]
+  },
+  {
+    "path": "src/utils/subtitles/errors.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/error-action", "@/utils/i18n"]
+  },
+  {
+    "path": "src/utils/subtitles/display-rules.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./types", "@/types/config/subtitles"]
+  },
+  {
+    "path": "src/utils/subtitles/video-id/youtube.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@read-frog/definitions"]
+  },
+  {
+    "path": "src/utils/subtitles/video-id/xcom.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/utils/subtitles/video-id/netflix.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/constants/subtitles"]
+  },
+  {
+    "path": "src/utils/subtitles/video-id/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./netflix", "./xcom", "./youtube"]
+  },
+  {
+    "path": "src/utils/subtitles/processor/translator.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../types",
+      "@/types/background-stream",
+      "@/types/config/config",
+      "@/types/content",
+      "@/utils/glossary/types",
+      "@/utils/providers/provider-ref",
+      "@read-frog/definitions",
+      "ai",
+      "@/components/ui/base-ui/toast",
+      "@/types/config/provider",
+      "@/utils/analytics-provider",
+      "@/utils/config/storage",
+      "@/utils/content/utils",
+      "@/utils/glossary/active-matcher",
+      "@/utils/glossary/analytics",
+      "@/utils/hash",
+      "@/utils/host/translate/text-preparation",
+      "@/utils/host/translate/translate-text",
+      "@/utils/i18n",
+      "@/utils/logger",
+      "@/utils/message",
+      "@/utils/prompts/subtitles",
+      "@/utils/providers/provider-ref",
+      "@/utils/providers/provider-registry",
+      "nothing selected",
+      "these lines have no translation"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/processor/optimizer.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../types", "@/utils/constants/subtitles", "@/utils/subtitles/utils"]
+  },
+  {
+    "path": "src/utils/subtitles/processor/ai-segmentation.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../types", "@/utils/providers/provider-ref", "@/utils/message"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/types.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/subtitles/types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/post-message-request.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/constants/subtitles", "@/utils/crypto-polyfill"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./types", "./ai", "./netflix", "./text-track", "./youtube"]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/youtube-pot-token.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../fetchers/youtube/types", "vitest", "../fetchers/youtube/pot-token"]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/youtube-parsers.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../fetchers/youtube/types",
+      "vitest",
+      "../fetchers/youtube/format-detector",
+      "../fetchers/youtube/parser/animated-parser",
+      "../fetchers/youtube/parser/karaoke-parser",
+      "../fetchers/youtube/parser/scrolling-asr-parser",
+      "../fetchers/youtube/parser/stylized-karaoke-parser",
+      "../processor/optimizer"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/youtube-fetcher.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "vitest",
+      "@/utils/config/storage",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/errors",
+      "../fetchers/youtube"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/xcom-video-id.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../video-id/xcom"]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/video-summary.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../types",
+      "../video-summary",
+      "@tanstack/react-query",
+      "vitest",
+      "../video-summary"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/video-summary-request.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/config",
+      "vitest",
+      "@/utils/constants/config",
+      "@/utils/constants/providers",
+      "@/utils/content-script/background-stream-client",
+      "../video-summary"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/transcript.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../types", "vitest", "../transcript"]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/segment-words.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../segment-words"]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/noise-filter.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../fetchers/youtube/types",
+      "vitest",
+      "../fetchers/youtube/noise-filter",
+      "../fetchers/youtube/parser"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/lookahead.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", "../lookahead"]
+  },
+  {
+    "path": "src/utils/subtitles/__tests__/display-rules.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../types", "vitest", "../display-rules"]
+  },
+  {
+    "path": "src/utils/subtitles/processor/__tests__/translator.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/providers/provider-ref", "vitest", "@/utils/constants/config"]
+  },
+  {
+    "path": "src/utils/subtitles/processor/__tests__/translator-task-requirements.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/config", "@/utils/constants/providers"]
+  },
+  {
+    "path": "src/utils/subtitles/processor/__tests__/ai-segmentation.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../../types", "vitest"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/url-builder.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./pot-token", "./types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/types.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["zod"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/pot-token.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/noise-filter.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../../types",
+      "../types",
+      "./types",
+      "@/utils/config/storage",
+      "@/utils/constants/subtitles",
+      "@/utils/i18n",
+      "@/utils/sleep",
+      "@/utils/subtitles/errors",
+      "@/utils/subtitles/fetchers/post-message-request",
+      "@/utils/subtitles/video-id",
+      "./format-detector",
+      "./noise-filter",
+      "./parser",
+      "./pot-token",
+      "./types",
+      "./url-builder"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/format-detector.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/text-track/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../types",
+      "@/utils/subtitles/types",
+      "@/utils/constants/subtitles",
+      "@/utils/i18n",
+      "@/utils/poll",
+      "@/utils/subtitles/errors",
+      "./cues"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/text-track/cues.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/subtitles/types", "entities"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/netflix/ttml.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/subtitles/types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/netflix/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../types",
+      "@/utils/subtitles/types",
+      "zod",
+      "@/utils/constants/subtitles",
+      "@/utils/i18n",
+      "@/utils/subtitles/errors",
+      "../post-message-request",
+      "./ttml"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/__tests__/post-message-request.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", "../post-message-request"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/parser/stylized-karaoke-parser.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../../../types", "../types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/parser/standard-parser.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../../../types", "../types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/parser/scrolling-asr-parser.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../../../types",
+      "../types",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/utils"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/parser/karaoke-parser.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../../../types", "../types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/parser/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "./animated-parser",
+      "./karaoke-parser",
+      "./scrolling-asr-parser",
+      "./standard-parser",
+      "./stylized-karaoke-parser"
+    ]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/youtube/parser/animated-parser.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../../../types", "../types"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/text-track/__tests__/text-track-fetcher.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", ".."]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/text-track/__tests__/cues.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../cues"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/netflix/__tests__/ttml.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../ttml"]
+  },
+  {
+    "path": "src/utils/subtitles/fetchers/netflix/__tests__/netflix-fetcher.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["..", "vitest", "@/utils/constants/subtitles", ".."]
+  },
+  {
+    "path": "src/entrypoints/netflix-interceptor.content/ttml-capture.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/constants/subtitles"]
+  },
+  {
+    "path": "src/entrypoints/netflix-interceptor.content/player.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/subtitles/fetchers/netflix",
+      "@/utils/constants/subtitles",
+      "@/utils/poll",
+      "./ttml-capture"
+    ]
+  },
+  {
+    "path": "src/entrypoints/netflix-interceptor.content/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["#imports", "./player", "./ttml-capture"]
+  },
+  {
+    "path": "src/entrypoints/netflix-interceptor.content/__tests__/player.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "vitest",
+      "@/utils/constants/subtitles",
+      "@/utils/subtitles/fetchers/netflix",
+      "../player"
+    ]
+  },
+  {
+    "path": "src/entrypoints/interceptor.content/utils.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/subtitles/fetchers/youtube/types", "@/utils/constants/subtitles"]
+  },
+  {
+    "path": "src/entrypoints/interceptor.content/timedtext-observer.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/entrypoints/interceptor.content/inject-player-api.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./utils", "@/utils/constants/subtitles", "./timedtext-observer", "./utils"]
+  },
+  {
+    "path": "src/entrypoints/interceptor.content/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["#imports", "./inject-player-api"]
+  },
+  {
+    "path": "src/entrypoints/interceptor.content/__tests__/resolve-default-caption-track-index.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../utils"]
+  },
+  {
+    "path": "src/entrypoints/interceptor.content/__tests__/inject-player-api.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/subtitles", "../inject-player-api"]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/i18n",
+      "../../components/page-layout",
+      "./ai-quota",
+      "./cache",
+      "./custom-prompts",
+      "./preference",
+      "./subtitles-queue",
+      "./subtitles-style"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/i18n",
+      "../../../components/config-nav-item",
+      "../../../components/config-section"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-queue/request-rate-items.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/translate",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/input",
+      "@/components/ui/base-ui/toast",
+      "@/types/config/translate",
+      "@/utils/atoms/config",
+      "@/utils/constants/translate",
+      "@/utils/i18n",
+      "../../../components/config-item"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-queue/queue-page.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/i18n",
+      "../../../components/config-detail-section",
+      "../../../components/page-layout",
+      "./batch-items",
+      "./request-rate-items"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-queue/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/i18n",
+      "../../../components/config-nav-item",
+      "../../../components/config-section"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-queue/batch-items.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/translate",
+      "jotai",
+      "@/components/ui/base-ui/input",
+      "@/components/ui/base-ui/toast",
+      "@/types/config/translate",
+      "@/utils/atoms/config",
+      "@/utils/constants/translate",
+      "@/utils/i18n",
+      "../../../components/batch-savings-note",
+      "../../../components/config-item"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/preference/word-lookup-action-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/utils/atoms/config",
+      "@/utils/custom-actions",
+      "@/utils/i18n",
+      "../../../components/action-select",
+      "../../../components/config-item"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/preference/platform-icon.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["react", "@/types/config/subtitles", "@/utils/styles/utils"]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/preference/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/components/ui/base-ui/switch",
+      "@/types/config/subtitles",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "../../../components/config-nav-item",
+      "../../../components/config-section",
+      "../../../components/shortcut-link",
+      "./platform-icon",
+      "./word-lookup-action-item"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/preference/auto-start-page.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/subtitles",
+      "jotai",
+      "@/components/ui/base-ui/switch",
+      "@/types/config/subtitles",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "../../../components/config-detail-section",
+      "../../../components/config-item",
+      "../../../components/page-layout",
+      "./platform-icon"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/custom-prompts/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/i18n",
+      "../../../components/config-nav-item",
+      "../../../components/config-section"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/custom-prompts/atoms.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/components/prompt-configurator/create-atoms", "@/utils/atoms/config"]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/cache/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "react",
+      "@/components/ui/base-ui/alert-dialog",
+      "@/components/ui/base-ui/button",
+      "@/utils/i18n",
+      "@/utils/message",
+      "../../../components/config-item",
+      "../../../components/config-section"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/__tests__/video-subtitles-sections.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@/types/config/config",
+      "@testing-library/react",
+      "react-router",
+      "vitest",
+      "@/utils/constants/config",
+      "../custom-prompts",
+      "../preference",
+      "../preference/auto-start-page",
+      "../subtitles-style"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/style-editor/translation-subtitles-style.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "deepmerge-ts",
+      "jotai",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/card",
+      "@/components/ui/base-ui/label",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/i18n",
+      "./subtitles-text-style-form"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/style-editor/subtitles-text-style-form.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/subtitles",
+      "deepmerge-ts",
+      "jotai",
+      "react",
+      "@/components/debounced-color-picker",
+      "@/components/ui/base-ui/field",
+      "@/components/ui/base-ui/select",
+      "@/components/ui/base-ui/slider",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/i18n"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/style-editor/subtitles-preview.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "react",
+      "@/components/gradient-background",
+      "@/entrypoints/subtitles.content/ui/subtitle-lines",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/styles/utils",
+      "./shadow-preview-frame"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/style-editor/shadow-preview-frame.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "react",
+      "react-dom",
+      "@/assets/styles/theme.css?inline",
+      "@/utils/constants/subtitles",
+      "@/utils/host/translate/ui/style-injector",
+      "@/utils/react-shadow-host/shadow-host-builder",
+      "@/utils/styles/utils",
+      "@/utils/theme"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/style-editor/main-subtitles-style.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "deepmerge-ts",
+      "jotai",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/card",
+      "@/components/ui/base-ui/label",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/i18n",
+      "./subtitles-text-style-form"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/style-editor/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/i18n",
+      "../../../../components/config-detail-section",
+      "../../../../components/config-nav-item",
+      "../../../../components/page-layout",
+      "./general-settings",
+      "./main-subtitles-style",
+      "./subtitles-preview",
+      "./translation-subtitles-style"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/style-editor/general-settings.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/subtitles",
+      "@iconify/react",
+      "deepmerge-ts",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/card",
+      "@/components/ui/base-ui/field",
+      "@/components/ui/base-ui/label",
+      "@/components/ui/base-ui/select",
+      "@/components/ui/base-ui/slider",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/atoms/config",
+      "@/utils/constants/subtitles",
+      "@/utils/i18n"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/custom-css/preset-template-select.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/constants/subtitles",
+      "@/components/ui/base-ui/select",
+      "@/utils/constants/subtitles",
+      "@/utils/i18n",
+      "../../../../components/select-content-props"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/custom-css/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "react",
+      "@/hooks/use-debounced-value",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "../../../../components/config-detail-section",
+      "../../../../components/config-item",
+      "../../../../components/page-layout",
+      "../style-editor/subtitles-preview",
+      "./css-editor",
+      "./preset-template-select"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/subtitles-style/custom-css/css-editor.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "deepmerge-ts",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/field",
+      "@/components/ui/css-code-editor",
+      "@/env",
+      "@/hooks/use-debounced-value",
+      "@/types/config/translate",
+      "@/utils/atoms/config",
+      "@/utils/css/lint-css",
+      "@/utils/i18n",
+      "@/utils/styles/utils"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/video-subtitles/custom-prompts/prompts/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/components/prompt-configurator",
+      "@/components/prompt-configurator/built-in-prompts",
+      "@/utils/constants/prompt",
+      "@/utils/i18n",
+      "../../../../components/config-detail-section",
+      "../../../../components/page-layout",
+      "../atoms"
+    ]
+  },
+  {
+    "path": "src/types/config/subtitles.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "zod",
+      "@/utils/constants/custom-action",
+      "@/utils/constants/prompt",
+      "@/utils/constants/subtitles",
+      "./shortcut",
+      "./translate"
+    ]
+  },
+  {
+    "path": "src/utils/constants/subtitles.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/utils/prompts/subtitles.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "./translate",
+      "@/types/content",
+      "@/utils/config/storage",
+      "@/utils/glossary/active-matcher",
+      "@/utils/glossary/prompt",
+      "../constants/config",
+      "../constants/prompt",
+      "./translate"
+    ]
+  },
+  {
+    "path": "src/utils/prompts/subtitles-segmentation.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../constants/prompt"]
+  },
+  {
+    "path": "src/utils/prompts/__tests__/subtitles-segmentation.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "vitest",
+      "@/utils/constants/prompt",
+      "@/utils/constants/subtitles",
+      "../subtitles-segmentation"
+    ]
+  },
+  {
+    "path": "src/entrypoints/background/ai-segmentation.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/providers/provider-ref",
+      "@/utils/crypto-polyfill",
+      "@/utils/db/dexie/db",
+      "@/utils/hash",
+      "@/utils/logger",
+      "@/utils/prompts/subtitles-segmentation",
+      "@/utils/providers/provider-ref",
+      "@/utils/subtitles/processor/ai-segmentation",
+      "./background-stream"
+    ]
+  },
+  {
+    "path": "src/entrypoints/background/subtitles-translation.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/content",
+      "@/utils/content/utils",
+      "@/utils/db/dexie/db",
+      "@/utils/hash",
+      "@/utils/host/translate/execute-translate",
+      "@/utils/host/translate/translate-text",
+      "@/utils/message",
+      "@/utils/prompts/subtitles",
+      "@/utils/providers/provider-ref",
+      "./translation-context-summary",
+      "./translation-queues"
+    ]
+  },
+  {
+    "path": "src/entrypoints/background/video-summary.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/providers/provider-ref",
+      "@/utils/db/dexie/db",
+      "@/utils/hash",
+      "@/utils/message",
+      "@/utils/providers/provider-ref"
+    ]
+  },
+  {
+    "path": "src/entrypoints/background/__tests__/ai-segmentation.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest"]
+  },
+  {
+    "path": "src/entrypoints/background/__tests__/video-summary.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/providers/provider-ref", "vitest"]
+  },
+  {
+    "path": "src/utils/db/dexie/tables/ai-segmentation-cache.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["dexie"]
+  },
+  {
+    "path": "src/entrypoints/options/pages/shortcuts/subtitles-toggle-shortcut.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "../../command-palette/section-scroll",
+      "./shortcut-config-item"
+    ]
+  }
+]

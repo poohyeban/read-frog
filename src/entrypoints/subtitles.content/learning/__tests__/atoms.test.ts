@@ -29,7 +29,6 @@ describe("word lookup atoms", () => {
       selectionText: "patience",
       cleanSelection: "patience",
       contextText: "I'm running out of patience.\n\n我快没耐心了。",
-      surface: "video_subtitles",
       rerunNonce: 0,
     })
   })

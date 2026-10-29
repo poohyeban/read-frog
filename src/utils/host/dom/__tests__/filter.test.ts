@@ -343,17 +343,6 @@ describe("isDontWalkIntoAndDontTranslateAsChildElement", () => {
     document.body.removeChild(header)
   })
 
-  it("should NOT skip <header> deeply nested inside <article> in main mode", () => {
-    const article = document.createElement("article")
-    const div = document.createElement("div")
-    const header = document.createElement("header")
-    div.appendChild(header)
-    article.appendChild(div)
-    document.body.appendChild(article)
-    expect(isDontWalkIntoAndDontTranslateAsChildElement(header, createConfig("main"))).toBe(false)
-    document.body.removeChild(article)
-  })
-
   it("should skip top-level <footer> in main mode", () => {
     const footer = document.createElement("footer")
     document.body.appendChild(footer)

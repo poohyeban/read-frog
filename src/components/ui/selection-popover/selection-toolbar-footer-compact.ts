@@ -1,6 +1,6 @@
 // The selection toolbar footer is a size container named `footer` once it
 // holds extra controls. Below this width its labelled controls collapse to
-// icons, because at 320px the Save to Notebase label alone is wider than the
+
 // footer in some locales. Above it, labels truncate instead. The threshold is
 // in px: a rem condition in a content script would scale with the host page's
 // root font size.

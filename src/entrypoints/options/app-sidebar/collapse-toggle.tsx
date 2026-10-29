@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { Button } from "@/components/ui/base-ui/button"
 import { useSidebar } from "@/components/ui/base-ui/sidebar"
 import { i18n } from "@/utils/i18n"

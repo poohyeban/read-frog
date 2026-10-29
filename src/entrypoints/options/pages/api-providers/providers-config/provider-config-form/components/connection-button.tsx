@@ -188,7 +188,7 @@ export function ConnectionTestButton({ providerConfig }: { providerConfig: APIPr
       variant="outline"
       className="gap-2"
       onClick={handleTestConnection}
-      disabled={mutation.isPending || (!apiKey && provider !== "deeplx" && provider !== "ollama")}
+      disabled={mutation.isPending || (!apiKey && provider !== "ollama")}
     >
       {mutation.isPending ? (
         <>

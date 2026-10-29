@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react"
 import type { ThemeMode } from "@/types/config/theme"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useTheme } from "@/components/providers/theme-provider"
 import {
   Select,

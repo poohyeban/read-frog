@@ -2,17 +2,7 @@ import { useAtom } from "jotai"
 import { useState } from "react"
 import { Input } from "@/components/ui/base-ui/input"
 import { toastManager } from "@/components/ui/base-ui/toast"
-import {
-  MAX_TTS_PITCH,
-  MAX_TTS_RATE,
-  MAX_TTS_VOLUME,
-  MIN_TTS_PITCH,
-  MIN_TTS_RATE,
-  MIN_TTS_VOLUME,
-  ttsPitchSchema,
-  ttsRateSchema,
-  ttsVolumeSchema,
-} from "@/types/config/tts"
+import { MAX_TTS_RATE, MIN_TTS_RATE, ttsRateSchema } from "@/types/config/tts"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { i18n } from "@/utils/i18n"
 import { ConfigItem } from "../../../components/config-item"
@@ -36,36 +26,6 @@ export function SpeechSection() {
           schema={ttsRateSchema}
           onValue={(rate) => {
             void setTtsConfig({ rate })
-          }}
-        />
-      </ConfigItem>
-      <ConfigItem
-        id="tts-pitch"
-        title={i18n.t("options.tts.speech.pitch.title")}
-        description={i18n.t("options.tts.speech.pitch.description")}
-      >
-        <SpeechDialInput
-          value={ttsConfig.pitch}
-          min={MIN_TTS_PITCH}
-          max={MAX_TTS_PITCH}
-          schema={ttsPitchSchema}
-          onValue={(pitch) => {
-            void setTtsConfig({ pitch })
-          }}
-        />
-      </ConfigItem>
-      <ConfigItem
-        id="tts-volume"
-        title={i18n.t("options.tts.speech.volume.title")}
-        description={i18n.t("options.tts.speech.volume.description")}
-      >
-        <SpeechDialInput
-          value={ttsConfig.volume}
-          min={MIN_TTS_VOLUME}
-          max={MAX_TTS_VOLUME}
-          schema={ttsVolumeSchema}
-          onValue={(volume) => {
-            void setTtsConfig({ volume })
           }}
         />
       </ConfigItem>

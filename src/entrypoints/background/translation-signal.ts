@@ -1,9 +1,6 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
-import type { FeatureUsageContext } from "@/types/analytics"
 import type { Config } from "@/types/config/config"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { browser, storage } from "#imports"
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
-import { createFeatureUsageContext } from "@/utils/analytics"
 import { normalizeDetectedCode } from "@/utils/config/languages"
 import { CONFIG_STORAGE_KEY, DEFAULT_DETECTED_CODE } from "@/utils/constants/config"
 import { getDetectedCodeStateKey, getTranslationStateKey } from "@/utils/constants/storage-keys"
@@ -24,18 +21,14 @@ import {
 } from "./page-translation-state"
 
 function notifyPageTranslationStateChanged(tabId: number, enabled: boolean) {
-  void sendMessage("notifyTranslationStateChanged", { enabled }, tabId).catch((error) =>
-    logger.warn("Failed to notify page translation state change", error),
+  void sendMessage("notifyTranslationStateChanged", { enabled }, tabId).catch(() =>
+    logger.warn("Failed to notify page translation state change"),
   )
 }
 
-function requestManagerToTogglePageTranslation(
-  tabId: number,
-  enabled: boolean,
-  analyticsContext?: FeatureUsageContext<"page_translation">,
-) {
-  void sendMessage("askManagerToTogglePageTranslation", { enabled, analyticsContext }, tabId).catch(
-    (error) => logger.warn("Failed to ask page translation manager to toggle", error),
+function requestManagerToTogglePageTranslation(tabId: number, enabled: boolean) {
+  void sendMessage("askManagerToTogglePageTranslation", { enabled }, tabId).catch(() =>
+    logger.warn("Failed to ask page translation manager to toggle"),
   )
 }
 
@@ -64,8 +57,8 @@ async function publishCachedDetectedCodeForTab(tabId: number): Promise<void> {
 }
 
 function requestDetectedPageLanguageRefresh(tabId: number) {
-  void sendMessage("refreshDetectedPageLanguage", undefined, tabId).catch((error) =>
-    logger.warn("Failed to refresh detected page language", error),
+  void sendMessage("refreshDetectedPageLanguage", undefined, tabId).catch(() =>
+    logger.warn("Failed to refresh detected page language"),
   )
 }
 
@@ -133,14 +126,7 @@ export function translationMessage() {
         const state = await getPageTranslationState(tabId)
         if (isAutoTranslationSuppressed(state, url)) return
 
-        requestManagerToTogglePageTranslation(
-          tabId,
-          true,
-          createFeatureUsageContext(
-            ANALYTICS_FEATURE.PAGE_TRANSLATION,
-            ANALYTICS_SURFACE.PAGE_AUTO,
-          ),
-        )
+        requestManagerToTogglePageTranslation(tabId, true)
       }
       return
     }
@@ -163,7 +149,7 @@ export function translationMessage() {
   })
 
   onMessage("tryToSetEnablePageTranslationByTabId", async (msg) => {
-    const { tabId, enabled, analyticsContext } = msg.data
+    const { tabId, enabled } = msg.data
     if (!enabled) {
       // Record the user's refusal before asking the manager to stop, so a
       // concurrent tab-activation re-detection cannot re-enable in between.
@@ -174,12 +160,12 @@ export function translationMessage() {
       await setPageTranslationEnabled(tabId, false, tabUrl, true)
       notifyPageTranslationStateChanged(tabId, false)
     }
-    requestManagerToTogglePageTranslation(tabId, enabled, analyticsContext)
+    requestManagerToTogglePageTranslation(tabId, enabled)
   })
 
   onMessage("tryToSetEnablePageTranslationOnContentScript", async (msg) => {
     const tabId = msg.sender?.tab?.id
-    const { enabled, analyticsContext } = msg.data
+    const { enabled } = msg.data
     if (typeof tabId === "number") {
       logger.info("sending tryToSetEnablePageTranslationOnContentScript to manager", {
         enabled,
@@ -189,7 +175,7 @@ export function translationMessage() {
         await setPageTranslationEnabled(tabId, false, msg.sender?.tab?.url, true)
         notifyPageTranslationStateChanged(tabId, false)
       }
-      requestManagerToTogglePageTranslation(tabId, enabled, analyticsContext)
+      requestManagerToTogglePageTranslation(tabId, enabled)
     } else {
       logger.error("tabId is not a number", msg)
     }

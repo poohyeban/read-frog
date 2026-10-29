@@ -2,37 +2,15 @@ import type { FeatureKey } from "@/utils/constants/feature-providers"
 import { useAtomValue } from "jotai"
 import { useMemo } from "react"
 import { Link } from "react-router"
-import { useHostedAiStatus } from "@/components/llm-providers/use-hosted-ai-status"
 import { buttonVariants } from "@/components/ui/base-ui/button"
 import { configAtom, configFieldsAtomMap } from "@/utils/atoms/config"
 import { FEATURE_PROVIDER_DEFS, getFeatureLabelI18nKey } from "@/utils/constants/feature-providers"
 import { i18n } from "@/utils/i18n"
-import { isProviderIdDurablyUnusable } from "@/utils/providers/provider-availability"
 import { canResolvedProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { cn } from "@/utils/styles/utils"
 import { buildSectionLink } from "../command-palette/section-scroll"
 
-/**
- * Per-feature "is this running on an LLM provider" status, with the way to go
- * fix it.
- *
- * Used by every setting that only works on a prompt-driven provider. Each
- * feature picks its own provider, so a single global verdict would be wrong — a
- * user can easily have a setting working on selection translation while page
- * translation quietly ignores it.
- *
- * The resolution is capability-based on purpose, and two comments' worth of
- * history are load-bearing:
- *   - Built-in AI is synthesized by the provider registry and is never a row in
- *     `providersConfig`, so looking the id up there reports it unconfigured
- *     forever.
- *   - `kind === "system"` answers "is it prompt-driven", not "does it run", so
- *     on its own it reported every feature configured for accounts whose plan
- *     funds none of them, signed-out guests included.
- *
- * Renders as `span`s so it can sit inside a `ConfigItem` description.
- */
 export function LlmFeatureStatusList({
   featureKeys,
   className,
@@ -42,7 +20,6 @@ export function LlmFeatureStatusList({
 }) {
   const config = useAtomValue(configAtom)
   const providersConfig = useAtomValue(configFieldsAtomMap.providersConfig)
-  const { status } = useHostedAiStatus()
 
   const statuses = useMemo(
     () =>
@@ -50,10 +27,7 @@ export function LlmFeatureStatusList({
         const providerId = FEATURE_PROVIDER_DEFS[featureKey].getProviderId(config)
         const providerRef = resolveProviderRefForCapability(featureKey, providersConfig, providerId)
         const featureName = i18n.t(getFeatureLabelI18nKey(featureKey))
-        const hasLLMProvider = providerRef
-          ? canResolvedProviderRefGenerateText(providerRef) &&
-            !isProviderIdDurablyUnusable(providerId, featureKey, status)
-          : false
+        const hasLLMProvider = providerRef ? canResolvedProviderRefGenerateText(providerRef) : false
 
         return {
           featureKey,
@@ -63,7 +37,7 @@ export function LlmFeatureStatusList({
             : i18n.t("options.apiProviders.aiContentAware.llmProviderNotConfigured", [featureName]),
         }
       }),
-    [config, providersConfig, status, featureKeys],
+    [config, providersConfig, featureKeys],
   )
 
   return (

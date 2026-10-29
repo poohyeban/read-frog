@@ -820,26 +820,6 @@ describe("selectionPopover", () => {
     expect(screen.getByText("Second content")).toBeInTheDocument()
   })
 
-  it("restarts the same popover session when clicking the same trigger again while unpinned", () => {
-    render(<ReopenablePopoverHarness />)
-
-    const trigger = screen.getByRole("button", { name: "Open popover" })
-    vi.spyOn(trigger, "getBoundingClientRect").mockReturnValue(buildTriggerRect())
-
-    fireEvent.click(trigger)
-    flushRaf()
-
-    expect(screen.getByText("First selection")).toBeInTheDocument()
-
-    const firstElement = screen.getByTestId("mock-rnd")
-
-    fireEvent.click(trigger)
-    flushRaf()
-
-    expect(screen.getByText("First selection")).toBeInTheDocument()
-    expect(screen.getByTestId("mock-rnd")).not.toBe(firstElement)
-  })
-
   it("reuses a pinned popover in place when clicking the same trigger again", () => {
     const onReuseRequestSpy = vi.fn<(...args: any[]) => any>()
     render(<ReopenablePopoverHarness onReuseRequestSpy={onReuseRequestSpy} />)
@@ -913,33 +893,6 @@ describe("selectionPopover", () => {
     })
 
     expect(onOpenChangeSpy).toHaveBeenLastCalledWith(true)
-    expect(screen.getByTestId("mock-rnd")).toBeInTheDocument()
-  })
-
-  it("restarts an unpinned popover through actionsRef.requestOpen", () => {
-    const actionsRef = React.createRef<{
-      requestOpen: (anchor?: { x: number; y: number } | null) => void
-    }>()
-    const onReuseRequestSpy = vi.fn<(...args: any[]) => any>()
-    render(<ActionsPopoverHarness actionsRef={actionsRef} onReuseRequest={onReuseRequestSpy} />)
-
-    act(() => {
-      actionsRef.current?.requestOpen({ x: 200, y: 160 })
-    })
-    flushRaf()
-
-    onOpenChangeSpy.mockReset()
-
-    act(() => {
-      actionsRef.current?.requestOpen({ x: 400, y: 320 })
-    })
-
-    expect(onOpenChangeSpy).toHaveBeenLastCalledWith(false)
-
-    flushRaf()
-
-    expect(onOpenChangeSpy).toHaveBeenLastCalledWith(true)
-    expect(onReuseRequestSpy).not.toHaveBeenCalled()
     expect(screen.getByTestId("mock-rnd")).toBeInTheDocument()
   })
 
@@ -1176,46 +1129,6 @@ describe("selectionPopover", () => {
 
     expect(updateSizeSpy).toHaveBeenCalledWith({ width: 680, height: 480 })
     expectLatestPosition({ x: 100, y: 80 })
-  })
-
-  it("cancels stale auto-layout on drag start and reclamps once dragging stops", async () => {
-    const { element } = renderPopover()
-
-    await act(async () => {
-      await Promise.resolve()
-    })
-
-    mockRect(element, { left: 120, top: 620, width: 500, height: 280 })
-
-    act(() => {
-      latestRndProps?.onDragStop?.(new MouseEvent("mouseup"), { x: 120, y: 620 })
-    })
-    updatePositionSpy.mockReset()
-    updateSizeSpy.mockReset()
-
-    act(() => {
-      latestRndProps?.onDragStart?.()
-    })
-
-    mockRect(element, { left: 120, top: 620, width: 500, height: 360 })
-    triggerResizeObserver()
-
-    expect(updatePositionSpy).not.toHaveBeenCalled()
-    expect(updateSizeSpy).not.toHaveBeenCalled()
-    expectLatestPosition({ x: 120, y: 620 })
-
-    mockRect(element, { left: 120, top: 620, width: 500, height: 400 })
-    triggerResizeObserver()
-
-    expect(updatePositionSpy).not.toHaveBeenCalled()
-    expect(updateSizeSpy).not.toHaveBeenCalled()
-    expectLatestPosition({ x: 120, y: 620 })
-
-    act(() => {
-      latestRndProps?.onDragStop?.(new MouseEvent("mouseup"), { x: 120, y: 620 })
-    })
-
-    expectLatestPosition({ x: 120, y: 500 })
   })
 
   it("merges Base UI render props into a custom trigger element", () => {

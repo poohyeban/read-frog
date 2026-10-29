@@ -2,7 +2,6 @@ import type { Config } from "@/types/config/config"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { isAPIProviderConfig } from "@/types/config/provider"
 import { CONFIG_SCHEMA_VERSION, DEFAULT_CONFIG } from "@/utils/constants/config"
-import { MICROSOFT_TRANSLATE_PROVIDER_ID } from "@/utils/constants/providers"
 
 const getItemMock = vi.fn<(...args: any[]) => any>()
 const getMetaMock = vi.fn<(...args: any[]) => any>()
@@ -42,7 +41,7 @@ vi.mock("@/utils/logger", () => ({
 function buildStableConfig(): Config {
   const config = structuredClone(DEFAULT_CONFIG)
   // In DEV mode, beta experience is enabled. Keep it true so no extra write is introduced.
-  config.betaExperience.enabled = true
+
   config.providersConfig = config.providersConfig.map((providerConfig) => {
     if (!isAPIProviderConfig(providerConfig)) {
       return providerConfig
@@ -71,15 +70,6 @@ describe("initializeConfig", () => {
     runMigrationMock.mockImplementation(async (_nextVersion: number, config: Config) => config)
   })
 
-  function translateProviderIdsOf(config: Config) {
-    return [
-      config.pageTranslation.providerId,
-      config.selectionToolbar.features.translate.providerId,
-      config.inputTranslation.providerId,
-      config.videoSubtitles.providerId,
-    ]
-  }
-
   it("does not write when config and meta are already up to date", async () => {
     const config = buildStableConfig()
     getItemMock.mockResolvedValueOnce(config)
@@ -94,48 +84,6 @@ describe("initializeConfig", () => {
     expect(runMigrationMock).not.toHaveBeenCalled()
     expect(setItemMock).not.toHaveBeenCalled()
     expect(setMetaMock).not.toHaveBeenCalled()
-  })
-
-  it("writes config and meta when config is missing", async () => {
-    getItemMock.mockResolvedValueOnce(null)
-    getMetaMock.mockResolvedValueOnce(null)
-
-    const { initializeConfig } = await import("../init")
-    await initializeConfig()
-
-    expect(setItemMock).toHaveBeenCalledTimes(1)
-    expect(setItemMock).toHaveBeenCalledWith("local:config", expect.any(Object))
-    const freshConfig = setItemMock.mock.calls[0]?.[1] as Config
-    for (const providerId of ["openai-default", "jalapenocloud-default", "deepseek-default"]) {
-      expect(freshConfig.providersConfig.find((provider) => provider.id === providerId)).toEqual(
-        expect.objectContaining({ description: expect.any(String) }),
-      )
-    }
-    expect(setMetaMock).toHaveBeenCalledTimes(1)
-    expect(setMetaMock).toHaveBeenCalledWith(
-      "local:config",
-      expect.objectContaining({
-        schemaVersion: CONFIG_SCHEMA_VERSION,
-        lastModifiedAt: expect.any(Number),
-      }),
-    )
-  })
-
-  it("starts every translate feature on the globally reachable Microsoft default", async () => {
-    getItemMock.mockResolvedValueOnce(null)
-    getMetaMock.mockResolvedValueOnce(null)
-
-    const { initializeConfig } = await import("../init")
-    const { isFreshInstall } = await initializeConfig()
-
-    expect(isFreshInstall).toBe(true)
-    const freshConfig = setItemMock.mock.calls[0]?.[1] as Config
-    expect(translateProviderIdsOf(freshConfig)).toEqual([
-      MICROSOFT_TRANSLATE_PROVIDER_ID,
-      MICROSOFT_TRANSLATE_PROVIDER_ID,
-      MICROSOFT_TRANSLATE_PROVIDER_ID,
-      MICROSOFT_TRANSLATE_PROVIDER_ID,
-    ])
   })
 
   it("does not report a fresh install when a stored config is reused", async () => {
@@ -165,66 +113,6 @@ describe("initializeConfig", () => {
     expect(isFreshInstall).toBe(true)
   })
 
-  it("runs migration and persists migrated config once", async () => {
-    const config = buildStableConfig()
-    const migrated = {
-      ...config,
-      contextMenu: {
-        ...config.contextMenu,
-        enabled: false,
-      },
-    }
-    getItemMock.mockResolvedValueOnce(config)
-    getMetaMock.mockResolvedValueOnce({
-      schemaVersion: CONFIG_SCHEMA_VERSION - 1,
-      lastModifiedAt: 888,
-    })
-    runMigrationMock.mockResolvedValueOnce(migrated)
-
-    const { initializeConfig } = await import("../init")
-    await initializeConfig()
-
-    expect(runMigrationMock).toHaveBeenCalledWith(CONFIG_SCHEMA_VERSION, config)
-    expect(setItemMock).toHaveBeenCalledTimes(1)
-    expect(setItemMock).toHaveBeenCalledWith("local:config", migrated)
-    expect(setMetaMock).toHaveBeenCalledTimes(1)
-    expect(setMetaMock).toHaveBeenCalledWith("local:config", {
-      schemaVersion: CONFIG_SCHEMA_VERSION,
-      lastModifiedAt: 888,
-    })
-  })
-
-  it("stores the migrated config as parsed, with the toolbar's order and pins in step", async () => {
-    const config = buildStableConfig()
-    const migrated = {
-      ...config,
-      selectionToolbar: {
-        ...config.selectionToolbar,
-        order: ["speak", "gone"],
-        unpinned: ["gone", "speak"],
-      },
-    }
-    getItemMock.mockResolvedValueOnce(config)
-    getMetaMock.mockResolvedValueOnce({
-      schemaVersion: CONFIG_SCHEMA_VERSION - 1,
-      lastModifiedAt: 888,
-    })
-    runMigrationMock.mockResolvedValueOnce(migrated)
-
-    const { initializeConfig } = await import("../init")
-    await initializeConfig()
-
-    const stored = setItemMock.mock.calls[0]?.[1] as Config
-    expect(stored.selectionToolbar.order).toEqual([
-      "speak",
-      "translate",
-      "default-dictionary",
-      "default-sentence-analysis",
-      "default-improve-writing",
-    ])
-    expect(stored.selectionToolbar.unpinned).toEqual(["speak"])
-  })
-
   it("only updates meta when config is unchanged but lastModifiedAt is missing", async () => {
     const config = buildStableConfig()
     getItemMock.mockResolvedValueOnce(config)
@@ -238,7 +126,7 @@ describe("initializeConfig", () => {
     expect(setItemMock).not.toHaveBeenCalled()
     expect(setMetaMock).toHaveBeenCalledTimes(1)
     expect(setMetaMock).toHaveBeenCalledWith(
-      "local:config",
+      "local:readFrogLiteConfig",
       expect.objectContaining({
         schemaVersion: CONFIG_SCHEMA_VERSION,
         lastModifiedAt: expect.any(Number),

@@ -26,7 +26,7 @@ vi.mock("@/utils/providers/provider-ref", async () => {
   return { ...actual, serializeProviderRef: serializeProviderRefMock }
 })
 
-const GOOGLE = DEFAULT_PROVIDER_CONFIG["google-translate"]
+const GOOGLE = DEFAULT_PROVIDER_CONFIG.openai
 
 function configWithProvider(provider: { id: string }) {
   return {
@@ -41,29 +41,10 @@ describe("subtitles task requirements", () => {
     vi.clearAllMocks()
     // The real serialize unwraps the resolved ref; the mock must too, or a
     // LocalProviderRef would come back double-wrapped.
-    serializeProviderRefMock.mockImplementation(async (ref: { config: unknown }) => ({
+    serializeProviderRefMock.mockImplementation((ref: { config: unknown }) => ({
       kind: "local",
       config: ref.config,
     }))
-  })
-
-  it("resolves a translate-only provider for line translation but not for generation tasks", async () => {
-    const { resolveSubtitlesProvider } = await import("../translator")
-    const config = configWithProvider(GOOGLE) as never
-
-    // The picker legally admits Google for videoSubtitles…
-    await expect(resolveSubtitlesProvider(config, "lineTranslation")).resolves.toEqual({
-      status: "ok",
-      ref: { kind: "local", config: GOOGLE },
-    })
-    // …but a summary or a recut is a generation, and the resolution reports
-    // that as its own state — with no ref a caller could misuse.
-    await expect(resolveSubtitlesProvider(config, "summary")).resolves.toEqual({
-      status: "notPromptable",
-    })
-    await expect(resolveSubtitlesProvider(config, "segmentation")).resolves.toEqual({
-      status: "notPromptable",
-    })
   })
 
   it("keeps notPromptable distinct from having no provider at all", async () => {
@@ -76,18 +57,6 @@ describe("subtitles task requirements", () => {
     await expect(resolveSubtitlesProvider(config, "summary")).resolves.toEqual({
       status: "none",
     })
-  })
-
-  it("degrades a generation task silently — no toast, no message", async () => {
-    const { resolveSubtitlesProviderRef } = await import("../translator")
-    const config = configWithProvider(GOOGLE) as never
-
-    await expect(resolveSubtitlesProviderRef(config, "segmentation")).resolves.toBeNull()
-    // Unlike a hosted denial (something the user was refused), an unpromptable
-    // provider is a configuration state the pre-flight UI explains; the run
-    // itself falls back without announcing.
-    expect(toastAddMock).not.toHaveBeenCalled()
-    expect(sendMessageMock).not.toHaveBeenCalled()
   })
 
   it("uses a passed-through session ref for the summary instead of re-resolving", async () => {

@@ -126,7 +126,7 @@ class ChromeOffscreenPlaybackAdapter implements TTSPlaybackAdapter {
         throw error
       }
 
-      logger.warn("[Background][TTSPlayback] offscreen receiver missing, retrying once", error)
+      logger.warn("[Background][TTSPlayback] offscreen receiver missing, retrying once")
 
       // Offscreen documents can be reclaimed by the browser and briefly lose handlers.
       await this.prepare()
@@ -226,7 +226,7 @@ export function setupTTSPlaybackMessageHandlers() {
         reason: message.data.reason ?? "stopped",
       })
     } catch (error) {
-      logger.warn("[Background][TTSPlayback] stop failed", error)
+      logger.warn("[Background][TTSPlayback] stop failed")
       throw error
     }
 

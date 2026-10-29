@@ -17,7 +17,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { RiTranslate } from "@remixicon/react"
 import {
   IconDotsVertical,

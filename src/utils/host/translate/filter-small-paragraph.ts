@@ -1,7 +1,7 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { Config } from "@/types/config/config"
-import { ISO6393_TO_6391 } from "@read-frog/definitions"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { getDetectedCodeFromStorage, getFinalSourceCode } from "@/utils/config/languages"
+import { ISO6393_TO_6391 } from "@/utils/languages"
 import { getEffectiveSiteRule } from "@/utils/site-rules/effective"
 
 const PURE_HANDLE_RE = /^@\S+$/u

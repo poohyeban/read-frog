@@ -1,13 +1,10 @@
 import type { AutosaveController } from "@/components/form/autosave-controller"
 import type { APIProviderConfig } from "@/types/config/provider"
 import type { FeatureKey } from "@/utils/constants/feature-providers"
-import type { BuiltInAiProviderId } from "@/utils/constants/provider-ids"
-import type { HostedAiUpgradePlan } from "@/utils/hosted-ai/types"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useSelector } from "@tanstack/react-store"
 import { useAtomValue, useSetAtom } from "jotai"
 import { createContext, use, useState } from "react"
-import { UpgradePlanBadge } from "@/components/badges/upgrade-plan-badge"
 import { useAutosave } from "@/components/form/use-autosave"
 import ProviderIcon from "@/components/provider-icon"
 import { useTheme } from "@/components/providers/theme-provider"
@@ -40,11 +37,6 @@ import {
 import { API_PROVIDER_ITEMS } from "@/utils/constants/providers"
 import { getSelectionToolbarActions, patchSelectionToolbarAction } from "@/utils/custom-actions"
 import { i18n } from "@/utils/i18n"
-import {
-  BUILT_IN_AI_PROVIDER_LOGO,
-  getBuiltInAiProviderName,
-} from "@/utils/providers/provider-registry"
-import { providerSupportsTranslationOnlyMode } from "@/utils/providers/translation-only-gate"
 import { cn } from "@/utils/styles/utils"
 import { APIKeyField } from "./provider-config-form/api-key-field"
 import { AdvancedOptionsSection } from "./provider-config-form/components/advanced-options-section"
@@ -52,7 +44,6 @@ import { ConfigHeader as ProviderConfigHeader } from "./provider-config-form/con
 import { formOpts, useAppForm } from "./provider-config-form/form"
 import { ProviderHeadersField } from "./provider-config-form/provider-headers-field"
 import { ProviderOptionsField } from "./provider-config-form/provider-options-field"
-import { ProviderSpecificSettingsField } from "./provider-config-form/provider-specific-settings-field"
 import { ProviderURLField } from "./provider-config-form/provider-url-field"
 import { ReasoningField } from "./provider-config-form/reasoning-field"
 import { TemperatureField } from "./provider-config-form/temperature-field"
@@ -74,7 +65,7 @@ interface ProviderEditorContextValue {
   }
   actions: {
     assignFeature: (featureKey: FeatureKey) => Promise<void>
-    assignLanguageDetection: () => Promise<void>
+
     assignCustomAction: (actionId: string) => Promise<void>
     duplicate?: () => Promise<void>
     delete?: () => Promise<void>
@@ -145,15 +136,7 @@ function useProviderEditorValue({
           ...getAssignmentProvidersPatch(),
         })
       },
-      assignLanguageDetection: async () => {
-        await setConfig({
-          languageDetection: {
-            mode: "llm",
-            providerId,
-          },
-          ...getAssignmentProvidersPatch(),
-        })
-      },
+
       assignCustomAction: async (actionId) => {
         await setConfig({
           selectionToolbar: patchSelectionToolbarAction(config.selectionToolbar, actionId, {
@@ -166,24 +149,6 @@ function useProviderEditorValue({
       ...(deleteProvider ? { delete: deleteProvider } : {}),
     },
   }
-}
-
-function BuiltInProvider({
-  providerId,
-  children,
-}: {
-  providerId: BuiltInAiProviderId
-  children: React.ReactNode
-}) {
-  const value = useProviderEditorValue({
-    identity: {
-      id: providerId,
-      logo: BUILT_IN_AI_PROVIDER_LOGO,
-      name: getBuiltInAiProviderName(providerId),
-    },
-  })
-
-  return <ProviderEditorContext value={value}>{children}</ProviderEditorContext>
 }
 
 export function useProviderForm(
@@ -279,8 +244,8 @@ function Attribution({ children }: { children: React.ReactNode }) {
 function ConfigHeader() {
   const form = useApiProviderForm()
   const providerType = useSelector(form.store, (state) => state.values.provider)
-  const apiKey = useSelector(form.store, (state) => state.values.apiKey)
-  return <ProviderConfigHeader providerType={providerType} apiKey={apiKey} />
+
+  return <ProviderConfigHeader providerType={providerType} />
 }
 
 function NameField() {
@@ -331,7 +296,7 @@ function ConnectionFields() {
 }
 
 function ProviderSpecificFields() {
-  return <ProviderSpecificSettingsField form={useApiProviderForm()} />
+  return <></>
 }
 
 function TranslationModelFields() {
@@ -384,13 +349,11 @@ function AssignmentRow({
   checked,
   children,
   disabled = false,
-  upgradeTo,
   onCheckedChange,
 }: {
   checked: boolean
   children: React.ReactNode
   disabled?: boolean
-  upgradeTo?: HostedAiUpgradePlan
   onCheckedChange: (checked: boolean) => void
 }) {
   return (
@@ -400,7 +363,6 @@ function AssignmentRow({
     <label className="flex w-fit items-center gap-2">
       <Switch checked={checked} disabled={checked || disabled} onCheckedChange={onCheckedChange} />
       <span className="text-sm">{children}</span>
-      {upgradeTo && <UpgradePlanBadge plan={upgradeTo} />}
     </label>
   )
 }
@@ -418,16 +380,8 @@ function CompatibleFeatureAssignments() {
     return null
   }
 
-  return FEATURE_KEYS.filter(
-    (featureKey) =>
-      FEATURE_PROVIDER_DEFS[featureKey].isProvider(providerType) &&
-      // While translationOnly page mode is active, providers without markup
-      // support cannot take the page-translate assignment (translation-only-gate.ts).
-      !(
-        featureKey === "pageTranslation" &&
-        config.pageTranslation.mode === "translationOnly" &&
-        !providerSupportsTranslationOnlyMode(providerType)
-      ),
+  return FEATURE_KEYS.filter((featureKey) =>
+    FEATURE_PROVIDER_DEFS[featureKey].isProvider(providerType),
   ).map((featureKey) => {
     const isAssigned = FEATURE_PROVIDER_DEFS[featureKey].getProviderId(config) === providerId
     return (
@@ -444,59 +398,12 @@ function CompatibleFeatureAssignments() {
   })
 }
 
-function LanguageDetectionAssignment({
-  disabled = false,
-  upgradeTo,
-}: {
-  disabled?: boolean
-  upgradeTo?: HostedAiUpgradePlan
-} = {}) {
-  const {
-    state: {
-      assignmentTarget: { providerId, providerType },
-    },
-    actions,
-  } = useProviderEditor()
-  const config = useAtomValue(configAtom)
-
-  // Built-in providers have no local providerType, but declare this capability
-  // in the provider registry. Local non-LLM providers still cannot take it.
-  if (providerType && !isLLMProvider(providerType)) {
-    return null
-  }
-
-  const isAssigned =
-    config.languageDetection.mode === "llm" && config.languageDetection.providerId === providerId
-
-  return (
-    <AssignmentRow
-      checked={isAssigned}
-      disabled={disabled}
-      upgradeTo={upgradeTo}
-      onCheckedChange={(checked) => {
-        if (checked) void actions.assignLanguageDetection()
-      }}
-    >
-      {i18n.t("options.apiProviders.languageDetection.title")}
-    </AssignmentRow>
-  )
-}
-
-/**
- * A single feature row (from FEATURE_KEYS) for the built-in provider editors.
- * Local API providers keep using CompatibleFeatureAssignments; this row exists
- * so the built-in editors can offer their hosted-capable features without
- * pretending to a providerType. `upgradeTo` is the plan this account lacks for
- * it (badged), `disabled` the viewer's actual access.
- */
 function FeatureAssignment({
   featureKey,
   disabled = false,
-  upgradeTo,
 }: {
   featureKey: FeatureKey
   disabled?: boolean
-  upgradeTo?: HostedAiUpgradePlan
 }) {
   const {
     state: {
@@ -511,7 +418,7 @@ function FeatureAssignment({
     <AssignmentRow
       checked={isAssigned}
       disabled={disabled}
-      upgradeTo={upgradeTo}
+
       onCheckedChange={(checked) => {
         if (checked) void actions.assignFeature(featureKey)
       }}
@@ -521,13 +428,7 @@ function FeatureAssignment({
   )
 }
 
-function CustomActionAssignments({
-  disabled = false,
-  upgradeTo,
-}: {
-  disabled?: boolean
-  upgradeTo?: HostedAiUpgradePlan
-}) {
+function CustomActionAssignments({ disabled = false }: { disabled?: boolean }) {
   const {
     state: {
       assignmentTarget: { providerId, providerType },
@@ -547,7 +448,7 @@ function CustomActionAssignments({
         key={action.id}
         checked={isAssigned}
         disabled={disabled}
-        upgradeTo={upgradeTo}
+
         onCheckedChange={(checked) => {
           if (checked) void actions.assignCustomAction(action.id)
         }}
@@ -613,14 +514,10 @@ export const ProviderEditor = {
   AssignmentRow,
   CompatibleFeatureAssignments,
   FeatureAssignment,
-  LanguageDetectionAssignment,
+
   CustomActionAssignments,
   DuplicateButton,
   DeleteButton,
-}
-
-export const BuiltInProviderEditor = {
-  Provider: BuiltInProvider,
 }
 
 export const CustomProviderEditor = {

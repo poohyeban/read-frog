@@ -7,7 +7,7 @@
  */
 
 import type { UserRulesValidationErrorKind, UserRulesValidationResult } from "./validate-user-rules"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useAtom } from "jotai"
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/base-ui/alert"

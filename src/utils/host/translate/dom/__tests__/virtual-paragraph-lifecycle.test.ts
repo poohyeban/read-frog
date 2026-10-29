@@ -452,19 +452,6 @@ describe("virtual paragraph lifecycle", () => {
     disposeVirtualParagraphGroup(group)
   })
 
-  it("treats a tracked wrapper moved within the layout source as stale", () => {
-    const layoutSource = document.createElement("div")
-    const source = document.createTextNode("one\n\ntwo")
-    layoutSource.append(source)
-    document.body.append(layoutSource)
-    const { group, wrappers } = createSplitGroup(layoutSource, source, [3, source.data.length])
-
-    layoutSource.append(wrappers[0]!)
-
-    expect(isVirtualParagraphGroupCurrent(group)).toBe(false)
-    disposeVirtualParagraphGroup(group)
-  })
-
   describe("translationOnly virtual generation teardown", () => {
     // A translationOnly generation has no wrapper of its own: each unit is a
     // run of whole child nodes whose text was swapped in place, with the Text

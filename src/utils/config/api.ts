@@ -7,7 +7,7 @@ export function getObjectWithoutAPIKeys<T extends Record<string, any>>(originalO
     if (obj && typeof obj === "object") {
       const newObj: Record<string, any> = {}
       for (const key in obj) {
-        if (key === "apiKey") {
+        if (key === "apiKey" || key === "headers") {
           continue
         }
         newObj[key] = deepClean(obj[key])
@@ -20,31 +20,6 @@ export function getObjectWithoutAPIKeys<T extends Record<string, any>>(originalO
   try {
     return deepClean(originalObject)
   } catch {
-    return originalObject
-  }
-}
-
-export function hasAPIKey(obj: any): boolean {
-  function deepCheck(value: any): boolean {
-    if (Array.isArray(value)) {
-      return value.some(deepCheck)
-    }
-    if (value && typeof value === "object") {
-      for (const key in value) {
-        if (key === "apiKey" && value[key]) {
-          return true
-        }
-        if (deepCheck(value[key])) {
-          return true
-        }
-      }
-    }
-    return false
-  }
-
-  try {
-    return deepCheck(obj)
-  } catch {
-    return false
+    throw new Error("Could not remove credentials from configuration")
   }
 }

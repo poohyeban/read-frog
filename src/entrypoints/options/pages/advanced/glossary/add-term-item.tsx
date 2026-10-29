@@ -1,5 +1,5 @@
 import type { GlossaryTargetLang } from "@/utils/glossary/target-language"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useAtomValue } from "jotai"
 import { useMemo, useState } from "react"
 import { LanguageCombobox } from "@/components/language-combobox"

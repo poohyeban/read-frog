@@ -1,10 +1,6 @@
-import type { LangCodeISO6391, LangCodeISO6393 } from "@read-frog/definitions"
 import type { DetectionSource } from "./language"
-import {
-  ISO6393_TO_6391,
-  LANG_CODE_ISO6393_OPTIONS,
-  LOCALE_TO_ISO6393,
-} from "@read-frog/definitions"
+import type { LangCodeISO6391, LangCodeISO6393 } from "@/utils/languages"
+import { ISO6393_TO_6391, LANG_CODE_ISO6393_OPTIONS, LOCALE_TO_ISO6393 } from "@/utils/languages"
 import { detectLanguageWithSource } from "./language"
 
 export const PAGE_LANGUAGE_TEXT_SAMPLE_LIMIT = 3000
@@ -202,9 +198,7 @@ export async function detectPageLanguageLightweight(
     }
   }
 
-  const { code, source } = await detectLanguageWithSource(textForDetection, {
-    enableLLM: false,
-  })
+  const { code, source } = await detectLanguageWithSource(textForDetection, {})
 
   if (metadataCode && (code === "und" || areCompatibleDetectedCodes(metadataCode, code))) {
     return {

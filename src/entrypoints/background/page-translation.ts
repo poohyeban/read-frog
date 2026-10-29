@@ -15,7 +15,6 @@ import {
   hasInlineAtomTokens,
 } from "@/utils/host/translate/inline-atom-tokens"
 import { normalizePromptContextValue } from "@/utils/host/translate/translate-text"
-import { validateProviderHostedFeature } from "@/utils/hosted-ai/routing"
 import { logger } from "@/utils/logger"
 import { onMessage } from "@/utils/message"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
@@ -46,7 +45,7 @@ async function getValidatedCachedTranslation(
     if (!isHtmlAttributeMarkerIntegrityError(error)) throw error
 
     await db.translationCache.delete(hash)
-    logger.warn("Deleted cached translation with invalid HTML attribute markers", error)
+    logger.warn("Deleted cached translation with invalid HTML attribute markers")
     return undefined
   }
 }
@@ -174,7 +173,6 @@ export function setupPageTranslationHandlers(): void {
   })
 
   onMessage("getOrGenerateWebPageSummary", async (message) => {
-    validateProviderHostedFeature(message.data.providerRef, message.data.hostedFeature)
     const { requestQueue } = await queuesPromise
     const { webTitle, webContent, providerRef } = message.data
 

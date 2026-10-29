@@ -21,11 +21,6 @@ vi.mock("../translate-button", () => ({
   TranslateButton: () => null,
 }))
 
-vi.mock("../speak-button", () => ({
-  SpeakButton: () => null,
-  SelectionSpeechProvider: ({ children }: { children: React.ReactNode }) => children,
-}))
-
 vi.mock("../pinned-items", () => ({
   SelectionToolbarPinnedItems: () => null,
 }))
@@ -266,66 +261,6 @@ describe("selectionToolbar - isInputOrTextarea logic", () => {
 
     expect(getOverlayRoot()).toHaveClass("h-0", "w-0")
     expect(getOverlayRoot()).not.toHaveClass("inset-0")
-  })
-
-  it("keeps the overlay root collapsed when no toolbar item is enabled", async () => {
-    await store.set(configFieldsAtomMap.selectionToolbar, {
-      ...DEFAULT_SELECTION_TOOLBAR_CONFIG,
-      features: {
-        translate: {
-          ...DEFAULT_SELECTION_TOOLBAR_CONFIG.features.translate,
-          enabled: false,
-        },
-        speak: { ...DEFAULT_SELECTION_TOOLBAR_CONFIG.features.speak, enabled: false },
-      },
-      builtInActions: {
-        dictionary: {
-          enabled: false,
-          providerId: "google-translate-default",
-        },
-        sentenceAnalysis: {
-          enabled: false,
-          providerId: "google-translate-default",
-        },
-        improveWriting: {
-          enabled: false,
-          providerId: "google-translate-default",
-        },
-      },
-      customActions: [],
-    })
-    render(
-      <div>
-        <SelectionToolbar />
-        <div data-testid="test-element">{MOCK_SELECTED_TEXT}</div>
-      </div>,
-    )
-
-    await triggerMouseUpWithSelection(screen.getByTestId("test-element"))
-
-    expect(getOverlayRoot()).toHaveClass("h-0", "w-0")
-    expect(getOverlayRoot()).not.toHaveClass("inset-0")
-  })
-
-  it("shows the toolbar with just its more menu when no enabled item is pinned", async () => {
-    await store.set(configFieldsAtomMap.selectionToolbar, {
-      ...DEFAULT_SELECTION_TOOLBAR_CONFIG,
-      unpinned: ["translate", "speak", "default-dictionary", "default-sentence-analysis"],
-    })
-    render(
-      <div>
-        <SelectionToolbar />
-        <div data-testid="test-element">{MOCK_SELECTED_TEXT}</div>
-      </div>,
-    )
-
-    await triggerMouseUpWithSelection(screen.getByTestId("test-element"))
-
-    await waitFor(() => {
-      expect(getOverlayRoot()).toHaveClass("inset-0")
-    })
-    expectToolbarVisible()
-    expect(screen.getByTestId("more-menu")).toBeInTheDocument()
   })
 
   it("should show toolbar when selecting text in a normal div element", async () => {

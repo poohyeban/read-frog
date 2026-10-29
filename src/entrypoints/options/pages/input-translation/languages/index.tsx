@@ -1,5 +1,5 @@
 import type { InputTranslationLang } from "@/types/config/config"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useAtom, useAtomValue } from "jotai"
 import { Activity } from "react"
 import { Switch } from "@/components/ui/base-ui/switch"

@@ -21,13 +21,15 @@ vi.mock("@/utils/message", () => ({
 // no config storage; the memory tier itself is provider-agnostic.
 const googleProviderConfig = {
   kind: "local" as const,
-  id: "google-translate-default",
+  id: "openai-default",
   name: "Google Translate",
   config: {
-    id: "google-translate-default",
+    id: "openai-default",
     enabled: true,
     name: "Google Translate",
-    provider: "google-translate" as const,
+    provider: "openai" as const,
+    model: { model: "gpt-4o-mini", isCustomModel: false },
+    apiKey: "test-key",
   },
 } as never
 
@@ -51,7 +53,6 @@ function setup() {
       text,
       langConfig,
       providerConfig: googleProviderConfig,
-      hostedFeature: "pageTranslation",
       sessionId,
       ...overrides,
     })

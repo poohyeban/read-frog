@@ -1,8 +1,7 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { LanguageItem } from "@/components/language-combobox-options"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { Combobox as ComboboxPrimitive } from "@base-ui/react"
-import { Icon } from "@iconify/react"
-import { langCodeISO6393Schema } from "@read-frog/definitions"
+import { Icon } from "@iconify/react/offline"
 import { IconChevronDown } from "@tabler/icons-react"
 import { useAtom, useAtomValue } from "jotai"
 import { useMemo } from "react"
@@ -20,6 +19,7 @@ import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { detectedCodeAtom } from "@/utils/atoms/detected-code"
 import { i18n } from "@/utils/i18n"
 import { getLanguageLabel, getLanguageName } from "@/utils/language-labels"
+import { langCodeISO6393Schema } from "@/utils/languages"
 
 function createLanguageItem(code: LangCodeISO6393): LanguageItem<LangCodeISO6393> {
   return {

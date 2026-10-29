@@ -1,5 +1,5 @@
 import type { AddPatternResult } from "@/hooks/use-pattern-list"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useState } from "react"
 import { Button } from "@/components/ui/base-ui/button"
 import { Input } from "@/components/ui/base-ui/input"
@@ -79,16 +79,7 @@ export function PatternsTable({
           <Icon icon="tabler:plus" />
         </Button>
       </div>
-      {/* Nothing to head up until there is a row, so the whole table drops out.
-
-          Header and rows are separate tables so only the rows sit in a scroll box: keeping
-          them in one table would put the header inside it too, which drags the scrollbar
-          track up alongside the header. Both rows carry ACTION_COLUMN so the action cell
-          lines up across the split.
-
-          Boxed and 12px below the input, like the glossary's term table: without an edge
-          of its own, the header's tint was the list's only boundary and read as hanging
-          off the input. */}
+      {}
       {patterns.length > 0 && (
         <div className="overflow-hidden rounded-lg border">
           <Table>

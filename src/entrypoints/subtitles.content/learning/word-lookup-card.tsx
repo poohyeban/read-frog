@@ -3,8 +3,6 @@ import { useAtomValue, useSetAtom } from "jotai"
 import { use, useState } from "react"
 import { customActionRequestAtom } from "@/components/custom-action/atoms"
 import { CustomActionPanel } from "@/components/custom-action/custom-action-panel"
-import { isSaveToNotebaseDialogOpenAtom } from "@/components/custom-action/save-to-notebase-dialog-atom"
-import { SaveToNotebaseDialogHost } from "@/components/custom-action/save-to-notebase-dialog-host"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { SelectionPopover } from "@/components/ui/selection-popover"
 import { SUBTITLES_BOX_CLASS } from "@/utils/constants/subtitles"
@@ -46,7 +44,7 @@ export function WordLookupCard() {
   const lookup = useAtomValue(wordLookupAtom)
   const request = useAtomValue(customActionRequestAtom)
   const lookUp = useSetAtom(lookUpAtom)
-  const isSaveToNotebaseDialogOpen = useAtomValue(isSaveToNotebaseDialogOpenAtom)
+
   const subtitlesAtBottom = useAtomValue(subtitlesPositionAtom).anchor === "bottom"
   // The subtitles' own shadow root, read before this card provides its own container.
   const subtitlesRoot = use(ShadowWrapperContext)
@@ -76,7 +74,7 @@ export function WordLookupCard() {
     )
   }
   const open = lookup !== null
-  const active = open || isSaveToNotebaseDialogOpen
+  const active = open
   const container = useTopLayerPortalContainer(active)
 
   useHoldPlayback()
@@ -100,13 +98,11 @@ export function WordLookupCard() {
               eventDetails.cancel()
             }
           }}
-          disablePointerDismissal={isSaveToNotebaseDialogOpen}
         >
           <SelectionPopover.Content key={placement.mountKey} container={container}>
             <CustomActionPanel />
           </SelectionPopover.Content>
         </SelectionPopover.Root>
-        {active && <SaveToNotebaseDialogHost />}
       </ThemeProvider>
     </ShadowWrapperContext>
   )

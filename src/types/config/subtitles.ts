@@ -61,7 +61,7 @@ export const videoSubtitlesSchema = z.object({
   enabled: z.boolean(),
   autoStart: subtitlesAutoStartSchema,
   toggleShortcut: shortcutSchema,
-  providerId: z.string().nonempty(),
+  providerId: z.string(),
   style: subtitlesStyleSchema,
   aiSegmentation: z.boolean(),
   // `.default()` is load-bearing: it lets configs stored before this field existed still

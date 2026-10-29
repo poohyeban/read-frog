@@ -1,5 +1,7 @@
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
+import { Sha256Hex } from "@/utils/hash"
 
 const mocks = vi.hoisted(() => ({
   onMessage: vi.fn<(...args: any[]) => any>(),
@@ -20,12 +22,7 @@ vi.mock("../background-stream", () => {
   throw new Error("Video summary cache handlers must not initialize generation")
 })
 
-const providerRef: PromptableProviderRef = {
-  kind: "system",
-  providerId: "read-frog-free-ai",
-  modelTier: "normal",
-  modelRevision: "normal-r1",
-}
+const providerRef: PromptableProviderRef = { kind: "local", config: DEFAULT_PROVIDER_CONFIG.openai }
 const request = { transcript: "Video transcript", targetLanguage: "English", providerRef }
 
 function handler(name: string) {
@@ -59,8 +56,13 @@ describe("video summary cache handlers", () => {
   })
 
   it("reads entries written under the existing video summary cache key", async () => {
-    // Frozen key from the pre-extraction handler for the fixture above.
-    const existingKey = "958c70bddad760bf24d1fe288965fa2c3ade57aca94024932082af53c3b97494"
+    // Public local-provider cache identity; official system identity was removed.
+    const existingKey = Sha256Hex(
+      Sha256Hex(request.transcript),
+      request.targetLanguage,
+      "1",
+      JSON.stringify(providerRef.config),
+    )
     mocks.get.mockImplementation(async (key) =>
       key === existingKey ? { summary: "Existing summary" } : undefined,
     )

@@ -75,12 +75,11 @@ export function supportsConstructableStyleSheets(
     } finally {
       root.adoptedStyleSheets = previousSheets
     }
-  } catch (error) {
+  } catch {
     // When the browser/runtime only partially exposes constructable
     // stylesheets, fall back to injecting a normal <style> element.
     logger.warn(
       "[style-injector] constructable stylesheet assignment failed, falling back to <style>",
-      error,
     )
     constructableStyleSheetSupportMap.set(root, false)
     return false

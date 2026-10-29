@@ -12,7 +12,6 @@ import { useMemo } from "react"
 import { Button } from "@/components/ui/base-ui/button"
 import { Field } from "@/components/ui/base-ui/field"
 import { CSSCodeEditor } from "@/components/ui/css-code-editor"
-import { env } from "@/env"
 import { useDebouncedValue } from "@/hooks/use-debounced-value"
 import { MAX_CUSTOM_CSS_LENGTH } from "@/types/config/translate"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
@@ -58,16 +57,7 @@ export function CSSEditor({ value, onChange }: CSSEditorProps) {
   return (
     <Field>
       {/* The section heading already names this editor, so the row carries only the docs link. */}
-      <div className="flex items-start justify-end">
-        <a
-          href={`${env.WXT_WEBSITE_URL}/docs/video-subtitles/style`}
-          className="text-xs text-link hover:opacity-90"
-          target="_blank"
-          rel="noreferrer"
-        >
-          {i18n.t("options.videoSubtitles.style.customCSS.editor.docsLink")}
-        </a>
-      </div>
+      <div className="flex items-start justify-end"></div>
       <CSSCodeEditor
         value={value}
         onChange={onChange}

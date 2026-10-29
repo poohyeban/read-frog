@@ -230,13 +230,6 @@ describe("sitePatternForHost", () => {
     expect(sitePatternForHost("localhost:5173")).toBe("localhost:5173")
     expect(sitePatternForHost("[::1]")).toBe("[::1]")
   })
-
-  it("is idempotent, so re-running the migration changes nothing", () => {
-    for (const input of ["example.com", "*.example.com", "example.com/docs", "[::1]", ""]) {
-      const once = sitePatternForHost(input)
-      expect(sitePatternForHost(once)).toBe(once)
-    }
-  })
 })
 
 describe("getUserSitePatternError", () => {

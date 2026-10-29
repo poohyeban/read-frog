@@ -1,5 +1,4 @@
 import type { ControlsConfig, PlatformConfig } from "@/entrypoints/subtitles.content/platforms"
-import type { FeatureUsageContext, SurfaceByFeature } from "@/types/analytics"
 import type { Config } from "@/types/config/config"
 import type { SubtitlesPlatform } from "@/types/config/subtitles"
 import type { SubtitlesSource } from "@/utils/constants/subtitles"
@@ -7,10 +6,6 @@ import type { SubtitlesFetcher } from "@/utils/subtitles/fetchers/types"
 import type { SubtitlesVideoContext } from "@/utils/subtitles/processor/translator"
 import type { SubtitlesFragment } from "@/utils/subtitles/types"
 import { toastManager } from "@/components/ui/base-ui/toast"
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
-import { createFeatureUsageContext, trackFeatureUsed } from "@/utils/analytics"
-import { classifyFailureReason } from "@/utils/analytics-failure-reason"
-import { classifyResolvedProvider, UNKNOWN_FEATURE_PROVIDER } from "@/utils/analytics-provider"
 import { getLocalConfig } from "@/utils/config/storage"
 import {
   HIDE_NATIVE_CAPTIONS_STYLE_ID,
@@ -24,7 +19,6 @@ import { resolveLanguageCodeFromLocale } from "@/utils/content/page-language"
 import { waitForElement } from "@/utils/dom/wait-for-element"
 import { i18n } from "@/utils/i18n"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
-import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { removeReactShadowHost } from "@/utils/react-shadow-host/create-shadow-host"
 import { NoSubtitlesError, ToastSubtitlesError } from "@/utils/subtitles/errors"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
@@ -63,12 +57,6 @@ import { ROOT_VIEW } from "./ui/subtitles-settings-panel/views"
 
 type SubtitlesToggleSource = "manual" | "auto" | "shortcut"
 
-const TOGGLE_SOURCE_SURFACE: Record<SubtitlesToggleSource, SurfaceByFeature["video_subtitles"]> = {
-  manual: ANALYTICS_SURFACE.VIDEO_SUBTITLES,
-  auto: ANALYTICS_SURFACE.VIDEO_SUBTITLES_AUTO,
-  shortcut: ANALYTICS_SURFACE.SHORTCUT,
-}
-
 /**
  * Sites where most videos have no captions: auto-start on one of those leaves
  * no loading pill or error behind, and the toggle falls back to off.
@@ -76,7 +64,6 @@ const TOGGLE_SOURCE_SURFACE: Record<SubtitlesToggleSource, SurfaceByFeature["vid
 const QUIET_AUTO_START_PLATFORMS: ReadonlySet<SubtitlesPlatform> = new Set(["xcom"])
 
 interface SubtitlesStartOptions {
-  analyticsContext?: FeatureUsageContext<"video_subtitles">
   /** Stay silent when the video has no subtitles; see `QUIET_AUTO_START_PLATFORMS`. */
   quiet?: boolean
 }
@@ -715,12 +702,6 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
 
   private toggleSubtitlesWithSource(enabled: boolean, source: SubtitlesToggleSource) {
     this.handleToggleSubtitles(enabled, {
-      analyticsContext: enabled
-        ? createFeatureUsageContext(
-            ANALYTICS_FEATURE.VIDEO_SUBTITLES,
-            TOGGLE_SOURCE_SURFACE[source],
-          )
-        : undefined,
       // Only an automatic start goes quiet: a reader who asked still hears why nothing came.
       quiet: source === "auto" && QUIET_AUTO_START_PLATFORMS.has(this.config.platform),
     })
@@ -869,31 +850,19 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     this.isNativeSubtitlesHidden = true
   }
 
-  private async startTranslation({ analyticsContext, quiet = false }: SubtitlesStartOptions = {}) {
-    let providerAnalytics = UNKNOWN_FEATURE_PROVIDER
-    let targetLanguage: Config["language"]["targetCode"] | undefined
+  private async startTranslation({ quiet = false }: SubtitlesStartOptions = {}) {
     const operationId = this.switchOperationId
     this.adOverlappedLoad = subtitlesStore.get(adPlayingAtom)
     // Only the caption load is what an ad can break; a failure after it is the translation's own.
     let loadingSource = false
 
     try {
-      const analyticsConfig = await getLocalConfig()
+      const config = await getLocalConfig()
       if (this.destroyed) return false
-      targetLanguage = analyticsConfig?.language.targetCode
+
       // Resolve through the capability registry, not providersConfig: Built-in
       // AI is synthesized by the registry and is never a row there, so the
-      // lookup returned undefined and every hosted subtitle run was reported as
-      // provider "unknown" — the one metric that would size hosted adoption.
-      providerAnalytics = classifyResolvedProvider(
-        analyticsConfig
-          ? resolveProviderRefForCapability(
-              "videoSubtitles",
-              analyticsConfig.providersConfig,
-              analyticsConfig.videoSubtitles.providerId,
-            )
-          : null,
-      )
+
       const currentVideoId = this.config.getVideoId?.() ?? ""
       const hasCurrentSession =
         this.sessionProcessedFragments.length > 0 && this.sessionVideoId === currentVideoId
@@ -913,14 +882,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
           this.subtitlesScheduler?.supplementSubtitles(this.sessionProcessedFragments)
           this.subtitlesScheduler?.setState("idle")
         }
-        if (analyticsContext && targetLanguage) {
-          void trackFeatureUsed({
-            ...analyticsContext,
-            ...providerAnalytics,
-            target_language: targetLanguage,
-            outcome: "success",
-          })
-        }
+
         return true
       }
 
@@ -939,19 +901,12 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       if (this.destroyed) return false
       this.sessionSubtitles = this.sourceSubtitles
 
-      if (this.shouldSkipTranslationForCurrentTrack(analyticsConfig)) {
+      if (this.shouldSkipTranslationForCurrentTrack(config)) {
         this.processPassthroughSubtitles()
       } else {
-        await this.processTranslatedSubtitles(analyticsConfig)
+        await this.processTranslatedSubtitles(config)
       }
-      if (analyticsContext && targetLanguage) {
-        void trackFeatureUsed({
-          ...analyticsContext,
-          ...providerAnalytics,
-          target_language: targetLanguage,
-          outcome: "success",
-        })
-      }
+
       return true
     } catch (error) {
       // Not a failure: the video simply has none. Skipping analytics too, since
@@ -961,16 +916,6 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
           this.handleToggleSubtitles(false)
         }
         return false
-      }
-
-      if (analyticsContext && targetLanguage) {
-        void trackFeatureUsed({
-          ...analyticsContext,
-          ...providerAnalytics,
-          target_language: targetLanguage,
-          outcome: "failure",
-          failure_reason: classifyFailureReason(error),
-        })
       }
 
       // A deliberate teardown — a superseded switch or a navigation — not a
@@ -1020,6 +965,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
 
   private shouldSkipTranslationForCurrentTrack(config: Config | null): boolean {
     const targetLanguage = config?.language.targetCode
+
     const sourceLanguage = resolveLanguageCodeFromLocale(this.fetcher.getSourceLanguage())
 
     if (!targetLanguage || !sourceLanguage) {
@@ -1077,7 +1023,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
 
     // Source track for display fallback; scheduler only receives translated cues
     // later. Published before the provider resolve below, which none of this
-    // depends on: for a hosted provider that resolve can reach the network, and
+
     // this is the only path that puts captions on screen for the translated
     // flow — so sequencing it second made the original captions wait on a round
     // trip they never needed, and a hung request (backgroundFetch carries no
@@ -1085,7 +1031,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     this.publishSourceTrack(this.sessionProcessedFragments)
 
     // Resolved once per session; the cache key needs the same identity the
-    // background will use, and a hosted ref costs one status fetch here rather
+
     // than one per fragment. Narrowed once for the whole session: segmentation
     // and the summary are generations, so a translate-only provider keeps the
     // rule-based recut and skips the summary without a doomed prompt attempt
@@ -1107,8 +1053,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
         getVideoElement: () => this.subtitlesScheduler?.getVideoElement() ?? null,
         getSourceLanguage: () => this.fetcher.getSourceLanguage(),
         // The session ref covers segmentation too: both subtitle routes gate on
-        // the same hosted feature, and per-block re-resolution would cost a
-        // hostedAi.status round trip per look-ahead window.
+
         providerRef: promptableProviderRef,
         preSegmented: this.fetcher.isPreSegmented?.(),
         onChunkSegmented: (chunk, nextFragments) => {

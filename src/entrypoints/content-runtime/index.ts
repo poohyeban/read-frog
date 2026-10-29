@@ -5,6 +5,7 @@ import { logger } from "@/utils/logger"
 import { runHostContent } from "./host/main"
 import { runSelectionContent } from "./selection/main"
 import { runSideContent } from "./side/main"
+import "@/utils/iconify/local-icons"
 
 // The shared ES module behind every page's content scripts. The manifest only
 // injects the small loader (entrypoints/loader.content.ts); it imports this
@@ -14,8 +15,8 @@ import { runSideContent } from "./side/main"
 
 const RUNNERS: Record<ContentRuntimePart, (ctx: ContentScriptContext) => Promise<void>> = {
   host: runHostContent,
-  selection: runSelectionContent,
   side: runSideContent,
+  selection: runSelectionContent,
 }
 
 function isPartRunning(part: ContentRuntimePart) {
@@ -34,8 +35,8 @@ async function runContentParts(parts: readonly ContentRuntimePart[]) {
           // Each part keeps the context name it had as its own content script,
           // so stopping old scripts and invalidation behave as before.
           await RUNNERS[part](new ContentScriptContext(part, { cssInjectionMode: "manual" }))
-        } catch (error) {
-          logger.error(`[content-runtime] "${part}" crashed on startup`, error)
+        } catch {
+          logger.error(`[content-runtime] "${part}" crashed on startup`)
         }
       }),
   )

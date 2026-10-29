@@ -108,7 +108,7 @@ describe("SelectionSpeechProvider", () => {
     expect(tts.stop).toHaveBeenCalledWith(1)
   })
 
-  it("reads the selection aloud from its key, reported as a shortcut", () => {
+  it("reads the selection aloud from its key, using the configured shortcut", () => {
     tts.isPlaying = false
     const store = createStore()
     selectText(store, "Hello there")
@@ -116,9 +116,7 @@ describe("SelectionSpeechProvider", () => {
 
     const event = pressSpeakKey()
 
-    expect(tts.play).toHaveBeenCalledWith("Hello there", DEFAULT_CONFIG.tts, {
-      surface: "shortcut",
-    })
+    expect(tts.play).toHaveBeenCalledWith("Hello there", DEFAULT_CONFIG.tts)
     expect(event.defaultPrevented).toBe(true)
   })
 
@@ -138,7 +136,6 @@ describe("SelectionSpeechProvider", () => {
       expect(tts.play).toHaveBeenCalledWith(
         "Selected with Shift and the arrow keys",
         DEFAULT_CONFIG.tts,
-        { surface: "shortcut" },
       )
       expect(event.defaultPrevented).toBe(true)
     } finally {

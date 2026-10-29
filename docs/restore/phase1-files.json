@@ -1,0 +1,1327 @@
+[
+  {
+    "path": "src/entrypoints/content-runtime/selection/input-translation/use-input-translation.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/toast",
+      "@/types/analytics",
+      "@/utils/analytics",
+      "@/utils/analytics-failure-reason",
+      "@/utils/analytics-provider",
+      "@/utils/atoms/config",
+      "@/utils/constants/input-injector",
+      "@/utils/dom/active-element",
+      "@/utils/host/translate/translate-variants",
+      "@/utils/providers/provider-ref",
+      "@/utils/providers/provider-registry"
+    ]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/input-translation/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./use-input-translation"]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/input-translation/__tests__/use-input-translation.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@testing-library/react", "vitest", "../use-input-translation"]
+  },
+  {
+    "path": "src/entrypoints/input-injector.content/replace-text.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/dom/active-element",
+      "./editors/draft-js",
+      "./editors/lexical",
+      "./editors/slate"
+    ]
+  },
+  {
+    "path": "src/entrypoints/input-injector.content/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["#imports", "@/utils/constants/input-injector", "./replace-text"]
+  },
+  {
+    "path": "src/entrypoints/input-injector.content/editors/slate.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./shared", "./shared"]
+  },
+  {
+    "path": "src/entrypoints/input-injector.content/editors/shared.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/entrypoints/input-injector.content/editors/lexical.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/entrypoints/input-injector.content/editors/draft-js.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./shared", "./shared"]
+  },
+  {
+    "path": "src/entrypoints/input-injector.content/__tests__/lexical.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["lexical", "lexical", "vitest", "../editors/lexical", "../replace-text"]
+  },
+  {
+    "path": "src/entrypoints/options/pages/input-translation/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/i18n", "../../components/page-layout", "./languages", "./trigger"]
+  },
+  {
+    "path": "src/entrypoints/options/pages/input-translation/trigger/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/input",
+      "@/components/ui/base-ui/switch",
+      "@/components/ui/base-ui/toast",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "../../../components/config-section"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/input-translation/languages/lang-select.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/config",
+      "@read-frog/definitions",
+      "@/components/ui/base-ui/select",
+      "@/utils/language-labels",
+      "@/utils/styles/utils",
+      "../../../components/select-content-props"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/input-translation/languages/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/config",
+      "@iconify/react",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/switch",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "@/utils/language-labels",
+      "../../../components/config-item",
+      "../../../components/config-section",
+      "./lang-select"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/input-translation/__tests__/trigger-section.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/config",
+      "@testing-library/react",
+      "vitest",
+      "@/utils/constants/config",
+      "../trigger"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/floating-button/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/assets/demo/floating-button.png",
+      "@/components/gradient-background",
+      "@/utils/i18n",
+      "../../components/page-layout",
+      "./click-action",
+      "./display",
+      "./enable-item"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/floating-button/enable-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/components/ui/base-ui/switch",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "../../components/config-item"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/floating-button/display/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/floating-button",
+      "jotai",
+      "@/components/ui/base-ui/select",
+      "@/hooks/use-pattern-list",
+      "@/types/config/floating-button",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "../../../components/config-section",
+      "../../../components/patterns-table"
+    ]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/side/main.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "#imports",
+      "@/types/config/config",
+      "@/types/config/theme",
+      "@tanstack/react-query",
+      "case-anything",
+      "jotai/react",
+      "jotai/utils",
+      "react",
+      "react-dom/client",
+      "#imports",
+      "@/components/providers/theme-provider",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/atoms/config",
+      "@/utils/atoms/theme",
+      "@/utils/config/storage",
+      "@/utils/constants/app",
+      "@/utils/constants/config",
+      "@/utils/content-ui-css",
+      "@/utils/i18n",
+      "@/utils/i18n/locale-boundary",
+      "@/utils/select-all",
+      "@/utils/shadow-root",
+      "@/utils/site-control",
+      "@/utils/styles",
+      "@/utils/tanstack-query",
+      "@/utils/theme",
+      "./app",
+      "./atoms"
+    ]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/side/atoms.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["jotai", "@/utils/atoms/translation-state"]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/side/app.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/components/ui/base-ui/toast", "./components/floating-button"]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/side/components/floating-button/translate-button.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/floating-button",
+      "@remixicon/react",
+      "@tabler/icons-react",
+      "jotai",
+      "@/utils/i18n",
+      "@/utils/message",
+      "@/utils/styles/utils",
+      "../../atoms",
+      "./components/hidden-button"
+    ]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/side/components/floating-button/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/floating-button",
+      "@tabler/icons-react",
+      "jotai",
+      "react",
+      "#imports",
+      "@/assets/icons/read-frog.png?url&no-inline",
+      "@/components/ui/base-ui/dropdown-menu",
+      "@/components/ui/base-ui/toast",
+      "@/hooks/use-is-fullscreen",
+      "@/types/analytics",
+      "@/utils/analytics",
+      "@/utils/atoms/config",
+      "@/utils/constants/app",
+      "@/utils/featurebase",
+      "@/utils/i18n",
+      "@/utils/i18n/locale-map",
+      "@/utils/message",
+      "@/utils/styles/utils",
+      "@/utils/url-pattern",
+      "../../atoms",
+      "../../main",
+      "./components/hidden-button",
+      "./translate-button"
+    ]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/side/components/floating-button/components/hidden-button.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/floating-button",
+      "@/utils/styles/utils",
+      "./floating-button-tooltip"
+    ]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/side/components/floating-button/components/floating-button-tooltip.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@/types/config/floating-button",
+      "@/components/ui/base-ui/tooltip",
+      "../../../main"
+    ]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/side/components/floating-button/__tests__/index.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/floating-button",
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "@/utils/atoms/config",
+      "@/utils/message",
+      ".."
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/use-glossary.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/glossary/csv",
+      "@/utils/glossary/repository",
+      "@tanstack/react-query",
+      "@/utils/glossary/repository"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/term-row.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/db/dexie/tables/glossary-term",
+      "@iconify/react",
+      "react",
+      "@/components/language-combobox",
+      "@/components/language-combobox-options",
+      "@/components/ui/base-ui/badge",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/checkbox",
+      "@/components/ui/base-ui/input-group",
+      "@/components/ui/base-ui/table",
+      "@/components/ui/base-ui/toast",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/constants/glossary",
+      "@/utils/i18n",
+      "@/utils/language-labels",
+      "../../../components/truncated-text",
+      "./save-term-error",
+      "./use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/save-term-error.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/glossary/repository", "@/utils/constants/glossary", "@/utils/i18n"]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/i18n",
+      "../../../components/page-layout",
+      "./enable-item",
+      "./glossary-library-item"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/import-export.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "react",
+      "@/components/ui/base-ui/alert-dialog",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/label",
+      "@/components/ui/base-ui/select",
+      "@/components/ui/base-ui/toast",
+      "@/utils/glossary/csv",
+      "@/utils/glossary/repository",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "./use-glossary",
+      " />\n            {i18n.t(",
+      ")}\n          </Label>\n        </Button>\n        <input\n          id={IMPORT_INPUT_ID}\n          type="
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/glossary-table.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/db/dexie/tables/glossary-term",
+      "react",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/input",
+      "@/components/ui/base-ui/table",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "./term-row",
+      "./use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/glossary-list-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/db/dexie/tables/glossary",
+      "@iconify/react",
+      "react-router",
+      "@/components/ui/base-ui/switch",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "../../../navigation/drill-in",
+      "./use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/glossary-library-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "react",
+      "react-router",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/toast",
+      "@/utils/constants/glossary",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "../../../navigation/drill-in",
+      "./glossary-list-item",
+      "./use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/enable-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/components/ui/base-ui/switch",
+      "@/utils/atoms/config",
+      "@/utils/glossary/features",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "../../../components/llm-feature-status-list"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/editor-page.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react-router",
+      "@/env",
+      "@/utils/i18n",
+      "../../../components/config-detail-section",
+      "../../../components/config-section",
+      "../../../components/page-layout",
+      "./add-term-item",
+      "./delete-all-item",
+      "./editor/delete-item",
+      "./editor/details-item",
+      "./editor/enable-item",
+      "./editor/sites-item",
+      "./glossary-table",
+      "./import-export",
+      "./use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/delete-all-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "react",
+      "@/components/ui/base-ui/alert-dialog",
+      "@/components/ui/base-ui/button",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "./use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/add-term-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/glossary/target-language",
+      "@iconify/react",
+      "jotai",
+      "react",
+      "@/components/language-combobox",
+      "@/components/language-combobox-options",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/checkbox",
+      "@/components/ui/base-ui/input",
+      "@/components/ui/base-ui/toast",
+      "@/utils/atoms/config",
+      "@/utils/glossary/target-language",
+      "@/utils/i18n",
+      "../../../components/config-item",
+      "./save-term-error",
+      "./use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/editor/sites-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/db/dexie/tables/glossary",
+      "@/hooks/use-pattern-list",
+      "@/utils/i18n",
+      "../../../../components/config-item",
+      "../../../../components/patterns-table",
+      "../use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/editor/enable-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/db/dexie/tables/glossary",
+      "@/components/ui/base-ui/switch",
+      "@/utils/i18n",
+      "../../../../components/config-item",
+      "../use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/editor/details-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/db/dexie/tables/glossary",
+      "react",
+      "@/components/ui/base-ui/input",
+      "@/hooks/use-debounced-value",
+      "@/utils/constants/glossary",
+      "@/utils/i18n",
+      "../../../../components/config-item",
+      "../use-glossary"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/advanced/glossary/editor/delete-item.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/db/dexie/tables/glossary",
+      "@tabler/icons-react",
+      "react",
+      "react-router",
+      "@/components/ui/base-ui/alert-dialog",
+      "@/components/ui/base-ui/button",
+      "@/utils/i18n",
+      "../../../../components/config-item",
+      "../use-glossary"
+    ]
+  },
+  {
+    "path": "src/utils/glossary/types.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/utils/glossary/target-language.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@read-frog/definitions"]
+  },
+  {
+    "path": "src/utils/glossary/scope.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./types", "../url-pattern"]
+  },
+  {
+    "path": "src/utils/glossary/repository.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "./csv",
+      "./target-language",
+      "./types",
+      "@/utils/db/dexie/tables/glossary",
+      "@/utils/db/dexie/tables/glossary-term",
+      "#imports",
+      "@/utils/db/dexie/db",
+      "../constants/glossary",
+      "../crypto-polyfill",
+      "./csv",
+      "./match-key",
+      "./scope",
+      "./target-language"
+    ]
+  },
+  {
+    "path": "src/utils/glossary/prompt.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./types"]
+  },
+  {
+    "path": "src/utils/glossary/matcher.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "./boundary",
+      "./types",
+      "../host/translate/text-preparation",
+      "../logger",
+      "./boundary"
+    ]
+  },
+  {
+    "path": "src/utils/glossary/match-key.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../host/translate/text-preparation"]
+  },
+  {
+    "path": "src/utils/glossary/features.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../constants/feature-providers"]
+  },
+  {
+    "path": "src/utils/glossary/csv.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "./target-language",
+      "@read-frog/definitions",
+      "../constants/glossary",
+      "./target-language"
+    ]
+  },
+  {
+    "path": "src/utils/glossary/boundary.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/utils/glossary/active-matcher.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "./types",
+      "#imports",
+      "../constants/glossary",
+      "../logger",
+      "../message",
+      "./matcher",
+      "a\n   * different set applies now"
+    ]
+  },
+  {
+    "path": "src/utils/glossary/__tests__/target-language.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@read-frog/definitions", "vitest", "../target-language"]
+  },
+  {
+    "path": "src/utils/glossary/__tests__/scope.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../types", "vitest", "../scope"]
+  },
+  {
+    "path": "src/utils/glossary/__tests__/repository.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../csv",
+      "vitest",
+      "#imports",
+      "../../constants/glossary",
+      "../csv",
+      "../repository",
+      " is asserted on the rows themselves.\n *\n * `glossary.orderBy(",
+      ", () => {\n    /**\n     * The regression this guards: replace mode used to delete the whole\n     * glossary, insert the empty record list, and report success. This is the\n     * one table holding text the user typed, and there is no undo.\n     *\n     * Through the real parser, because that is now the first line of defence:\n     * BCP 47 tags are not the ISO 639-3 codes terms are filed under, so every\n     * row is dropped before the importer sees it and `rows` arrives empty.\n     */\n    it("
+    ]
+  },
+  {
+    "path": "src/utils/glossary/__tests__/prompt.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../types", "vitest", "../prompt"]
+  },
+  {
+    "path": "src/utils/glossary/__tests__/matcher.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../types", "vitest", "../match-key", "../matcher"]
+  },
+  {
+    "path": "src/utils/glossary/__tests__/matcher-edge-cases.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../types",
+      "vitest",
+      "@/utils/host/translate/text-preparation",
+      "../match-key",
+      "../matcher",
+      ", () => {\n    const matcher = createGlossaryMatcher([entry("
+    ]
+  },
+  {
+    "path": "src/utils/glossary/__tests__/features.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "@/utils/constants/feature-providers", "../features"]
+  },
+  {
+    "path": "src/utils/glossary/__tests__/csv.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["../csv", "vitest", "../../constants/glossary", "../csv", "../target-language"]
+  },
+  {
+    "path": "src/utils/glossary/__tests__/active-matcher.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "../active-matcher",
+      "vitest",
+      "wxt/testing/fake-browser",
+      "../match-key"
+    ]
+  },
+  {
+    "path": "src/types/config/floating-button.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["zod"]
+  },
+  {
+    "path": "src/types/config/glossary.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["zod", "@/utils/constants/glossary"]
+  },
+  {
+    "path": "src/utils/constants/glossary.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/utils/constants/input-injector.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/utils/dom/active-element.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/utils/styles.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/hooks/use-is-fullscreen.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["react"]
+  },
+  {
+    "path": "src/entrypoints/background/glossary.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "@/utils/glossary/active-matcher",
+      "@/utils/glossary/active-matcher",
+      "@/utils/glossary/repository",
+      "@/utils/glossary/scope",
+      "@/utils/logger",
+      "@/utils/message"
+    ]
+  },
+  {
+    "path": "src/utils/db/dexie/tables/glossary.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["dexie"]
+  },
+  {
+    "path": "src/utils/db/dexie/tables/glossary-term.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/glossary/target-language", "dexie"]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/i18n", "../../components/page-layout", "./custom-actions-config"]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/atoms.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/navigation",
+      "jotai",
+      "@/components/form/autosave-navigation",
+      "@/utils/constants/custom-action"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/custom-actions-config.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "react",
+      "react-router",
+      "@/utils/atoms/config",
+      "@/utils/constants/custom-action",
+      "@/utils/i18n",
+      "@/utils/navigation",
+      "../../components/config-item",
+      "../../components/entity-editor-layout",
+      "./action-config-form",
+      "./atoms",
+      "./components/action-card-list",
+      "./components/intro-video-button"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/components/action-card-list.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/selection-toolbar",
+      "@/utils/constants/custom-action-templates",
+      "@iconify/react",
+      "jotai",
+      "react",
+      "react-router",
+      "@/components/form/autosave-navigation",
+      "@/components/sortable-list",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/dialog",
+      "@/utils/atoms/config",
+      "@/utils/constants/custom-action",
+      "@/utils/custom-actions",
+      "@/utils/i18n",
+      "@/utils/layout-host/sample",
+      "@/utils/name",
+      "@/utils/navigation",
+      "@/utils/providers/provider-registry",
+      "@/utils/selection-toolbar-items",
+      "../../../components/entity-list-item",
+      "../../../components/entity-list-rail",
+      "../atoms",
+      "./add-action-dialog",
+      "./recent-change-badge"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/components/add-action-dialog.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/utils/constants/custom-action-templates",
+      "@iconify/react",
+      "@/components/ui/base-ui/dialog",
+      "@/utils/constants/custom-action-templates",
+      "@/utils/i18n"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/action-config-form/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/selection-toolbar",
+      "dequal",
+      "jotai",
+      "react",
+      "@/utils/atoms/config",
+      "@/utils/constants/custom-action",
+      "@/utils/custom-actions",
+      "@/utils/i18n",
+      "../../../components/entity-editor",
+      "../atoms",
+      "./action-editor",
+      "./editor-tabs"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/action-config-form/action-editor.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/components/form/autosave-controller",
+      "@/types/config/selection-toolbar",
+      "jotai",
+      "react",
+      "@/components/form/autosave-navigation",
+      "@/components/form/quick-insertable-textarea-field-auto-save",
+      "@/components/form/use-autosave",
+      "@/components/ui/base-ui/alert-dialog",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/atoms/config",
+      "@/utils/atoms/entity-config",
+      "@/utils/constants/custom-action",
+      "@/utils/custom-actions",
+      "@/utils/i18n",
+      "@/utils/layout-host/sample",
+      "../atoms",
+      "./ai-config-helper-button",
+      "./form",
+      "./icon-field",
+      "./layout-field",
+      "./name-field",
+      "./notebase-connection-field",
+      "./output-schema-field",
+      "./provider-field"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/action-config-form/form.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tanstack/react-form",
+      "@/components/form/form-context",
+      "@/components/form/input-field-auto-save",
+      "@/components/form/select-field-auto-save",
+      "@/types/config/selection-toolbar"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/action-config-form/name-field.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/selection-toolbar",
+      "jotai",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "../atoms",
+      "./form"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/action-config-form/icon-field.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/selection-toolbar",
+      "@iconify/react",
+      "@tanstack/react-store",
+      "react",
+      "@/components/form/use-autosave",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/field",
+      "@/components/ui/base-ui/input-group",
+      "@/components/ui/base-ui/popover",
+      "@/utils/constants/custom-action",
+      "@/utils/i18n",
+      "@/utils/styles/utils",
+      "./form",
+      "./icon-field-options"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/action-config-form/icon-field-options.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": []
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/action-config-form/provider-field.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/selection-toolbar",
+      "jotai",
+      "react",
+      "@/components/form/use-autosave",
+      "@/components/llm-providers/provider-selector",
+      "@/components/llm-providers/use-hosted-ai-provider-options",
+      "@/components/ui/base-ui/field",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "@/utils/providers/provider-registry",
+      "./form"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/action-config-form/output-schema-field.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/selection-toolbar",
+      "@iconify/react",
+      "@read-frog/layout-engine/contract",
+      "@read-frog/layout-engine/editor",
+      "@tanstack/react-form",
+      "react",
+      "@/components/form/form-context",
+      "@/components/form/input-field",
+      "@/components/form/quick-insertable-textarea-field",
+      "@/components/form/select-field",
+      "@/components/form/use-autosave",
+      "@/components/sortable-list",
+      "@/components/ui/base-ui/alert-dialog",
+      "@/components/ui/base-ui/badge",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/dialog",
+      "@/components/ui/base-ui/field",
+      "@/components/ui/base-ui/select",
+      "@/components/ui/base-ui/toast",
+      "@/types/config/selection-toolbar",
+      "@/utils/constants/custom-action",
+      "@/utils/i18n",
+      "@/utils/layout-host/host",
+      "@/utils/notebase/connection",
+      "./form"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/action-config-form/__tests__/output-schema-autosave.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/selection-toolbar",
+      "@testing-library/react",
+      "jotai",
+      "react",
+      "react-router",
+      "vitest",
+      "wxt/testing/fake-browser",
+      "@/components/form/autosave-navigation",
+      "@/components/ui/base-ui/toast",
+      "@/components/ui/base-ui/tooltip",
+      "@/types/config/config",
+      "@/types/config/selection-toolbar",
+      "@/utils/atoms/config",
+      "@/utils/constants/config",
+      "..",
+      "../../atoms"
+    ]
+  },
+  {
+    "path": "src/entrypoints/options/pages/custom-actions/components/__tests__/action-card-list.test.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@testing-library/react",
+      "jotai",
+      "react-router",
+      "vitest",
+      "@/utils/atoms/config",
+      "@/utils/constants/config",
+      "@/utils/custom-actions",
+      "@/utils/i18n",
+      "../action-card-list"
+    ]
+  },
+  {
+    "path": "src/utils/selection-toolbar-order.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/constants/custom-action", "@/utils/constants/selection"]
+  },
+  {
+    "path": "src/utils/selection-toolbar-items.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/config",
+      "@/types/config/selection-toolbar",
+      "@/utils/constants/selection",
+      "@/utils/constants/selection",
+      "@/utils/custom-actions",
+      "@/utils/selection-toolbar-order"
+    ]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/selection-toolbar/more-menu.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@dnd-kit/core",
+      "@/utils/selection-toolbar-items",
+      "@dnd-kit/core",
+      "@dnd-kit/modifiers",
+      "@dnd-kit/sortable",
+      "@dnd-kit/utilities",
+      "@iconify/react",
+      "@remixicon/react",
+      "@tabler/icons-react",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/popover",
+      "@/components/ui/base-ui/separator",
+      "@/components/ui/selection-popover/selection-tooltip",
+      "@/utils/atoms/config",
+      "@/utils/constants/selection-overlay-layers",
+      "@/utils/i18n",
+      "@/utils/message",
+      "@/utils/navigation",
+      "@/utils/selection-toolbar-items",
+      "@/utils/styles/utils",
+      "../main",
+      "./close-button",
+      "./custom-action-button/provider",
+      "./speak-button",
+      "./translate-button/provider"
+    ]
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/selection-toolbar/pinned-items.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/utils/atoms/config",
+      "@/utils/selection-toolbar-items",
+      "./custom-action-button/custom-action-trigger",
+      "./speak-button",
+      "./translate-button"
+    ]
+  },
+  {
+    "path": "src/assets/demo/floating-button.png",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/assets/icons/read-frog.png",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/components/form/input-field.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/components/form/quick-insertable-textarea-field-auto-save.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/components/form/quick-insertable-textarea-field.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/components/form/select-field.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/components/gradient-background.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/options/components/truncated-text.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/atoms/translation-state.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/components/language-combobox-options.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/background/__tests__/translation-queues.test.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/background/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/background/page-translation.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/background/translation-queues.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/content-runtime/index.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/app.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/main.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/selection-toolbar/atoms.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/selection-toolbar/index.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/selection-toolbar/translate-button/provider.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/options/app-sidebar/features-nav.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/options/app-sidebar/nav-items.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/entrypoints/options/app.tsx",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/az.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/en.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/es.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/ja.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/ko.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/ru.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/tr.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/vi.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/zh-CN.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/locales/zh-TW.yml",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/types/config/config.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/types/config/selection-toolbar.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/atoms/entity-config.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/config/init.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/constants/config.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/constants/custom-action-templates.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/constants/custom-action.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/constants/feature-providers.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/content-runtime/parts.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/custom-actions.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/db/dexie/app-db.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/host/translate/api/ai.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/host/translate/execute-translate.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/host/translate/translate-text.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/host/translate/translate-variants.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/language-labels.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/message.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/navigation.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/prompts/translate.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  },
+  {
+    "path": "src/utils/providers/provider-registry.ts",
+    "source": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "method": "selective integration into Lite or recovered shared dependency"
+  }
+]

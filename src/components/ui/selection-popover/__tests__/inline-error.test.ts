@@ -4,7 +4,7 @@ import { browser } from "#imports"
 import { createPortStreamPromise } from "@/utils/content-script/port-streaming"
 import { createSelectionToolbarRuntimeError } from "../inline-error"
 
-const UPGRADE = { label: "Upgrade", url: "https://www.readfrog.app/pricing" }
+const SETTINGS = { label: "Settings", url: "chrome-extension://test/options.html" }
 
 /** A port whose background answers the start message with `error`. */
 function connectPortFailingWith(error: Extract<StreamPortResponse, { type: "error" }>["error"]) {
@@ -40,14 +40,14 @@ async function catchRejection(promise: Promise<unknown>): Promise<unknown> {
 
 describe("createSelectionToolbarRuntimeError", () => {
   it("keeps the call to action the background attached to a stream failure", async () => {
-    connectPortFailingWith({ message: "Quota used up", action: UPGRADE })
+    connectPortFailingWith({ message: "Provider failed", action: SETTINGS })
 
     const error = await catchRejection(createPortStreamPromise("stream-structured-object", {}))
 
     expect(createSelectionToolbarRuntimeError("customAction", error)).toEqual({
       title: "options.selectionToolbar.errors.customActionFailed",
-      description: "Quota used up",
-      action: UPGRADE,
+      description: "options.selectionToolbar.errors.customActionFailedFallback",
+      action: SETTINGS,
     })
   })
 
@@ -58,13 +58,13 @@ describe("createSelectionToolbarRuntimeError", () => {
 
     expect(createSelectionToolbarRuntimeError("customAction", error)).toEqual({
       title: "options.selectionToolbar.errors.customActionFailed",
-      description: "Incorrect API key provided",
+      description: "options.selectionToolbar.errors.customActionFailedFallback",
       action: undefined,
     })
   })
 
   it("never turns an `action` found on a foreign error into a button", () => {
-    const providerError = Object.assign(new Error("Rate limited"), { action: UPGRADE })
+    const providerError = Object.assign(new Error("Rate limited"), { action: SETTINGS })
 
     expect(createSelectionToolbarRuntimeError("customAction", providerError).action).toBeUndefined()
   })

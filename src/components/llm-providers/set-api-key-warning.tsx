@@ -1,6 +1,6 @@
 import type { ProviderConfig } from "@/types/config/provider"
 import { Link, useInRouterContext } from "react-router"
-import { isAPIProviderConfig, isPureAPIProvider } from "@/types/config/provider"
+import { isAPIProviderConfig } from "@/types/config/provider"
 import { i18n } from "@/utils/i18n"
 import { buildProviderConfigRoute, openOptionsPage } from "@/utils/navigation"
 
@@ -13,12 +13,7 @@ const LINK_SLOT = "\u0000"
 function needsApiKeyWarning(
   providerConfig: ProviderConfig | null,
 ): providerConfig is ProviderConfig {
-  return (
-    !!providerConfig &&
-    isAPIProviderConfig(providerConfig) &&
-    !isPureAPIProvider(providerConfig.provider) &&
-    !providerConfig.apiKey
-  )
+  return !!providerConfig && isAPIProviderConfig(providerConfig) && !providerConfig.apiKey
 }
 
 /**

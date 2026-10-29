@@ -4,7 +4,6 @@ import { AppearanceAndLanguageSection } from "./appearance-and-language"
 import { ConfigManagementSection } from "./config"
 import { ExtensionActivationSection } from "./extension-activation"
 import { TranslationLanguageSection } from "./translation-language"
-import { UserExperienceSection } from "./user-experience"
 
 export function PreferencePage() {
   return (
@@ -17,7 +16,7 @@ export function PreferencePage() {
       <TranslationLanguageSection />
       <ExtensionActivationSection />
       <ConfigManagementSection />
-      <UserExperienceSection />
+      <></>
     </PageLayout>
   )
 }

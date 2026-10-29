@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useState } from "react"
 import {
   AlertDialog,

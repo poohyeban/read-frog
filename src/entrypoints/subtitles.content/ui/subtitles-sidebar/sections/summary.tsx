@@ -46,7 +46,7 @@ export function SummarySection() {
   // Owned here rather than by the menu entry: the transcript tab needs no
   // model, so an unusable provider must not keep the panel shut.
   // Neither the key nor the freshness may be pinned to the id alone: repairing
-  // the provider, or a quota that frees up, has to be able to reach this.
+
   const provider = useQuery({
     queryKey: ["subtitles", "summary-provider", providerRef],
     queryFn: checkVideoSummaryAvailability,
@@ -94,36 +94,30 @@ export function SummarySection() {
   }
 
   if (provider.data && provider.data.status !== "ok") {
-    return (
-      match(provider.data)
-        .with({ status: "needsModel" }, () => (
-          <StatusCard
-            icon={<IconFileTextAi />}
-            title={i18n.t("subtitles.sidebar.summary.needsModel")}
+    return match(provider.data)
+      .with({ status: "needsModel" }, () => (
+        <StatusCard
+          icon={<IconFileTextAi />}
+          title={i18n.t("subtitles.sidebar.summary.needsModel")}
+        >
+          <Button
+            type="button"
+            variant="accent"
+            size="sm"
+            onClick={() =>
+              void sendMessage("openPage", {
+                url: browser.runtime.getURL(
+                  "/options.html#/api-providers?section=feature-providers",
+                ),
+                active: true,
+              })
+            }
           >
-            <Button
-              type="button"
-              variant="accent"
-              size="sm"
-              onClick={() =>
-                void sendMessage("openPage", {
-                  url: browser.runtime.getURL(
-                    "/options.html#/api-providers?section=feature-providers",
-                  ),
-                  active: true,
-                })
-              }
-            >
-              {i18n.t("subtitles.sidebar.summary.openSettings")}
-            </Button>
-          </StatusCard>
-        ))
-        // Already actionable; a settings link would point away from it.
-        .with({ status: "hostedUnavailable" }, ({ message }) => (
-          <StatusCard icon={<IconFileTextAi />} title={message} />
-        ))
-        .exhaustive()
-    )
+            {i18n.t("subtitles.sidebar.summary.openSettings")}
+          </Button>
+        </StatusCard>
+      ))
+      .exhaustive()
   }
 
   return match(query)

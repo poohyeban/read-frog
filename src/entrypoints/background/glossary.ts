@@ -1,5 +1,5 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { setGlossarySnapshotLoader } from "@/utils/glossary/active-matcher"
 import {
   getGlossaryRevision,
@@ -51,8 +51,8 @@ export function setupGlossaryMessageHandlers() {
   onMessage("getGlossarySnapshot", async ({ data }): Promise<GlossarySnapshot> => {
     try {
       return await readSnapshot(data.url, data.targetLang)
-    } catch (error) {
-      logger.error("Failed to build glossary snapshot", error)
+    } catch {
+      logger.error("Failed to build glossary snapshot")
       return EMPTY_SNAPSHOT
     }
   })

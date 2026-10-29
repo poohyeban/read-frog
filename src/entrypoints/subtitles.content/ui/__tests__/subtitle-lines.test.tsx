@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import type { LangCodeISO6393 } from "@read-frog/definitions"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { act, render, screen } from "@testing-library/react"
 import { createStore, Provider } from "jotai"
 import { describe, expect, it, vi } from "vitest"

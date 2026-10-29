@@ -1,5 +1,5 @@
 import type { FloatingButtonSide } from "@/types/config/floating-button"
-import { IconLock, IconLockOpen, IconMessageCircle, IconSettings, IconX } from "@tabler/icons-react"
+import { IconLock, IconLockOpen, IconSettings, IconX } from "@tabler/icons-react"
 import { useAtom, useAtomValue } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { browser } from "#imports"
@@ -10,15 +10,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/base-ui/dropdown-menu"
-import { anchoredToastManager } from "@/components/ui/base-ui/toast"
 import { useIsFullscreen } from "@/hooks/use-is-fullscreen"
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
-import { createFeatureUsageContext } from "@/utils/analytics"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { APP_NAME } from "@/utils/constants/app"
-import { buildFeaturebaseFeedbackMetadata, buildFeaturebasePortalUrl } from "@/utils/featurebase"
 import { i18n } from "@/utils/i18n"
-import { resolveUiLocale } from "@/utils/i18n/locale-map"
 import { sendMessage } from "@/utils/message"
 import { cn } from "@/utils/styles/utils"
 import { urlMatchesPattern } from "@/utils/url-pattern"
@@ -32,7 +27,6 @@ const LONG_PRESS_DELAY_MS = 350
 const DRAG_START_DISTANCE_PX = 6
 const MIN_FLOATING_CONTAINER_TOP_PX = 30
 const FLOATING_CONTAINER_BOTTOM_CLEARANCE_PX = 200
-const FIREFOX_SIDEBAR_USER_ACTION_TOAST_ID = "firefox-sidebar-user-action"
 
 interface DragPoint {
   x: number
@@ -69,22 +63,6 @@ const floatingButtonControlOffsetClassNames = {
     expanded: "-right-6",
   },
 } satisfies Record<FloatingButtonSide, { collapsed: string; expanded: string }>
-
-function FirefoxSidebarHelpToast() {
-  return (
-    <span>
-      {i18n.t("sidePanel.firefoxUserActionHint")}{" "}
-      <a
-        href={i18n.t("sidePanel.firefoxUserActionHelpUrl")}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary underline underline-offset-2"
-      >
-        {i18n.t("sidePanel.firefoxUserActionHelpText")}
-      </a>
-    </span>
-  )
-}
 
 function getFloatingButtonSide(side: string | undefined): FloatingButtonSide {
   return side === "left" ? "left" : "right"
@@ -125,7 +103,7 @@ function getNormalizedFloatingContainerTop(mainButtonTop: number, mainOffsetY: n
 
 export default function FloatingButton() {
   const [floatingButton, setFloatingButton] = useAtom(configFieldsAtomMap.floatingButton)
-  const uiLanguage = useAtomValue(configFieldsAtomMap.uiLanguage)
+
   const translationState = useAtomValue(enablePageTranslationAtom)
   const [isDraggingButton, setIsDraggingButton] = useAtom(isDraggingButtonAtom)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -140,7 +118,6 @@ export default function FloatingButton() {
   const floatingButtonSide = getFloatingButtonSide(floatingButton.side)
   const isFloatingButtonExpanded = isHitAreaExpanded || isDropdownOpen
   const isMainButtonAttached = isFloatingButtonLocked || isFloatingButtonExpanded
-  const locale = resolveUiLocale(uiLanguage)
 
   useEffect(() => {
     if (!isDraggingButton) return undefined
@@ -185,50 +162,9 @@ export default function FloatingButton() {
   }, [isFullscreen, setIsDraggingButton])
 
   const handleFloatingButtonClick = () => {
-    if (floatingButton.clickAction === "translate") {
-      const nextEnabled = !translationState.enabled
-      void sendMessage("tryToSetEnablePageTranslationOnContentScript", {
-        enabled: nextEnabled,
-        analyticsContext: nextEnabled
-          ? createFeatureUsageContext(
-              ANALYTICS_FEATURE.PAGE_TRANSLATION,
-              ANALYTICS_SURFACE.FLOATING_BUTTON,
-            )
-          : undefined,
-      })
-      return
-    }
-
-    void Promise.resolve(sendMessage("toggleSidePanel", undefined)).then((result) => {
-      if (result && !result.ok && result.reason === "requires-extension-user-action") {
-        if (!mainButtonRef.current) return
-
-        anchoredToastManager.add({
-          id: FIREFOX_SIDEBAR_USER_ACTION_TOAST_ID,
-          positionerProps: {
-            anchor: mainButtonRef.current,
-            side: floatingButtonSide === "right" ? "left" : "right",
-            sideOffset: 8,
-          },
-          type: "info",
-          title: <FirefoxSidebarHelpToast />,
-        })
-      }
+    void sendMessage("tryToSetEnablePageTranslationOnContentScript", {
+      enabled: !translationState.enabled,
     })
-  }
-
-  const handleFeedbackClick = () => {
-    const url = buildFeaturebasePortalUrl({
-      destination: "feedback",
-      locale,
-      metadata: buildFeaturebaseFeedbackMetadata({
-        browserName: import.meta.env.BROWSER,
-        extensionVersion: browser.runtime.getManifest().version,
-        pageUrl: window.location.href,
-      }),
-    })
-
-    void sendMessage("openPage", { url, active: true })
   }
 
   const startActiveDrag = () => {
@@ -463,15 +399,6 @@ export default function FloatingButton() {
           onClick={() => {
             void sendMessage("openOptionsPage", undefined)
           }}
-        />
-      )}
-      {!isDraggingButton && (
-        <HiddenButton
-          side={floatingButtonSide}
-          expanded={isFloatingButtonExpanded}
-          icon={<IconMessageCircle className="h-5 w-5" />}
-          label={i18n.t("options.floatingButton.tooltips.feedback")}
-          onClick={handleFeedbackClick}
         />
       )}
     </div>

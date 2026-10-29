@@ -1,12 +1,6 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
-import type { FeatureUsageContext } from "@/types/analytics"
 import type { Config } from "@/types/config/config"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import debounce from "debounce"
-import { toastManager } from "@/components/ui/base-ui/toast"
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
-import { createFeatureUsageContext, trackFeatureUsed } from "@/utils/analytics"
-import { classifyFailureReason } from "@/utils/analytics-failure-reason"
-import { classifyResolvedProvider } from "@/utils/analytics-provider"
 import { getLocalConfig } from "@/utils/config/storage"
 import {
   CONTENT_WRAPPER_CLASS,
@@ -57,7 +51,6 @@ import { translateTextForPageTitle } from "@/utils/host/translate/translate-vari
 import {
   beginPageTranslationSession,
   endPageTranslationSession,
-  setPageTranslationSessionProviderRef,
 } from "@/utils/host/translate/translation-session"
 import { cleanupNodeSiteRuleCSSIfUnused } from "@/utils/host/translate/ui/node-site-rule-css"
 import { cancelSpinnerAnimation } from "@/utils/host/translate/ui/spinner"
@@ -67,7 +60,6 @@ import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
 import {
   canResolvedProviderRefGenerateText,
-  checkProviderAvailability,
   resolvePageTranslationProvider,
   resolvePageTranslationProviderOrNull,
 } from "@/utils/providers/provider-ref"
@@ -218,7 +210,7 @@ interface IPageTranslationManager {
    * Starts the automatic page translation functionality
    * Registers observers, touch triggers and set storage
    */
-  start: (analyticsContext?: FeatureUsageContext<"page_translation">) => Promise<void>
+  start: () => Promise<void>
 
   /**
    * Stops the automatic page translation functionality
@@ -333,7 +325,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     return this.isPageTranslating
   }
 
-  async start(analyticsContext?: FeatureUsageContext<"page_translation">): Promise<void> {
+  async start(): Promise<void> {
     if (this.isPageTranslating) {
       console.warn("PageTranslationManager is already active")
       return
@@ -350,7 +342,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     const startToken = Symbol("page-translation-start")
     this.pendingStart = startToken
     try {
-      await this.runStart(startToken, analyticsContext)
+      await this.runStart(startToken)
     } finally {
       if (this.pendingStart === startToken) {
         this.pendingStart = null
@@ -358,12 +350,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
   }
 
-  private async runStart(
-    startToken: symbol,
-    analyticsContext?: FeatureUsageContext<"page_translation">,
-  ): Promise<void> {
-    const trackedContext = window === window.top ? analyticsContext : undefined
-
+  private async runStart(startToken: symbol): Promise<void> {
     const config = await getLocalConfig()
     if (this.pendingStart !== startToken) {
       return
@@ -375,20 +362,6 @@ export class PageTranslationManager implements IPageTranslationManager {
     this.titleTranslationEnabled = config.pageTranslation.page.translateTitle
 
     const requestedProviderConfig = resolvePageTranslationProviderOrNull(config)
-    const providerAnalytics = classifyResolvedProvider(requestedProviderConfig)
-    const startedUrl = window.location.href
-    const configuredSourceCode = config.language.sourceCode
-    const pageAnalytics = () => {
-      const sourceCode =
-        configuredSourceCode === "auto"
-          ? this.getDetectedPageLanguage(startedUrl)
-          : configuredSourceCode
-      return {
-        translation_mode: config.pageTranslation.mode,
-        target_language: config.language.targetCode,
-        ...(sourceCode && sourceCode !== "und" ? { source_language: sourceCode } : {}),
-      }
-    }
 
     if (
       !validateTranslationConfigAndToast({
@@ -397,15 +370,6 @@ export class PageTranslationManager implements IPageTranslationManager {
         language: config.language,
       })
     ) {
-      if (trackedContext) {
-        void trackFeatureUsed({
-          ...trackedContext,
-          ...providerAnalytics,
-          ...pageAnalytics(),
-          outcome: "failure",
-          failure_reason: "precheck",
-        })
-      }
       return
     }
 
@@ -413,146 +377,108 @@ export class PageTranslationManager implements IPageTranslationManager {
     // explicit guard for type-safety and for malformed storage snapshots.
     if (!requestedProviderConfig) return
 
-    const availability = await checkProviderAvailability(requestedProviderConfig, "pageTranslation")
     if (this.pendingStart !== startToken) {
       return
     }
-    if (!availability.available) {
-      toastManager.add({ type: "error", title: availability.message })
-      if (trackedContext) {
-        void trackFeatureUsed({
-          ...trackedContext,
-          ...providerAnalytics,
-          ...pageAnalytics(),
-          outcome: "failure",
-          failure_reason: "precheck",
-        })
+
+    const providerConfig = resolvePageTranslationProvider(config)
+
+    // Activate before the notify round trip: once the flag is set, stop()
+    // is authoritative for teardown, so a cancel arriving during any await
+    // below tears the session down instead of racing a pending start. The
+    // session-version checks after each await abort the rest of the setup
+    // once such a teardown (or a newer session) has happened.
+    this.isPageTranslating = true
+    this.translationSessionVersion += 1
+    const sessionVersion = this.translationSessionVersion
+
+    beginPageTranslationSession()
+
+    try {
+      await sendMessage("setAndNotifyPageTranslationStateChangedByManager", {
+        enabled: true,
+        url: window.location.href,
+      })
+    } catch (error) {
+      // Roll back the not-yet-visible activation locally (the notify
+      // channel just failed, so there is no background state to correct);
+      // without this the manager would stay "active" with no observers.
+      if (this.translationSessionVersion === sessionVersion) {
+        this.stopInternal({ notify: false })
       }
+      throw error
+    }
+    if (this.translationSessionVersion !== sessionVersion) {
       return
     }
 
+    const siteRule = getEffectiveSiteRule(config, window.location.href)
+    if (siteRule.injectedCss) {
+      void ensureSiteRuleCSS(document, siteRule.injectedCss)
+    }
+
+    // Same predicate `getWebPagePromptContext` uses to decide whether it
+
+    // only moves the Defuddle full-document parse out of setup and into the
+    // first translation call, where it blocks the first visible paragraph
+    // and janks the main thread on a long page.
+    await this.primeDocumentTitleContext(
+      config.pageTranslation.enableAIContentAware &&
+        canResolvedProviderRefGenerateText(providerConfig),
+    )
+    if (this.translationSessionVersion !== sessionVersion) {
+      return
+    }
+    // The live value, not the config read above: the switch may have been
+    // flipped while this start was awaiting.
+    if (this.titleTranslationEnabled) {
+      this.startDocumentTitleTracking()
+    }
+
+    // Listen to existing elements when they enter the viewport
+    const walkId = getRandomUUID()
+    this.walkId = walkId
+    this.intersectionObserver = new IntersectionObserver((entries, observer) => {
+      const targets: HTMLElement[] = []
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue
+        observer.unobserve(entry.target)
+        if (isHTMLElement(entry.target) && !entry.target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
+          targets.push(entry.target)
+        }
+      }
+      this.translateIntersectedUnits(targets, walkId)
+    }, this.intersectionOptions)
+
+    // Observe mutations BEFORE the chunked walk: page JS runs between walk
+    // slices, and records emitted meanwhile must not be lost. The walk only
+    // writes data-read-frog-* attributes, which this observer's
+    // attributeFilter never reports, so this creates no feedback loop.
+    //
+    // Root the observer at documentElement, NOT body: routers like Turbo
+    // Drive replace the body NODE itself on every visit, and an observer
+    // bound to the old body goes permanently blind — the soft URL-change
+    // path (refreshSiteRuleCSS) intentionally never re-attaches observers.
+    // On documentElement the swap itself surfaces as a childList record
+    // with addedNodes=[newBody], which walks the new body like any other
+    // inserted subtree.
+    this.observeMutations(document.documentElement)
+
+    // Label existing elements in time-sliced chunks (walkability caching is
+    // handled by the walk's onBlockedElement callback). Start at
+    // documentElement so pre-existing reader roots mounted beside body are
+    // included as well as ordinary body content.
+    const initialWalk = this.observeTopLevelParagraphs(document.documentElement, config, {
+      chunked: true,
+    })
+    this.initialWalkDone = initialWalk
     try {
-      const providerConfig = resolvePageTranslationProvider(config)
-
-      // Activate before the notify round trip: once the flag is set, stop()
-      // is authoritative for teardown, so a cancel arriving during any await
-      // below tears the session down instead of racing a pending start. The
-      // session-version checks after each await abort the rest of the setup
-      // once such a teardown (or a newer session) has happened.
-      this.isPageTranslating = true
-      this.translationSessionVersion += 1
-      const sessionVersion = this.translationSessionVersion
-
-      beginPageTranslationSession()
-      setPageTranslationSessionProviderRef(availability.providerRef)
-
-      try {
-        await sendMessage("setAndNotifyPageTranslationStateChangedByManager", {
-          enabled: true,
-          url: window.location.href,
-        })
-      } catch (error) {
-        // Roll back the not-yet-visible activation locally (the notify
-        // channel just failed, so there is no background state to correct);
-        // without this the manager would stay "active" with no observers.
-        if (this.translationSessionVersion === sessionVersion) {
-          this.stopInternal({ notify: false })
-        }
-        throw error
+      await initialWalk
+    } finally {
+      // A newer start() may already have installed a newer walk's promise.
+      if (this.initialWalkDone === initialWalk) {
+        this.initialWalkDone = null
       }
-      if (this.translationSessionVersion !== sessionVersion) {
-        return
-      }
-
-      const siteRule = getEffectiveSiteRule(config, window.location.href)
-      if (siteRule.injectedCss) {
-        void ensureSiteRuleCSS(document, siteRule.injectedCss)
-      }
-
-      // Same predicate `getWebPagePromptContext` uses to decide whether it
-      // needs the context at all. Excluding system providers was right while
-      // hosted runs sent no context; now that they do, skipping the warm-up
-      // only moves the Defuddle full-document parse out of setup and into the
-      // first translation call, where it blocks the first visible paragraph
-      // and janks the main thread on a long page.
-      await this.primeDocumentTitleContext(
-        config.pageTranslation.enableAIContentAware &&
-          canResolvedProviderRefGenerateText(providerConfig),
-      )
-      if (this.translationSessionVersion !== sessionVersion) {
-        return
-      }
-      // The live value, not the config read above: the switch may have been
-      // flipped while this start was awaiting.
-      if (this.titleTranslationEnabled) {
-        this.startDocumentTitleTracking()
-      }
-
-      // Listen to existing elements when they enter the viewport
-      const walkId = getRandomUUID()
-      this.walkId = walkId
-      this.intersectionObserver = new IntersectionObserver((entries, observer) => {
-        const targets: HTMLElement[] = []
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          observer.unobserve(entry.target)
-          if (isHTMLElement(entry.target) && !entry.target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
-            targets.push(entry.target)
-          }
-        }
-        this.translateIntersectedUnits(targets, walkId)
-      }, this.intersectionOptions)
-
-      // Observe mutations BEFORE the chunked walk: page JS runs between walk
-      // slices, and records emitted meanwhile must not be lost. The walk only
-      // writes data-read-frog-* attributes, which this observer's
-      // attributeFilter never reports, so this creates no feedback loop.
-      //
-      // Root the observer at documentElement, NOT body: routers like Turbo
-      // Drive replace the body NODE itself on every visit, and an observer
-      // bound to the old body goes permanently blind — the soft URL-change
-      // path (refreshSiteRuleCSS) intentionally never re-attaches observers.
-      // On documentElement the swap itself surfaces as a childList record
-      // with addedNodes=[newBody], which walks the new body like any other
-      // inserted subtree.
-      this.observeMutations(document.documentElement)
-
-      // Label existing elements in time-sliced chunks (walkability caching is
-      // handled by the walk's onBlockedElement callback). Start at
-      // documentElement so pre-existing reader roots mounted beside body are
-      // included as well as ordinary body content.
-      const initialWalk = this.observeTopLevelParagraphs(document.documentElement, config, {
-        chunked: true,
-      })
-      this.initialWalkDone = initialWalk
-      try {
-        await initialWalk
-      } finally {
-        // A newer start() may already have installed a newer walk's promise.
-        if (this.initialWalkDone === initialWalk) {
-          this.initialWalkDone = null
-        }
-      }
-
-      if (trackedContext) {
-        void trackFeatureUsed({
-          ...trackedContext,
-          ...providerAnalytics,
-          ...pageAnalytics(),
-          outcome: "success",
-        })
-      }
-    } catch (error) {
-      if (trackedContext) {
-        void trackFeatureUsed({
-          ...trackedContext,
-          ...providerAnalytics,
-          ...pageAnalytics(),
-          outcome: "failure",
-          failure_reason: classifyFailureReason(error),
-        })
-      }
-      throw error
     }
   }
 
@@ -620,13 +546,13 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
 
     // Drain this session's queued/in-flight requests in the background —
-    // without this, a long page keeps burning network/CPU/quota for minutes
+
     // after the user cancels (#1881). Fire-and-forget: the synchronous DOM
     // cleanup below finishes long before any rejection lands.
     const endedSessionId = endPageTranslationSession()
     if (endedSessionId) {
-      void sendMessage("cancelPageTranslationRequests", { sessionId: endedSessionId }).catch(
-        (error) => logger.warn("Failed to cancel pending translation requests", error),
+      void sendMessage("cancelPageTranslationRequests", { sessionId: endedSessionId }).catch(() =>
+        logger.warn("Failed to cancel pending translation requests"),
       )
     }
 
@@ -697,12 +623,7 @@ export class PageTranslationManager implements IPageTranslationManager {
         if (this.isPageTranslating) {
           this.stop({ userInitiated: true })
         } else {
-          void this.start(
-            createFeatureUsageContext(
-              ANALYTICS_FEATURE.PAGE_TRANSLATION,
-              ANALYTICS_SURFACE.TOUCH_GESTURE,
-            ),
-          )
+          void this.start()
         }
       }
       reset()
@@ -733,8 +654,8 @@ export class PageTranslationManager implements IPageTranslationManager {
 
     try {
       await getOrCreateWebPageContext()
-    } catch (error) {
-      logger.warn("Failed to prime webpage context before translating document title:", error)
+    } catch {
+      logger.warn("Failed to prime webpage context before translating document title:")
     }
   }
 
@@ -842,7 +763,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       // A cancelled session's title request rejecting is expected, not noise.
       if (isTranslationCancelledError(error)) return
       if (requestVersion === this.titleRequestVersion) {
-        logger.warn("Failed to translate document title:", error)
+        logger.warn("Failed to translate document title:")
       }
     }
   }
@@ -1042,15 +963,6 @@ export class PageTranslationManager implements IPageTranslationManager {
     return this.boxlessUnitObserver
   }
 
-  /**
-   * The pending box-less units an intersecting box speaks for: those it renders
-   * part of (its ancestors) and those laid out inside it (its descendants; a
-   * layout box is only watched when what it lays out fits a split-sized unit).
-   * Both are read from the live DOM, through shadow roots, rather than from a
-   * box→unit map recorded at observe time, so the answer stays right after the
-   * site moves nodes or the walk re-registers one as a unit of its own.
-   * delete() lets each unit go once.
-   */
   private takePendingUnitsAt(box: Element): HTMLElement[] {
     const units: HTMLElement[] = []
     const take = (element: Element) => {

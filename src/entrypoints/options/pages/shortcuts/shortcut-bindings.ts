@@ -25,6 +25,21 @@ export function getShortcutBindings(config: Config): ShortcutBinding[] {
   const { node } = config.pageTranslation
   return [
     {
+      id: "selection-speak-shortcut",
+      title: i18n.t("options.shortcuts.selectionSpeak.title"),
+      shortcut: getSpeakShortcut(features.speak),
+    },
+    {
+      id: "translation-hub-shortcut",
+      title: i18n.t("options.shortcuts.translationHub.title"),
+      shortcut: config.translationHub.shortcut,
+    },
+    {
+      id: "subtitles-toggle-shortcut",
+      title: i18n.t("options.shortcuts.subtitlesToggle.title"),
+      shortcut: config.videoSubtitles.toggleShortcut,
+    },
+    {
       id: "page-translation-shortcut",
       title: i18n.t("options.shortcuts.pageTranslation.title"),
       shortcut: config.pageTranslation.page.shortcut,
@@ -39,16 +54,7 @@ export function getShortcutBindings(config: Config): ShortcutBinding[] {
       title: i18n.t("options.shortcuts.selectionTranslation.title"),
       shortcut: features.translate.shortcut,
     },
-    {
-      id: "selection-speak-shortcut",
-      title: i18n.t("options.shortcuts.selectionSpeak.title"),
-      shortcut: getSpeakShortcut(features.speak),
-    },
-    {
-      id: "subtitles-toggle-shortcut",
-      title: i18n.t("options.shortcuts.subtitlesToggle.title"),
-      shortcut: config.videoSubtitles.toggleShortcut,
-    },
+
     ...(node.hotkey === "custom"
       ? [
           {
@@ -58,11 +64,7 @@ export function getShortcutBindings(config: Config): ShortcutBinding[] {
           },
         ]
       : []),
-    {
-      id: "translation-hub-shortcut",
-      title: i18n.t("options.shortcuts.translationHub.title"),
-      shortcut: config.translationHub.shortcut,
-    },
+
     ...getSelectionToolbarActions(config.selectionToolbar).map((action) => ({
       id: getActionShortcutId(action.id),
       title: action.name,

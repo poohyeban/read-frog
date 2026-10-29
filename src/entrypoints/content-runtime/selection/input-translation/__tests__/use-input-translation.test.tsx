@@ -4,7 +4,7 @@ import { act, cleanup, fireEvent, renderHook } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { useInputTranslation } from "../use-input-translation"
 
-const { translate, trackFeatureUsedMock, config, inputAtom, providerAtom } = vi.hoisted(() => ({
+const { translate, config, inputAtom, providerAtom } = vi.hoisted(() => ({
   translate:
     vi.fn<
       (
@@ -14,7 +14,6 @@ const { translate, trackFeatureUsedMock, config, inputAtom, providerAtom } = vi.
         onTarget: (target: string) => void,
       ) => Promise<string>
     >(),
-  trackFeatureUsedMock: vi.fn<(...args: unknown[]) => void>(),
   config: {
     enabled: true,
     fromLang: "cmn",
@@ -33,14 +32,7 @@ vi.mock("@/utils/atoms/config", () => ({
 }))
 vi.mock("@/utils/host/translate/translate-variants", () => ({ translateTextForInput: translate }))
 vi.mock("@/components/ui/base-ui/toast", () => ({ toastManager: { add: vi.fn<() => void>() } }))
-vi.mock("@/utils/analytics", () => ({
-  createFeatureUsageContext: () => ({}),
-  trackFeatureUsed: trackFeatureUsedMock,
-}))
-vi.mock("@/utils/analytics-provider", () => ({
-  UNKNOWN_FEATURE_PROVIDER: { provider: "unknown", backend_kind: "unknown" },
-  classifyResolvedProvider: () => ({ provider: "openai", backend_kind: "llm" }),
-}))
+
 vi.mock("@/utils/providers/provider-registry", () => ({
   resolveProviderRefForCapability: () => ({}),
 }))
@@ -83,7 +75,6 @@ function reply(text: string) {
 describe("input translation across editors", () => {
   beforeEach(() => {
     translate.mockReset().mockResolvedValue("Hello")
-    trackFeatureUsedMock.mockReset()
     config.enableCycle = false
     sessionStorage.clear()
     Object.defineProperty(document, "execCommand", {
@@ -110,15 +101,11 @@ describe("input translation across editors", () => {
       space(element)
       space(element)
     })
-    expect(translate).toHaveBeenCalledWith("你好", "cmn", "eng", expect.any(Function))
+    expect(translate).toHaveBeenCalledWith("你好", "cmn", "eng")
   })
 
-  it("reports the resolved target after cycling the input direction", async () => {
+  it("swaps languages when cycling the input direction", async () => {
     config.enableCycle = true
-    translate.mockImplementation(async (_text, _from, to, onTarget) => {
-      onTarget(to)
-      return "Hello"
-    })
     const element = textarea()
     renderHook(useInputTranslation)
     await act(async () => {
@@ -127,10 +114,7 @@ describe("input translation across editors", () => {
       space(element)
     })
 
-    expect(translate).toHaveBeenCalledWith("你好", "eng", "cmn", expect.any(Function))
-    expect(trackFeatureUsedMock).toHaveBeenCalledWith(
-      expect.objectContaining({ target_language: "cmn", char_count: 2, outcome: "success" }),
-    )
+    expect(translate).toHaveBeenCalledWith("你好", "eng", "cmn")
   })
 
   it.each([1, 2])("translates a focused textarea inside %i shadow roots", async (depth) => {
@@ -141,7 +125,7 @@ describe("input translation across editors", () => {
       space(element)
       space(element)
     })
-    expect(translate).toHaveBeenCalledWith("你好", "cmn", "eng", expect.any(Function))
+    expect(translate).toHaveBeenCalledWith("你好", "cmn", "eng")
   })
 
   it("preserves rich-text paragraph breaks when requesting translation", async () => {
@@ -152,7 +136,7 @@ describe("input translation across editors", () => {
       space(element)
       space(element)
     })
-    expect(translate).toHaveBeenCalledWith("你好\n\n谢谢分享", "cmn", "eng", expect.any(Function))
+    expect(translate).toHaveBeenCalledWith("你好\n\n谢谢分享", "cmn", "eng")
   })
 
   it("targets the original reply when focus changes during translation", async () => {

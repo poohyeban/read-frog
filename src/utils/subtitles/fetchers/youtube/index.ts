@@ -37,6 +37,7 @@ import {
   parseStylizedKaraokeSubtitles,
 } from "./parser"
 import { extractPotToken } from "./pot-token"
+import { isYoutubeTimedtextUrl } from "./timedtext-url"
 import { youtubeSubtitlesResponseSchema } from "./types"
 import { buildSubtitleUrl } from "./url-builder"
 
@@ -420,11 +421,13 @@ export class YoutubeSubtitlesFetcher implements SubtitlesFetcher {
   }
 
   private async fetchWithRetry(url: string): Promise<YoutubeTimedText[]> {
+    if (!isYoutubeTimedtextUrl(url))
+      throw new OverlaySubtitlesError(i18n.t("subtitles.errors.invalidResponse"))
     let lastError: Error | null = null
 
     for (let i = 0; i < MAX_FETCH_RETRIES; i++) {
       try {
-        const response = await fetch(url)
+        const response = await fetch(url, { redirect: "error" })
 
         if (!response.ok) {
           const status = response.status

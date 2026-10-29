@@ -39,7 +39,9 @@ coverage/
 
 tsconfig.local.json
 
-docs/
+docs/*
+!docs/lite/
+!docs/restore/
 
 /repos
 
@@ -47,3 +49,6 @@ scripts/output/
 
 reference/
 .gstack/
+
+playwright-report/
+test-results/

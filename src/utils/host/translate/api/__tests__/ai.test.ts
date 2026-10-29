@@ -73,7 +73,7 @@ describe("aiTranslate", () => {
     )
   })
 
-  it("preserves response body as the display message when the AI SDK message is generic", async () => {
+  it("does not expose a remote error body as the display message", async () => {
     const responseBody = '{"code":404,"message":"模型 Kimi-K2-Instruct-09051 无效","data":{}}'
     const invalidModelError = Object.assign(new Error("Something went wrong"), {
       statusCode: 404,
@@ -87,7 +87,8 @@ describe("aiTranslate", () => {
     )
 
     expect(error).toBe(invalidModelError)
-    expect(error.message).toBe(responseBody)
+    expect(error.message).toBe("Provider request failed (HTTP 404). Check the configured service.")
+    expect(error.message).not.toContain(responseBody)
     expect(getRequestErrorMeta(error)).toEqual(
       expect.objectContaining({
         statusCode: 404,

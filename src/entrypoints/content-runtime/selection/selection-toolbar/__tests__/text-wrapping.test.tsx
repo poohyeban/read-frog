@@ -10,10 +10,6 @@ vi.mock("@/components/ui/selection-popover/copy-button", () => ({
   CopyButton: () => <button type="button">Copy</button>,
 }))
 
-vi.mock("@/components/ui/selection-popover/speak-button", () => ({
-  SpeakButton: () => <button type="button">Speak</button>,
-}))
-
 describe("selection toolbar text wrapping", () => {
   it("applies working wrap utilities to source and translated text", () => {
     const sourceText = "source-without-breaks.example/".repeat(4)

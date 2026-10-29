@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { Button } from "@/components/ui/base-ui/button"
 import { i18n } from "@/utils/i18n"

@@ -1,29 +1,20 @@
-import type {
-  FeatureProviderAnalytics,
-  FeatureUsageContext,
-  SurfaceByFeature,
-} from "@/types/analytics"
 import type { TTSConfig } from "@/types/config/tts"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useAtomValue } from "jotai"
 import { useRef, useState } from "react"
 import { toastManager } from "@/components/ui/base-ui/toast"
-import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
-import { createFeatureUsageContext, trackFeatureUsed } from "@/utils/analytics"
-import { classifyFailureReason } from "@/utils/analytics-failure-reason"
-import { EDGE_TTS_FEATURE_PROVIDER } from "@/utils/analytics-provider"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { detectLanguage } from "@/utils/content/language"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { Sha256Hex } from "@/utils/hash"
 import { i18n } from "@/utils/i18n"
-import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
-import { splitTextByUtf8Bytes } from "@/utils/server/edge-tts/chunk"
+import { splitTextByUtf8Bytes } from "@/utils/tts-playback/chunk"
 
 interface PlayAudioParams {
   text: string
   ttsConfig: TTSConfig
-  analyticsContext: FeatureUsageContext<"text_to_speech"> & FeatureProviderAnalytics
+
   forcedVoice?: string
   // A run nobody pressed for (a layout reading a field as the answer arrives)
   // fails without a toast; pressing the trigger tries again and reports it.
@@ -37,10 +28,6 @@ interface SynthesizedAudioChunk {
 
 const TTS_ERROR_TOAST_ID = "tts-synthesize-error"
 
-function toSignedValue(value: number, unit: "%" | "Hz"): string {
-  return `${value >= 0 ? "+" : ""}${value}${unit}`
-}
-
 export function selectTTSVoice(
   ttsConfig: TTSConfig,
   detectedLanguage?: string | null,
@@ -51,10 +38,7 @@ export function selectTTSVoice(
   }
 
   if (detectedLanguage && detectedLanguage in ttsConfig.languageVoices) {
-    return (
-      ttsConfig.languageVoices[detectedLanguage as keyof typeof ttsConfig.languageVoices] ??
-      ttsConfig.defaultVoice
-    )
+    return ttsConfig.languageVoices[detectedLanguage] || ttsConfig.defaultVoice
   }
 
   return ttsConfig.defaultVoice
@@ -63,85 +47,15 @@ export function selectTTSVoice(
 async function resolveVoiceForText(
   text: string,
   ttsConfig: TTSConfig,
-  enableLLM: boolean,
   forcedVoice?: string,
 ): Promise<string> {
-  if (forcedVoice) {
-    logger.info("[TextToSpeech] Using forced voice for text", {
-      text,
-      forcedVoice,
-    })
-    return forcedVoice
-  }
-
-  const detectedLanguage = await detectLanguage(text, {
-    minLength: 0,
-    enableLLM,
-    // Voice detection can fall back without blocking speech. Tell the user
-    // what happened and how to choose a working detection mode.
-    llmFallbackToastContext: "speak",
-  })
-  logger.info("[TextToSpeech] Resolving voice for text", {
-    text,
-    detectedLanguage,
-    enableLLM,
-  })
-
-  return selectTTSVoice(ttsConfig, detectedLanguage)
+  if (forcedVoice) return forcedVoice
+  return selectTTSVoice(ttsConfig, await detectLanguage(text, { minLength: 0 }))
 }
 
-function getTTSFriendlyErrorDescription(error: Error): string | undefined {
-  if (error.message.includes("Edge TTS returned empty audio data")) {
-    return "The current voice may not support this language. Try switching to a matching voice."
-  }
-
-  if (error.message.includes("[SYNTH_RATE_LIMITED]")) {
-    return "Too many TTS requests. Please try again in a moment."
-  }
-
-  if (
-    error.message.includes("[NETWORK_ERROR]") ||
-    error.message.includes("[TOKEN_FETCH_FAILED]") ||
-    error.message.includes("[TOKEN_INVALID]")
-  ) {
-    return "Edge TTS is temporarily unavailable. Please check your network and retry."
-  }
-
-  return error.message || undefined
-}
-
-async function synthesizeEdgeTTSAudioChunk(
-  chunk: string,
-  voice: string,
-  ttsConfig: TTSConfig,
-): Promise<SynthesizedAudioChunk> {
-  const response = await sendMessage("edgeTtsSynthesize", {
-    text: chunk,
-    voice,
-    rate: toSignedValue(ttsConfig.rate, "%"),
-    pitch: toSignedValue(ttsConfig.pitch, "Hz"),
-    volume: toSignedValue(ttsConfig.volume, "%"),
-  })
-
-  if (!response.ok) {
-    throw new Error(`[${response.error.code}] ${response.error.message}`)
-  }
-
-  if (!response.audioBase64) {
-    throw new Error("Edge TTS returned empty audio data")
-  }
-
-  return {
-    audioBase64: response.audioBase64,
-    contentType: response.contentType,
-  }
-}
-
-export function useTextToSpeech(
-  surface: SurfaceByFeature["text_to_speech"] = ANALYTICS_SURFACE.SELECTION_TOOLBAR,
-) {
+export function useTextToSpeech() {
   const queryClient = useQueryClient()
-  const languageDetection = useAtomValue(configFieldsAtomMap.languageDetection)
+  const providers = useAtomValue(configFieldsAtomMap.providersConfig)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentChunk, setCurrentChunk] = useState(0)
   const [totalChunks, setTotalChunks] = useState(0)
@@ -154,6 +68,7 @@ export function useTextToSpeech(
     const activeRequestId = activeRequestIdRef.current
     activeRequestIdRef.current = null
     if (activeRequestId) {
+      void sendMessage("cancelSpeech", { requestId: activeRequestId }).catch(() => {})
       void sendMessage("ttsPlaybackStop", { requestId: activeRequestId }).catch(() => {})
     }
 
@@ -166,7 +81,7 @@ export function useTextToSpeech(
     meta: {
       suppressToast: true,
     },
-    mutationFn: async ({ text, ttsConfig, analyticsContext, forcedVoice }) => {
+    mutationFn: async ({ text, ttsConfig, forcedVoice }) => {
       stop()
       shouldStopRef.current = false
 
@@ -180,7 +95,7 @@ export function useTextToSpeech(
         await runPlayback(requestId, isSuperseded, {
           text,
           ttsConfig,
-          analyticsContext,
+
           forcedVoice,
         })
       } catch (error) {
@@ -190,17 +105,12 @@ export function useTextToSpeech(
       }
     },
     onError: (error, variables) => {
-      void trackFeatureUsed({
-        ...variables.analyticsContext,
-        outcome: "failure",
-        failure_reason: classifyFailureReason(error),
-      })
       if (!variables.quiet) {
         toastManager.add({
           type: "error",
           title: i18n.t("speak.failedToGenerateSpeech"),
           id: TTS_ERROR_TOAST_ID,
-          description: getTTSFriendlyErrorDescription(error),
+          description: error.message,
         })
       }
       activeRequestIdRef.current = null
@@ -213,16 +123,9 @@ export function useTextToSpeech(
   async function runPlayback(
     requestId: string,
     isSuperseded: () => boolean,
-    { text, ttsConfig, analyticsContext, forcedVoice }: PlayAudioParams,
+    { text, ttsConfig, forcedVoice }: PlayAudioParams,
   ) {
-    let didStartPlayback = false
-
-    const selectedVoice = await resolveVoiceForText(
-      text,
-      ttsConfig,
-      languageDetection.mode === "llm",
-      forcedVoice,
-    )
+    const selectedVoice = await resolveVoiceForText(text, ttsConfig, forcedVoice)
     if (isSuperseded()) {
       return
     }
@@ -233,14 +136,13 @@ export function useTextToSpeech(
       return
     }
 
+    const configHash = Sha256Hex(
+      JSON.stringify({
+        tts: ttsConfig,
+        provider: providers.find((p) => p.id === ttsConfig.providerId),
+      }),
+    )
     const fetchChunkAudio = async (chunk: string) => {
-      logger.info("[TextToSpeech] Fetching chunk audio", {
-        text: chunk,
-        voice: selectedVoice,
-        rate: ttsConfig.rate,
-        pitch: ttsConfig.pitch,
-        volume: ttsConfig.volume,
-      })
       return queryClient.fetchQuery({
         queryKey: [
           "tts-audio",
@@ -248,13 +150,23 @@ export function useTextToSpeech(
             text: chunk,
             voice: selectedVoice,
             rate: ttsConfig.rate,
-            pitch: ttsConfig.pitch,
-            volume: ttsConfig.volume,
+            provider: Sha256Hex(
+              JSON.stringify(providers.find((p) => p.id === ttsConfig.providerId)),
+            ),
+            model: ttsConfig.model,
+            outputFormat: ttsConfig.outputFormat,
           },
         ],
-        queryFn: () => synthesizeEdgeTTSAudioChunk(chunk, selectedVoice, ttsConfig),
+        queryFn: () =>
+          sendMessage("synthesizeSpeech", {
+            text: chunk,
+            voice: selectedVoice,
+            requestId,
+            configHash,
+          }),
         staleTime: Number.POSITIVE_INFINITY,
         gcTime: 1000 * 60 * 10,
+        retry: false,
         meta: {
           suppressToast: true,
         },
@@ -270,9 +182,7 @@ export function useTextToSpeech(
           audioBase64: audioChunk.audioBase64,
           contentType: audioChunk.contentType,
         })
-        if (playbackResult.ok) {
-          didStartPlayback = true
-        }
+
         return playbackResult.ok
       } finally {
         if (activeRequestIdRef.current === requestId) setIsPlaying(false)
@@ -287,7 +197,9 @@ export function useTextToSpeech(
       setCurrentChunk(index + 1)
       const currentAudioPromise = fetchChunkAudio(chunks[index]!)
       const nextAudioPromise =
-        index + 1 < chunks.length ? fetchChunkAudio(chunks[index + 1]!) : null
+        index + 1 < chunks.length
+          ? fetchChunkAudio(chunks[index + 1]!).catch(() => undefined)
+          : null
       const audioChunk = await currentAudioPromise
 
       if (isSuperseded()) {
@@ -309,13 +221,6 @@ export function useTextToSpeech(
       setCurrentChunk(0)
       setTotalChunks(0)
     }
-
-    if (didStartPlayback) {
-      void trackFeatureUsed({
-        ...analyticsContext,
-        outcome: "success",
-      })
-    }
   }
 
   // `options.surface` reports a play started from somewhere other than the
@@ -325,7 +230,7 @@ export function useTextToSpeech(
     ttsConfig: TTSConfig,
     options?: {
       forcedVoice?: string
-      surface?: SurfaceByFeature["text_to_speech"]
+
       quiet?: boolean
     },
   ) => {
@@ -334,10 +239,6 @@ export function useTextToSpeech(
       ttsConfig,
       forcedVoice: options?.forcedVoice,
       quiet: options?.quiet,
-      analyticsContext: {
-        ...createFeatureUsageContext(ANALYTICS_FEATURE.TEXT_TO_SPEECH, options?.surface ?? surface),
-        ...EDGE_TTS_FEATURE_PROVIDER,
-      },
     })
   }
 

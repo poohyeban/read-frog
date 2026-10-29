@@ -16,8 +16,8 @@ export function createTranslationStateAtomForContentScript(defaultValue: Transla
           setAtom(parsed.data)
         }
       })
-      .catch((error) => {
-        logger.error("Error getting initial translation state:", error)
+      .catch(() => {
+        logger.error("Error getting initial translation state:")
       })
 
     // Watch for changes

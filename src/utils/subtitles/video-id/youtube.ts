@@ -1,10 +1,30 @@
-import { getVideoIdFromUrl } from "@read-frog/definitions"
+const YOUTUBE_HOSTS = new Set([
+  "youtube.com",
+  "www.youtube.com",
+  "m.youtube.com",
+  "music.youtube.com",
+  "youtube-nocookie.com",
+  "www.youtube-nocookie.com",
+])
 
-/**
- * Delegates to the same extractor the server uses to validate
- * `videoTranscript.create({ url })`, so the extension can never consider a
- * video subtitle-capable that the server would reject (or vice versa).
- */
-export function getYoutubeVideoId(): string | null {
-  return getVideoIdFromUrl(window.location.href)
+export function getYoutubeVideoId(url = window.location.href): string | null {
+  try {
+    const parsed = new URL(url)
+    if (!["https:", "http:"].includes(parsed.protocol) || parsed.username || parsed.password)
+      return null
+    const parts = parsed.pathname.split("/").filter(Boolean)
+    const id =
+      parsed.hostname === "youtu.be"
+        ? parts[0]
+        : YOUTUBE_HOSTS.has(parsed.hostname)
+          ? parts[0] === "watch"
+            ? parsed.searchParams.get("v")
+            : ["shorts", "live", "embed"].includes(parts[0] ?? "")
+              ? parts[1]
+              : null
+          : null
+    return id && /^[\w-]{11}$/.test(id) ? id : null
+  } catch {
+    return null
+  }
 }

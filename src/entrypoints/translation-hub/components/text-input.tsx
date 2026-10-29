@@ -1,9 +1,8 @@
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { Button } from "@/components/ui/base-ui/button"
 import { Textarea } from "@/components/ui/base-ui/textarea"
 import { useTextToSpeech } from "@/hooks/use-text-to-speech"
-import { ANALYTICS_SURFACE } from "@/types/analytics"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { DEFAULT_TRANSLATE_PROMPT_ID } from "@/utils/constants/prompt"
 import { i18n } from "@/utils/i18n"
@@ -24,7 +23,7 @@ export function TextInput() {
   const setTranslateRequest = useSetAtom(translateRequestAtom)
   const hubConfig = useAtomValue(configFieldsAtomMap.translationHub)
   const pageTranslation = useAtomValue(configFieldsAtomMap.pageTranslation)
-  const { play, stop, isFetching, isPlaying } = useTextToSpeech(ANALYTICS_SURFACE.TRANSLATION_HUB)
+  const { play, stop, isFetching, isPlaying } = useTextToSpeech()
 
   const speechAction = isFetching
     ? "speak.fetchingAudio"
@@ -36,7 +35,7 @@ export function TextInput() {
     if (isFetching || isPlaying) {
       stop()
     } else if (value.trim()) {
-      void play(value, ttsConfig)
+      void play(value, ttsConfig).catch(() => {})
     }
   }
 

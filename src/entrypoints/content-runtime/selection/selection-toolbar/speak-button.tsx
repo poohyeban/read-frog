@@ -8,7 +8,6 @@ import {
   useSelectionTooltipState,
 } from "@/components/ui/selection-popover/selection-tooltip"
 import { useTextToSpeech } from "@/hooks/use-text-to-speech"
-import { ANALYTICS_SURFACE } from "@/types/analytics"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { getSpeakShortcut } from "@/utils/constants/selection"
 import { i18n } from "@/utils/i18n"
@@ -21,7 +20,7 @@ function useSelectionSpeechController() {
   const selectionContent = useAtomValue(selectionContentAtom)
   const ttsConfig = useAtomValue(configFieldsAtomMap.tts)
   const { speak } = useAtomValue(configFieldsAtomMap.selectionToolbar).features
-  const { play, stop, isFetching, isPlaying } = useTextToSpeech(ANALYTICS_SURFACE.SELECTION_TOOLBAR)
+  const { play, stop, isFetching, isPlaying } = useTextToSpeech()
   const isBusy = isFetching || isPlaying
 
   // The key toggles like the button, but with nothing to read it lets the
@@ -37,7 +36,7 @@ function useSelectionSpeechController() {
       if (!text) {
         return false
       }
-      void play(text, ttsConfig, { surface: ANALYTICS_SURFACE.SHORTCUT })
+      void play(text, ttsConfig).catch(() => {})
       return true
     },
   )
@@ -55,7 +54,7 @@ function useSelectionSpeechController() {
       return false
     }
 
-    void play(selectionContent, ttsConfig)
+    void play(selectionContent, ttsConfig).catch(() => {})
     return true
   }, [isBusy, play, selectionContent, stop, ttsConfig])
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useState } from "react"
 import {
   Collapsible,

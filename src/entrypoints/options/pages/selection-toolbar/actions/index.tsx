@@ -5,7 +5,6 @@ import { i18n } from "@/utils/i18n"
 import { ConfigItem } from "../../../components/config-item"
 import { ConfigSection } from "../../../components/config-section"
 import { ShortcutLink } from "../../../components/shortcut-link"
-import { NoteSuggestionItems } from "./note-suggestion-items"
 
 /** What the toolbar can do with a selection: the two built-in buttons, and the save prompt. */
 export function ActionsSection() {
@@ -45,19 +44,13 @@ export function ActionsSection() {
       <ConfigItem
         id="selection-toolbar-speak"
         title={i18n.t("options.selectionToolbar.actions.speak.title")}
-        description={
-          <>
-            {i18n.t("options.selectionToolbar.actions.speak.description")}
-            <ShortcutLink sectionId="selection-speak-shortcut" />
-          </>
-        }
+        description={i18n.t("options.selectionToolbar.actions.speak.description")}
       >
         <Switch
           checked={features.speak.enabled}
           onCheckedChange={(checked) => setFeatureEnabled("speak", checked)}
         />
       </ConfigItem>
-      <NoteSuggestionItems />
     </ConfigSection>
   )
 }

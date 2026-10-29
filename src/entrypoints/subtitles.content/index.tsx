@@ -3,6 +3,7 @@ import { defineContentScript } from "#imports"
 import { getLocalConfig } from "@/utils/config/storage"
 import { initI18n } from "@/utils/i18n"
 import { subtitlesContentScriptMatches } from "./content-script-matches"
+import "@/utils/iconify/local-icons"
 
 declare global {
   interface Window {

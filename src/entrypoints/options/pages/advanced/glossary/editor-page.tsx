@@ -1,5 +1,4 @@
 import { Navigate, useParams } from "react-router"
-import { env } from "@/env"
 import { i18n } from "@/utils/i18n"
 import { ConfigDetailSection } from "../../../components/config-detail-section"
 import { ConfigSection } from "../../../components/config-section"
@@ -53,16 +52,6 @@ export function GlossaryEditorPage() {
         // On the page where the questions come up — what a website pattern covers,
         // what an empty translation does, which providers honour any of it — rather
         // than beside one of the controls, because it answers all of them.
-        action={
-          <a
-            href={`${env.WXT_WEBSITE_URL}/docs/glossary`}
-            className="shrink-0 text-xs font-normal text-link hover:opacity-90"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {i18n.t("options.advanced.glossary.editor.docsLink")}
-          </a>
-        }
       >
         <GlossaryEditorEnableItem glossary={glossary} />
         {/* Keyed on the glossary so the debounced name and description fields

@@ -1,29 +1,11 @@
-name: Read Frog
-extName: "Read Frog - AI Translation & Flashcards"
-extDescription: "Bilingual AI translation for web pages and YouTube, Netflix and X subtitles. Save new words and review them as flashcards."
-uninstallSurveyUrl: https://tally.so/r/nPK6Ob
-account:
-  login: Log in
-  webApp: Web app
-  logout: Log out
-  logoutError: Failed to log out. Please try again.
-  grantAccess: Grant access
-  grantAccessHint: Needs access to readfrog.app
-  grantAccessError: Failed to grant access. Please try again.
-dataTypes:
-  string: Text
-  number: Number
+name: Read Frog Lite
+extName: "Read Frog Lite"
+extDescription: "Private page and selection translation with your own API."
 contextMenu:
   translate: Translate
   translateSelection: Translate "%s"
-  readAloudSelection: Read aloud "%s"
   showOriginal: Show Original
-sidePanel:
-  firefoxUserActionHint: In Firefox, open Read Frog from the browser sidebar.
-  firefoxUserActionHelpText: Learn how to open the Firefox sidebar
-  firefoxUserActionHelpUrl: https://support.mozilla.org/en-US/kb/use-sidebar-access-tools-and-vertical-tabs
 popup:
-  theme: Theme
   autoLang: Auto
   sourceLang: Source
   targetLang: Target
@@ -33,8 +15,6 @@ popup:
     open: Open provider settings
   translate: Translate
   showOriginal: Show Original
-  enabledFloatingButton: Enable floating button
-  enabledSelectionToolbar: Enable selection toolbar
   alwaysTranslate: Always translate this site
   addToWhitelist: Enable extension on this site
   addToBlacklist: Disable extension on this site
@@ -49,34 +29,15 @@ popup:
       translationOnly:
         current: Currently translation only
         action: Click to switch to bilingual
+  aiSmartContext: AI Smart Context
+  aiSmartContextDescription: Uses webpage context to improve translation quality.
+    Requires LLM translation provider.
   hub:
     tooltip: Translate text with multiple models simultaneously
-  discord:
-    tooltip: Join Discord to connect with developers and get early access to new features
-  blog:
-    notification: What's new in Read Frog
-  aiSmartContext: AI Smart Context
-  aiSmartContextDescription: Uses webpage context to improve translation quality. Requires LLM translation provider.
-  storeReview:
-    title: Enjoying Read Frog?
-    description: A quick store review helps other readers find it.
-    action: Write a review
-    dismiss: Dismiss
-  more:
-    title: More
-    help: Help
-    tutorial: Tutorial
-    emailUs: Email us
-    featureRequest: Feature request
-    bugReport: Report a bug
-    community: Community
-    joinDiscord: Join Discord
-    joinWechat: Join WeChat Group
-    starGithub: Star on Github
-    rateUs: Rate Us
 errorRecovery:
   title: Something went wrong
-  description: Recovery mode is active. You can export your current settings as a backup, then reset settings and try again.
+  description: Recovery mode is active. You can export your current settings as a
+    backup, then reset settings and try again.
   backupTitle: Backup current settings first (recommended)
   exportWithApiKeys: Export with API Keys
   exportWithoutApiKeys: Export without API Keys
@@ -98,11 +59,10 @@ options:
     deleted: This item was deleted elsewhere. Your unsaved edits have been kept.
     retry: Retry
     leaveTitle: Changes have not been saved
-    leaveDescription: Continue editing to fix the problem, or discard the changes that have not been saved.
+    leaveDescription: Continue editing to fix the problem, or discard the changes
+      that have not been saved.
     keepEditing: Continue editing
     discard: Discard unsaved changes
-  batchSavings:
-    savedCost: Saved approx. $1% on API costs
   commandPalette:
     placeholder: Search settings...
     noResults: No settings found
@@ -111,108 +71,53 @@ options:
     toggle: Toggle sidebar
     settings: Settings
     features: Features
-    translation: Translation
-    product: Product
-  tools:
-    translationHub: Translation Hub
-    pdfTranslation: PDF translation
-  product:
-    roadmap: Roadmap
-  helpAndCommunity:
-    title: Help & Community
-    pageDescription: Learn how to use Read Frog, get help from the team, or join other users in the community.
-    help:
-      title: Help
-    tutorial:
-      title: Tutorial
-      description: Read the docs and learn how to use Read Frog
-    email:
-      title: Email us
-      description: Reach the team directly at contact@readfrog.app
-    featureRequest:
-      title: Feature request
-      description: Suggest an idea and vote on what the team builds next
-    bugReport:
-      title: Report a bug
-      description: Open a support ticket and follow it until it is fixed
-    community:
-      title: Community
-    discord:
-      title: Discord
-      description: Chat with the team and other users in real time
-    wechat:
-      title: WeChat group
-      description: Scan the QR code to join the WeChat discussion group
-      qrCodeAlt: WeChat QR code
   apiProviders:
     title: API Providers
-    pageDescription: Connect the AI services Read Frog calls, then choose which one runs each feature.
-    description: Add the providers Read Frog can call. Over 20 are built in, with custom support for Chat Completions-compatible and Open Responses APIs.
+    pageDescription: Connect the AI services Read Frog Lite calls, then choose which
+      one runs each feature.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using
+      your own endpoint, model, and credentials.
     configTitle: Provider config
     addProvider: Add provider
-    builtInProvider: Built-in provider
-    builtInAiUsage:
-      title: Built-in AI quota
-      remaining: "$1% left"
-      supportedFeatures: "Supports $1 features"
-      resetsAt: "Resets at $1"
-      daily: Daily quota
-      weekly: Weekly quota
-      oneTime: Bonus quota
-      expiresAt: "Expires at $1"
-      features:
-        pageTranslation: Page translation
-        customAction: Custom AI Actions
-        noteSuggestion: Note suggestions
-        selectionTranslation: Selection translation
-        videoSubtitles: Video subtitles
-        inputTranslation: Input translation
-        languageDetection: Language detection
-    sponsorCta: Get fast, cost-effective AI
-    sponsorCtaJalapenoCloud: Get 50% Off GLM 5.2
     setApiKeyWarning:
       message: Please set your API key on the $1 page
     badges:
       featureCount: $1 features
-      sponsor: Sponsor
-      sponsorJalapenoCloud: $$2 Free
     dialog:
       title: Add new provider
       groups:
         builtInProviders:
           title: Built-in LLM providers
-          description: Built-in large language model providers, no need to fill in most configurations like Base URL
+          description: Built-in large language model providers, no need to fill in most
+            configurations like Base URL
         compatibleProviders:
           title: Compatible API providers
-          description: Use Custom Chat Complete for Chat Completions-compatible APIs, or Custom Responses for Open Responses APIs.
+          description: Use Custom Chat Complete for Chat Completions-compatible APIs, or
+            Custom Responses for Open Responses APIs.
         pureTranslationProviders:
           title: Pure translation providers
-          description: Providers focused on translation features without large language model capabilities
+          description: Providers focused on translation features without large language
+            model capabilities
     form:
       fields:
         name: Name
         description: Description
-        apiKey: API key
         baseURL: Base URL
-        url: URL
         optional: Optional
       duplicate: Duplicate
       delete: Delete
       deleteDialog:
         title: Delete provider?
-        description: This action cannot be undone. Features using this provider will be automatically reassigned to another available provider.
+        description: This action cannot be undone. Features using this provider will be
+          automatically reassigned to another available provider.
         confirm: Delete
         cancel: Cancel
       atLeastOneLLMProvider: At least one LLM translation provider is required.
       featureWouldLoseProvider: 'Cannot delete: "$1" would be left with no provider that can run it.'
       providerInUseCannotDisable: 'Cannot disable "$1" because it is currently used by $2 feature(s).'
       duplicateProviderName: 'Duplicate provider name "$1"'
-      defaultProvider:
-        translate: Set as default translate provider
       models:
         translate:
-          title: Translate model
-          customTitle: Translate custom model
           placeholder: Select a model
         fetchModels: Fetch available models
         fetchError: Failed to fetch models
@@ -225,22 +130,19 @@ options:
         label: Model
         enterCustomModel: Enter the name of the custom model
       advancedOptions: Advanced options
-      providerSettingLabels:
-        region: Region
-        apiMode: API mode
-        resourceName: Azure resource name (optional)
-        apiVersion: API version
-      providerSettingOptionLabels:
-        responses: Responses API
-        chatCompletions: Chat Completions
       temperature: Temperature
-      temperatureHint: Controls randomness in responses. Lower values (0) are more deterministic, higher values are more creative. Range varies by provider. Leave empty to use provider default.
+      temperatureHint: Controls randomness in responses. Lower values (0) are more
+        deterministic, higher values are more creative. Range varies by
+        provider. Leave empty to use provider default.
       reasoning:
         title: Reasoning
       headers: Headers
-      headersHint: Custom HTTP headers sent when creating the AI provider client. Leave empty to use provider defaults; use {} to disable defaults.
+      headersHint: Custom HTTP headers sent when creating the AI provider client.
+        Leave empty to use provider defaults; use {} to disable defaults.
       providerOptions: Provider options
-      providerOptionsHint: Provider-specific options for non-standard API features like thinking/reasoning mode. See the Vercel AI SDK docs or your provider's official documentation for configuration details.
+      providerOptionsHint: Provider-specific options for non-standard API features
+        like thinking/reasoning mode. See the Vercel AI SDK docs or your
+        provider's official documentation for configuration details.
       providerOptionsDocsLink: View provider docs
       providerOptionsRecommendationTrigger: View recommended provider options
       providerOptionsRecommendationTitle: Recommended provider options detected
@@ -250,49 +152,16 @@ options:
       invalidJson: Invalid JSON format
     providers:
       name:
-        builtInAi: Built-in AI
-        builtInAiAdvance: Advanced Built-in AI
         customChatComplete: Custom Chat Complete
-        customResponses: Custom Responses
-      attribution:
-        builtInAi: Read Frog's hosted standard model. Pro and Ultra members can use it on every feature, on a weekly quota; on the free plan it runs Custom AI Actions only.
-        builtInAiAdvance: Read Frog's hosted advanced model, exclusive to Ultra members. Runs page translation, Custom AI Actions, and every other Built-in AI feature on a shared weekly quota. Uses up the quota faster than the standard model.
       description:
         openai: Provides models like GPT-4o
-        azure: Azure-hosted OpenAI models through your deployments
-        deepseek: Recommend to use in China
-        openrouter: Unified interface for multiple LLM providers with pay-per-use pricing
         ollama: Run large language models locally on your machine for complete privacy
         google: Google's flagship AI models with advanced reasoning capabilities
-        anthropic: Claude models known for safety and reasoning excellence
-        xai: Elon Musk's AI company offering Grok models with real-time data access
-        atlascloud: Unified OpenAI-compatible access to newer DeepSeek, Kimi, Qwen, Doubao, GLM, and other models
-        jalapenocloud: Enterprise-grade AI used by top teams — now made for you!
-        siliconflow: High-performance inference platform for Chinese and international models
-        tensdaq: Revolutionary bidding AI MaaS platform with market-driven pricing, eliminating high-cost fixed pricing
-        openaiCompatible: Connect to a custom endpoint compatible with the OpenAI Chat Completions API
-        openResponses: Connect to a custom endpoint compatible with the Open Responses API
-        deeplx: Unofficial DeepL API
-        deepl: Official DeepL API
-        bedrock: AWS managed service for enterprise-grade foundation models
-        groq: Specialized hardware for ultra-fast LLM inference speeds
-        deepinfra: Cost-effective cloud inference for popular open-source models
-        mistral: European AI company specializing in efficient multilingual models
-        togetherai: Collaborative platform for running and fine-tuning open-source models
-        cohere: Enterprise-focused AI with strong multilingual and RAG capabilities
-        fireworks: Production-ready inference platform for open-source models
-        cerebras: Ultra-fast AI inference for rapid translation and text analysis
-        replicate: Access to diverse open-source models for specialized translation tasks
-        perplexity: Real-time knowledge-enhanced AI for contextual translations and reading assistance
-        volcengine: ByteDance's cloud AI platform offering Doubao models for translation and reading
-        minimax: MiniMax AI platform offering advanced MiniMax-M2 models for text generation
-        alibaba: Alibaba Cloud's Qwen model series with advanced reasoning and multilingual capabilities
-        moonshotai: Moonshot AI's Kimi model series with strong reasoning and long-context capabilities
-        huggingface: Hugging Face Inference API providing access to thousands of open-source models
+        openaiCompatible: Connect to a custom endpoint compatible with the OpenAI Chat
+          Completions API
     apiKey:
       showAPIKey: Show API key
       getAPIKey: Get API key
-    howToConfigure: How to configure?
     testConnection:
       button: Test connection
       testing: Testing...
@@ -308,68 +177,67 @@ options:
         selectionTranslation: Selection toolbar translation
         inputTranslation: Input translation
         videoSubtitles: Video subtitles
-        noteSuggestion: Note suggestions
+        tts: Speech (TTS)
+        transcription: Transcription (ASR)
       descriptions:
         pageTranslation: Translates the whole page in bilingual or replace mode.
         selectionTranslation: Translates the text you select from the selection toolbar.
         inputTranslation: Translates what you type into an input box before you send it.
         videoSubtitles: Translates subtitles as they appear in a video player.
-        noteSuggestion: Suggests words worth saving to your Notebase after a selection translation.
-    languageDetection:
-      title: Language detection
-      description: Affects auto-translate language detection and Speaking voice selection accuracy.
-      mode:
-        basic: Basic
-        llm: LLM
-      provider:
-        label: Detection provider
-        placeholder: Select a provider
-      status:
-        noProviders: Configure an LLM provider first
-        basicRecommend: Recommend enabling LLM
-        llmEnabled: LLM detection enabled
+        tts: Choose the audio model, voice and speed in Speech settings.
+        transcription: Choose the audio model and language in Transcription settings.
     aiContentAware:
       title: AI smart context translation
-      description: Give the AI context from the page or video so it translates more accurately
+      description: Give the AI context from the page or video so it translates more
+        accurately
       enable: Enable
-      enableDescription: The AI reads a summary of the page or video before translating, so wording fits the context. Applies to every translation feature running on an LLM provider. Adds latency on the first request and increases API costs.
+      enableDescription: The AI reads a summary of the page or video before
+        translating, so wording fits the context. Applies to every translation
+        feature running on an LLM provider. Adds latency on the first request
+        and increases API costs.
       llmProviderConfigured: LLM provider selected for $1
       llmProviderNotConfigured: No LLM provider selected for $1
   patterns:
     duplicate: This pattern is already in the list
-    gluedWildcard: A "*" has to stand for a whole part of the address, like *.example.com or example.*
-    unsupported: Read Frog cannot match this address. Ports and schemes other than http and https are not supported.
+    gluedWildcard: A "*" has to stand for a whole part of the address, like
+      *.example.com or example.*
+    unsupported: Read Frog Lite cannot match this address. Ports and schemes other
+      than http and https are not supported.
   preference:
     title: Preferences
-    pageDescription: Set how Read Frog looks, where it runs, and how your config is synced and backed up.
+    pageDescription: Configure appearance, languages, site access, and local backups.
     appearanceAndLanguage:
       title: Appearance & language
       theme:
         title: Theme
-        description: Choose a theme for Read Frog.
+        description: Choose a theme for Read Frog Lite.
         system: System
         light: Light
         dark: Dark
       interfaceLanguage:
         title: Interface language
-        description: Choose the language for the extension's interface, independent of your browser language.
+        description: Choose the language for the extension's interface, independent of
+          your browser language.
         auto: Auto (follow browser)
     translationLanguage:
       title: Translation languages
       sourceCode:
         title: Source language
-        description: The language pages are translated from. Auto-detect reads it from the page itself.
+        description: The language pages are translated from. Auto-detect reads it from
+          the page itself.
         auto: Auto-detect
       targetCode:
         title: Target language
         description: The language pages are translated into.
     extensionActivation:
       title: Extension activation
-      description: Whether Read Frog runs everywhere except the sites you list, or only on the sites you list
+      description: Whether Read Frog Lite runs everywhere except the sites you list,
+        or only on the sites you list
       manageSites: Manage sites
       mode:
         title: Activation mode
-        description: Use blacklist mode to disable the extension on specific sites, or whitelist mode to limit it to specific sites only.
+        description: Use blacklist mode to disable the extension on specific sites, or
+          whitelist mode to limit it to specific sites only.
         blacklist: Only disable on listed sites
         whitelist: Only run on listed sites
       patterns:
@@ -377,152 +245,19 @@ options:
         urlPattern: URL Pattern
     config:
       title: Config
-      googleDrive:
-        title: Google Drive cloud sync
-        description: Downloads config when remote is newer, uploads config when local is newer. Your glossaries travel in a file of their own, merged term by term rather than replaced.
-        sync: Sync to Google Drive
-        syncing: Syncing...
-        syncSuccess:
-          uploaded: Local config uploaded to cloud
-          downloaded: Remote config applied
-          sameChanges: Same config changes on both sides, synced
-          noChange: Config already in sync
-          unresolved: Config conflicts resolved and synced
-        syncError: Config sync failed, please try again
-        accountChangedError: The signed-in Google account changed while the dialog was open. Nothing was uploaded — sync again.
-        metadataCorrupted: Sync metadata corrupted, remote config applied
-        lastSyncTime: Last sync at
-        logout: Logout
-        logoutSuccess: Logged out from Google account
-        unresolved:
-          title: Configuration sync resolution
-          description: Local and remote configurations differ. Please choose which version to keep for each field.
-          resolved: Resolved
-          unresolved: Unresolved
-          localValue: Local value
-          remoteValue: Remote value
-          useLocal: Use local
-          useRemote: Use remote
-          useAllLocal: Use all local
-          useAllRemote: Use all remote
-          reset: Reset selection
-          progress: Resolved $1/$2 changes
-          confirm: Confirm sync
-          cancel: Cancel
-          hasUnresolvedInChildren: ⚠ Contains unresolved changes
-          item: item
-          items: items
-          unresolvedPrompt: "[Unresolved - please select]"
-          localLatest: Local latest
-          remoteLatest: Remote latest
-          bothChanged: Both changed
-          localChanged: Local changed
-          remoteChanged: Remote changed
-          configValid: Config is valid
-          configInvalid: Config is invalid
-          resolveToContinue: Resolve conflicts to continue
-          validationAlert:
-            title: The merged config has validation errors.
-            description: "Adjust the differences below to fix:"
-          moreErrors: ...and $1 more errors
-        glossary:
-          thisDevice: This device
-          cloud: Cloud
-          deleted: Deleted
-          disabled: off
-          upToDate: Glossaries already in sync
-          uploaded: Glossaries uploaded to cloud
-          merged: "Glossaries synced: $1 added, $2 updated, $3 removed"
-          undo: Undo
-          undone: Glossaries restored to how they were before the sync
-          undoUnavailable: That undo is no longer available — your glossaries have changed since.
-          retry: The glossary changed while syncing. Run it again.
-          accountChangedRetry: The signed-in Google account changed while the dialog was open. Nothing was uploaded — sync again.
-          busy: Another tab is syncing your glossaries right now.
-          malformed: The glossary file in your Drive could not be read, so nothing was changed.
-          versionTooNew: That glossary file was written by a newer version of Read Frog. Update the extension first.
-          duplicateFiles: Your Drive holds more than one glossary file. Nothing was changed - please remove the extra one.
-          capExceeded: "Merging would go over the glossary limit by $1. Nothing was changed."
-          failed: Glossary sync failed
-          review:
-            title: Review this glossary sync
-            description: Choose what to keep where the two copies disagree.
-            firstSync: "First sync on this device: $1 coming from the cloud, $2 going up."
-            accountChanged: "Signed in as $1, which is not the account this device last synced with. Its $2 glossary rows will be uploaded to this account. To take only this account's glossaries, cancel, delete yours here, and sync again."
-            destructive: "This sync removes $1 of the $2 glossary rows on this device."
-            moreConflicts: "$1 more differences are not listed. Each keeps the merge's own choice."
-            confirm: Sync
-            cancel: Cancel
       manualSync:
         title: Manual config sync
-        description: Manually import and export your configuration settings, and your glossaries with them
-        import: Import
-        export: Export
-        importSuccess: Config imported successfully
+        description: Import or export your local configuration.
         exportSuccess: Config exported successfully
-        exportGlossaryFailed: Your settings were exported, but your glossaries could not be read and are not in the file.
-        importError: Import failed
-        glossaryImported: "$1 glossary terms were imported, replacing the ones you had."
-        glossaryUndo: Undo
-        glossaryUndone: Your glossaries were restored to how they were before the import
-        glossaryUndoUnavailable: That undo is no longer available — your glossaries have changed since.
-        glossaryMalformed: The glossaries in that file could not be read. Nothing was changed.
-        glossaryVersionTooNew: The glossaries in that file were written by a newer version of Read Frog. Update the extension first.
-        glossaryCapExceeded: "That file holds $1 more glossary rows than the limit of $2. Nothing was changed."
-        exportOptions:
-          title: Select export options
-          description: Please choose whether to include API Keys in the exported config. Including API Keys may leak sensitive information, so it's recommended to use only in secure environments.
-          includeAPIKeys: Include API keys
-          excludeAPIKeys: Exclude API keys
-          cancel: Cancel
-      viewConfig:
-        open: Open config
-        title: Config
-        description: View the raw JSON of your current configuration
-      backup:
-        title: Config backup
-        description: Automatic backups are created every hour if the config is changed. You can restore previous configurations here. (Maximum $1 backups)
-        loading: Loading backups...
-        backupNow: Backup now
-        backupSuccess: Backup created successfully
-        restoreSuccess: Config restored successfully
-        empty:
-          title: No backups available yet
-          description: Backups are created automatically every hour if the config is changed.
-        item:
-          extensionVersion: "Extension version:"
-          schemaVersion: "Schema version:"
-          restore: Restore
-          export: Export
-          delete: Delete
-        restore:
-          title: Restore config backup?
-          description: Your current config will be automatically backed up if it is different from the latest backup. The oldest backup may be removed if the number of backups exceeds the limit.
-          cancel: Cancel
-          confirm: Restore
-        delete:
-          title: Delete backup?
-          description: Are you sure you want to delete this backup? This action cannot be undone.
-          cancel: Cancel
-          confirm: Delete
       reset:
         title: Reset config
-        description: Reset all config to default value. Your glossaries are not affected.
+        description: Reset local configuration to its defaults.
         dialog:
           title: Reset config
           trigger: Reset config
           confirm: Confirm
           cancel: Cancel
-          description: This operation will clear all your custom configurations and reset them to default values. Your glossaries are kept — delete those from the glossary page. Please confirm.
-    userExperience:
-      title: User experience
-      beta:
-        title: Beta experience
-        description: Turn on experimental features that may still be unstable
-      analytics:
-        title: Help improve user experience
-        tooltip: When enabled, Read Frog sends anonymous product usage signals so we can catch bugs, verify feature reliability, improve performance and UX polish, and prioritize future work.
-        description: Improve Read Frog by helping us locate bugs, refine layouts, and more
+          description: This clears your local configuration and restores the defaults.
   shortcuts:
     title: Shortcuts
     pageDescription: Set the keys that translate, read aloud and run AI actions while you read.
@@ -536,91 +271,36 @@ options:
     selectionTranslation:
       title: Selection translation
       description: Translate the text you selected.
-    subtitlesToggle:
-      title: Subtitle translation
-      description: Turn translated video subtitles on or off.
     nodeTranslation:
       title: Hover translation
       description: Hover or long-press a paragraph to translate just that one.
       customDescription: Press these keys while hovering over a paragraph to translate it.
-    translationHub:
-      title: Translation Hub
-      description: Open the Translation Hub in a new tab.
-    selectionSpeak:
-      title: "Read aloud"
-      description: "Read the text you selected aloud. Press again to stop."
     actions:
       title: "AI actions"
-      description: "Run an AI action on the text you selected. Custom actions have no key until you set one here."
+      description: "Run an AI action on the text you selected. Custom actions have no
+        key until you set one here."
     turnedOff: "Turned off, so this key does nothing until you turn it back on."
     turnOn: "Turn on"
     clash: "Same key as “$1”. Change one of them."
     taken: "$1 is already used by “$2”."
-  overlayTools:
-    title: Overlay Tools
-  inputTranslation:
-    title: Input Translation
-    pageDescription: Translate what you type in input boxes before you send it.
-    trigger:
-      title: Trigger
-      enable:
-        title: Enable
-        description: Press the space bar three times quickly in any input box to translate what you typed there.
-      threshold:
-        title: Trigger threshold
-        description: How long the presses may be apart, in milliseconds. Raise it if the trigger keeps missing, lower it if it fires while you are still typing.
-        error: Enter a value between $1 and $2
-    languages:
-      title: Translation languages
-      pair:
-        title: Language pair
-        description: What the typed text is read as, and what it is translated into. Either side can follow the source and target languages you translate pages with.
-      sourceCode: Page source language
-      targetCode: Translation target language
-      cycle:
-        title: Swap direction each time
-        description: Every trigger swaps the two languages, so triggering again brings the text back to the language you typed in.
-  floatingButton:
-    title: Floating Button
-    pageDescription: Set which side the floating button sits on, what a click does, and where it stays hidden.
-    demoImageAlt: Floating button demo
-    enable:
-      title: Enable floating button
-      description: Display the floating button on web pages for quick access to Read Frog features
-    display:
-      title: Display
-      side:
-        title: Button side
-        description: Choose which side of the page the floating button is docked to
-        left: Left
-        right: Right
-      disabledSites:
-        title: Disabled sites
-        description: Configure websites where the floating button should be disabled
-        enterUrlPattern: Enter URL pattern
-        urlPattern: URL pattern
-    clickAction:
-      title: Click action
-      description: Choose the action when clicking the floating button
-      panel: Open side panel
-      translate: Toggle page translation
-    closeMenu:
-      disableForSite: Disable for this site
-      disableGlobally: Disable globally
-    tooltips:
-      togglePageTranslation: Toggle page translation
-      floatingButtonOptions: Floating button options
-      lockPosition: Lock position
-      unlockPosition: Unlock position
-      settings: Settings
-      feedback: Send feedback
+    subtitlesToggle:
+      title: Subtitle translation
+      description: Turn translated video subtitles on or off.
+    selectionSpeak:
+      title: Read aloud
+      description: Read the text you selected aloud. Press again to stop.
+    translationHub:
+      title: Translation Hub
+      description: Open the Translation Hub in a new tab.
   selectionToolbar:
     title: Selection Toolbar
-    pageDescription: Set which actions appear when you select text, and where the toolbar shows up.
+    pageDescription: Set which actions appear when you select text, and where the
+      toolbar shows up.
     demoImageAlt: Selection toolbar demo
     enable:
       title: Enable selection toolbar
-      description: Display the toolbar when selecting text on web pages for quick translation, speech, and AI actions
+      description: Display the toolbar when selecting text on web pages for quick
+        translation, speech, and AI actions
     actions:
       title: Actions
       translate:
@@ -629,18 +309,12 @@ options:
       speak:
         title: Speak
         description: Show the speak button, which reads the selected text aloud
-      noteSuggestion:
-        title: Note suggestions
-        description: After selection translation with an AI provider, suggest words to save to your Notebase
-        action: Action
-        actionDescription: The action that produces the suggestion
-        provider: Provider
-        providerDescription: The AI provider that generates the suggestion
     display:
       title: Display
       opacity:
         title: Opacity
-        description: Adjust the opacity of the selection toolbar and the expanded window opened from it
+        description: Adjust the opacity of the selection toolbar and the expanded window
+          opened from it
       disabledSites:
         title: Disabled sites
         description: Configure websites where the selection toolbar should be disabled
@@ -658,12 +332,14 @@ options:
       providerUnavailable: Selected provider is unavailable
     customActions:
       title: Custom AI Actions
-      pageDescription: Write your own prompts and run them on selected text from the selection toolbar. The data, style and interactions of each result are all yours to customize.
+      pageDescription: Write your own prompts and run them on selected text from the
+        selection toolbar. The data, style and interactions of each result are
+        all yours to customize.
       description: Add your own structured AI actions for selected text
       configTitle: Action config
       introVideo:
-        trigger: "Watch video"
-        title: "Custom AI Actions in 30 seconds"
+        trigger: Watch video
+        title: Custom AI Actions in 30 seconds
       builtIn: Built-in
       badges:
         new: New
@@ -676,20 +352,23 @@ options:
       noEnabledLlmProvider: Enable at least one LLM provider before creating custom AI actions
       tabs:
         config: Config
-        notebase: Notebase
         hasErrors: Has errors
         connected: Connected
         needsAttention: Needs attention
       form:
         name: Name
         customize: Customize
-        customizeTooltip: Built-in instructions do not allow prompt changes. Click here to create an editable copy and modify the prompts.
+        customizeTooltip: Built-in instructions do not allow prompt changes. Click here
+          to create an editable copy and modify the prompts.
         aiConfigHelper:
-          trigger: "Configure with AI"
-          title: "Configure with AI"
-          description: "Copy the prompt below and paste it into your AI chat assistant (ChatGPT, Claude, DeepSeek, Kimi…). It asks what you want first, then tells you what to put in each setting. The prompt includes this action's current settings, but no API keys."
-          copy: "Copy prompt"
-          copyFailed: "Couldn't copy the prompt. Try again."
+          trigger: Configure with AI
+          title: Configure with AI
+          description: Copy the prompt below and paste it into your AI chat assistant
+            (ChatGPT, Claude, DeepSeek, Kimi…). It asks what you want first,
+            then tells you what to put in each setting. The prompt includes this
+            action's current settings, but no API keys.
+          copy: Copy prompt
+          copyFailed: Couldn't copy the prompt. Try again.
         icon: Icon
         iconField:
           chooseAriaLabel: Choose icon
@@ -716,8 +395,8 @@ options:
         save: Save
         defaultFieldName: Result
         fieldNamePlaceholder: Field name
-        selectionField: "Selected text"
-        selectionFieldDescription: "The text you selected, saved as it is. The AI doesn't write it."
+        selectionField: Selected text
+        selectionFieldDescription: The text you selected, saved as it is. The AI doesn't write it.
         autoFieldPrefix: Field
         addFieldDialog:
           title: Add output field
@@ -731,14 +410,16 @@ options:
           cancel: Cancel
         layout:
           title: Layout
-          description: How the result shows in the popup. HTML with Liquid; fields fill in as the answer streams.
+          description: How the result shows in the popup. HTML with Liquid; fields fill in
+            as the answer streams.
           reset: Restore default
           resetFieldList: Field list
           resetDictionary: Dictionary card
           resetSentenceAnalysis: Sentence analysis card
-          resetImproveWriting: "Improve Writing card"
+          resetImproveWriting: Improve Writing card
           resetConfirmTitle: Replace this layout?
-          resetConfirmDescription: The editor's contents will be replaced. You can still undo it in the editor afterwards.
+          resetConfirmDescription: The editor's contents will be replaced. You can still
+            undo it in the editor afterwards.
           resetConfirm: Replace
           edit: Edit
           preview: Preview
@@ -758,7 +439,8 @@ options:
           insertContext: Context
           insertLoop: Every field
           syntaxHelp: Syntax
-          builtInHint: A built-in action's layout can't be edited. Customize it to edit a copy.
+          builtInHint: A built-in action's layout can't be edited. Customize it to edit a
+            copy.
           viewSource: View source
           emptyNotice: This layout is empty, so the popup shows the default field list.
           fallbackBanner: This layout can't be shown, so the default layout is used instead. $1
@@ -770,18 +452,26 @@ options:
           help:
             output: Shows a field's value. HTML in the value is escaped.
             condition: Shows the content only when the field has a value.
-            loop: Repeats for every field, in order. f.name, f.value and f.type are available.
-            speak: Any element with data-speak reads the value aloud (or its own text if the value is empty) once the answer is done.
-            speakLang: data-speak-lang names the language to read in (a code such as es or en-US), so it gets that language's voice. Without it the language is detected, which often fails for a single word.
-            speakAutoplay: An element with data-speak-autoplay is read aloud on its own once the answer is done. Only the first such element plays.
+            loop: Repeats for every field, in order. f.name, f.value and f.type are
+              available.
+            speak: Any element with data-speak reads the value aloud (or its own text if the
+              value is empty) once the answer is done.
+            speakLang: data-speak-lang names the language to read in (a code such as es or
+              en-US), so it gets that language's voice. Without it the language
+              is detected, which often fails for a single word.
+            speakAutoplay: An element with data-speak-autoplay is read aloud on its own once
+              the answer is done. Only the first such element plays.
             status: Styles by state. The host's data-status is streaming, done or error.
-            filters: newline_to_br keeps line breaks (use it last); lines splits text into a list of lines.
-            styles: CSS in a <style> block only applies inside this result. The --rf-* colors follow the light and dark themes.
+            filters: newline_to_br keeps line breaks (use it last); lines splits text into a
+              list of lines.
+            styles: CSS in a <style> block only applies inside this result. The --rf-*
+              colors follow the light and dark themes.
           lint:
             parseError: "Liquid syntax error: $1"
             unknownField: There's no field named “$1”.
             unknownContextKey: "ctx has no “$1”. Available: $2."
-            fieldShadowedByLocal: “$1” is assigned in this layout, which hides the field with that name.
+            fieldShadowedByLocal: “$1” is assigned in this layout, which hides the field
+              with that name.
             liquidInStyle: Liquid doesn't run inside <style>. This is kept as plain text.
             styleInConditional: A <style> block always applies, even inside a “$1” tag.
             cssImport: "@import is removed. Layouts can't load outside styles."
@@ -792,58 +482,15 @@ options:
             tooLong: This layout is longer than $1 characters and can't be saved.
             fieldNotShown: “$1” isn't shown in this layout.
             reservedFieldName: The field name “$1” is reserved in layouts. Rename the field.
-        notebase:
-          title: Notebase connection
-          description: Save this action's structured results to a remote notebase.
-          loginRequiredTitle: Log in to configure Notebase
-          loginRequiredDescription: Sign in on readfrog.app before choosing a notebase or editing mappings.
-          loginRequiredConnectedDescription: This connection was created by the account below. If you log in as the same account, field mappings will be restored. If you log in as another account, the previous mappings will be cleared when you create or connect a Notebase.
-          loginAction: Log in
-          connectedAccountLabel: Connected account
-          currentAccountLabel: Current account
-          unknownConnectedAccount: Unknown account
-          tableLabel: Notebase
-          tablePlaceholder: Select a notebase
-          tableClearOption: Disconnect notebase
-          clearConnectionAction: Clear connection
-          refreshAction: Refresh
-          emptyTitle: No notebases yet
-          emptyDescription: Create a notebase on readfrog.app, then come back here to map fields.
-          openNotebaseAction: Open Notebase
-          accessDeniedTitle: Cannot access Notebase
-          accessDeniedDescription: This account does not have permission to load Notebase data.
-          listErrorTitle: Failed to load notebases
-          listErrorDescription: Try refreshing the Notebase list again in a moment.
-          accountMismatchTitle: Notebase connection belongs to another account
-          accountMismatchDescription: This connection is tied to the connected account below. Clear it, or choose a Notebase available to the current account.
-          tableUnavailableTitle: Selected notebase is no longer available
-          tableUnavailableDescription: This Notebase no longer exists or cannot be opened. Clear the connection or choose another Notebase.
-          tableUnavailableOption: unavailable
-          schemaErrorTitle: Failed to load notebase schema
-          schemaErrorDescription: Try refreshing the schema again in a moment.
-          schemaLoading: Loading notebase schema...
-          mappingsLabel: Field mappings
-          localFieldLabel: Action field
-          remoteFieldLabel: Notebase field
-          columnUnavailableOption: removed
-          invalidMappingsTitle: Some mappings need attention
-          invalidMappingsDescription: Invalid mappings are preserved. Fix them before saving to Notebase.
-          noFieldSavedTitle: "No field is saved to this Notebase"
-          noFieldSavedDescription: "Pick a Notebase field for at least one field to save notes here."
-          mappingSummary: "Saved $1 · Skipped $2 · Undecided $3"
-          skipFieldOption: "Don't save"
-          undecidedFieldPlaceholder: "Pick a notebase field or don't save"
-          mappingMissingLocal: The mapped action field no longer exists.
-          mappingMissingRemote: The mapped notebase field no longer exists.
-          mappingMissingSchema: Refresh the notebase schema to validate this mapping.
-          mappingIncompatible: The field types no longer match.
         tokens:
           selection: Selected text content
-          paragraphs: Intersecting paragraph text joined with blank lines, truncated to the first 2000 characters when sent to custom AI actions
-          targetLanguage: "User's target language"
+          paragraphs: Intersecting paragraph text joined with blank lines, truncated to
+            the first 2000 characters when sent to custom AI actions
+          targetLanguage: User's target language
           webTitle: Webpage title
           webUrl: Full URL of the current page
-          webContent: Webpage content extracted from the current page, truncated to the first 2000 characters
+          webContent: Webpage content extracted from the current page, truncated to the
+            first 2000 characters
         delete: Delete
         deleteDialog:
           title: Delete custom action?
@@ -852,7 +499,8 @@ options:
           cancel: Cancel
       templates:
         dialogTitle: Choose a template
-        dialogDescription: Select a template to quickly create a new AI action, or start from scratch.
+        dialogDescription: Select a template to quickly create a new AI action, or start
+          from scratch.
         dictionary:
           name: Dictionary
           description: Look up words with definitions, phonetics, and paragraph translations
@@ -924,24 +572,33 @@ options:
           fieldTerm: Term
           fieldTermDescription: Base/canonical lemma of the selected term.
           fieldPhonetic: Phonetic
-          fieldPhoneticDescription: Standard phonetic transcription for the term's language (e.g., IPA for English, pinyin for Mandarin, romaji for Japanese).
+          fieldPhoneticDescription: Standard phonetic transcription for the term's
+            language (e.g., IPA for English, pinyin for Mandarin, romaji for
+            Japanese).
           fieldPartOfSpeech: Part of Speech
           fieldPartOfSpeechDescription: Grammatical category (e.g., noun, verb, adjective).
           fieldSentence: Sentence
-          fieldSentenceDescription: The complete sentence from the paragraphs above that contains the selected term. Do not include surrounding sentences.
+          fieldSentenceDescription: The complete sentence from the paragraphs above that
+            contains the selected term. Do not include surrounding sentences.
           fieldSentenceTerm: Term in Sentence
-          fieldSentenceTermDescription: 'Where the selected term stands in Sentence: a JSON array serialized as a string, one {"text": string} item per part of the term, each quoting Sentence exactly (e.g. [{"text":"blossoms"}]).'
+          fieldSentenceTermDescription: 'Where the selected term stands in Sentence: a
+            JSON array serialized as a string, one {"text": string} item per
+            part of the term, each quoting Sentence exactly (e.g.
+            [{"text":"blossoms"}]).'
           fieldDefinition: Definition
           fieldDefinitionDescription: One concise definition for the contextual sense.
           fieldSentenceTranslation: Sentence Translation
           fieldSentenceTranslationDescription: The translation of Sentence only.
-          fieldMemoryTips: "Memory Tips"
-          fieldMemoryTipsDescription: "Ways to remember the term: up to 3 tips, one per line, each beginning with its technique and a colon (e.g. Word parts: …); an empty string when nothing really helps."
+          fieldMemoryTips: Memory Tips
+          fieldMemoryTipsDescription: "Ways to remember the term: up to 3 tips, one per
+            line, each beginning with its technique and a colon (e.g. Word
+            parts: …); an empty string when nothing really helps."
           fieldDifficulty: Difficulty
           fieldDifficultyDescription: Estimated CEFR difficulty level A1, A2, B1, B2, C1, or C2.
         sentenceAnalysis:
-          name: "Sentence Analysis"
-          description: "Mark up a long sentence like a teacher: its core, every clause, and what makes it hard"
+          name: Sentence Analysis
+          description: "Mark up a long sentence like a teacher: its core, every clause,
+            and what makes it hard"
           systemPrompt: |-
             You are a grammar tutor. Mark up the Selection (a sentence in any language) so a learner sees its structure at a glance: the core of the main clause, every clause and longer phrase, and whatever makes the sentence hard to read.
 
@@ -995,74 +652,78 @@ options:
             Selection: {{selection}}
             Paragraphs: {{paragraphs}}
             Target language: {{targetLanguage}}
-          fieldSentence: "Sentence"
-          fieldAnnotations: "Annotations"
-          fieldAnnotationsDescription: 'A compact JSON array serialized as a string. Each item has "text" and "type", plus only the optional keys that apply ("form", "sense", "head", "obstacle", "restore", "note", "occurrence").'
-          fieldTranslation: "Translation"
-          fieldTranslationDescription: "A natural translation of the whole Selection in {{targetLanguage}}."
+          fieldSentence: Sentence
+          fieldAnnotations: Annotations
+          fieldAnnotationsDescription: A compact JSON array serialized as a string. Each
+            item has "text" and "type", plus only the optional keys that apply
+            ("form", "sense", "head", "obstacle", "restore", "note",
+            "occurrence").
+          fieldTranslation: Translation
+          fieldTranslationDescription: A natural translation of the whole Selection in {{targetLanguage}}.
           roles:
-            subject: "Subject"
-            predicate: "Predicate"
-            object: "Object"
-            complement: "Complement"
-            attributive: "Attributive"
-            adverbial: "Adverbial"
-            appositive: "Appositive"
-            connector: "Connector"
+            subject: Subject
+            predicate: Predicate
+            object: Object
+            complement: Complement
+            attributive: Attributive
+            adverbial: Adverbial
+            appositive: Appositive
+            connector: Connector
           clauses:
-            subject: "Subject clause"
-            object: "Object clause"
-            complement: "Complement clause"
-            attributive: "Relative clause"
-            adverbial: "Adverbial clause"
-            appositive: "Appositive clause"
-            clause: "Clause"
+            subject: Subject clause
+            object: Object clause
+            complement: Complement clause
+            attributive: Relative clause
+            adverbial: Adverbial clause
+            appositive: Appositive clause
+            clause: Clause
           adverbialClauses:
-            time: "Time clause"
-            place: "Place clause"
-            cause: "Reason clause"
-            condition: "Condition clause"
-            concession: "Concession clause"
-            purpose: "Purpose clause"
-            result: "Result clause"
-            manner: "Manner clause"
-            comparison: "Comparison clause"
+            time: Time clause
+            place: Place clause
+            cause: Reason clause
+            condition: Condition clause
+            concession: Concession clause
+            purpose: Purpose clause
+            result: Result clause
+            manner: Manner clause
+            comparison: Comparison clause
           forms:
-            infinitive: "Infinitive"
-            gerund: "Gerund"
-            presentParticiple: "-ing"
-            pastParticiple: "-ed"
+            infinitive: Infinitive
+            gerund: Gerund
+            presentParticiple: -ing
+            pastParticiple: -ed
           senses:
-            time: "Time"
-            place: "Place"
-            cause: "Reason"
-            condition: "If"
-            concession: "Though"
-            purpose: "Purpose"
-            result: "Result"
-            manner: "Manner"
-            comparison: "Compare"
+            time: Time
+            place: Place
+            cause: Reason
+            condition: If
+            concession: Though
+            purpose: Purpose
+            result: Result
+            manner: Manner
+            comparison: Compare
           obstacles:
-            inversion: "Inverted"
-            fronting: "Fronted"
-            ellipsis: "Omitted"
-            passive: "Passive"
-            subjunctive: "Unreal"
-            parenthesis: "Aside"
-            dummyIt: "Dummy it"
-            postponedSubject: "Real subject"
-            cleft: "Cleft"
-            comparison: "Compare"
-            negation: "Negation"
-            split: "Split"
-            idiom: "Idiom"
+            inversion: Inverted
+            fronting: Fronted
+            ellipsis: Omitted
+            passive: Passive
+            subjunctive: Unreal
+            parenthesis: Aside
+            dummyIt: Dummy it
+            postponedSubject: Real subject
+            cleft: Cleft
+            comparison: Compare
+            negation: Negation
+            split: Split
+            idiom: Idiom
           restoreLabel: "Plain order:"
-          hardLabel: "Difficult"
-          trunkLabel: "Skeleton"
-          slashesLabel: "Breaks"
+          hardLabel: Difficult
+          trunkLabel: Skeleton
+          slashesLabel: Breaks
         improveWriting:
-          name: "Improve Writing"
-          description: "Mark mistakes and awkward phrasing like a teacher, and fix them for the setting"
+          name: Improve Writing
+          description: Mark mistakes and awkward phrasing like a teacher, and fix them for
+            the setting
           systemPrompt: |-
             You are a writing teacher. Judge the setting of the Selection first, then mark what a native writer would change for that setting, and give the Selection back corrected.
 
@@ -1141,36 +802,42 @@ options:
             Page title: {{webTitle}}
             Page URL: {{webUrl}}
             Target language: {{targetLanguage}}
-          fieldOriginal: "Original"
-          fieldSetting: "Setting"
-          fieldSettingDescription: 'How formal the setting is and what the text is, in {{targetLanguage}}: "<formality> · <what it is>", at most 16 characters.'
-          fieldAnnotations: "Annotations"
-          fieldAnnotationsDescription: 'A compact JSON array serialized as a string. Each item has "text", "type" and "note", "fix" unless the type is "good", and only the optional keys that apply ("tag", "occurrence").'
-          fieldImproved: "Improved"
-          fieldImprovedDescription: "The whole Selection as a native writer would write it in this setting, in the Selection's language."
-          fieldSummary: "Summary"
-          fieldSummaryDescription: "One sentence in {{targetLanguage}}: what works, and the one thing to work on."
+          fieldOriginal: Original
+          fieldSetting: Setting
+          fieldSettingDescription: 'How formal the setting is and what the text is, in
+            {{targetLanguage}}: "<formality> · <what it is>", at most 16
+            characters.'
+          fieldAnnotations: Annotations
+          fieldAnnotationsDescription: A compact JSON array serialized as a string. Each
+            item has "text", "type" and "note", "fix" unless the type is "good",
+            and only the optional keys that apply ("tag", "occurrence").
+          fieldImproved: Improved
+          fieldImprovedDescription: The whole Selection as a native writer would write it
+            in this setting, in the Selection's language.
+          fieldSummary: Summary
+          fieldSummaryDescription: "One sentence in {{targetLanguage}}: what works, and
+            the one thing to work on."
           types:
-            spelling: "Spelling"
-            grammar: "Grammar"
-            punctuation: "Punctuation"
-            wordChoice: "Word choice"
-            logic: "Logic"
-            unnatural: "Unidiomatic"
-            register: "Register"
-            clarity: "Clarity"
-            good: "Nice"
+            spelling: Spelling
+            grammar: Grammar
+            punctuation: Punctuation
+            wordChoice: Word choice
+            logic: Logic
+            unnatural: Unidiomatic
+            register: Register
+            clarity: Clarity
+            good: Nice
           tiers:
-            error: "Error"
-            awkward: "Awkward"
-            good: "Nice"
-          hideFixesLabel: "Hide fixes"
-          hiddenHintLabel: "Try fixing it yourself first."
-          showImprovedLabel: "Show improved"
-          improvedLabel: "Improved"
-          copyLabel: "Copy"
-          unchangedLabel: "Nothing to change"
-          removeLabel: "delete"
+            error: Error
+            awkward: Awkward
+            good: Nice
+          hideFixesLabel: Hide fixes
+          hiddenHintLabel: Try fixing it yourself first.
+          showImprovedLabel: Show improved
+          improvedLabel: Improved
+          copyLabel: Copy
+          unchangedLabel: Nothing to change
+          removeLabel: delete
         blank:
           name: Blank
           description: Start from scratch with an empty action
@@ -1181,150 +848,45 @@ options:
             Target language: {{targetLanguage}}
       errors:
         nameRequired: Name is required
-        duplicateName: 'Duplicate action name "$1"'
+        duplicateName: Duplicate action name "$1"
         invalidIcon: Invalid Iconify icon string
         providerRequired: Please select an enabled LLM provider
         outputSchemaRequired: Add at least one output field
         fieldKeyRequired: Field name is required
         duplicateFieldKey: Field names must be unique
-  advanced:
-    title: Advanced
-    pageDescription: Powerful settings that are not part of the everyday path.
-    glossary:
-      title: Glossary
-      pageDescription: Give the words that matter to you a fixed translation, and choose where each list applies.
-      untitled: Untitled glossary
-      noGlossaries: No glossaries yet.
-      enable:
-        title: Enable
-        description: Send matching terms to the LLM so it renders them your way. The glossary travels in the prompt, so it only applies to features running on an LLM provider.
-      library:
-        title: Your glossaries
-        description: Each glossary has its own terms and its own list of websites, so a set of terms for work does not follow you onto everything else.
-        button: Add a glossary
-        capReached: "You can have at most $1 glossaries."
-        termUsage: "$1 of $2 terms used across all glossaries"
-      summary:
-        terms: "$1 terms"
-        termsOne: 1 term
-        allSites: All websites
-        sites: "$1 websites"
-        sitesOne: 1 website
-      editor:
-        docsLink: How does it work?
-        sections:
-          terms: Terms
-          maintenance: Backup and deletion
-        details:
-          title: Name and description
-          descriptionPlaceholder: Description (optional)
-        enable:
-          title: Enable
-          description: A disabled glossary keeps its terms but sends none of them.
-        sites:
-          title: Websites
-          description: Restrict this glossary to certain websites. example.com is that address alone; *.example.com adds subdomains; example.com/docs/* narrows to one part of a site.
-          allSites: Leave this empty and the glossary applies everywhere.
-          header: Website
-        delete:
-          title: Delete this glossary
-          description: Removes the glossary and every term in it. Export first if you might want the terms back — this cannot be undone.
-          dialog:
-            trigger: Delete
-            title: Delete this glossary?
-            description: "The glossary and all $1 terms in it will be permanently deleted. This action cannot be undone."
-            confirm: Delete
-            cancel: Cancel
-      addTerm:
-        title: Add a term
-        description: Give a term the wording you want, or leave the translation empty to keep it unchanged.
-      list:
-        title: Your terms
-        description: Only the terms that appear in a paragraph are sent with it.
-      importExport:
-        title: Import and export
-        description: Terms are a CSV of source, target, targetLanguage and caseSensitive columns — the file Export writes.
-      sourcePlaceholder: Term
-      targetPlaceholder: Translation (leave empty to keep the original)
-      caseSensitive: Match case
-      add: Add
-      searchPlaceholder: Search terms
-      columnEnabled: Enabled
-      columnSource: Term
-      columnTarget: Translation
-      columnTargetLanguage: Target language
-      allLanguages: All languages
-      toggleTerm: "Use $1"
-      editTerm: "Edit $1"
-      keepOriginal: Keep the original
-      delete: Delete
-      save: Save
-      cancel: Cancel
-      loading: Loading...
-      empty: No terms yet. Add one above, or import a CSV file.
-      noMatches: No terms match your search.
-      previous: Previous
-      next: Next
-      pageOf: "$1 / $2"
-      addError:
-        emptySource: Enter a term first.
-        tooLong: That term is too long.
-        capReached: "Your glossaries have reached the limit of $1 terms in total."
-        duplicate: That term is already in your glossary.
-      import: Import
-      export: Export
-      importModeMerge: Add to list
-      importModeReplace: Replace list
-      importEmpty: No terms found in that file.
-      importMissingHeader: "That file is not a Read Frog glossary export. It needs these columns:"
-      importOverflow: "That import would exceed the limit by $1 terms. Nothing was changed."
-      importSuccess: "Imported $1 new and updated $2 terms."
-      importSkipped: "Skipped $1 invalid rows and $2 duplicates."
-      importNoValidRows: None of those rows could be imported. Nothing was changed.
-      importReplaceConfirm:
-        title: Replace the whole list?
-        description: "All $1 terms in this glossary will be deleted — every target language, not just the one selected — and replaced with the contents of this file. This cannot be undone."
-        confirm: Replace
-        cancel: Cancel
-      deleteAll:
-        title: Delete all terms
-        description: Empty your glossary. Export first if you might want the terms back — deleting them cannot be undone.
-        deleting: Deleting...
-        dialog:
-          title: Delete all terms
-          trigger: Delete all
-          confirm: Confirm
-          cancel: Cancel
-          description: "All $1 terms will be permanently deleted. This action cannot be undone."
   contextMenu:
     title: Context Menu
-    pageDescription: Control the Read Frog entries in the browser's right-click menu.
+    pageDescription: Control the Read Frog Lite entries in the browser's right-click menu.
     demoImageAlt: Context menu demo
     enable:
       title: Enable context menu translate
-      description: Add translate options to the browser right-click menu for quick page and selection translation
+      description: Add translate options to the browser right-click menu for quick
+        page and selection translation
   translation:
     title: Page Translation
-    pageDescription: Control how pages get translated — mode, range, prompts, and request limits.
+    pageDescription: Control how pages get translated — mode, range, prompts, and
+      request limits.
     preference:
       title: Basics
       translationMode:
         title: Translation mode
-        description: "Choose how the translated text is displayed: bilingual or translation only."
+        description: "Choose how the translated text is displayed: bilingual or
+          translation only."
         mode:
           bilingual: Bilingual
           translationOnly: Translation only
         switched: "Translation mode: $1"
-        providerNotSupported: $1 doesn't support translation-only mode. To enable it, switch to another provider.
       translateRange:
         title: Translation range
-        description: Select whether to translate only the main content or all content on the page.
+        description: Select whether to translate only the main content or all content on
+          the page.
         range:
           main: Main content
           all: All content
       translateTitle:
         title: Translate tab title
-        description: Also translate the page title shown in the browser tab. Turn it off to keep the original title.
+        description: Also translate the page title shown in the browser tab. Turn it off
+          to keep the original title.
     hoverTranslation:
       title: Hover translation
       enable:
@@ -1332,12 +894,15 @@ options:
         description: Hover or long-press a paragraph to translate just that one.
       forceRetranslation:
         title: Always request a fresh translation
-        description: Hover translation skips the cache — it re-translates even if the text is already cached, and overwrites the cached result.
+        description: Hover translation skips the cache — it re-translates even if the
+          text is already cached, and overwrites the cached result.
     translationStyle:
       title: Translation display style
-      description: Set any style you want to distinguish translation results from original text
+      description: Set any style you want to distinguish translation results from
+        original text
       useCustomStyle: Use custom CSS style
-      useCustomStyleDescription: Supports any CSS, including fonts, animations, and language-specific styles
+      useCustomStyleDescription: Supports any CSS, including fonts, animations, and
+        language-specific styles
       presetStyle: Preset style
       cssEditor: CSS editor
       cssEditorDescription: Write your own CSS and preview how translated text looks.
@@ -1364,7 +929,6 @@ options:
               padding: 2px 4px;
               border-radius: 4px;
             }
-          docsLink: How to configure?
           saveButton: Save
           savedButton: Saved
           validation:
@@ -1375,12 +939,10 @@ options:
             saved: All changes saved
     personalizedPrompts:
       title: Customize page prompts
-      description: Customizing different types of Prompts allows you to adjust the Prompt type yourself during translation. A Prompt represents the text that the user sends to the LLM.
+      description: Customizing different types of Prompts allows you to adjust the
+        Prompt type yourself during translation. A Prompt represents the text
+        that the user sends to the LLM.
       managePrompts: Manage prompts
-      communityPrompts: Get or share prompts from community
-      communityPromptsUrl: https://github.com/mengxi-ream/read-frog/discussions/821
-      variableReference: Variable reference
-      variableReferenceUrl: https://readfrog.app/en/docs/page-translation/prompts/variables
       addPrompt: Add prompt
       default: Default
       builtIn: Built-in
@@ -1420,7 +982,8 @@ options:
         cancel: Cancel
     translationControl:
       title: Translation control
-      description: What starts translating on its own, what never does, and what gets skipped
+      description: What starts translating on its own, what never does, and what gets
+        skipped
       manageControls: Manage controls
       autoTranslateWebsite:
         title: Auto translate based on website
@@ -1429,50 +992,64 @@ options:
         enterUrlPattern: Enter URL pattern
       neverAutoTranslateWebsite:
         title: Never auto translate based on website
-        description: Sites that never translate on their own, even when a language rule matches
+        description: Sites that never translate on their own, even when a language rule
+          matches
         urlPattern: URL pattern
         enterUrlPattern: Enter URL pattern
       autoTranslateLanguages:
         title: Auto translate based on language
-        description: Automatically translate page content when specific languages are detected
+        description: Automatically translate page content when specific languages are
+          detected
         selectLanguages: Select languages
       skipLanguages:
         title: Auto skip based on language
-        description: Automatically skip paragraph translation when specific languages are detected
-        targetLanguageSkipDescription: Skip paragraphs already in the target language, without sending a request
+        description: Automatically skip paragraph translation when specific languages
+          are detected
+        targetLanguageSkipDescription: Skip paragraphs already in the target language,
+          without sending a request
         selectLanguages: Select languages
       smallParagraphFilter:
         title: Small paragraph filter
-        description: These global defaults skip translating text nodes with fewer characters or words than the thresholds. Matching site rules can override them (0 = disabled)
+        description: These global defaults skip translating text nodes with fewer
+          characters or words than the thresholds. Matching site rules can
+          override them (0 = disabled)
         minCharacters:
-          description: "Minimum characters: shorter text stays untranslated. Use 0 to translate everything"
+          description: "Minimum characters: shorter text stays untranslated. Use 0 to
+            translate everything"
         minWords:
           description: "Minimum words: text with fewer words stays untranslated"
         error: Value must be between $1 and $2
     translationQueue:
       title: Translation queue
-      description: How fast requests go out, how much text each carries, and how far ahead of the reader they run
+      description: How fast requests go out, how much text each carries, and how far
+        ahead of the reader they run
       manageQueue: Manage queue
       requestQueueConfig:
         title: Translation rate
         capacity:
           description: "Maximum burst requests: how many can go out at once"
         rate:
-          description: "Requests per second: the steady pace after a burst. Decimals work, so 0.25 sends one request every 4 seconds"
+          description: "Requests per second: the steady pace after a burst. Decimals work,
+            so 0.25 sends one request every 4 seconds"
       batchQueueConfig:
         title: Batch translation
-        description: Configure character limits and maximum paragraph count for batch translation (only effective for LLM translation)
+        description: Configure character limits and maximum paragraph count for batch
+          translation (only effective for LLM translation)
         maxCharactersPerBatch:
           description: "Maximum characters: how much text one AI request carries"
         maxItemsPerBatch:
-          description: "Maximum paragraphs: how many paragraphs share one request. Providers that are not AI ignore both"
+          description: "Maximum paragraphs: how many paragraphs share one request.
+            Providers that are not AI ignore both"
       preloadConfig:
         title: Pre-translate range
-        description: Control how much content below the viewport gets pre-translated to save API costs
+        description: Control how much content below the viewport gets pre-translated to
+          save API costs
         margin:
-          description: "Preload distance: how far below the screen to translate ahead, in pixels. Less saves API cost"
+          description: "Preload distance: how far below the screen to translate ahead, in
+            pixels. Less saves API cost"
         threshold:
-          description: "Visibility threshold: how much of a paragraph must be on screen before it is translated, from 0 to 1"
+          description: "Visibility threshold: how much of a paragraph must be on screen
+            before it is translated, from 0 to 1"
     cache:
       title: Cache
       clearCache:
@@ -1484,13 +1061,16 @@ options:
           trigger: Clear cache
           confirm: Confirm
           cancel: Cancel
-          description: This operation will clear all translation cache. This action cannot be undone.
+          description: This operation will clear all translation cache. This action cannot
+            be undone.
   siteRules:
     title: Site rules
     description: Per-site rules that adjust how specific websites are translated.
     userRules:
       title: User Rules
-      description: Define your own site rules as a JSON array. Rules apply to pages whose URL matches their patterns; user rules take precedence over built-in rules.
+      description: Define your own site rules as a JSON array. Rules apply to pages
+        whose URL matches their patterns; user rules take precedence over
+        built-in rules.
       saveButton: Save
       savedButton: Saved
       validation:
@@ -1506,71 +1086,222 @@ options:
         saved: All changes saved
     builtIn:
       title: Built-in Rules
-      description: Site rules shipped with the extension. Disable a rule with its switch if it causes problems on a site.
+      description: Site rules shipped with the extension. Disable a rule with its
+        switch if it causes problems on a site.
       searchPlaceholder: Search by id, description, or URL pattern
       showMore: Show more
       count: Showing $1 of $2 rules
-  tts:
-    title: Text to Speech
-    pageDescription: Read any selection aloud with a natural voice.
-    voice:
-      title: Voice
-      selectPlaceholder: Select a voice
-      noVoicesFound: No voices found
-      language:
-        title: Language voice
-        description: Pick a language, then the voice that reads it aloud. Reset puts back the voice Read Frog picks for that language.
-        reset: Reset
-        previewSample: Hello from Read Frog! This is how I will sound when reading aloud.
-      fallback:
-        title: Fallback voice
-        description: The voice for any language you have not given one of its own.
-    speech:
-      title: Speech
-      rate:
-        title: Rate
-        description: How much faster or slower the voice reads than its own pace, from -100 to 100 percent.
-      pitch:
-        title: Pitch
-        description: How much higher or lower the voice speaks than its own pitch, from -100 to 100 hertz.
-      volume:
-        title: Volume
-        description: How much louder or quieter the voice reads than its own level, from -100 to 100 percent.
-      error: Enter a whole number between $1 and $2
+  inputTranslation:
+    title: Input Translation
+    pageDescription: Translate what you type in input boxes before you send it.
+    trigger:
+      title: Trigger
+      enable:
+        title: Enable
+        description: Press the space bar three times quickly in any input box to
+          translate what you typed there.
+      threshold:
+        title: Trigger threshold
+        description: How long the presses may be apart, in milliseconds. Raise it if the
+          trigger keeps missing, lower it if it fires while you are still
+          typing.
+        error: Enter a value between $1 and $2
+    languages:
+      title: Translation languages
+      pair:
+        title: Language pair
+        description: What the typed text is read as, and what it is translated into.
+          Either side can follow the source and target languages you translate
+          pages with.
+      sourceCode: Page source language
+      targetCode: Translation target language
+      cycle:
+        title: Swap direction each time
+        description: Every trigger swaps the two languages, so triggering again brings
+          the text back to the language you typed in.
+  floatingButton:
+    title: Floating Button
+    pageDescription: Set which side the floating button sits on, what a click does,
+      and where it stays hidden.
+    demoImageAlt: Floating button demo
+    enable:
+      title: Enable floating button
+      description: Display the floating button on web pages for quick access to Read
+        Frog features
+    display:
+      title: Display
+      side:
+        title: Button side
+        description: Choose which side of the page the floating button is docked to
+        left: Left
+        right: Right
+      disabledSites:
+        title: Disabled sites
+        description: Configure websites where the floating button should be disabled
+        enterUrlPattern: Enter URL pattern
+        urlPattern: URL pattern
+    clickAction:
+      title: Click action
+      description: Choose the action when clicking the floating button
+      panel: Open side panel
+      translate: Toggle page translation
+    closeMenu:
+      disableForSite: Disable for this site
+      disableGlobally: Disable globally
+    tooltips:
+      togglePageTranslation: Toggle page translation
+      floatingButtonOptions: Floating button options
+      lockPosition: Lock position
+      unlockPosition: Unlock position
+      settings: Settings
+      feedback: Send feedback
+  advanced:
+    glossary:
+      title: Glossary
+      pageDescription: Give the words that matter to you a fixed translation, and
+        choose where each list applies.
+      untitled: Untitled glossary
+      noGlossaries: No glossaries yet.
+      enable:
+        title: Enable
+        description: Send matching terms to the LLM so it renders them your way. The
+          glossary travels in the prompt, so it only applies to features running
+          on an LLM provider.
+      library:
+        title: Your glossaries
+        description: Each glossary has its own terms and its own list of websites, so a
+          set of terms for work does not follow you onto everything else.
+        button: Add a glossary
+        capReached: You can have at most $1 glossaries.
+        termUsage: $1 of $2 terms used across all glossaries
+      summary:
+        terms: $1 terms
+        termsOne: 1 term
+        allSites: All websites
+        sites: $1 websites
+        sitesOne: 1 website
+      editor:
+        docsLink: How does it work?
+        sections:
+          terms: Terms
+          maintenance: Backup and deletion
+        details:
+          title: Name and description
+          descriptionPlaceholder: Description (optional)
+        enable:
+          title: Enable
+          description: A disabled glossary keeps its terms but sends none of them.
+        sites:
+          title: Websites
+          description: Restrict this glossary to certain websites. example.com is that
+            address alone; *.example.com adds subdomains; example.com/docs/*
+            narrows to one part of a site.
+          allSites: Leave this empty and the glossary applies everywhere.
+          header: Website
+        delete:
+          title: Delete this glossary
+          description: Removes the glossary and every term in it. Export first if you
+            might want the terms back — this cannot be undone.
+          dialog:
+            trigger: Delete
+            title: Delete this glossary?
+            description: The glossary and all $1 terms in it will be permanently deleted.
+              This action cannot be undone.
+            confirm: Delete
+            cancel: Cancel
+      addTerm:
+        title: Add a term
+        description: Give a term the wording you want, or leave the translation empty to
+          keep it unchanged.
+      list:
+        title: Your terms
+        description: Only the terms that appear in a paragraph are sent with it.
+      importExport:
+        title: Import and export
+        description: Terms are a CSV of source, target, targetLanguage and caseSensitive
+          columns — the file Export writes.
+      sourcePlaceholder: Term
+      targetPlaceholder: Translation (leave empty to keep the original)
+      caseSensitive: Match case
+      add: Add
+      searchPlaceholder: Search terms
+      columnEnabled: Enabled
+      columnSource: Term
+      columnTarget: Translation
+      columnTargetLanguage: Target language
+      allLanguages: All languages
+      toggleTerm: Use $1
+      editTerm: Edit $1
+      keepOriginal: Keep the original
+      delete: Delete
+      save: Save
+      cancel: Cancel
+      loading: Loading...
+      empty: No terms yet. Add one above, or import a CSV file.
+      noMatches: No terms match your search.
+      previous: Previous
+      next: Next
+      pageOf: $1 / $2
+      addError:
+        emptySource: Enter a term first.
+        tooLong: That term is too long.
+        capReached: Your glossaries have reached the limit of $1 terms in total.
+        duplicate: That term is already in your glossary.
+      import: Import
+      export: Export
+      importModeMerge: Add to list
+      importModeReplace: Replace list
+      importEmpty: No terms found in that file.
+      importMissingHeader: "That file is not a Read Frog Lite glossary export. It needs these columns:"
+      importOverflow: That import would exceed the limit by $1 terms. Nothing was changed.
+      importSuccess: Imported $1 new and updated $2 terms.
+      importSkipped: Skipped $1 invalid rows and $2 duplicates.
+      importNoValidRows: None of those rows could be imported. Nothing was changed.
+      importReplaceConfirm:
+        title: Replace the whole list?
+        description: All $1 terms in this glossary will be deleted — every target
+          language, not just the one selected — and replaced with the contents
+          of this file. This cannot be undone.
+        confirm: Replace
+        cancel: Cancel
+      deleteAll:
+        title: Delete all terms
+        description: Empty your glossary. Export first if you might want the terms back
+          — deleting them cannot be undone.
+        deleting: Deleting...
+        dialog:
+          title: Delete all terms
+          trigger: Delete all
+          confirm: Confirm
+          cancel: Cancel
+          description: All $1 terms will be permanently deleted. This action cannot be
+            undone.
   videoSubtitles:
     title: Video Subtitles
-    pageDescription: Translate subtitles as you watch, with their own provider, style, and request settings.
+    pageDescription: Translate subtitles as you watch, with their own provider,
+      style, and request settings.
     preference:
       title: Basics
       enable:
         title: Enable video subtitles
-        description: Puts a translate button in the video player's controls on YouTube, X and Netflix.
+        description: Puts a translate button in the video player's controls on YouTube,
+          X and Netflix.
       autoStart:
         title: Translate on open
-        description: Start translating as soon as a video loads, without pressing the button.
+        description: Start translating as soon as a video loads, without pressing the
+          button.
       aiSegmentation:
         title: AI smart segmentation
-        description: Lets AI re-cut the subtitles into sentences. Translations take longer. Needs a strong LLM; weaker models may drop or misalign lines.
+        description: Lets AI re-cut the subtitles into sentences. Translations take
+          longer. Needs a strong LLM; weaker models may drop or misalign lines.
       wordLookupAction:
         title: Word lookup action
-        description: The AI action that answers a click on a word in the subtitles. Dictionary unless you pick one of your own.
-    aiQuota:
-      title: AI subtitles quota
-      description: AI speech recognition gets you accurate subtitles for any video
-      launchBonusPromo: Subscribe before $1 for an extra 300 transcription minutes
-      loginRequired: Log in to view your AI subtitles quota
-      upgradeRequired: AI subtitles require a Pro or Ultra subscription
-      pools:
-        subscription: Monthly quota
-        launchBonus: Launch gift
-      resetsOn: Resets on $1
-      expiresOn: Expires on $1
-      loadError: Unable to load your quota. Please try again later.
-      remainingOf: $1 / $2 min left
-      used: Used $1 min
+        description: The AI action that answers a click on a word in the subtitles.
+          Dictionary unless you pick one of your own.
     style:
       title: Subtitle style
-      description: Display mode, position, fonts, colors and background, set against a live preview
+      description: Display mode, position, fonts, colors and background, set against a
+        live preview
       customizeStyle: Customize style
       displayMode:
         title: Display mode
@@ -1594,7 +1325,8 @@ options:
         title: Custom CSS
         description: Extra CSS for the subtitle lines, on top of the fonts and colors above
         presetTemplate: Preset template
-        presetTemplateDescription: Apply a ready-made template — such as blurring the translation to cover it while you train your listening
+        presetTemplateDescription: Apply a ready-made template — such as blurring the
+          translation to cover it while you train your listening
         presetPlaceholder: Choose a template
         presets:
           blurTranslation: Blur translation
@@ -1623,7 +1355,8 @@ options:
             saved: All changes saved
     customPrompts:
       title: Custom subtitle prompts
-      description: Prompt templates for subtitle translation, kept apart from the webpage translation ones
+      description: Prompt templates for subtitle translation, kept apart from the
+        webpage translation ones
       managePrompts: Manage prompts
       editPrompt:
         promptCellInput:
@@ -1641,40 +1374,56 @@ options:
         capacity:
           description: "Maximum burst requests: how many can go out at once"
         rate:
-          description: "Requests per second: the steady pace after a burst. Decimals work, so 0.25 sends one request every 4 seconds"
+          description: "Requests per second: the steady pace after a burst. Decimals work,
+            so 0.25 sends one request every 4 seconds"
       batchQueueConfig:
         title: Batch translation
-        description: Configure character limits and maximum subtitle line count for batch translation (only effective for LLM translation)
+        description: Configure character limits and maximum subtitle line count for
+          batch translation (only effective for LLM translation)
         maxCharactersPerBatch:
           description: "Maximum characters: how much text one AI request carries"
         maxItemsPerBatch:
-          description: "Maximum subtitle lines: how many lines share one request. Providers that are not AI ignore both"
+          description: "Maximum subtitle lines: how many lines share one request.
+            Providers that are not AI ignore both"
     cache:
       title: Cache
       clearCache:
         title: Clear AI segmentation cache
-        description: Segmentation results kept so a video you have already watched is not cut again
+        description: Segmentation results kept so a video you have already watched is
+          not cut again
         clearing: Clearing...
         dialog:
           title: Clear AI segmentation cache
           trigger: Clear cache
           confirm: Confirm
           cancel: Cancel
-          description: This will delete all cached AI segmentation results. The next time you play a video with AI segmentation enabled, it will re-process the subtitles.
-  whatsNew:
-    title: What's New
-    postType:
-      promotion: Promotion
-      update: Update
-  rateUs:
-    title: Rate Us
-  configMigration:
-    versionTooNew: The imported config version is newer, please upgrade Read Frog to the latest version
-    validationError: Config validation failed
-side:
-  sourceLang: Source Language
-  targetLang: Target Language
-  fileExport: File Export
+          description: This will delete all cached AI segmentation results. The next time
+            you play a video with AI segmentation enabled, it will re-process
+            the subtitles.
+  tts:
+    title: Text to Speech
+    pageDescription: Read text aloud with your configured speech service. Voice IDs
+      are defined by that service.
+    voice:
+      title: Voice
+      selectPlaceholder: Select a voice
+      noVoicesFound: No voices found
+      language:
+        title: Language voice
+        description: Pick a language, then the voice that reads it aloud. Reset puts
+          back the voice Read Frog Lite picks for that language.
+        reset: Reset
+        previewSample: Hello from Read Frog Lite! This is how I will sound when reading aloud.
+      fallback:
+        title: Fallback voice
+        description: The voice for any language you have not given one of its own.
+    speech:
+      title: Speech
+      rate:
+        title: Rate
+        description: How much faster or slower the voice reads than its own pace, from
+          -100 to 100 percent.
+      error: Enter a whole number between $1 and $2
 translateService:
   title: Translation Service
   description: For translate the webpage only
@@ -1686,95 +1435,28 @@ translateService:
   configureAPI: Configure API
 translatePrompt:
   title: AI Translation Style
-  description: Select a Prompt to use during translation. Add or modify custom Prompts on the options page.
-languageLevel: Your Source Lang Level
-languageLevels:
-  beginner: Beginner
-  intermediate: Intermediate
-  advanced: Advanced
+  description: Select a Prompt to use during translation. Add or modify custom
+    Prompts on the options page.
 noAPIKeyConfig:
   warning: If you want to use AI models, please set API key on the options page first
-  warningWithLink:
-    youMust: You must
-    setTheAPIKey: set the API key
-    firstOnThe: first on the
-    optionsPage: options
-    page: page
-languageDetection:
-  llmFailed: LLM language detection failed, fell back to basic detection
 translation:
   sameLanguage: Source and target languages must be different
-  autoModeSameLanguage: Detected language '$1' is the same as target language
   extensionContextInvalidated: The extension was updated. Refresh this page and try again.
-speak:
-  languageDetectionFallback: Using local language detection
-  languageDetectionSettingsHint: In Settings, choose an available LLM or switch to local detection.
-  fetchingAudio: Generating audio...
-  playingAudio: Playing audio...
-  failedToGenerateSpeech: Failed to generate speech
-  noTextSelected: No text selected
-  openaiNotConfigured: OpenAI provider is not configured or enabled
-  openaiApiKeyNotConfigured: OpenAI API key is not configured
 action:
   copy: Copy
   copied: Copied
   regenerate: Regenerate
   viewContextDetails: Context
-  customizeCustomAction: Customize $1 action
-  customActionLayoutFallback: This result can't be shown in its layout, so a simplified view is shown.
-  saveToNotebase: Save to Notebase
-  saveToNotebaseSaving: Saving...
-  saveToNotebaseSuccess: Saved to Notebase
-  saveToNotebaseFailed: Failed to save to Notebase
-  saveToNotebaseLoginRequired: Log in on readfrog.app to save to Notebase
-  saveToNotebaseAccessDenied: This account cannot access the selected Notebase
-  saveToNotebaseLimitExceeded: Upgrade is required to save more Notebase notes
-  saveToNotebaseTableUnavailable: The selected Notebase is no longer available
-  saveToNotebaseConnectionInvalid: This Notebase connection is out of date. Refresh it in Custom AI Actions and fix the mappings.
-  saveToNotebaseInvalidContent: "The AI answer has a value in the wrong format, so it was not saved. Run the action again, then save."
-  saveToNotebaseNoFieldSaved: "Not saved: this action saves no field to the Notebase. Pick at least one in its settings."
-  saveToNotebaseUndecidedTitle: "Saved. You haven't decided whether to save these fields"
-  saveToNotebaseSkipUndecided: "Don't save them"
-  saveToNotebaseNoMappings: Add at least one valid mapping before saving
-  saveToNotebaseCreateTitle: Create a Notebase?
-  saveToNotebaseCreateDescription: Create a new Notebase with columns matching this Custom Action, then save this result as the first note.
-  saveToNotebaseCreateAndSave: Create and save
-  saveToNotebaseCreateAndSaveShort: Create and save
-  saveToNotebaseLoginAndCreate: Log in and auto-create
-  saveToNotebaseLoginAndSave: Log in and save
-  saveToNotebaseConnectExisting: Connect existing Notebase
-  saveToNotebaseGoConfigure: Configure
-  saveToNotebaseLoginConnectedTitle: Log in to save?
-  saveToNotebaseLoginConnectedDescription: This Custom Action is connected to the account below. After login, Read Frog will save to the existing Notebase when possible, or create a new Notebase for the logged-in account.
-  saveToNotebaseConnectionUnavailableTitle: Notebase connection unavailable
-  saveToNotebaseMissingNotebaseDescription: The old Notebase no longer exists or cannot be opened by this account. Create a new Notebase and save this result, or connect an existing Notebase in Custom AI Actions.
-  saveToNotebaseAccountUnavailableDescription: The logged-in account does not match the connected account below. Creating and saving will replace the previous connection and field mappings. You can also connect an existing Notebase in Custom AI Actions.
-  saveToNotebasePendingLogin: Log in to finish saving
-  saveToNotebasePendingLoginDescription: After login, Read Frog will create the Notebase and save this result automatically.
-  saveToNotebasePendingConnectedLoginDescription: After login, Read Frog will save to the connected Notebase when possible. If this account cannot use it, Read Frog will create a new Notebase and save this result.
-  upgrade: Upgrade
-  updatePayment: Update payment
-  openCustomActions: Open Custom AI Actions
-  openNotebase: Open Notebase
-  reviewDueOne: "$1 card to review"
-  reviewDueOther: "$1 cards to review"
   contextDetailsTitleLabel: Title
   contextDetailsParagraphsLabel: Paragraphs
   translation: Translation
+  moreActions: More actions
+  addCustomAction: Add custom AI action
+  unpinFromToolbar: Unpin from toolbar
+  pinToToolbar: Pin to toolbar
+  dragToReorder: Drag to reorder
   speak: Speak
   playing: Playing
-  moreActions: More actions
-  pinToToolbar: Pin to toolbar
-  unpinFromToolbar: Unpin from toolbar
-  dragToReorder: Drag to reorder
-  addCustomAction: Add custom AI action
-noteSuggestion:
-  title: You might want to save
-  description: Choose which words to save to your Notebase and review anytime.
-  save: Save
-  saved: Saved
-  staleSuggestion: This suggestion is out of date
-  toggleLabel: Show note suggestions
 thinking:
   label: Thinking
   complete: Thinking complete
@@ -1782,88 +1464,6 @@ thinking:
   collapse: Collapse thinking
 shortcutKeySelector:
   placeholder: Please enter the shortcut
-subtitles:
-  sidebar:
-    close: Close the learning panel
-    needsSubtitles: This video has no subtitles — try generating AI subtitles first.
-    menu:
-      label: Learning
-    summary:
-      tab: AI summary
-      generating: Generating the summary…
-      failedTitle: Could not generate
-      retry: Try again
-      needsModel: Pick an LLM model for video subtitles to summarize this video.
-      openSettings: Open settings
-    transcript:
-      tab: Subtitles
-      failedTitle: Could not load subtitles
-      retry: Try again
-      emptyTitle: No subtitles to show
-      backToCurrent: Back to current
-  loadingAiSubtitles: Loading AI subtitles… (estimated 3 min)
-  aiSubtitlesHint: Accurate subtitles generated by advanced AI speech recognition — available even when no official subtitles exist.
-  requestAiSubtitles: Request AI subtitles
-  usingAiSubtitles: Using AI subtitles
-  toggle:
-    enabled: Subtitle translation on
-    disabled: Subtitle translation off
-  actions:
-    downloadTranslated: Download translated subtitles
-    downloadTranslatedPreparing: Preparing subtitles, longer videos may take a while
-    downloadTranslatedTranslating: Translating subtitles
-    downloadTranslatedComplete: Translated subtitles downloaded
-    downloadSource: Download source subtitles
-  state:
-    loading: Read Frog loading captions
-    translating: Translating…
-    error: Error occurred
-  errors:
-    http429: 429 Too many requests to youtube subtitle API, please try again later
-    http404: 404 Youtube captions not found
-    http403: 403 Youtube caption access denied
-    http500: 500 Youtube server error
-    httpUnknown: HTTP error $1
-    invalidResponse: Invalid Youtube subtitle response format
-    networkError: Network error occurred when fetching captions
-    fetchSubTimeout: Fetching captions timed out
-    buttonNotFound: Subtitle button not found
-    noSubtitlesFound: No subtitles available for this video
-    trackFileNotLoaded: Subtitles failed to load, please try refreshing the page
-    videoNotFound: Video element not found
-    controlsBarNotFound: Controls bar not found
-    aiRateLimited: Too many requests, please try again later
-    aiAuthFailed: API authentication failed, please check your API key
-    aiServiceUnavailable: Translation service temporarily unavailable
-    aiQuotaExceeded: Monthly AI subtitle quota used up
-    aiQuotaExceededWithReset: Monthly AI subtitle quota used up · resets on $1
-    aiLoginRequired: Log in to view your AI subtitles quota
-    aiSubscriptionRequired: AI subtitles require a Pro or Ultra subscription
-    aiPaymentRequired: Update your payment method to keep generating AI subtitles
-    aiVideoTooLong: This video is too long for AI subtitles
-    aiLiveReplayUnsupported: AI subtitles aren't available for live stream replays yet
-    aiStillProcessing: Transcription is still running — click again in a few minutes to pick it up
-    aiRequestFailed: AI subtitle request failed, please try again later
-    aiNoResponse: AI service did not respond, using original text
-    translatedExportFailed: Failed to generate translated subtitles
-    translatedExportIncomplete: Failed to translate all subtitle lines
-    translatedExportSameLanguage: Source and target languages are the same
-hostedAi:
-  planBadge:
-    pro: Requires the Pro or Ultra plan · Click the badge to get it
-    ultra: Requires the Ultra plan · Click the badge to get it
-  availability:
-    authenticationRequired: Log in to use this provider
-    ultraRequired: Ultra plan required
-    proRequired: Pro or Ultra plan required
-    quotaExhausted: Quota used up
-    serviceUnavailable: Temporarily unavailable
-    usedPercent: "Quota used: $1%"
-    resetsAt: "Resets at $1"
-  errors:
-    rateLimited: Too many requests, please try again later.
-    guestRateLimited: Too many guest requests. Please try again later.
-    userRateLimited: Too many requests. Please try again later.
 hotkey:
   control: Ctrl
   alt: Option
@@ -1871,27 +1471,6 @@ hotkey:
   backtick: Backtick
   clickAndHold: Click and hold
   custom: Custom shortcut
-translationHub:
-  searchLanguages: Search languages...
-  noLanguagesFound: No languages found
-  exchangeLanguages: Exchange languages
-  title: Multi-API Text Translation
-  noServicesSelected: No Translation Services Selected
-  noServicesDescription: Select translation services above to see translation cards here.
-  inputPlaceholder: Enter text to translate...
-  translate: Translate
-  copiedToClipboard: Translation copied to clipboard!
-  copyTranslation: Copy translation
-  speakSourceText: Speak source text
-  speakTranslation: Speak translation
-  expandCard: Expand card
-  collapseCard: Collapse card
-  expandAllCards: Expand all
-  collapseAllCards: Collapse all
-  deleteCard: Delete card
-  translationFailed: Translation Failed
-  translationFailedFallback: Translation failed
-  retryTranslation: Retry translation
 languages:
   eng: English
   cmn: Simplified Chinese
@@ -2072,3 +1651,119 @@ languages:
   wls: Wallisian
   rar: Rarotongan
   hif: Fiji Hindi
+side:
+  targetLang: Target Language
+  sourceLang: Source Language
+translationHub:
+  searchLanguages: Search languages...
+  noLanguagesFound: No languages found
+  exchangeLanguages: Exchange languages
+  title: Multi-API Text Translation
+  noServicesSelected: No Translation Services Selected
+  noServicesDescription: Select translation services above to see translation cards here.
+  inputPlaceholder: Enter text to translate...
+  translate: Translate
+  copiedToClipboard: Translation copied to clipboard!
+  copyTranslation: Copy translation
+  speakSourceText: Speak source text
+  speakTranslation: Speak translation
+  expandCard: Expand card
+  collapseCard: Collapse card
+  expandAllCards: Expand all
+  collapseAllCards: Collapse all
+  deleteCard: Delete card
+  translationFailed: Translation Failed
+  translationFailedFallback: Translation failed
+  retryTranslation: Retry translation
+dataTypes:
+  string: Text
+  number: Number
+subtitles:
+  sidebar:
+    close: Close the learning panel
+    needsSubtitles: This video has no subtitles — try generating AI subtitles first.
+    menu:
+      label: Learning
+    summary:
+      tab: AI summary
+      generating: Generating the summary…
+      failedTitle: Could not generate
+      retry: Try again
+      needsModel: Pick an LLM model for video subtitles to summarize this video.
+      openSettings: Open settings
+    transcript:
+      tab: Subtitles
+      failedTitle: Could not load subtitles
+      retry: Try again
+      emptyTitle: No subtitles to show
+      backToCurrent: Back to current
+  loadingAiSubtitles: Loading AI subtitles… (estimated 3 min)
+  aiSubtitlesHint: Accurate subtitles generated by advanced AI speech recognition
+    — available even when no official subtitles exist.
+  requestAiSubtitles: Request AI subtitles
+  usingAiSubtitles: Using AI subtitles
+  toggle:
+    enabled: Subtitle translation on
+    disabled: Subtitle translation off
+  actions:
+    downloadTranslated: Download translated subtitles
+    downloadTranslatedPreparing: Preparing subtitles, longer videos may take a while
+    downloadTranslatedTranslating: Translating subtitles
+    downloadTranslatedComplete: Translated subtitles downloaded
+    downloadSource: Download source subtitles
+  state:
+    loading: Read Frog Lite loading captions
+    translating: Translating…
+    error: Error occurred
+  errors:
+    http429: 429 Too many requests to youtube subtitle API, please try again later
+    http404: 404 Youtube captions not found
+    http403: 403 Youtube caption access denied
+    http500: 500 Youtube server error
+    httpUnknown: HTTP error $1
+    invalidResponse: Invalid Youtube subtitle response format
+    networkError: Network error occurred when fetching captions
+    fetchSubTimeout: Fetching captions timed out
+    buttonNotFound: Subtitle button not found
+    noSubtitlesFound: No subtitles available for this video
+    trackFileNotLoaded: Subtitles failed to load, please try refreshing the page
+    videoNotFound: Video element not found
+    controlsBarNotFound: Controls bar not found
+    aiRateLimited: Too many requests, please try again later
+    aiAuthFailed: API authentication failed, please check your API key
+    aiServiceUnavailable: Translation service temporarily unavailable
+    aiLiveReplayUnsupported: AI subtitles aren't available for live stream replays yet
+    aiRequestFailed: AI subtitle request failed, please try again later
+    aiNoResponse: AI service did not respond, using original text
+    translatedExportFailed: Failed to generate translated subtitles
+    translatedExportIncomplete: Failed to translate all subtitle lines
+    translatedExportSameLanguage: Source and target languages are the same
+speak:
+  languageDetectionFallback: Using local language detection
+  languageDetectionSettingsHint: In Settings, choose an available LLM or switch to local detection.
+  fetchingAudio: Generating audio...
+  playingAudio: Playing audio...
+  failedToGenerateSpeech: Failed to generate speech
+  noTextSelected: No text selected
+  openaiNotConfigured: OpenAI provider is not configured or enabled
+  openaiApiKeyNotConfigured: OpenAI API key is not configured
+audioServices:
+  service: Audio service
+  provider: Provider
+  providerDescription: Manage the endpoint, API key and headers in API Providers.
+    Only OpenAI-style audio protocols are supported here.
+  model: Audio model
+  modelDescription: Enter the model name accepted by your service. This is
+    independent of its text translation model.
+  timeout: Timeout (milliseconds, 1000–600000)
+  notConfigured: Select a provider and configure its audio model before using this service.
+  selected: The selected service will receive audio or text only when you request it.
+  clear: Clear selection
+  transcription: Transcription (ASR)
+  transcriptionDescription: Configure the audio transcription interface. This
+    version does not capture video audio or submit videos for transcription.
+  language: Input language
+  languageDescription: Optional ISO 639-1 code, such as en or zh. Leave blank for
+    service-side detection.
+  responseFormat: Response format
+  outputFormat: Audio output format

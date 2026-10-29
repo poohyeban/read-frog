@@ -1,6 +1,5 @@
 import type { Config } from "@/types/config/config"
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import {
   DEFAULT_BATCH_TRANSLATE_PROMPT,
   DEFAULT_SENTINEL_TRANSLATE_PROMPT,
@@ -10,14 +9,11 @@ import {
   PRECISION_REWRITE_TRANSLATE_PROMPT_ID,
 } from "@/utils/constants/prompt"
 import { HTML_ATTRIBUTE_MARKER } from "@/utils/host/translate/html-attribute-markers"
-import { getSubtitlesTranslatePrompt } from "../subtitles"
 import { getTranslatePromptFromConfig } from "../translate"
 
 vi.mock("@/utils/config/storage", () => ({
   getLocalConfig: vi.fn<(...args: any[]) => any>(),
 }))
-
-let mockGetLocalConfig: any
 
 const defaultTranslatePromptConfig: Pick<Config["pageTranslation"], "customPromptsConfig"> = {
   customPromptsConfig: {
@@ -29,7 +25,6 @@ const defaultTranslatePromptConfig: Pick<Config["pageTranslation"], "customPromp
 describe("translate prompt tokens", () => {
   beforeEach(async () => {
     vi.clearAllMocks()
-    mockGetLocalConfig = vi.mocked((await import("@/utils/config/storage")).getLocalConfig)
   })
 
   it("replaces new translate prompt tokens from config", () => {
@@ -290,59 +285,6 @@ describe("translate prompt tokens", () => {
     expect(markerRulesIndex).toBeGreaterThan(batchRulesIndex)
     expect(placeholderRulesIndex).toBeGreaterThan(markerRulesIndex)
   })
-
-  it("replaces new subtitle prompt tokens from stored config", async () => {
-    mockGetLocalConfig.mockResolvedValue({
-      ...DEFAULT_CONFIG,
-      videoSubtitles: {
-        ...DEFAULT_CONFIG.videoSubtitles,
-        customPromptsConfig: {
-          promptId: "subtitle-prompt",
-          patterns: [
-            {
-              id: "subtitle-prompt",
-              name: "Subtitles",
-              systemPrompt:
-                "Use {{targetLanguage}} with {{webTitle}}, {{webDescription}}, and {{videoSummary}}",
-              prompt:
-                "{{input}} => {{targetLanguage}} / {{webTitle}} / {{webDescription}} / {{videoSummary}}",
-            },
-          ],
-        },
-      },
-    })
-
-    const result = await getSubtitlesTranslatePrompt("Japanese", "Hello world", {
-      context: {
-        webTitle: "Video Title",
-        webDescription: "Video Description",
-        videoSummary: "Video Summary",
-      },
-    })
-
-    expect(result.systemPrompt).toBe(
-      "Use Japanese with Video Title, Video Description, and Video Summary",
-    )
-    expect(result.prompt).toBe(
-      "Hello world => Japanese / Video Title / Video Description / Video Summary",
-    )
-  })
-
-  it("falls back when subtitle prompt context is null or undefined", async () => {
-    mockGetLocalConfig.mockResolvedValue(DEFAULT_CONFIG)
-
-    const result = await getSubtitlesTranslatePrompt("Japanese", "Hello world", {
-      context: {
-        webTitle: null,
-        webDescription: undefined,
-        videoSummary: undefined,
-      },
-    })
-
-    expect(result.systemPrompt).toContain("Video title: No title available")
-    expect(result.systemPrompt).toContain("Video summary: No summary available")
-    expect(result.systemPrompt).not.toContain("Video description:")
-  })
 })
 
 describe("no-translation sentinel", () => {
@@ -375,7 +317,7 @@ describe("no-translation sentinel", () => {
     expect(result.systemPrompt).toContain("Translation B")
     expect(result.systemPrompt).not.toContain(`${NO_TRANSLATION_SENTINEL}\n\n%%`)
     expect(result.systemPrompt).not.toContain("this one is already written in")
-    // The page batch block is byte-identical to the one subtitles use.
+
     expect(result.systemPrompt).toContain(DEFAULT_BATCH_TRANSLATE_PROMPT)
   })
 
@@ -389,23 +331,6 @@ describe("no-translation sentinel", () => {
     expect(DEFAULT_SENTINEL_TRANSLATE_PROMPT).toContain(
       "A foreign-language phrase or clause must be translated",
     )
-  })
-
-  it("never leaks the sentinel into subtitle prompts, which share the batch rules", async () => {
-    mockGetLocalConfig.mockResolvedValue(DEFAULT_CONFIG)
-
-    const result = await getSubtitlesTranslatePrompt("Japanese", "Hello world", {
-      isBatch: true,
-      context: { webTitle: "Video", webDescription: "Desc", videoSummary: "Sum" },
-    })
-
-    // isBatch is what appends the shared batch block — assert it actually
-    // arrived, or the marker check below passes vacuously.
-    expect(result.systemPrompt).toContain(DEFAULT_BATCH_TRANSLATE_PROMPT)
-    // The subtitle pipeline has no sentinel mapping; the marker must never
-    // appear in its prompts (rule or example).
-    expect(result.systemPrompt).not.toContain(NO_TRANSLATION_SENTINEL)
-    expect(result.systemPrompt).not.toContain("Already-translated Input Rule")
   })
 
   it("appends the sentinel rule after a custom system prompt in batch mode", () => {

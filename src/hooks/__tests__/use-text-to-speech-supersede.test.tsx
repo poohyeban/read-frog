@@ -18,28 +18,31 @@ vi.mock("@/utils/content/language", () => ({
   detectLanguage: (text: string, options?: DetectLanguageOptions) =>
     detectLanguageMock(text, options),
 }))
-vi.mock("@/utils/analytics", () => ({
-  createFeatureUsageContext: () => ({}),
-  trackFeatureUsed: vi.fn<() => Promise<void>>(async () => {}),
-}))
+
 vi.mock("@/components/ui/base-ui/toast", () => ({
   toastManager: { add: vi.fn<(options: unknown) => void>() },
 }))
 
 const { useTextToSpeech } = await import("../use-text-to-speech")
 
-const ttsConfig = {
+const ttsConfig: TTSConfig = {
+  providerId: "test",
+  model: "test",
+  timeoutMs: 120000,
+  outputFormat: "mp3",
   defaultVoice: "en-US-DavisNeural",
   languageVoices: {},
   rate: 0,
-  pitch: 0,
-  volume: 0,
-} as unknown as TTSConfig
+}
 
 function deferred<T>() {
   let resolve!: (value: T) => void
-  const promise = new Promise<T>((r) => (resolve = r))
-  return { promise, resolve }
+  let reject!: (error: Error) => void
+  const promise = new Promise<T>((r, j) => {
+    resolve = r
+    reject = j
+  })
+  return { promise, resolve, reject }
 }
 
 function wrapper({ children }: { children: ReactNode }) {
@@ -65,7 +68,7 @@ describe("useTextToSpeech superseded runs", () => {
     detectLanguageMock.mockResolvedValue("eng")
     const started: string[] = []
     sendMessageMock.mockImplementation(async (type, data) => {
-      if (type === "edgeTtsSynthesize") {
+      if (type === "synthesizeSpeech") {
         return data.text === "A"
           ? slowFetch.promise
           : { ok: true, audioBase64: data.text, contentType: "audio/mpeg" }
@@ -86,14 +89,11 @@ describe("useTextToSpeech superseded runs", () => {
     await waitFor(() =>
       expect(
         sendMessageMock.mock.calls.some(
-          ([type, data]) => type === "edgeTtsSynthesize" && data.text === "A",
+          ([type, data]) => type === "synthesizeSpeech" && data.text === "A",
         ),
       ).toBe(true),
     )
-    expect(detectLanguageMock).toHaveBeenCalledWith(
-      "A",
-      expect.objectContaining({ llmFallbackToastContext: "speak" }),
-    )
+    expect(detectLanguageMock).toHaveBeenCalledWith("A", expect.objectContaining({ minLength: 0 }))
     await act(async () => {
       await result.current.play("B", ttsConfig)
     })
@@ -109,10 +109,10 @@ describe("useTextToSpeech superseded runs", () => {
   })
 
   it("reports no error for a replaced run whose fetch fails", async () => {
-    const slowFetch = deferred<{ ok: false; error: { code: string; message: string } }>()
+    const slowFetch = deferred<{ audioBase64: string; contentType: string }>()
     detectLanguageMock.mockResolvedValue("eng")
     sendMessageMock.mockImplementation(async (type, data) => {
-      if (type === "edgeTtsSynthesize") {
+      if (type === "synthesizeSpeech") {
         return data.text === "A"
           ? slowFetch.promise
           : { ok: true, audioBase64: data.text, contentType: "audio/mpeg" }
@@ -130,7 +130,7 @@ describe("useTextToSpeech superseded runs", () => {
     await waitFor(() =>
       expect(
         sendMessageMock.mock.calls.some(
-          ([type, data]) => type === "edgeTtsSynthesize" && data.text === "A",
+          ([type, data]) => type === "synthesizeSpeech" && data.text === "A",
         ),
       ).toBe(true),
     )
@@ -138,7 +138,7 @@ describe("useTextToSpeech superseded runs", () => {
       await result.current.play("B", ttsConfig)
     })
     await act(async () => {
-      slowFetch.resolve({ ok: false, error: { code: "NETWORK_ERROR", message: "offline" } })
+      slowFetch.reject(new Error("offline"))
       await runA.catch(() => {})
     })
     expect(toastManager.add).not.toHaveBeenCalled()
@@ -149,9 +149,7 @@ describe("useTextToSpeech failures", () => {
   it("reports a failed run with a toast, unless it is a quiet one nobody pressed for", async () => {
     detectLanguageMock.mockResolvedValue("eng")
     sendMessageMock.mockImplementation(async (type) =>
-      type === "edgeTtsSynthesize"
-        ? { ok: false, error: { code: "NETWORK_ERROR", message: "offline" } }
-        : undefined,
+      type === "synthesizeSpeech" ? Promise.reject(new Error("offline")) : undefined,
     )
     const { toastManager } = await import("@/components/ui/base-ui/toast")
     const { result } = renderHook(() => useTextToSpeech(), { wrapper })

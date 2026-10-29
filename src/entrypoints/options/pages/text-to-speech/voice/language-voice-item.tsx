@@ -1,13 +1,11 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { TTSVoice } from "@/types/config/tts"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { IconLoader2, IconPlayerPlayFilled } from "@tabler/icons-react"
 import { useAtom } from "jotai"
 import { useState } from "react"
 import { LanguageCombobox } from "@/components/language-combobox"
 import { Button } from "@/components/ui/base-ui/button"
 import { useTextToSpeech } from "@/hooks/use-text-to-speech"
-import { ANALYTICS_SURFACE } from "@/types/analytics"
-import { getDefaultTTSVoiceForLanguage } from "@/types/config/tts"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { i18n } from "@/utils/i18n"
 import { ConfigItem } from "../../../components/config-item"
@@ -20,14 +18,11 @@ import { TTSVoiceCombobox } from "./voice-combobox"
 export function LanguageVoiceItem() {
   const [ttsConfig, setTtsConfig] = useAtom(configFieldsAtomMap.tts)
   const [selectedLanguage, setSelectedLanguage] = useState<LangCodeISO6393>("eng")
-  const { play, isFetching, isPlaying } = useTextToSpeech(ANALYTICS_SURFACE.TTS_SETTINGS)
+  const { play, isFetching, isPlaying } = useTextToSpeech()
   const isFetchingOrPlaying = isFetching || isPlaying
 
-  const selectedLanguageVoice = ttsConfig.languageVoices[selectedLanguage] ?? ttsConfig.defaultVoice
-  const defaultLanguageVoice = getDefaultTTSVoiceForLanguage(
-    selectedLanguage,
-    ttsConfig.defaultVoice,
-  )
+  const selectedLanguageVoice = ttsConfig.languageVoices[selectedLanguage] || ttsConfig.defaultVoice
+  const defaultLanguageVoice = ""
 
   const updateLanguageVoice = (voice: TTSVoice) => {
     void setTtsConfig({
@@ -75,7 +70,7 @@ export function LanguageVoiceItem() {
             onClick={() => {
               void play(i18n.t("options.tts.voice.language.previewSample"), ttsConfig, {
                 forcedVoice: selectedLanguageVoice,
-              })
+              }).catch(() => {})
             }}
             disabled={isFetchingOrPlaying}
           >

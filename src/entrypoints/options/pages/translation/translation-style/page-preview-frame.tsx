@@ -70,24 +70,6 @@ interface PagePreviewFrameProps {
   className?: string
 }
 
-/**
- * Renders the translated-node preview inside a same-origin `srcdoc` iframe.
- *
- * The CSS shown here is the user's, and production injects it into the host page's *document* —
- * so until now this preview injected it into the settings page's document, where a rule as ordinary
- * as `* { display: none }` left the options UI blank on every load, editor and sidebar included,
- * with the offending CSS saved in config and no way back through the UI.
- *
- * An iframe is the only container that is also a Document, which is why it is used here rather than
- * the shadow root the subtitle preview uses: a shadow tree has no `:root` and no `body`, ignores
- * `@property` and `@font-face`, and answers to `:host`, so it would quietly disagree with production
- * on every one of those — in both directions. The frame agrees with production and contains
- * everything, layout included: a fixed-height frame is its own viewport, so `position: fixed` and a
- * runaway height stay inside it with no containment tricks.
- *
- * The frame follows its content only between a floor and a ceiling — an unbounded content size
- * would give that last property back.
- */
 export function PagePreviewFrame({ children, className }: PagePreviewFrameProps) {
   const frameRef = useRef<HTMLIFrameElement>(null)
   const [body, setBody] = useState<HTMLElement | null>(null)

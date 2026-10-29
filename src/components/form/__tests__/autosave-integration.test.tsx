@@ -14,7 +14,6 @@ import {
 } from "../autosave-navigation"
 import { fieldContext, formContext } from "../form-context"
 import { InputFieldAutoSave } from "../input-field-auto-save"
-import { QuickInsertableTextareaFieldAutoSave } from "../quick-insertable-textarea-field-auto-save"
 import { toAutosaveSession, useAutosave } from "../use-autosave"
 
 type Draft = { id: string; name: string; prompt: string; amount: number | undefined }
@@ -57,14 +56,7 @@ function Editor({
       <form.AppField name="name">
         {(field) => <field.InputFieldAutoSave label="Name" />}
       </form.AppField>
-      <form.AppField name="prompt">
-        {() => (
-          <QuickInsertableTextareaFieldAutoSave
-            label="Prompt"
-            insertCells={[{ text: "{{selection}}", description: "Insert selection" }]}
-          />
-        )}
-      </form.AppField>
+
       <form.AppField name="amount">
         {(field) => <field.InputFieldAutoSave label="Amount" type="number" />}
       </form.AppField>
@@ -127,25 +119,6 @@ describe("real form autosave integration", () => {
     await waitFor(() => expect(screen.getByLabelText("saved-name")).toHaveTextContent("你好"))
     expect(input).toHaveValue("你好")
     expect(onSave).toHaveBeenCalledTimes(1)
-  })
-
-  it("protects prompt composition and saves token insertion through the same controller", async () => {
-    const { onSave } = setup()
-    const input = screen.getByRole("textbox", { name: "Prompt" })
-    fireEvent.compositionStart(input)
-    fireEvent.change(input, { target: { value: "fanyi" } })
-    fireEvent.blur(input)
-    await act(async () => {
-      await Promise.resolve()
-    })
-    expect(onSave).not.toHaveBeenCalled()
-    fireEvent.compositionEnd(input, { target: { value: "翻译" } })
-    await waitFor(() => expect(screen.getByLabelText("saved-prompt")).toHaveTextContent("翻译"))
-    fireEvent.click(screen.getByRole("button", { name: "{{selection}}" }))
-    fireEvent.blur(input)
-    await waitFor(() =>
-      expect(screen.getByLabelText("saved-prompt")).toHaveTextContent("{{selection}}"),
-    )
   })
 
   it("waits for saving before allowing a route change", async () => {

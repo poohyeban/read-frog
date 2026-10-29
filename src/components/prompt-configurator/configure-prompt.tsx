@@ -1,5 +1,5 @@
 import type { TranslatePromptObj } from "@/types/config/translate"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useAtom, useAtomValue } from "jotai"
 import { useState } from "react"
 import { Button } from "@/components/ui/base-ui/button"

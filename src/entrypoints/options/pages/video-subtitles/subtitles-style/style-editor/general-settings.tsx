@@ -1,5 +1,5 @@
 import type { SubtitlesDisplayMode, SubtitlesTranslationPosition } from "@/types/config/subtitles"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { deepmerge } from "deepmerge-ts"
 import { useAtom } from "jotai"
 import { useEffect, useState } from "react"

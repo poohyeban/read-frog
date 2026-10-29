@@ -1,5 +1,5 @@
 import type GlossaryTerm from "@/utils/db/dexie/tables/glossary-term"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useMemo, useState } from "react"
 import { LanguageCombobox } from "@/components/language-combobox"
 import { getGlossaryTargetLanguageItems } from "@/components/language-combobox-options"

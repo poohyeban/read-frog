@@ -1,5 +1,5 @@
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import {
   Select,
   SelectContent,

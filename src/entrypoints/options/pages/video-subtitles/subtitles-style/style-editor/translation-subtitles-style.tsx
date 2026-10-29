@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { deepmerge } from "deepmerge-ts"
 import { useAtom } from "jotai"
 import { Button } from "@/components/ui/base-ui/button"

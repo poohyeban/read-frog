@@ -26,9 +26,12 @@ export function ShortcutsPage() {
       <PageTranslationShortcut />
       <TranslationModeShortcut />
       <SelectionTranslationShortcut />
-      <SelectionSpeakShortcut />
-      <SubtitlesToggleShortcut />
+      <></>
+      <></>
       <NodeTranslationHotkey />
+      <SubtitlesToggleShortcut />
+      <></>
+      <SelectionSpeakShortcut />
       <TranslationHubShortcut />
       <ActionShortcuts />
     </PageLayout>
