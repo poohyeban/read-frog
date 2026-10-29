@@ -44,6 +44,22 @@ describe("buildTranscript", () => {
 describe("findActiveLine", () => {
   const lines = buildTranscript(SOURCE, [])
 
+  it("chooses the first array entry across overlaps, including a long earlier cue", () => {
+    const overlaps = [cue("long", 100, 10000), cue("short", 500, 600), cue("middle", 900, 1500)]
+    expect(findActiveLine(overlaps, 550)).toBe(0)
+    expect(findActiveLine(overlaps, 1100)).toBe(0)
+    expect(findActiveLine(overlaps, 10000)).toBe(-1)
+  })
+
+  it("preserves equal-start order and never silently sorts unsorted input", () => {
+    const overlaps = [cue("first", 500, 700), cue("earlier", 0, 1000), cue("same", 500, 2000)]
+    expect(findActiveLine(overlaps, 550)).toBe(0)
+    expect(findActiveLine(overlaps, 700)).toBe(1)
+    expect(findActiveLine(overlaps, 1000)).toBe(2)
+    expect(findActiveLine(overlaps, -1)).toBe(-1)
+    expect(findActiveLine(overlaps, NaN)).toBe(-1)
+  })
+
   it("finds the line covering the playhead", () => {
     expect(findActiveLine(lines, 2500)).toBe(1)
   })
