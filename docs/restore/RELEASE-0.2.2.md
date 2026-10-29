@@ -19,6 +19,28 @@
 
 来源：[SDK 3.0.63 包声明](https://cdn.jsdelivr.net/npm/@ai-sdk/deepseek@3.0.63/package.json)、[适配器源码](https://cdn.jsdelivr.net/npm/@ai-sdk/deepseek@3.0.63/src/chat/deepseek-chat-language-model.ts)、[DeepSeek JSON Output](https://api-docs.deepseek.com/guides/json_mode/)、[OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)。
 
+## 已完成的验证
+
+[CI run 40847796623](https://github.com/poohyeban/read-frog/actions/runs/40847796623) 已通过：Lint / TypeScript、264 个测试文件中的 2,577 项测试、Chromium MV3 生产构建，以及真实 Chromium 加载扩展的完整浏览器回归（1 个综合场景，11.3 秒）。本地同样通过 Lint / TypeScript 与 2,577 项测试；外部免费翻译服务测试按项目规则跳过。
+
+浏览器回归覆盖：双语、仅译文、关闭恢复、刷新持久化；通过真实 SDK 发出 DeepSeek JSON mode 请求并显示词典 / 长难句结果；拒绝 JSON Schema 时的脱敏开发者诊断；Key 不进入页面或日志；五类 Provider 图标在深浅主题中可解码且各不相同；网页青蛙 PNG 内嵌显示、字幕包包含相同 PNG；测试期间没有外部网络请求。实际 YouTube DOM 与真实 API 响应仍未由该本地场景覆盖。
+
+发布复用这次 CI 的原始 ZIP，不重复构建。代码提交：`de10eafc246366b7406a5871abc9a45f096427e7`。
+
+| 指标 | 0.2.1 | 0.2.2 |
+| --- | ---: | ---: |
+| src 文件数 | 996 | 1,003 |
+| 直接运行 / 开发依赖 | 55 / 37 | 56 / 37 |
+| 解压后构建字节 | 14,557,875 | 14,663,276 |
+| ZIP 字节 | 4,603,209 | 4,633,283 |
+| subtitles.js 字节 | 3,375,654 | 3,393,672 |
+| content-runtime.js 字节 | 2,515,050 | 2,597,657 |
+| background.js 字节 | 58,610 | 58,971 |
+
+ZIP 增加 30,074 字节（约 0.65%），包含专用适配器、品牌图标和新增许可证。完整指标见 [final-metrics.json](https://github.com/poohyeban/read-frog/blob/v0.2.2/docs/restore/final-metrics.json)，旧指标保存在 `metrics-0.2.1.json`。
+
+SHA256：`e22d2337226563c5c6f38fea92e84b9c6320e0f91c9c1fded07f1efd81e030f8`。
+
 ## 安装与人工复核
 
 下载 Release 附件 `read-frog-lite-0.2.2-chrome.zip`，覆盖原扩展目录，重新加载扩展并确认版本 0.2.2，再刷新 YouTube。不要卸载扩展或清空配置。
