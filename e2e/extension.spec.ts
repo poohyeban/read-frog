@@ -114,7 +114,7 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
         config.providersConfig = config.providersConfig.map((provider) =>
           provider.id === id
             ? {
-                ...provider,
+                id: provider.id,
                 provider: "openai-compatible",
                 name: "Local regression API",
                 enabled: true,
@@ -170,7 +170,17 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
     await page.keyboard.press("Space")
     await page.keyboard.press("Space")
     await expect(page.getByRole("textbox", { name: "Editor" })).toHaveValue(translated)
-    expect(await page.content()).not.toContain(credential)
+    const renderedMarkup = await page.evaluate(() => {
+      function markup(root: Document | ShadowRoot): string {
+        return [...root.querySelectorAll("*")]
+          .map(
+            (element) => element.outerHTML + (element.shadowRoot ? markup(element.shadowRoot) : ""),
+          )
+          .join("\n")
+      }
+      return markup(document)
+    })
+    expect(renderedMarkup).not.toContain(credential)
     await page.reload()
     await expect(page.locator("#article")).toHaveText(original)
     const options = await context.newPage()
