@@ -178,7 +178,14 @@ test("subtitles continue across batches, translate long active cues and clean up
     }
     await page.screenshot({ path: `${artifactDir}/long-active-cue.png` })
     const otherTab = await context.newPage()
-    await otherTab.goto("about:blank")
+    await otherTab.goto("chrome://extensions/")
+    await otherTab.evaluate(() => new Promise((resolve, reject) => {
+      chrome.developerPrivate.updateProfileConfiguration({ inDeveloperMode: true }, () => {
+        const error = chrome.runtime.lastError?.message
+        if (error) reject(new Error(error))
+        else resolve()
+      })
+    }))
     await otherTab.bringToFront()
     await worker.evaluate(() => {
       setTimeout(() => chrome.runtime.reload(), 0)
@@ -206,8 +213,6 @@ test("subtitles continue across batches, translate long active cues and clean up
       pageErrors: evidence.pageErrors.slice(errorsBefore),
     }
     await page.screenshot({ path: `${artifactDir}/after-extension-reload.png` })
-    // Wake the replacement worker and wait until the reloaded extension is ready
-    // before refreshing the tab; its old worker disappearing is only the start.
     const options = await context.newPage()
     await options.goto(`chrome-extension://${worker.url().split("/")[2]}/options.html`)
     await options.waitForFunction(() => typeof chrome.runtime?.id === "string")
