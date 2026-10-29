@@ -1,6 +1,6 @@
 import type { ProtocolCompatibleLLMProviderConfig } from "@/types/config/provider"
 import { Combobox as ComboboxPrimitive } from "@base-ui/react"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useMutation } from "@tanstack/react-query"
 import LoadingDots from "@/components/loading-dots"
 import { Button } from "@/components/ui/base-ui/button"

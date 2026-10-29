@@ -3,8 +3,6 @@ import { normalizeTranslationOutput } from "../translation-output-normalization"
 
 describe("normalizeTranslationOutput", () => {
   const googleProvider = { provider: "google-translate" as const }
-  const microsoftProvider = { provider: "microsoft-translate" as const }
-  const deepLProvider = { provider: "deepl" as const }
 
   it("decodes apostrophe and quote entities returned by Google translateHtml", () => {
     expect(normalizeTranslationOutput(googleProvider, "L&#39;Iran")).toBe("L'Iran")
@@ -26,15 +24,6 @@ describe("normalizeTranslationOutput", () => {
     expect(normalizeTranslationOutput(googleProvider, "<span>L&#39;Iran</span>")).toBe(
       "<span>L'Iran</span>",
     )
-  })
-
-  it("decodes entities for Microsoft Translator (its adapter escapes plain input)", () => {
-    expect(normalizeTranslationOutput(microsoftProvider, "A&amp;B")).toBe("A&B")
-    expect(normalizeTranslationOutput(microsoftProvider, "&lt;B和C&gt; d")).toBe("<B和C> d")
-  })
-
-  it("does not normalize providers that return plain text", () => {
-    expect(normalizeTranslationOutput(deepLProvider, "A&amp;B")).toBe("A&amp;B")
   })
 
   it("decodes apostrophes in input-translation results (issue #1517)", () => {

@@ -99,14 +99,6 @@ const googleProvider: ProviderConfig = {
   enabled: true,
 }
 
-const deepLProvider: ProviderConfig = {
-  id: "deepl-default",
-  name: "DeepL",
-  provider: "deepl",
-  enabled: true,
-  apiKey: "test-key",
-}
-
 describe("translation queue helpers", () => {
   beforeEach(() => {
     vi.resetModules()
@@ -719,31 +711,6 @@ describe("translation queue helpers", () => {
       expect.any(Function),
       { textFormat: "html", signal: expect.any(AbortSignal) },
     )
-  })
-
-  it("does not normalize cached non-Google translations", async () => {
-    translationCacheGetMock.mockResolvedValueOnce({
-      key: "webpage-hash",
-      translation: "A&amp;B",
-    })
-
-    const { setupPageTranslationHandlers } = await import("../page-translation")
-    setupPageTranslationHandlers()
-
-    const handler = getRegisteredMessageHandler("enqueueTranslateRequest")
-    const result = await handler({
-      data: {
-        text: "hello",
-        langConfig: DEFAULT_CONFIG.language,
-        providerRef: localProviderRef(deepLProvider),
-        scheduleAt: Date.now(),
-        hash: "webpage-hash",
-      },
-    })
-
-    expect(result).toBe("A&amp;B")
-    expect(executeTranslateMock).not.toHaveBeenCalled()
-    expect(translationCachePutMock).not.toHaveBeenCalled()
   })
 
   it("exposes webpage summary generation as a separate background handler", async () => {

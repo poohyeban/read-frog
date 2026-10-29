@@ -1,29 +1,11 @@
-name: Read Frog
-extName: "Read Frog - Traducción con IA y flashcards"
-extDescription: "Traducción bilingüe con IA para webs y subtítulos de YouTube, Netflix y X. Guarda palabras nuevas y repásalas con flashcards."
-uninstallSurveyUrl: https://tally.so/r/nPK6Ob
-account:
-  login: Iniciar sesión
-  webApp: Aplicación web
-  logout: Cerrar sesión
-  logoutError: No se pudo cerrar sesión. Inténtalo de nuevo.
-  grantAccess: Conceder acceso
-  grantAccessHint: Necesita acceso a readfrog.app
-  grantAccessError: No se pudo conceder el acceso. Inténtalo de nuevo.
-dataTypes:
-  string: Texto
-  number: Número
+name: Read Frog Lite
+extName: "Read Frog Lite"
+extDescription: "Private page and selection translation with your own API."
 contextMenu:
   translate: Traducir
   translateSelection: Traducir "%s"
-  readAloudSelection: Leer en voz alta "%s"
   showOriginal: Mostrar original
-sidePanel:
-  firefoxUserActionHint: En Firefox, abre Read Frog desde la barra lateral del navegador.
-  firefoxUserActionHelpText: Aprende a abrir la barra lateral de Firefox
-  firefoxUserActionHelpUrl: https://support.mozilla.org/en-US/kb/use-sidebar-access-tools-and-vertical-tabs
 popup:
-  theme: Tema
   autoLang: Auto
   sourceLang: Origen
   targetLang: Destino
@@ -33,8 +15,6 @@ popup:
     open: Open provider settings
   translate: Traducir
   showOriginal: Mostrar original
-  enabledFloatingButton: Activar botón flotante
-  enabledSelectionToolbar: Activar barra de selección
   alwaysTranslate: Traducir siempre este sitio
   addToWhitelist: Activar extensión en este sitio
   addToBlacklist: Desactivar extensión en este sitio
@@ -49,31 +29,8 @@ popup:
       translationOnly:
         current: Modo solo traducción actual
         action: Haz clic para cambiar a bilingüe
-  hub:
-    tooltip: Traduce texto con varios modelos al mismo tiempo
-  discord:
-    tooltip: Únete a Discord para conectar con desarrolladores y obtener acceso anticipado a nuevas funciones
-  blog:
-    notification: Novedades de Read Frog
   aiSmartContext: Contexto inteligente de IA
   aiSmartContextDescription: Usa el contexto de la página web para mejorar la calidad de la traducción. Requiere un proveedor de traducción LLM.
-  storeReview:
-    title: ¿Te gusta Read Frog?
-    description: Una reseña en la tienda ayuda a que otros lectores lo descubran.
-    action: Escribir una reseña
-    dismiss: Descartar
-  more:
-    title: Más
-    help: Ayuda
-    tutorial: Tutorial
-    emailUs: Escríbenos
-    featureRequest: Sugerir una función
-    bugReport: Informar de un fallo
-    community: Comunidad
-    joinDiscord: Unirse a Discord
-    joinWechat: Unirse al grupo de WeChat
-    starGithub: Marcar con estrella en GitHub
-    rateUs: Calificarnos
 errorRecovery:
   title: Algo salió mal
   description: El modo de recuperación está activo. Puedes exportar tu configuración actual como copia de seguridad y luego restablecer la configuración e intentarlo de nuevo.
@@ -111,71 +68,16 @@ options:
     toggle: Alternar barra lateral
     settings: Configuración
     features: Funciones
-    translation: Traducción
-    product: Producto
-  tools:
-    translationHub: Centro de traducción
-    pdfTranslation: Traducción de PDF
-  product:
-    roadmap: Hoja de ruta
-  helpAndCommunity:
-    title: Ayuda y comunidad
-    pageDescription: Aprende a usar Read Frog, pide ayuda al equipo o únete a otros usuarios en la comunidad.
-    help:
-      title: Ayuda
-    tutorial:
-      title: Tutorial
-      description: Lee la documentación y aprende a usar Read Frog
-    email:
-      title: Escríbenos
-      description: Contacta directamente con el equipo en contact@readfrog.app
-    featureRequest:
-      title: Sugerir una función
-      description: Propón una idea y vota lo que el equipo construirá a continuación
-    bugReport:
-      title: Informar de un fallo
-      description: Abre un ticket de soporte y síguelo hasta que se resuelva
-    community:
-      title: Comunidad
-    discord:
-      title: Discord
-      description: Habla en tiempo real con el equipo y con otros usuarios
-    wechat:
-      title: Grupo de WeChat
-      description: Escanea el código QR para unirte al grupo de discusión de WeChat
-      qrCodeAlt: Código QR de WeChat
   apiProviders:
     title: Proveedores de API
     pageDescription: Conecta los servicios de IA que usa Read Frog y elige cuál se encarga de cada función.
     description: Añade los proveedores que Read Frog puede llamar. Más de 20 vienen integrados y puedes añadir API personalizadas compatibles con Chat Completions u Open Responses.
     configTitle: Configuración de proveedores
     addProvider: Añadir proveedor
-    builtInProvider: Proveedor integrado
-    builtInAiUsage:
-      title: Cuota de IA integrada
-      remaining: "$1% restante"
-      supportedFeatures: "Compatible con $1 funciones"
-      resetsAt: "Se restablece el $1"
-      daily: Cuota diaria
-      weekly: Cuota semanal
-      oneTime: Crédito de regalo
-      expiresAt: "Caduca el $1"
-      features:
-        pageTranslation: Traducción de página
-        customAction: Acciones de IA personalizadas
-        noteSuggestion: Sugerencias de notas
-        selectionTranslation: Traducción de la selección
-        videoSubtitles: Subtítulos de video
-        inputTranslation: Traducción de entrada
-        languageDetection: Detección de idioma
-    sponsorCta: Obtén IA rápida y rentable
-    sponsorCtaJalapenoCloud: Obtén un 50 % de descuento en GLM 5.2
     setApiKeyWarning:
       message: Configura tu clave de API en la página $1
     badges:
       featureCount: $1 funciones
-      sponsor: Patrocinador
-      sponsorJalapenoCloud: $$2 gratis
     dialog:
       title: Añadir nuevo proveedor
       groups:
@@ -192,9 +94,7 @@ options:
       fields:
         name: Nombre
         description: Descripción
-        apiKey: Clave API
         baseURL: Base URL
-        url: URL
         optional: Opcional
       duplicate: Duplicar
       delete: Eliminar
@@ -207,12 +107,8 @@ options:
       featureWouldLoseProvider: 'No se puede eliminar: "$1" se quedaría sin ningún proveedor que pueda ejecutarla.'
       providerInUseCannotDisable: 'No se puede desactivar "$1" porque actualmente lo usan $2 función(es).'
       duplicateProviderName: 'Nombre de proveedor duplicado "$1"'
-      defaultProvider:
-        translate: Establecer como proveedor de traducción predeterminado
       models:
         translate:
-          title: Modelo de traducción
-          customTitle: Modelo de traducción personalizado
           placeholder: Selecciona un modelo
         fetchModels: Obtener modelos disponibles
         fetchError: No se pudieron obtener los modelos
@@ -225,14 +121,6 @@ options:
         label: Modelo
         enterCustomModel: Introduce el nombre del modelo personalizado
       advancedOptions: Opciones avanzadas
-      providerSettingLabels:
-        region: Región
-        apiMode: Modo de API
-        resourceName: Nombre del recurso de Azure (opcional)
-        apiVersion: Versión de API
-      providerSettingOptionLabels:
-        responses: Responses API
-        chatCompletions: Chat Completions
       temperature: Temperatura
       temperatureHint: Controla la aleatoriedad en las respuestas. Los valores más bajos (0) son más deterministas; los más altos son más creativos. El rango varía según el proveedor. Déjalo vacío para usar el valor predeterminado del proveedor.
       reasoning:
@@ -250,13 +138,7 @@ options:
       invalidJson: Formato JSON no válido
     providers:
       name:
-        builtInAi: IA integrada
-        builtInAiAdvance: IA integrada avanzada
         customChatComplete: Personalizado Chat Complete
-        customResponses: Personalizado Responses
-      attribution:
-        builtInAi: Modelo estándar alojado por Read Frog. Los usuarios Pro y Ultra pueden usarlo en todas las funciones con una cuota semanal; en el plan gratuito solo funciona en las acciones de IA personalizadas.
-        builtInAiAdvance: Modelo avanzado alojado por Read Frog, exclusivo para miembros Ultra. Funciona en todas las funciones de IA integrada — traducción de página, acciones de IA personalizadas y más — con una cuota semanal compartida. Consume la cuota más rápido que el modelo estándar.
       description:
         openai: Proporciona modelos como GPT-4o
         azure: Modelos OpenAI hospedados en Azure mediante tus implementaciones
@@ -292,7 +174,6 @@ options:
     apiKey:
       showAPIKey: Mostrar clave API
       getAPIKey: Obtener clave API
-    howToConfigure: ¿Cómo configurar?
     testConnection:
       button: Probar conexión
       testing: Probando...
@@ -380,131 +261,13 @@ options:
       googleDrive:
         title: Sincronización cloud con Google Drive
         description: Descarga la configuración cuando la remota es más reciente, sube la configuración cuando la local es más reciente. Tus glosarios viajan en un archivo propio y se fusionan término a término en vez de reemplazarse.
-        sync: Sincronizar con Google Drive
-        syncing: Sincronizando...
-        syncSuccess:
-          uploaded: Configuración local subida a la nube
-          downloaded: Configuración remota aplicada
-          sameChanges: Los mismos cambios de configuración en ambos lados, sincronizado
-          noChange: La configuración ya está sincronizada
-          unresolved: Conflictos de configuración resueltos y sincronizados
-        syncError: Error al sincronizar la configuración, inténtalo de nuevo
-        accountChangedError: La cuenta de Google conectada cambió mientras el diálogo estaba abierto. No se subió nada; vuelve a sincronizar.
-        metadataCorrupted: Metadatos de sincronización dañados, configuración remota aplicada
-        lastSyncTime: Última sincronización a las
-        logout: Cerrar sesión
-        logoutSuccess: Sesión de cuenta de Google cerrada
-        unresolved:
-          title: Resolución de sincronización de configuración
-          description: Las configuraciones local y remota difieren. Elige qué versión conservar para cada campo.
-          resolved: Resuelto
-          unresolved: Sin resolver
-          localValue: Valor local
-          remoteValue: Valor remoto
-          useLocal: Usar local
-          useRemote: Usar remoto
-          useAllLocal: Usar todo local
-          useAllRemote: Usar todo remoto
-          reset: Restablecer selección
-          progress: $1/$2 cambios resueltos
-          confirm: Confirmar sincronización
-          cancel: Cancelar
-          hasUnresolvedInChildren: ⚠ Contiene cambios sin resolver
-          item: elemento
-          items: elementos
-          unresolvedPrompt: "[Unresolved - Please select]"
-          localLatest: Local más reciente
-          remoteLatest: Remoto más reciente
-          bothChanged: Ambos cambiaron
-          localChanged: Local cambió
-          remoteChanged: Remoto cambió
-          configValid: La configuración es válida
-          configInvalid: La configuración no es válida
-          resolveToContinue: Resuelve los conflictos para continuar
-          validationAlert:
-            title: La configuración combinada tiene errores de validación.
-            description: "Ajusta las diferencias siguientes para corregir:"
-          moreErrors: ...y $1 errores más
-        glossary:
-          thisDevice: Este dispositivo
-          cloud: Nube
-          deleted: Eliminado
-          disabled: desactivado
-          upToDate: Los glosarios ya están sincronizados
-          uploaded: Glosarios subidos a la nube
-          merged: "Glosarios sincronizados: $1 añadidos, $2 actualizados, $3 eliminados"
-          undo: Deshacer
-          undone: Glosarios restaurados a como estaban antes de la sincronización
-          undoUnavailable: "Esa acción ya no se puede deshacer: tus glosarios han cambiado desde entonces."
-          retry: El glosario cambió durante la sincronización. Vuelve a ejecutarla.
-          accountChangedRetry: La cuenta de Google conectada cambió mientras el diálogo estaba abierto. No se subió nada; vuelve a sincronizar.
-          busy: Otra pestaña está sincronizando tus glosarios ahora mismo.
-          malformed: No se pudo leer el archivo de glosarios de tu Drive, así que no se cambió nada.
-          versionTooNew: Ese archivo de glosarios lo escribió una versión más reciente de Read Frog. Actualiza la extensión primero.
-          duplicateFiles: Tu Drive tiene más de un archivo de glosarios. No se cambió nada - elimina el sobrante.
-          capExceeded: "La fusión superaría el límite de glosarios en $1. No se cambió nada."
-          failed: Falló la sincronización de glosarios
-          review:
-            title: Revisa esta sincronización de glosarios
-            description: Elige qué conservar donde las dos copias no coinciden.
-            firstSync: "Primera sincronización en este dispositivo: $1 llegan de la nube, $2 se suben."
-            accountChanged: "Has iniciado sesión como $1, que no es la cuenta con la que este dispositivo se sincronizó por última vez. Sus $2 filas de glosario se subirán a esta cuenta. Para quedarte solo con los glosarios de esta cuenta, cancela, borra los de aquí y sincroniza de nuevo."
-            destructive: "Esta sincronización elimina $1 de las $2 filas de glosario de este dispositivo."
-            moreConflicts: "Hay $1 diferencias más que no se muestran. Cada una conserva la elección de la fusión."
-            confirm: Sincronizar
-            cancel: Cancelar
       manualSync:
         title: Sincronización manual de configuración
         description: Importa y exporta tu configuración manualmente, con tus glosarios incluidos
-        import: Importar
-        export: Exportar
-        importSuccess: Configuración importada correctamente
         exportSuccess: Configuración exportada correctamente
-        exportGlossaryFailed: Se exportó tu configuración, pero no se pudieron leer tus glosarios y no están en el archivo.
-        importError: Error al importar
-        glossaryImported: "Se importaron $1 términos, sustituyendo los glosarios que tenías."
-        glossaryUndo: Deshacer
-        glossaryUndone: Tus glosarios volvieron a como estaban antes de la importación
-        glossaryUndoUnavailable: "Esa acción ya no se puede deshacer: tus glosarios han cambiado desde entonces."
-        glossaryMalformed: No se pudieron leer los glosarios de ese archivo. No se cambió nada.
-        glossaryVersionTooNew: Los glosarios de ese archivo los escribió una versión más reciente de Read Frog. Actualiza la extensión primero.
-        glossaryCapExceeded: "Ese archivo tiene $1 filas de glosario más que el límite de $2. No se cambió nada."
-        exportOptions:
-          title: Seleccionar opciones de exportación
-          description: Elige si incluir claves API en la configuración exportada. Incluir claves API puede filtrar información sensible, por lo que se recomienda usarlo solo en entornos seguros.
-          includeAPIKeys: Incluir claves API
-          excludeAPIKeys: Excluir claves API
-          cancel: Cancelar
-      viewConfig:
-        open: Abrir configuración
-        title: Configuración
-        description: Consulta el JSON sin procesar de tu configuración actual
       backup:
         title: Copia de seguridad de configuración
         description: Se crean copias de seguridad automáticas cada hora si la configuración cambia. Puedes restaurar configuraciones anteriores aquí. (Máximo $1 copias de seguridad)
-        loading: Cargando copias de seguridad...
-        backupNow: Crear copia ahora
-        backupSuccess: Copia de seguridad creada correctamente
-        restoreSuccess: Configuración restaurada correctamente
-        empty:
-          title: Aún no hay copias de seguridad disponibles
-          description: Las copias de seguridad se crean automáticamente cada hora si la configuración cambia.
-        item:
-          extensionVersion: "Versión de la extensión:"
-          schemaVersion: "Versión del esquema:"
-          restore: Restaurar
-          export: Exportar
-          delete: Eliminar
-        restore:
-          title: ¿Restaurar copia de seguridad de configuración?
-          description: Tu configuración actual se respaldará automáticamente si es diferente de la copia de seguridad más reciente. La copia más antigua puede eliminarse si el número de copias supera el límite.
-          cancel: Cancelar
-          confirm: Restaurar
-        delete:
-          title: ¿Eliminar copia de seguridad?
-          description: ¿Seguro que quieres eliminar esta copia de seguridad? Esta acción no se puede deshacer.
-          cancel: Cancelar
-          confirm: Eliminar
       reset:
         title: Restablecer configuración
         description: Restablecer toda la configuración a sus valores por defecto. Tus glosarios no se ven afectados.
@@ -515,13 +278,11 @@ options:
           cancel: Cancelar
           description: Esta operación borrará toda tu configuración personalizada y la restablecerá a los valores por defecto. Tus glosarios se conservan; elimínalos desde la página de glosarios. Confirma, por favor.
     userExperience:
-      title: Experiencia de usuario
       beta:
         title: Experiencia beta
         description: Activa funciones experimentales que todavía pueden ser inestables
       analytics:
         title: Ayuda a mejorar la experiencia de usuario
-        tooltip: Cuando está activado, Read Frog envía señales anónimas de uso del producto para que podamos detectar errores, verificar la fiabilidad de las funciones, mejorar el rendimiento y el acabado de la UX, y priorizar trabajos futuros.
         description: Mejora Read Frog ayudándonos a localizar errores, pulir la interfaz y más
   shortcuts:
     title: Atajos
@@ -556,64 +317,37 @@ options:
     turnOn: "Activar"
     clash: "Mismo atajo que «$1». Cambia uno de ellos."
     taken: "«$2» ya usa $1."
-  overlayTools:
-    title: Herramientas superpuestas
   inputTranslation:
     title: Traducción de entrada
-    pageDescription: Traduce lo que escribes en los campos de texto antes de enviarlo.
     trigger:
       title: Activación
       enable:
-        title: Activar
         description: Pulsa la barra espaciadora tres veces seguidas en cualquier campo de entrada para traducir lo que has escrito.
       threshold:
         title: Umbral de activación
         description: Cuánto pueden separarse las pulsaciones, en milisegundos. Auméntalo si la traducción no llega a activarse; redúcelo si salta mientras escribes.
-        error: Introduce un valor entre $1 y $2
     languages:
       title: Idiomas de traducción
       pair:
-        title: Par de idiomas
         description: En qué idioma se lee el texto que escribes y a cuál se traduce. Ambos lados pueden seguir los idiomas de origen y destino con los que traduces páginas.
-      sourceCode: Idioma de origen de la página
-      targetCode: Idioma de destino de la traducción
       cycle:
         title: Intercambiar dirección cada vez
         description: Cada activación intercambia los dos idiomas, así que la siguiente devuelve el texto al idioma en el que escribiste.
   floatingButton:
     title: Botón flotante
-    pageDescription: Elige en qué lado se coloca el botón flotante, qué hace al pulsarlo y dónde permanece oculto.
-    demoImageAlt: Demostración del botón flotante
     enable:
       title: Activar botón flotante
       description: Muestra el botón flotante en páginas web para acceder rápidamente a las funciones de Read Frog
     display:
-      title: Visualización
       side:
         title: Lado del botón
         description: Elige en qué lado de la página se fija el botón flotante
-        left: Izquierda
-        right: Derecha
       disabledSites:
         title: Sitios desactivados
         description: Configura los sitios web donde se debe desactivar el botón flotante
-        enterUrlPattern: Introduce patrón de URL
-        urlPattern: Patrón de URL
     clickAction:
       title: Acción al hacer clic
       description: Elige la acción al hacer clic en el botón flotante
-      panel: Abrir panel lateral
-      translate: Alternar traducción de página
-    closeMenu:
-      disableForSite: Desactivar para este sitio
-      disableGlobally: Desactivar globalmente
-    tooltips:
-      togglePageTranslation: Alternar traducción de página
-      floatingButtonOptions: Opciones del botón flotante
-      lockPosition: Bloquear posición
-      unlockPosition: Desbloquear posición
-      settings: Ajustes
-      feedback: Enviar comentarios
   selectionToolbar:
     title: Barra de selección
     pageDescription: Define qué acciones aparecen al seleccionar texto y dónde se muestra la barra.
@@ -626,16 +360,9 @@ options:
       translate:
         title: Traducir
         description: Muestra el botón de traducción en la barra de herramientas
-      speak:
-        title: Leer en voz alta
-        description: Muestra el botón de voz, que lee en voz alta el texto seleccionado
       noteSuggestion:
         title: Sugerencias de notas
         description: Después de traducir una selección con un proveedor de IA, sugerir palabras para guardar en tu Notebase
-        action: Acción
-        actionDescription: La acción que genera la sugerencia
-        provider: Proveedor
-        providerDescription: El proveedor de IA que genera la sugerencia
     display:
       title: Visualización
       opacity:
@@ -658,193 +385,16 @@ options:
       providerUnavailable: El proveedor seleccionado no está disponible
     customActions:
       title: Acciones AI personalizadas
-      pageDescription: Escribe tus propios prompts y ejecútalos sobre el texto seleccionado desde la barra de selección. Los datos, el estilo y la interacción de cada resultado son totalmente personalizables.
       description: Añade tus propias acciones AI estructuradas para texto seleccionado
-      configTitle: Configuración de acciones
-      introVideo:
-        trigger: "Ver vídeo"
-        title: "Acciones AI personalizadas en 30 segundos"
-      builtIn: Integrada
-      add: Añadir acción AI
-      edit: Editar acción AI
-      empty: Aún no hay acciones AI personalizadas
-      noEnabledLlmProvider: Activa al menos un proveedor LLM antes de crear acciones AI personalizadas
-      tabs:
-        config: Configuración
-        notebase: Notebase
-        hasErrors: Hay errores
-        connected: Conectado
-        needsAttention: Requiere atención
       form:
-        name: Nombre
-        customize: Personalizar
-        customizeTooltip: Las instrucciones integradas no permiten cambiar los prompts. Haz clic aquí para crear una copia editable y modificar los prompts.
-        aiConfigHelper:
-          trigger: "Configurar con IA"
-          title: "Configurar con IA"
-          description: "Copia el prompt de abajo y pégalo en tu asistente de IA (ChatGPT, Claude, DeepSeek, Kimi…). Primero te preguntará qué quieres y luego te dirá qué poner en cada ajuste. El prompt incluye la configuración actual de esta acción, pero no las claves de API."
-          copy: "Copiar prompt"
-          copyFailed: "No se pudo copiar el prompt. Inténtalo de nuevo."
-        icon: Icono
-        iconField:
-          chooseAriaLabel: Elegir icono
-          chooseTitle: Elegir un icono
-          inputPlaceholder: Introduce el nombre del icono
-          helpAriaLabel: Más ayuda sobre iconos
-          helpTitle: ¿No encuentras el icono que quieres?
-          helpStepBrowsePrefix: Busca iconos en
-          helpStepBrowseSuffix: ""
-          helpStepCopyPrefix: "Copia el nombre del icono, por ejemplo "
-          helpStepCopySuffix: ", y pégalo en el campo."
-        provider: Proveedor (requiere compatibilidad con salida estructurada)
         selectProvider: Selecciona un proveedor
-        systemPrompt: Prompt del sistema
-        prompt: Prompt
-        outputSchema: Esquema de salida
-        addField: Añadir campo
-        fieldName: Nombre del campo
-        fieldType: Tipo de campo
-        fieldDescription: Descripción
-        fieldDescriptionPlaceholder: Describe qué debe contener este campo...
-        actions: Acciones
-        cancel: Cancelar
-        save: Guardar
         defaultFieldName: Resultado
-        fieldNamePlaceholder: Nombre del campo
-        selectionField: "Texto seleccionado"
-        selectionFieldDescription: "El texto que seleccionaste, guardado tal cual. La IA no lo escribe."
-        autoFieldPrefix: Campo
-        addFieldDialog:
-          title: Añadir campo de salida
-        editFieldDialog:
-          title: Editar campo de salida
-          save: Guardar
-        deleteFieldDialog:
-          title: ¿Eliminar campo de salida?
-          description: Este campo de salida se eliminará.
-          confirm: Eliminar
-          cancel: Cancelar
         layout:
           title: Diseño
           description: Cómo se muestra el resultado en la ventana emergente. HTML con Liquid; los campos se rellenan a medida que llega la respuesta.
-          reset: Restaurar predeterminado
-          resetFieldList: Lista de campos
-          resetDictionary: Tarjeta de diccionario
-          resetSentenceAnalysis: Tarjeta de análisis de oraciones
-          resetImproveWriting: "Tarjeta de mejora de escritura"
-          resetConfirmTitle: ¿Reemplazar este diseño?
-          resetConfirmDescription: Se reemplazará el contenido del editor. Después aún podrás deshacerlo en el editor.
-          resetConfirm: Reemplazar
-          edit: Editar
-          preview: Vista previa
-          width: Ancho
-          themeLight: Claro
-          themeDark: Oscuro
-          replay: Reproducir
-          sampleData: Datos de ejemplo
-          sampleDataHint: Solo se usan en esta vista previa y nunca se guardan.
-          sampleDataSavedHint: Solo se usan en esta vista previa y se guardan con esta instrucción.
-          sampleDataReset: Restablecer ejemplos
-          sampleSelection: Texto seleccionado
-          sampleTargetLanguage: Idioma de destino
-          insertField: Campo
-          insertSpeak: Botón de lectura
-          insertCondition: Si tiene valor
-          insertContext: Contexto
-          insertLoop: Todos los campos
-          syntaxHelp: Sintaxis
-          builtInHint: El diseño de una acción integrada no se puede editar. Personalízala para editar una copia.
-          viewSource: Ver código
-          emptyNotice: Este diseño está vacío, así que la ventana emergente muestra la lista de campos predeterminada.
-          fallbackBanner: Este diseño no se puede mostrar, así que se usa el diseño predeterminado. $1
-          sanitized: "Eliminado por seguridad: $1"
-          unusedFields: "No aparecen en este diseño:"
-          tooLong: Un diseño puede tener como máximo $1 caracteres.
-          renameSkipped: El diseño aún hace referencia a «$1». Actualízalo a mano.
-          reservedName: «ctx» y «forloop» están reservados en los diseños. Elige otro nombre.
-          help:
-            output: Muestra el valor de un campo. El HTML del valor se escapa.
-            condition: Muestra el contenido solo cuando el campo tiene un valor.
-            loop: Se repite para cada campo, en orden. Puedes usar f.name, f.value y f.type.
-            speak: Cualquier elemento con data-speak lee en voz alta el valor (o su propio texto si el valor está vacío) cuando la respuesta termina.
-            speakLang: data-speak-lang indica el idioma de lectura (un código como es o en-US) para usar la voz de ese idioma. Sin él, el idioma se detecta, algo que suele fallar con una sola palabra.
-            speakAutoplay: Un elemento con data-speak-autoplay se lee en voz alta por sí solo cuando la respuesta termina. Solo suena el primero.
-            status: Aplica estilos según el estado. El data-status del contenedor es streaming, done o error.
-            filters: newline_to_br conserva los saltos de línea (úsalo al final); lines divide el texto en una lista de líneas.
-            styles: El CSS de un bloque <style> solo se aplica dentro de este resultado. Los colores --rf-* siguen los temas claro y oscuro.
-          lint:
-            parseError: "Error de sintaxis de Liquid: $1"
-            unknownField: No hay ningún campo llamado «$1».
-            unknownContextKey: "ctx no tiene «$1». Disponibles: $2."
-            fieldShadowedByLocal: Este diseño asigna «$1», lo que oculta el campo con ese nombre.
-            liquidInStyle: Liquid no se ejecuta dentro de <style>; esto se conserva como texto.
-            styleInConditional: Un bloque <style> siempre se aplica, aunque esté dentro de una etiqueta «$1».
-            cssImport: "@import se elimina. Los diseños no pueden cargar estilos externos."
-            cssFontFace: "@font-face se elimina. Usa fuentes que ya estén en el dispositivo."
-            unquotedAttributeOutput: Pon comillas alrededor de este valor de atributo, o el valor podría salirse de él.
-            filterIgnored: Los filtros se ignoran en una etiqueta «$1». Asigna primero el valor filtrado.
-            newlineToBrNotLast: newline_to_br solo funciona como último filtro de una salida.
-            tooLong: Este diseño supera los $1 caracteres y no se puede guardar.
-            fieldNotShown: «$1» no aparece en este diseño.
-            reservedFieldName: El nombre de campo «$1» está reservado en los diseños. Cambia el nombre del campo.
         notebase:
           title: Conexión de Notebase
           description: Guarda los resultados estructurados de esta acción en una Notebase remota.
-          loginRequiredTitle: Inicia sesión para configurar Notebase
-          loginRequiredDescription: Inicia sesión en readfrog.app antes de elegir una Notebase o editar asignaciones.
-          loginRequiredConnectedDescription: Esta conexión fue creada por la cuenta de abajo. Si inicias sesión con la misma cuenta, se restaurarán las asignaciones de campos. Si inicias sesión con otra cuenta, las asignaciones anteriores se borrarán al crear o conectar una Notebase.
-          loginAction: Iniciar sesión
-          connectedAccountLabel: Cuenta conectada
-          currentAccountLabel: Cuenta actual
-          unknownConnectedAccount: Cuenta desconocida
-          tableLabel: Notebase
-          tablePlaceholder: Selecciona una Notebase
-          tableClearOption: Desconectar Notebase
-          clearConnectionAction: Borrar conexión
-          refreshAction: Actualizar
-          emptyTitle: Aún no hay Notebases
-          emptyDescription: Crea una Notebase en readfrog.app y vuelve aquí para asignar campos.
-          openNotebaseAction: Abrir Notebase
-          accessDeniedTitle: No se puede acceder a Notebase
-          accessDeniedDescription: Esta cuenta no tiene permiso para cargar datos de Notebase.
-          listErrorTitle: No se pudieron cargar las Notebases
-          listErrorDescription: Intenta actualizar la lista de Notebase de nuevo en un momento.
-          accountMismatchTitle: La conexión de Notebase pertenece a otra cuenta
-          accountMismatchDescription: Esta conexión está vinculada a la cuenta conectada de abajo. Bórrala o elige una Notebase disponible para la cuenta actual.
-          tableUnavailableTitle: La Notebase seleccionada ya no está disponible
-          tableUnavailableDescription: Esta Notebase ya no existe o no se puede abrir. Borra la conexión o elige otra Notebase.
-          tableUnavailableOption: no disponible
-          schemaErrorTitle: No se pudo cargar el esquema de la Notebase
-          schemaErrorDescription: Intenta actualizar el esquema de nuevo en un momento.
-          schemaLoading: Cargando esquema de la Notebase...
-          mappingsLabel: Asignaciones de campos
-          localFieldLabel: Campo de acción
-          remoteFieldLabel: Campo de Notebase
-          columnUnavailableOption: eliminado
-          invalidMappingsTitle: Algunas asignaciones requieren atención
-          invalidMappingsDescription: Las asignaciones no válidas se conservan. Corrígelas antes de guardar en Notebase.
-          noFieldSavedTitle: "Ningún campo se guarda en esta Notebase"
-          noFieldSavedDescription: "Elige un campo de Notebase para al menos un campo y así poder guardar notas."
-          mappingSummary: "Se guardan $1 · Omitidos $2 · Sin decidir $3"
-          skipFieldOption: "No guardar"
-          undecidedFieldPlaceholder: "Elige un campo de Notebase o no guardar"
-          mappingMissingLocal: El campo de acción asignado ya no existe.
-          mappingMissingRemote: El campo de Notebase asignado ya no existe.
-          mappingMissingSchema: Actualiza el esquema de la Notebase para validar esta asignación.
-          mappingIncompatible: Los tipos de campo ya no coinciden.
-        tokens:
-          selection: Contenido del texto seleccionado
-          paragraphs: Texto de párrafos intersectados unido con líneas en blanco, truncado a los primeros 2000 caracteres cuando se envía a acciones AI personalizadas
-          targetLanguage: Idioma de destino del usuario
-          webTitle: Título de la página web
-          webUrl: URL completa de la página actual
-          webContent: Contenido de la página web extraído de la página actual, truncado a los primeros 2000 caracteres
-        delete: Eliminar
-        deleteDialog:
-          title: ¿Eliminar acción personalizada?
-          description: Esta acción no se puede deshacer.
-          confirm: Eliminar
-          cancel: Cancelar
       templates:
         dialogTitle: Elegir una plantilla
         dialogDescription: Selecciona una plantilla para crear rápidamente una nueva acción AI, o empieza desde cero.
@@ -1037,123 +587,15 @@ options:
             Selección: {{selection}}
             Párrafos: {{paragraphs}}
             Idioma de destino: {{targetLanguage}}
-      errors:
-        nameRequired: El nombre es obligatorio
-        duplicateName: 'Nombre de acción duplicado "$1"'
-        invalidIcon: Cadena de icono Iconify no válida
-        providerRequired: Selecciona un proveedor LLM activado
-        outputSchemaRequired: Añade al menos un campo de salida
-        fieldKeyRequired: El nombre del campo es obligatorio
-        duplicateFieldKey: Los nombres de campo deben ser únicos
   advanced:
-    title: Avanzado
-    pageDescription: Ajustes potentes que no forman parte del uso diario.
     glossary:
       title: Glosario
-      pageDescription: Da una traducción fija a las palabras que te importan y elige dónde se aplica cada lista.
-      untitled: Glosario sin título
-      noGlossaries: Aún no hay glosarios.
       enable:
         title: Activar
         description: Envía los términos coincidentes al LLM para que los traduzca a tu manera. El glosario viaja dentro del prompt, así que solo se aplica a las funciones que usan un proveedor LLM.
       library:
         title: Tus glosarios
         description: Cada glosario tiene sus propios términos y su propia lista de sitios web, así que un conjunto de términos para el trabajo no te acompaña en todo lo demás.
-        button: Añadir un glosario
-        capReached: "Puedes tener como máximo $1 glosarios."
-        termUsage: "$1 de $2 términos usados entre todos tus glosarios"
-      summary:
-        terms: "$1 términos"
-        termsOne: 1 término
-        allSites: Todos los sitios web
-        sites: "$1 sitios web"
-        sitesOne: 1 sitio web
-      editor:
-        docsLink: ¿Cómo funciona?
-        sections:
-          terms: Términos
-          maintenance: Copia de seguridad y eliminación
-        details:
-          title: Nombre y descripción
-          descriptionPlaceholder: Descripción (opcional)
-        enable:
-          title: Activar
-          description: Un glosario desactivado conserva sus términos, pero no envía ninguno.
-        sites:
-          title: Sitios web
-          description: Limita este glosario a determinados sitios web. example.com es solo esa dirección; *.example.com añade subdominios; example.com/docs/* acota a una parte del sitio.
-          allSites: Déjalo vacío y el glosario se aplicará en todas partes.
-          header: Sitio web
-        delete:
-          title: Eliminar este glosario
-          description: Elimina el glosario y todos los términos que contiene. Expórtalo primero si crees que vas a necesitar los términos — esto no se puede deshacer.
-          dialog:
-            trigger: Eliminar
-            title: ¿Eliminar este glosario?
-            description: "Se eliminarán permanentemente el glosario y los $1 términos que contiene. Esta acción no se puede deshacer."
-            confirm: Eliminar
-            cancel: Cancelar
-      addTerm:
-        title: Añadir un término
-        description: Dale a un término la traducción que quieras, o déjala vacía para conservar el original.
-      list:
-        title: Tus términos
-        description: Solo se envían los términos que aparecen en un párrafo.
-      importExport:
-        title: Importar y exportar
-        description: "Los términos son un CSV con las columnas source, target, targetLanguage y caseSensitive: el archivo que escribe Exportar."
-      sourcePlaceholder: Término
-      targetPlaceholder: Traducción (déjala vacía para conservar el original)
-      caseSensitive: Distinguir mayúsculas
-      add: Añadir
-      searchPlaceholder: Buscar términos
-      columnEnabled: Activado
-      columnSource: Término
-      columnTarget: Traducción
-      columnTargetLanguage: Idioma de destino
-      allLanguages: Todos los idiomas
-      toggleTerm: "Usar $1"
-      editTerm: "Editar $1"
-      keepOriginal: Conservar el original
-      delete: Eliminar
-      save: Guardar
-      cancel: Cancelar
-      loading: Cargando...
-      empty: Aún no hay términos. Añade uno arriba o importa un archivo CSV.
-      noMatches: Ningún término coincide con tu búsqueda.
-      previous: Anterior
-      next: Siguiente
-      pageOf: "$1 / $2"
-      addError:
-        emptySource: Escribe primero un término.
-        tooLong: Ese término es demasiado largo.
-        capReached: "Entre todos tus glosarios has alcanzado el límite de $1 términos."
-        duplicate: Ese término ya está en tu glosario.
-      import: Importar
-      export: Exportar
-      importModeMerge: Añadir a la lista
-      importModeReplace: Reemplazar la lista
-      importEmpty: No se encontraron términos en ese archivo.
-      importMissingHeader: "Ese archivo no es una exportación de glosario de Read Frog. Necesita estas columnas:"
-      importOverflow: "Esa importación superaría el límite en $1 términos. No se ha cambiado nada."
-      importSuccess: "Se han importado $1 términos nuevos y actualizado $2."
-      importSkipped: "Se han omitido $1 filas no válidas y $2 duplicados."
-      importNoValidRows: No se pudo importar ninguna de esas filas. No se cambió nada.
-      importReplaceConfirm:
-        title: "¿Reemplazar toda la lista?"
-        description: "Se eliminarán los $1 términos de este glosario —en todos los idiomas de destino, no solo en el seleccionado— y se reemplazarán por el contenido de este archivo. Esta acción no se puede deshacer."
-        confirm: Reemplazar
-        cancel: Cancelar
-      deleteAll:
-        title: Eliminar todos los términos
-        description: Vacía tu glosario. Expórtalo primero si crees que vas a necesitar los términos — eliminarlos no se puede deshacer.
-        deleting: Eliminando...
-        dialog:
-          title: Eliminar todos los términos
-          trigger: Eliminar todo
-          confirm: Confirmar
-          cancel: Cancelar
-          description: "Se eliminarán permanentemente los $1 términos. Esta acción no se puede deshacer."
   contextMenu:
     title: Menú contextual
     pageDescription: Controla las opciones de Read Frog en el menú contextual del navegador.
@@ -1173,7 +615,6 @@ options:
           bilingual: Bilingüe
           translationOnly: Solo traducción
         switched: "Modo de traducción: $1"
-        providerNotSupported: $1 no admite el modo de solo traducción. Para activarlo, cambia a otro proveedor.
       translateRange:
         title: Alcance de la traducción
         description: Selecciona si traducir solo el contenido principal o todo el contenido de la página.
@@ -1222,7 +663,6 @@ options:
               padding: 2px 4px;
               border-radius: 4px;
             }
-          docsLink: ¿Cómo configurar?
           saveButton: Guardar
           savedButton: Guardado
           validation:
@@ -1370,21 +810,14 @@ options:
       count: Mostrando $1 de $2 reglas
   tts:
     title: Texto a voz
-    pageDescription: Lee en voz alta cualquier selección con una voz natural.
     voice:
-      title: Voz
-      selectPlaceholder: Selecciona una voz
-      noVoicesFound: No se encontraron voces
       language:
         title: Voz por idioma
         description: Elige un idioma y luego la voz que lo lee en voz alta. Restablecer devuelve la voz que Read Frog elige para ese idioma.
-        reset: Restablecer
-        previewSample: ¡Hola desde Read Frog! Así sonaré al leer en voz alta.
       fallback:
         title: Voz alternativa
         description: La voz para cualquier idioma al que no le hayas asignado una propia.
     speech:
-      title: Habla
       rate:
         title: Velocidad
         description: Cuánto más rápido o más lento lee la voz respecto a su propio ritmo, de -100 a 100 por ciento.
@@ -1394,12 +827,9 @@ options:
       volume:
         title: Volumen
         description: Cuánto más fuerte o más suave lee la voz respecto a su propio nivel, de -100 a 100 por ciento.
-      error: Introduce un número entero entre $1 y $2
   videoSubtitles:
     title: Subtítulos de video
-    pageDescription: Traduce los subtítulos mientras ves el video, con proveedor, estilo y ajustes propios.
     preference:
-      title: Aspectos básicos
       enable:
         title: Activar subtítulos de video
         description: Añade un botón de traducción a los controles del reproductor en YouTube, X y Netflix.
@@ -1409,230 +839,56 @@ options:
       aiSegmentation:
         title: Segmentación inteligente de IA
         description: La IA vuelve a cortar los subtítulos en frases. Las traducciones tardan más. Requiere un LLM potente; los modelos más débiles pueden omitir o desalinear líneas.
-      wordLookupAction:
-        title: Acción al buscar una palabra
-        description: La acción de IA que responde al hacer clic en una palabra de los subtítulos. Diccionario, salvo que elijas una tuya.
     aiQuota:
       title: Cuota de subtítulos con IA
       description: El reconocimiento de voz con IA te da subtítulos precisos para cualquier vídeo
-      launchBonusPromo: Suscríbete antes del $1 y obtén 300 minutos de transcripción adicionales
-      loginRequired: Inicia sesión para ver tu cuota de subtítulos con IA
-      upgradeRequired: Los subtítulos con IA requieren una suscripción Pro o Ultra
-      pools:
-        subscription: Cuota mensual
-        launchBonus: Regalo de lanzamiento
-      resetsOn: Se restablece el $1
-      expiresOn: Caduca el $1
-      loadError: No se pudo cargar tu cuota. Inténtalo de nuevo más tarde.
-      remainingOf: Quedan $1 / $2 min
-      used: Usados $1 min
     style:
       title: Estilo de subtítulos
       description: Modo de visualización, posición, fuentes, colores y fondo, ajustados sobre una vista previa en vivo
-      customizeStyle: Personalizar estilo
-      displayMode:
-        title: Modo de visualización
-        bilingual: Bilingüe
-        originalOnly: Solo original
-        translationOnly: Solo traducción
-      translationPosition:
-        title: Posición de la traducción
-        above: Arriba
-        below: Abajo
-      generalSettings: General
-      mainSubtitle: Subtítulo principal
-      translationSubtitle: Subtítulo de traducción
-      fontFamily: Fuente
-      fontScale: Escala de fuente
-      color: Color
-      fontWeight: Grosor de fuente
-      backgroundOpacity: Opacidad del fondo
-      reset: Restablecer a predeterminado
       customCSS:
         title: CSS personalizado
         description: CSS adicional para las líneas de subtítulos, además de las fuentes y colores de arriba
-        presetTemplate: Plantilla predefinida
-        presetTemplateDescription: Aplica una plantilla lista para usar, como difuminar la traducción para taparla mientras practicas comprensión auditiva
-        presetPlaceholder: Elegir una plantilla
-        presets:
-          blurTranslation: Difuminar traducción
-          dashedTranslation: Traducción subrayada a trazos
-          dimOriginal: Atenuar original
-        editor:
-          placeholder: |
-            /* Ejemplo: difumina la traducción y muéstrala al pasar el cursor */
-            .subtitles-translation {
-              filter: blur(6px);
-            }
-
-            .subtitles-translation:hover {
-              filter: none;
-            }
-
-            /* Selectores disponibles: .read-frog-subtitles-box, .subtitles-main, .subtitles-translation */
-          docsLink: ¿Cómo configurar?
-          saveButton: Guardar
-          savedButton: Guardado
-          validation:
-            validating: Validando...
-            valid: CSS válido
-            syntaxError: CSS tiene errores de sintaxis
-            tooLong: CSS es demasiado largo
-            saved: Todos los cambios guardados
     customPrompts:
       title: Prompts personalizados de subtítulos
       description: Plantillas de prompts solo para la traducción de subtítulos, separadas de las de traducción de páginas web
-      managePrompts: Gestionar prompts
-      editPrompt:
-        promptCellInput:
-          input: Texto de subtítulos a traducir
-          targetLanguage: Idioma de destino
-          webTitle: Título de la página web
-          webDescription: Descripción de la página web desde los metadatos
-          videoSummary: Resumen del video (requiere contexto inteligente de IA)
     subtitlesQueue:
-      title: Cola de subtítulos
-      description: Con qué rapidez salen las solicitudes de subtítulos y cuántas líneas lleva cada una
-      manageQueue: Gestionar cola
       requestQueueConfig:
         title: Tasa de traducción
-        capacity:
-          description: "Solicitudes máximas en ráfaga: cuántas pueden salir a la vez"
-        rate:
-          description: "Solicitudes por segundo: el ritmo estable tras la ráfaga. Admite decimales, así que 0.25 envía una solicitud cada 4 segundos"
       batchQueueConfig:
         title: Traducción por lotes
         description: Configura límites de caracteres y recuento máximo de líneas de subtítulos para la traducción por lotes (solo efectivo para traducción LLM)
-        maxCharactersPerBatch:
-          description: "Caracteres máximos: cuánto texto lleva cada solicitud a la IA"
-        maxItemsPerBatch:
-          description: "Líneas máximas: cuántas líneas de subtítulos comparten una solicitud. Los proveedores que no son de IA ignoran ambos"
     cache:
-      title: Caché
       clearCache:
         title: Borrar caché de segmentación de IA
         description: Resultados de segmentación guardados para no volver a cortar un video que ya has visto
-        clearing: Borrando...
-        dialog:
-          title: Borrar caché de segmentación de IA
-          trigger: Borrar caché
-          confirm: Confirmar
-          cancel: Cancelar
-          description: Esto eliminará todos los resultados de segmentación AI en caché. La próxima vez que reproduzcas un video con segmentación AI activada, se volverán a procesar los subtítulos.
-  whatsNew:
-    title: Novedades
-    postType:
-      promotion: Promoción
-      update: Actualización
-  rateUs:
-    title: Calificarnos
-  configMigration:
-    versionTooNew: La versión de configuración importada es más reciente; actualiza Read Frog a la última versión
-    validationError: Error de validación de configuración
 side:
-  sourceLang: Idioma de origen
   targetLang: Idioma de destino
-  fileExport: Exportar archivo
 translateService:
-  title: Servicio de traducción
-  description: Solo para traducir la página web
   builtInModels: Built-in Models
   llmModels: LLM Models
   normalTranslator: Traductor normal
-  selectServices: Seleccionar servicios
-  translationProviders: Proveedores de traducción
-  configureAPI: Configurar API
 translatePrompt:
   title: Estilo de traducción AI
   description: Selecciona un Prompt para usar durante la traducción. Añade o modifica Prompts personalizados en la página de opciones.
-languageLevel: Tu nivel del idioma de origen
-languageLevels:
-  beginner: Principiante
-  intermediate: Intermedio
-  advanced: Avanzado
 noAPIKeyConfig:
   warning: Si quieres usar modelos AI, primero configura la clave API en la página de opciones
-  warningWithLink:
-    youMust: Debes
-    setTheAPIKey: configurar la clave API
-    firstOnThe: primero en la
-    optionsPage: opciones
-    page: página
 languageDetection:
   llmFailed: Falló la detección de idioma LLM; se recurrió a la detección básica
 translation:
   sameLanguage: Los idiomas de origen y destino deben ser diferentes
-  autoModeSameLanguage: El idioma detectado '$1' es el mismo que el idioma de destino
   extensionContextInvalidated: La extensión se actualizó. Actualiza esta página e inténtalo de nuevo.
 speak:
   languageDetectionFallback: Se usa la detección local de idioma
   languageDetectionSettingsHint: En Ajustes, elige un LLM disponible o la detección local.
-  fetchingAudio: Generando audio...
-  playingAudio: Reproduciendo audio...
-  failedToGenerateSpeech: No se pudo generar voz
-  noTextSelected: No hay texto seleccionado
-  openaiNotConfigured: El proveedor OpenAI no está configurado o activado
-  openaiApiKeyNotConfigured: La clave API de OpenAI no está configurada
 action:
   copy: Copiar
   copied: Copiado
   regenerate: Regenerar
   viewContextDetails: Contexto
   customizeCustomAction: Personalizar la acción $1
-  customActionLayoutFallback: Este resultado no se puede mostrar con su diseño, así que se muestra una vista simplificada.
-  saveToNotebase: Guardar en Notebase
-  saveToNotebaseSaving: Guardando...
-  saveToNotebaseSuccess: Guardado en Notebase
-  saveToNotebaseFailed: No se pudo guardar en Notebase
-  saveToNotebaseLoginRequired: Inicia sesión en readfrog.app para guardar en Notebase
-  saveToNotebaseAccessDenied: Esta cuenta no puede acceder a la Notebase seleccionada
-  saveToNotebaseLimitExceeded: Se requiere una mejora para guardar más notas de Notebase
-  saveToNotebaseTableUnavailable: La Notebase seleccionada ya no está disponible
-  saveToNotebaseConnectionInvalid: Esta conexión de Notebase está desactualizada. Actualízala en Acciones AI personalizadas y corrige las asignaciones.
-  saveToNotebaseInvalidContent: "La respuesta de la IA tiene un valor con un formato incorrecto, así que no se guardó. Vuelve a ejecutar la acción y luego guarda."
-  saveToNotebaseNoFieldSaved: "No se guardó: esta acción no guarda ningún campo en la Notebase. Elige al menos uno en su configuración."
-  saveToNotebaseUndecidedTitle: "Guardado. Aún no has decidido si guardar estos campos"
-  saveToNotebaseSkipUndecided: "No guardarlos"
-  saveToNotebaseNoMappings: Añade al menos una asignación válida antes de guardar
-  saveToNotebaseCreateTitle: ¿Crear una Notebase?
-  saveToNotebaseCreateDescription: Crea una Notebase con columnas que coinciden con esta acción personalizada y guarda este resultado como la primera nota.
-  saveToNotebaseCreateAndSave: Crear y guardar
-  saveToNotebaseCreateAndSaveShort: Crear y guardar
-  saveToNotebaseLoginAndCreate: Iniciar sesión y crear
-  saveToNotebaseLoginAndSave: Iniciar sesión y guardar
-  saveToNotebaseConnectExisting: Conectar Notebase existente
-  saveToNotebaseGoConfigure: Configurar
-  saveToNotebaseLoginConnectedTitle: ¿Iniciar sesión para guardar?
-  saveToNotebaseLoginConnectedDescription: Esta Custom Action está conectada a la cuenta de abajo. Después de iniciar sesión, Read Frog guardará en la Notebase existente si es posible, o creará una nueva Notebase para la cuenta actual.
-  saveToNotebaseConnectionUnavailableTitle: Conexión de Notebase no disponible
-  saveToNotebaseMissingNotebaseDescription: La Notebase anterior ya no existe o esta cuenta no puede abrirla. Crea una nueva Notebase y guarda este resultado, o conecta una Notebase existente en Custom AI Actions.
-  saveToNotebaseAccountUnavailableDescription: La cuenta actual no coincide con la cuenta conectada de abajo. Crear y guardar reemplazará la conexión anterior y los mapeos de campos. También puedes conectar una Notebase existente en Custom AI Actions.
-  saveToNotebasePendingLogin: Inicia sesión para terminar de guardar
-  saveToNotebasePendingLoginDescription: Después de iniciar sesión, Read Frog creará la Notebase y guardará este resultado automáticamente.
-  saveToNotebasePendingConnectedLoginDescription: Después de iniciar sesión, Read Frog guardará en la Notebase conectada si es posible. Si esta cuenta no puede usarla, creará una nueva Notebase y guardará este resultado.
-  upgrade: Mejorar plan
-  updatePayment: Actualizar pago
-  openCustomActions: Abrir Custom AI Actions
-  openNotebase: Abrir Notebase
-  reviewDueOne: "$1 tarjeta por repasar"
-  reviewDueOther: "$1 tarjetas por repasar"
   contextDetailsTitleLabel: Título
   contextDetailsParagraphsLabel: Párrafos
   translation: Traducción
-  speak: Leer en voz alta
-  playing: Reproduciendo
-  moreActions: Más acciones
-  pinToToolbar: Fijar en la barra
-  unpinFromToolbar: Quitar de la barra
-  dragToReorder: Arrastra para reordenar
-  addCustomAction: Añadir acción AI personalizada
-noteSuggestion:
-  title: Quizás quieras guardar
-  description: Elige qué palabras guardar en tu Notebase y repásalas cuando quieras.
-  save: Guardar
-  saved: Guardado
-  staleSuggestion: Esta sugerencia está desactualizada
-  toggleLabel: Mostrar sugerencias de notas
 thinking:
   label: Pensando
   complete: Razonamiento completo
@@ -1640,88 +896,6 @@ thinking:
   collapse: Contraer razonamiento
 shortcutKeySelector:
   placeholder: Introduce el atajo
-subtitles:
-  sidebar:
-    close: Cerrar el panel de aprendizaje
-    needsSubtitles: "Este video no tiene subtítulos: prueba a generarlos con IA primero."
-    menu:
-      label: Aprendizaje
-    summary:
-      tab: Resumen de IA
-      generating: Generando el resumen…
-      failedTitle: No se pudo generar
-      retry: Reintentar
-      needsModel: Elige un modelo LLM para los subtítulos y así resumir este video.
-      openSettings: Abrir ajustes
-    transcript:
-      tab: Subtítulos
-      failedTitle: No se pudieron cargar los subtítulos
-      retry: Reintentar
-      emptyTitle: No hay subtítulos que mostrar
-      backToCurrent: Volver al actual
-  loadingAiSubtitles: Cargando subtítulos con IA… (estimado 3 min)
-  aiSubtitlesHint: Subtítulos precisos generados por reconocimiento de voz con IA avanzada, disponibles incluso sin subtítulos oficiales.
-  requestAiSubtitles: Solicitar subtítulos con IA
-  usingAiSubtitles: Usando subtítulos con IA
-  toggle:
-    enabled: Traducción de subtítulos activada
-    disabled: Traducción de subtítulos desactivada
-  actions:
-    downloadTranslated: Descargar subtítulos traducidos
-    downloadTranslatedPreparing: Preparando subtítulos, los videos largos pueden tardar más
-    downloadTranslatedTranslating: Traduciendo subtítulos
-    downloadTranslatedComplete: Subtítulos traducidos descargados
-    downloadSource: Descargar subtítulos de origen
-  state:
-    loading: Read Frog está cargando subtítulos
-    translating: Traduciendo…
-    error: Se produjo un error
-  errors:
-    http429: 429 Demasiadas solicitudes a la API de subtítulos de youtube; inténtalo de nuevo más tarde
-    http404: 404 Subtítulos de Youtube no encontrados
-    http403: 403 Acceso a subtítulos de Youtube denegado
-    http500: 500 Error del servidor de Youtube
-    httpUnknown: Error HTTP $1
-    invalidResponse: Formato de respuesta de subtítulos de Youtube no válido
-    networkError: Se produjo un error de red al obtener subtítulos
-    fetchSubTimeout: Se agotó el tiempo al obtener subtítulos
-    buttonNotFound: Botón de subtítulos no encontrado
-    noSubtitlesFound: No hay subtítulos disponibles para este video
-    trackFileNotLoaded: No se pudieron cargar los subtítulos; intenta actualizar la página
-    videoNotFound: Elemento de video no encontrado
-    controlsBarNotFound: Barra de controles no encontrada
-    aiRateLimited: Demasiadas solicitudes, inténtalo de nuevo más tarde
-    aiAuthFailed: Error de autenticación de API; revisa tu clave API
-    aiServiceUnavailable: Servicio de traducción temporalmente no disponible
-    aiQuotaExceeded: Cuota mensual de subtítulos con IA agotada
-    aiQuotaExceededWithReset: Cuota mensual de subtítulos con IA agotada · se restablece el $1
-    aiLoginRequired: Inicia sesión para ver tu cuota de subtítulos con IA
-    aiSubscriptionRequired: Los subtítulos con IA requieren una suscripción Pro o Ultra
-    aiPaymentRequired: Actualiza tu método de pago para seguir generando subtítulos con IA
-    aiVideoTooLong: Este video es demasiado largo para los subtítulos con IA
-    aiLiveReplayUnsupported: Los subtítulos con IA aún no están disponibles para repeticiones de transmisiones en vivo
-    aiStillProcessing: La transcripción sigue en curso — vuelve a hacer clic en unos minutos para retomarla
-    aiRequestFailed: Error al solicitar subtítulos con IA, inténtalo de nuevo más tarde
-    aiNoResponse: El servicio AI no respondió; se usa el texto original
-    translatedExportFailed: No se pudieron generar los subtítulos traducidos
-    translatedExportIncomplete: No se pudieron traducir todas las líneas de subtítulos
-    translatedExportSameLanguage: El idioma de origen y el de destino son iguales
-hostedAi:
-  planBadge:
-    pro: Requiere el plan Pro o Ultra · Haz clic en la insignia para obtenerlo
-    ultra: Requiere el plan Ultra · Haz clic en la insignia para obtenerlo
-  availability:
-    authenticationRequired: Inicia sesión para usar este proveedor
-    ultraRequired: Se requiere el plan Ultra
-    proRequired: Se requiere el plan Pro o Ultra
-    quotaExhausted: Cuota agotada
-    serviceUnavailable: No disponible temporalmente
-    usedPercent: "Cuota utilizada: $1%"
-    resetsAt: "Se restablece a las $1"
-  errors:
-    rateLimited: Demasiadas solicitudes, inténtalo de nuevo más tarde.
-    guestRateLimited: Demasiadas solicitudes de invitado. Inténtalo de nuevo más tarde.
-    userRateLimited: Demasiadas solicitudes. Inténtalo de nuevo más tarde.
 hotkey:
   control: Ctrl
   alt: Opción
@@ -1732,24 +906,8 @@ hotkey:
 translationHub:
   searchLanguages: Buscar idiomas...
   noLanguagesFound: No se encontraron idiomas
-  exchangeLanguages: Intercambiar idiomas
-  title: Traducción de texto Multi-API
-  noServicesSelected: No se seleccionaron servicios de traducción
-  noServicesDescription: Selecciona servicios de traducción arriba para ver aquí las tarjetas de traducción.
-  inputPlaceholder: Introduce texto para traducir...
-  translate: Traducir
-  copiedToClipboard: ¡Traducción copiada al portapapeles!
-  copyTranslation: Copiar traducción
-  speakSourceText: Leer texto original
-  speakTranslation: Leer traducción
-  expandCard: Expandir tarjeta
-  collapseCard: Contraer tarjeta
-  expandAllCards: Expandir todo
-  collapseAllCards: Contraer todo
-  deleteCard: Eliminar tarjeta
   translationFailed: Falló la traducción
   translationFailedFallback: Falló la traducción
-  retryTranslation: Reintentar traducción
 languages:
   eng: Inglés
   cmn: Chino simplificado

@@ -57,21 +57,6 @@ const baseProviderConfig: APIProviderConfig = {
   headers: undefined,
 }
 
-const anthropicProviderConfig: APIProviderConfig = {
-  id: "provider-2",
-  name: "Anthropic",
-  enabled: true,
-  provider: "anthropic",
-  model: {
-    model: "claude-haiku-4-5",
-    isCustomModel: false,
-    customModel: null,
-  },
-  headers: {
-    Existing: "1",
-  },
-}
-
 function ProviderHeadersFieldHarness({ initialConfig }: { initialConfig: APIProviderConfig }) {
   const [providerConfig, setProviderConfig] = useState(initialConfig)
   const { form, autosave } = useProviderForm(providerConfig, async (value) => {
@@ -98,7 +83,12 @@ function ProviderHeadersFieldSwitchHarness() {
   const [providerConfig, setProviderConfig] = useState(baseProviderConfig)
   return (
     <>
-      <button type="button" onClick={() => setProviderConfig(anthropicProviderConfig)}>
+      <button
+        type="button"
+        onClick={() =>
+          setProviderConfig({ ...baseProviderConfig, id: "provider-2", headers: { Existing: "1" } })
+        }
+      >
         switch-provider
       </button>
       <output aria-label="persisted-provider-id">{providerConfig.id}</output>

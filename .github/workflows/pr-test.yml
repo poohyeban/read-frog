@@ -6,15 +6,12 @@ on:
       - main
 
 env:
-  WXT_SKIP_ENV_VALIDATION: true
+  SKIP_FREE_API: true
 
 jobs:
   test-and-build:
     name: Test & Build
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
     steps:
       - name: Checkout Repo
@@ -25,6 +22,10 @@ jobs:
         with:
           cache: true
           install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
@@ -42,7 +43,7 @@ jobs:
         shell: bash
 
       - name: Format check
-        run: pnpm exec nx fmt:check
+        run: pnpm fmt:check
 
       - name: Lint and type check
         run: pnpm lint

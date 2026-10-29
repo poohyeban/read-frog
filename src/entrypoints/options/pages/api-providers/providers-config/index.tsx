@@ -1,9 +1,8 @@
 import type { APIProviderConfig } from "@/types/config/provider"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router"
-import { SponsorBadge } from "@/components/badges/sponsor-badge"
 import ProviderIcon from "@/components/provider-icon"
 import { useTheme } from "@/components/providers/theme-provider"
 import { SortableList } from "@/components/sortable-list"
@@ -204,7 +203,7 @@ function ProviderCard({ providerConfig }: { providerConfig: APIProviderConfig })
   const [selectedProviderId, setSelectedProviderId] = useAtom(selectedProviderIdAtom)
   const patchProviderConfig = useSetAtom(patchProviderConfigAtom)
   const config = useAtomValue(configAtom)
-  const sponsor = API_PROVIDER_ITEMS[provider].sponsor
+
   const switchRef = useRef<HTMLButtonElement>(null)
 
   const assignedFeatures = FEATURE_KEYS.filter(
@@ -248,12 +247,6 @@ function ProviderCard({ providerConfig }: { providerConfig: APIProviderConfig })
     >
       <EntityListItem.Badges>
         <>
-          {sponsor?.sponsoring && (
-            <SponsorBadge
-              labelI18nKey={sponsor.badgeI18nKey}
-              className="absolute -top-2 left-2 text-[10px]"
-            />
-          )}
           <FeatureCountBadge count={totalAssigned}>
             {assignedFeatures.map((key) => (
               <li key={key}>{i18n.t(getFeatureLabelI18nKey(key))}</li>

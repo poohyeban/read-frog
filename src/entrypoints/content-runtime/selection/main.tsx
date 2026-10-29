@@ -14,7 +14,6 @@ import { APP_NAME } from "@/utils/constants/app"
 import { SELECTION_UI_CSS } from "@/utils/content-ui-css"
 import { initI18n } from "@/utils/i18n"
 import { LocaleBoundary } from "@/utils/i18n/locale-boundary"
-import { ensureIconifyBackgroundFetch } from "@/utils/iconify/setup-background-fetch"
 import { ShadowWrapperContext } from "@/utils/react-shadow-host/create-shadow-host"
 import { protectSelectAllShadowRoot } from "@/utils/select-all"
 import { insertShadowRootUIWrapperInto, keepShadowHostRendered } from "@/utils/shadow-root"
@@ -26,7 +25,6 @@ import {
 import { queryClient } from "@/utils/tanstack-query"
 import { getLocalThemeMode } from "@/utils/theme"
 import App from "./app"
-import { setupExternalSelectionSource } from "./external-selection-source"
 
 function HydrateAtoms({
   initialValues,
@@ -49,8 +47,6 @@ declare global {
 }
 
 async function mountSelectionUI(ctx: ContentScriptContext) {
-  ensureIconifyBackgroundFetch()
-
   const themeMode = await getLocalThemeMode()
 
   const ui = await createShadowRootUi(ctx, {
@@ -129,10 +125,6 @@ export async function runSelectionContent(ctx: ContentScriptContext) {
   // its schema carries a default.
 
   // Answer ebook bridge handshakes before the React UI finishes mounting
-  const cleanupExternalSelectionSource = setupExternalSelectionSource()
-  if (cleanupExternalSelectionSource) {
-    ctx.onInvalidated(cleanupExternalSelectionSource)
-  }
 
   await initI18n(config?.uiLanguage)
 

@@ -7,7 +7,6 @@ import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
 import { featureProviderRefAtom, updateLLMProviderConfig, updateProviderConfig } from "../provider"
 
 type OpenAIProviderConfig = Extract<ProviderConfig, { provider: "openai" }>
-type BedrockProviderConfig = Extract<ProviderConfig, { provider: "bedrock" }>
 
 describe("provider config updates", () => {
   it("merges nested LLM model updates without changing untouched fields", () => {
@@ -48,18 +47,6 @@ describe("provider config updates", () => {
     expect(result.headers).toEqual({ "X-Test": "1" })
     expect(result.model).toEqual(DEFAULT_PROVIDER_CONFIG.openai.model)
     expect(result.provider).toBe("openai")
-  })
-
-  it("merges provider-specific settings for providers that define them", () => {
-    const result = updateProviderConfig(DEFAULT_PROVIDER_CONFIG.bedrock, {
-      providerSpecificSettings: {
-        region: "us-west-2",
-      },
-    }) as BedrockProviderConfig
-
-    expect(result.providerSpecificSettings).toEqual({ region: "us-west-2" })
-    expect(result.model).toEqual(DEFAULT_PROVIDER_CONFIG.bedrock.model)
-    expect(result.provider).toBe("bedrock")
   })
 
   it("rejects merged configs that no longer match the provider schema", () => {

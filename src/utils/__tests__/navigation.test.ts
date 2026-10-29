@@ -1,11 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { browser } from "#imports"
 import {
-  buildAddCustomActionOptionsRoute,
   buildProviderConfigRoute,
   buildProviderTypeConfigRoute,
-  consumeCustomActionDeepLink,
-  CUSTOM_ACTION_ADD_QUERY_PARAM,
   getRequestedProviderType,
   openOptionsPage,
   shouldHighlightApiKey,
@@ -69,15 +66,6 @@ describe("provider config routes", () => {
     )
   })
 
-  it("reads back what it wrote", () => {
-    const search = new URL(
-      `https://x${buildProviderTypeConfigRoute("deepseek", { highlightApiKey: true })}`,
-    ).search
-
-    expect(getRequestedProviderType(search)).toBe("deepseek")
-    expect(shouldHighlightApiKey(search)).toBe(true)
-  })
-
   it("treats a blank or absent provider type as no request", () => {
     expect(getRequestedProviderType("?providerType=%20%20")).toBeNull()
     expect(getRequestedProviderType("?section=provider-config")).toBeNull()
@@ -86,26 +74,5 @@ describe("provider config routes", () => {
   it("highlights nothing for an unknown highlight target", () => {
     expect(shouldHighlightApiKey("?highlight=password")).toBe(false)
     expect(shouldHighlightApiKey("")).toBe(false)
-  })
-})
-
-describe("custom action routes", () => {
-  it("links to the add action dialog, and strips that param too", () => {
-    const route = buildAddCustomActionOptionsRoute()
-    const search = route.slice(route.indexOf("?"))
-
-    expect(route.startsWith("/custom-actions?")).toBe(true)
-    expect(new URLSearchParams(search).has(CUSTOM_ACTION_ADD_QUERY_PARAM)).toBe(true)
-    expect(consumeCustomActionDeepLink(search)).toEqual({
-      actionId: null,
-      tab: null,
-      remainingSearch: "",
-    })
-  })
-
-  it("strips its own params and keeps the rest", () => {
-    expect(
-      consumeCustomActionDeepLink("?section=custom-actions&actionId=x&tab=config&addAction=1"),
-    ).toEqual({ actionId: "x", tab: "config", remainingSearch: "?section=custom-actions" })
   })
 })

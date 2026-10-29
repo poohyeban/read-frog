@@ -34,15 +34,6 @@ const onMessageMock = vi.fn<(...args: any[]) => any>()
 const originalGetSelection = window.getSelection
 const DEFAULT_DICTIONARY_ACTION = getBuiltInDictionaryAction(DEFAULT_CONFIG.selectionToolbar)
 
-vi.mock("@/utils/auth/auth-client", () => ({
-  authClient: {
-    useSession: () => ({
-      data: null,
-      isPending: false,
-    }),
-  },
-}))
-
 vi.mock("@/components/ui/selection-popover", async () => {
   const React = await import("react")
 

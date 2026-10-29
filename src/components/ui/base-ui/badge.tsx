@@ -22,7 +22,6 @@ const badgeVariants = cva(
         // needs the base `border-transparent` intact — the rim gradient is the
         // border. Pair with a `glass-badge-*` plan class (see theme.css) to
         // supply the tint, glow and rim; on its own it renders untinted.
-        glass: "glass-badge",
       },
       size: {
         default: "h-5 px-2 py-0.5 text-xs [&>svg]:size-3!",

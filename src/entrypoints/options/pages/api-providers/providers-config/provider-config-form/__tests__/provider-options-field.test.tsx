@@ -165,48 +165,6 @@ describe("providerOptionsField", () => {
     )
   })
 
-  it("uses the current model recommendation for the placeholder", () => {
-    render(
-      <ProviderOptionsFieldHarness
-        initialConfig={{
-          ...baseProviderConfig,
-          provider: "alibaba",
-          model: {
-            model: "qwen3-max",
-            isCustomModel: false,
-            customModel: null,
-          },
-        }}
-      />,
-    )
-
-    expect(screen.getByLabelText("provider-options-editor")).toHaveAttribute(
-      "placeholder",
-      JSON.stringify({ enableThinking: false }, null, 2),
-    )
-  })
-
-  it("matches recommendations by model name even when the provider differs", () => {
-    render(
-      <ProviderOptionsFieldHarness
-        initialConfig={{
-          ...baseProviderConfig,
-          provider: "groq",
-          model: {
-            model: "qwen/qwen3-32b",
-            isCustomModel: false,
-            customModel: null,
-          },
-        }}
-      />,
-    )
-
-    expect(screen.getByLabelText("provider-options-editor")).toHaveAttribute(
-      "placeholder",
-      JSON.stringify({ reasoningEffort: "none" }, null, 2),
-    )
-  })
-
   it("preserves an incomplete local JSON draft when an external update arrives", async () => {
     const externalProviderOptions = { enableThinking: false }
 

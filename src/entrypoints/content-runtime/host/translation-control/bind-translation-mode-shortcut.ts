@@ -4,7 +4,6 @@ import { HotkeyManager } from "@tanstack/hotkeys"
 import { toastManager } from "@/components/ui/base-ui/toast"
 import { getLocalConfig, setLocalConfig } from "@/utils/config/storage"
 import { i18n } from "@/utils/i18n"
-import { getTranslationOnlyBlockedReason } from "@/utils/providers/translation-only-gate"
 import { isShortcutEmpty, isValidShortcut } from "@/utils/shortcut"
 
 const NEXT_MODE: Record<TranslationMode, TranslationMode> = {
@@ -35,12 +34,6 @@ export async function bindTranslationModeShortcutKey() {
       // Entering translationOnly is blocked while the page-translate provider
       // has no markup support (translation-only-gate.ts) — keep the mode and
       // surface the reason instead.
-      const blockedReason =
-        nextMode === "translationOnly" ? getTranslationOnlyBlockedReason(currentConfig) : null
-      if (blockedReason !== null) {
-        toastManager.add({ type: "info", title: blockedReason })
-        return
-      }
 
       await setLocalConfig({
         ...currentConfig,

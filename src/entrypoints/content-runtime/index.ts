@@ -4,6 +4,7 @@ import { ContentScriptContext, defineUnlistedScript } from "#imports"
 import { logger } from "@/utils/logger"
 import { runHostContent } from "./host/main"
 import { runSelectionContent } from "./selection/main"
+import "@/utils/iconify/local-icons"
 
 // The shared ES module behind every page's content scripts. The manifest only
 // injects the small loader (entrypoints/loader.content.ts); it imports this

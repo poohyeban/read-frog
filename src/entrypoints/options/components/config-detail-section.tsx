@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { Link } from "react-router"
 import { buttonVariants } from "@/components/ui/base-ui/button"
 import { cn } from "@/utils/styles/utils"

@@ -17,31 +17,9 @@ const openAICompatibleConfig = {
   model,
 } satisfies ProtocolCompatibleLLMProviderConfig
 
-const openResponsesConfig = {
-  id: "open-responses-test",
-  name: "Custom Responses",
-  enabled: true,
-  provider: "open-responses",
-  url: "https://example.com/v1/responses",
-  model,
-} satisfies ProtocolCompatibleLLMProviderConfig
-
 describe("getProviderModelsURL", () => {
   it("appends models to an OpenAI-compatible API root", () => {
     expect(getProviderModelsURL(openAICompatibleConfig)).toBe("https://example.com/v1/models")
-  })
-
-  it("replaces the final segment of a full Open Responses endpoint", () => {
-    expect(getProviderModelsURL(openResponsesConfig)).toBe("https://example.com/v1/models")
-  })
-
-  it("preserves query parameters while removing fragments", () => {
-    expect(
-      getProviderModelsURL({
-        ...openResponsesConfig,
-        url: "https://example.com/custom/responses/?api-version=2026-01-01#ignored",
-      }),
-    ).toBe("https://example.com/custom/models?api-version=2026-01-01")
   })
 
   it("preserves OpenAI-compatible query parameters while removing fragments", () => {

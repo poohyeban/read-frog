@@ -97,15 +97,6 @@ describe("getProviderOptions", () => {
       })
     })
 
-    it("should return options for claude models", () => {
-      const options = getProviderOptions("claude-3-5-sonnet", "anthropic")
-      expect(options.anthropic).toBeDefined()
-      expect(options.anthropic?.thinking).toEqual({ type: "disabled" })
-
-      const mixedCaseOptions = getProviderOptions("Claude-3-5-Sonnet", "anthropic")
-      expect(mixedCaseOptions.anthropic?.thinking).toEqual({ type: "disabled" })
-    })
-
     it("should return options for OpenAI o1/o3/o4 reasoning models", () => {
       const o1Options = getProviderOptions("o1-preview", "openai")
       expect(o1Options.openai?.reasoningEffort).toBe("minimal")
@@ -133,60 +124,12 @@ describe("getProviderOptions", () => {
       )
     })
 
-    it("should expose Azure shortcut deployment names for GPT, DeepSeek, and Grok", () => {
-      expect(LLM_PROVIDER_MODELS.azure).toEqual(
-        expect.arrayContaining([
-          "gpt-5.4-mini",
-          "gpt-5.4",
-          "DeepSeek-V4-Flash",
-          "DeepSeek-V4-Pro",
-          "grok-4.3",
-          "grok-4-20-non-reasoning",
-          "grok-4-20-reasoning",
-        ]),
-      )
-    })
-
-    it("should expose the current xAI Grok chat model ids", () => {
-      expect(LLM_PROVIDER_MODELS.xai).toEqual([
-        "grok-4.3",
-        "grok-4.6",
-        "grok-4.5",
-        "grok-4.20-non-reasoning",
-        "grok-4.20-reasoning",
-        "grok-4.20-0309-non-reasoning",
-        "grok-4.20-0309-reasoning",
-      ])
-    })
-
-    it("should prioritize the Jalapeno Cloud GLM models", () => {
-      expect(LLM_PROVIDER_MODELS.jalapenocloud.slice(0, 2)).toEqual(["GLM-5.2", "GLM-5.1"])
-    })
-
     it("should expose current Ollama recommended model ids", () => {
       expect(LLM_PROVIDER_MODELS.ollama).toEqual([
         "gemma4:e2b",
         "gemma4:e4b",
         "gemma3:4b",
         "llama3.2:3b",
-      ])
-    })
-
-    it("should expose the supported Anthropic Fable model ids", () => {
-      expect(LLM_PROVIDER_MODELS.anthropic).toContain("claude-fable-5")
-      expect(LLM_PROVIDER_MODELS.bedrock).toContain("us.anthropic.claude-fable-5")
-    })
-
-    it("should expose the live Cohere Command model ids and none of the retired ones", () => {
-      expect(LLM_PROVIDER_MODELS.cohere).toEqual([
-        "command-a-plus-05-2026",
-        "command-a-03-2025",
-        "command-a-reasoning-08-2025",
-        "command-a-vision-07-2025",
-        "command-a-translate-08-2025",
-        "command-r-plus-08-2024",
-        "command-r-08-2024",
-        "command-r7b-12-2024",
       ])
     })
 
@@ -249,188 +192,6 @@ describe("getProviderOptions", () => {
       expect(getProviderOptions("gpt-5.3-chat-latest", "openai")).toEqual({})
     })
 
-    it("should return low/disabled defaults for more mainstream reasoning providers", () => {
-      const grokOptions = getProviderOptions("grok-4.3", "xai")
-      expect(grokOptions.xai?.reasoningEffort).toBe("none")
-
-      const mixedCaseGrokOptions = getProviderOptions("Grok-4.3", "xai")
-      expect(mixedCaseGrokOptions.xai?.reasoningEffort).toBe("none")
-
-      const datedGrokReasoningOptions = getProviderOptions("grok-4.20-0309-reasoning", "xai")
-      expect(datedGrokReasoningOptions.xai?.reasoningEffort).toBe("low")
-
-      expect(getProviderOptions("grok-4.20-0309-non-reasoning", "xai")).toEqual({})
-      expect(getProviderOptions("grok-4.20-reasoning", "xai")).toEqual({})
-      expect(getProviderOptions("grok-4-fast-reasoning", "xai")).toEqual({})
-
-      const deepseekReasonerOptions = getProviderOptions("deepseek-reasoner", "deepseek")
-      expect(deepseekReasonerOptions.deepseek?.thinking).toEqual({ type: "disabled" })
-
-      const deepseekV4FlashOptions = getProviderOptions("deepseek-v4-flash", "deepseek")
-      expect(deepseekV4FlashOptions.deepseek?.thinking).toEqual({ type: "disabled" })
-
-      const mixedCaseDeepseekV4FlashOptions = getProviderOptions("DeepSeek-V4-Flash", "deepseek")
-      expect(mixedCaseDeepseekV4FlashOptions.deepseek?.thinking).toEqual({ type: "disabled" })
-
-      const deepseekV4ProOptions = getProviderOptions("deepseek-v4-pro", "deepseek")
-      expect(deepseekV4ProOptions.deepseek?.thinking).toEqual({ type: "disabled" })
-
-      const prefixedDeepseekV4Options = getProviderOptions(
-        "deepseek-ai/deepseek-v4-flash",
-        "atlascloud",
-      )
-      expect(prefixedDeepseekV4Options.atlascloud?.thinking).toEqual({ type: "disabled" })
-
-      const cohereReasoningOptions = getProviderOptions("command-a-reasoning-08-2025", "cohere")
-      expect(cohereReasoningOptions.cohere?.thinking).toEqual({ type: "disabled" })
-
-      const mixedCaseCohereReasoningOptions = getProviderOptions(
-        "Command-A-Reasoning-08-2025",
-        "cohere",
-      )
-      expect(mixedCaseCohereReasoningOptions.cohere?.thinking).toEqual({ type: "disabled" })
-
-      const moonshotOptions = getProviderOptions("kimi-k2.5", "moonshotai")
-      expect(moonshotOptions.moonshotai?.thinking).toEqual({ type: "disabled" })
-      expect(moonshotOptions.moonshotai?.reasoningHistory).toBe("disabled")
-
-      const fireworksOptions = getProviderOptions(
-        "accounts/fireworks/models/kimi-k2p5",
-        "fireworks",
-      )
-      expect(fireworksOptions.fireworks?.thinking).toEqual({ type: "disabled" })
-      expect(fireworksOptions.fireworks?.reasoningHistory).toBe("disabled")
-
-      const alibabaOptions = getProviderOptions("qwen3-max", "alibaba")
-      expect(alibabaOptions.alibaba?.enableThinking).toBe(false)
-    })
-
-    it("should apply broader Kimi defaults for non-instruct Moonshot and Fireworks variants", () => {
-      const moonshotTurboOptions = getProviderOptions("kimi-k2-turbo", "moonshotai")
-      expect(moonshotTurboOptions.moonshotai?.thinking).toEqual({ type: "disabled" })
-      expect(moonshotTurboOptions.moonshotai?.reasoningHistory).toBe("disabled")
-
-      const moonshotInstructOptions = getProviderOptions("kimi-k2-instruct-0905", "moonshotai")
-      expect(moonshotInstructOptions).toEqual({})
-
-      const fireworksThinkingOptions = getProviderOptions(
-        "accounts/fireworks/models/kimi-k2-thinking",
-        "fireworks",
-      )
-      expect(fireworksThinkingOptions.fireworks?.thinking).toEqual({ type: "disabled" })
-      expect(fireworksThinkingOptions.fireworks?.reasoningHistory).toBe("disabled")
-
-      const fireworksInstructOptions = getProviderOptions(
-        "accounts/fireworks/models/kimi-k2-instruct",
-        "fireworks",
-      )
-      expect(fireworksInstructOptions.fireworks?.thinking).toEqual({ type: "disabled" })
-      expect(fireworksInstructOptions.fireworks?.reasoningHistory).toBe("disabled")
-    })
-
-    it("should apply broader Alibaba defaults to Qwen variants", () => {
-      const flashOptions = getProviderOptions("qwen3.5-flash", "alibaba")
-      expect(flashOptions.alibaba?.enableThinking).toBe(false)
-
-      const plusOptions = getProviderOptions("qwen3.5-plus", "alibaba")
-      expect(plusOptions.alibaba?.enableThinking).toBe(false)
-
-      const maxOptions = getProviderOptions("qwen-max-latest", "alibaba")
-      expect(maxOptions.alibaba?.enableThinking).toBe(false)
-
-      const vlOptions = getProviderOptions("qwen2.5-vl-72b-instruct", "alibaba")
-      expect(vlOptions.alibaba?.enableThinking).toBe(false)
-
-      const dashOptions = getProviderOptions("qwen3-coder-plus", "alibaba")
-      expect(dashOptions.alibaba?.enableThinking).toBe(false)
-    })
-
-    it("should keep explicit Alibaba thinking-only Qwen variants untouched", () => {
-      const options = getProviderOptions("qwen3-thinking-2507", "alibaba")
-      expect(options).toEqual({})
-    })
-
-    it("should not apply Alibaba Qwen defaults to Cerebras qwen-3 model ids", () => {
-      expect(getProviderOptions("qwen-3-235b-a22b-instruct-2507", "cerebras")).toEqual({})
-      expect(getProviderOptions("qwen-3-32b", "cerebras")).toEqual({})
-    })
-
-    it("should return low/default-compatible reasoning settings for gpt-oss models", () => {
-      expect(LLM_PROVIDER_MODELS.bedrock).toEqual(
-        expect.arrayContaining(["openai.gpt-oss-20b", "openai.gpt-oss-120b"]),
-      )
-
-      const groqOptions = getProviderOptions("openai/gpt-oss-120b", "groq")
-      expect(groqOptions.groq?.reasoningEffort).toBe("low")
-
-      const cerebrasOptions = getProviderOptions("gpt-oss-120b", "cerebras")
-      expect(cerebrasOptions.cerebras?.reasoningEffort).toBe("low")
-    })
-
-    it("should apply Volcengine Doubao Seed thinking defaults with optional version suffixes", () => {
-      const twoLiteVersionedOptions = getProviderOptions(
-        "doubao-seed-2-0-lite-260428",
-        "volcengine",
-      )
-      expect(twoLiteVersionedOptions.volcengine?.thinking).toEqual({ type: "disabled" })
-
-      const oneFlashVersionedOptions = getProviderOptions(
-        "doubao-seed-1-6-flash-250828",
-        "volcengine",
-      )
-      expect(oneFlashVersionedOptions.volcengine?.thinking).toEqual({ type: "disabled" })
-
-      const codePreviewVersionedOptions = getProviderOptions(
-        "doubao-seed-code-preview-251028",
-        "volcengine",
-      )
-      expect(codePreviewVersionedOptions.volcengine?.thinking).toEqual({ type: "disabled" })
-
-      const twoLiteOptions = getProviderOptions("doubao-seed-2-0-lite", "volcengine")
-      expect(twoLiteOptions.volcengine?.thinking).toEqual({ type: "disabled" })
-
-      const oneSixOptions = getProviderOptions("doubao-seed-1-6", "volcengine")
-      expect(oneSixOptions.volcengine?.thinking).toEqual({ type: "disabled" })
-
-      const prefixedOptions = getProviderOptions("volcengine/doubao-seed-1-8", "openai-compatible")
-      expect(prefixedOptions["openai-compatible"]?.thinking).toEqual({ type: "disabled" })
-
-      const atlasTwoLiteOptions = getProviderOptions(
-        "bytedance/doubao-seed-2.0-lite-260428",
-        "atlascloud",
-      )
-      expect(atlasTwoLiteOptions.atlascloud?.thinking).toEqual({ type: "disabled" })
-    })
-
-    it("should not apply Doubao Seed thinking defaults to unrelated Doubao models", () => {
-      expect(getProviderOptions("doubao-seedance-2-0-pro", "volcengine")).toEqual({})
-      expect(getProviderOptions("doubao-seed-1-6-thinking-250715", "volcengine")).toEqual({})
-    })
-
-    it("should apply reasoning effort defaults to provider-prefixed Qwen3 model ids", () => {
-      const groqOptions = getProviderOptions("qwen/qwen3-32b", "groq")
-      expect(groqOptions.groq?.reasoningEffort).toBe("none")
-
-      const qwen36Options = getProviderOptions("qwen/qwen3.6-27b", "atlascloud")
-      expect(qwen36Options.atlascloud?.reasoningEffort).toBe("none")
-
-      const nextOptions = getProviderOptions("Qwen/Qwen3-Next-80B-A3B-Instruct", "siliconflow")
-      expect(nextOptions.siliconflow?.reasoningEffort).toBe("none")
-    })
-
-    it("should apply broadened Qwen defaults to non-Qwen3 provider-prefixed model ids", () => {
-      const deepinfraOptions = getProviderOptions("Qwen/Qwen2.5-72B-Instruct", "deepinfra")
-      expect(deepinfraOptions.deepinfra?.enableThinking).toBe(false)
-    })
-
-    it("should keep provider-prefixed Kimi instruct model ids untouched", () => {
-      const huggingfaceOptions = getProviderOptions("moonshotai/Kimi-K2-Instruct", "huggingface")
-      expect(huggingfaceOptions).toEqual({})
-
-      const atlasOptions = getProviderOptions("moonshotai/Kimi-K2-Instruct", "atlascloud")
-      expect(atlasOptions).toEqual({})
-    })
-
     it("should return empty object for non-matching models", () => {
       const options = getProviderOptions("some-random-model", "openai")
       expect(options).toEqual({})
@@ -438,20 +199,6 @@ describe("getProviderOptions", () => {
   })
 
   describe("glm model pattern matching", () => {
-    it("should match GLM-* models (case-insensitive)", () => {
-      const uppercase = getProviderOptions("GLM-4-Plus", "openai-compatible")
-      expect(uppercase["openai-compatible"]!.thinking).toEqual({ type: "disabled" })
-
-      const lowercase = getProviderOptions("glm-4-flash", "openai-compatible")
-      expect(lowercase["openai-compatible"]!.thinking).toEqual({ type: "disabled" })
-
-      const mixed = getProviderOptions("GlM-3-Turbo", "tensdaq")
-      expect(mixed.tensdaq?.thinking).toEqual({ type: "disabled" })
-
-      const prefixed = getProviderOptions("zai-org/glm-4.7", "atlascloud")
-      expect(prefixed.atlascloud?.thinking).toEqual({ type: "disabled" })
-    })
-
     it("should only match models starting with GLM-", () => {
       const middle = getProviderOptions("my-glm-model", "openai-compatible")
       expect(middle.openaiCompatible).toBeUndefined()
@@ -462,21 +209,6 @@ describe("getProviderOptions", () => {
   })
 
   describe("user provider option overrides", () => {
-    it("should treat an explicit empty object as a user override", () => {
-      const options = getProviderOptionsWithOverride("qwen3-max", "alibaba", {})
-      expect(options).toEqual({ alibaba: {} })
-    })
-
-    it("should fall back to recommendations when user options are undefined", () => {
-      const options = getProviderOptionsWithOverride("qwen3-max", "alibaba")
-      expect(options).toEqual({ alibaba: { enableThinking: false } })
-    })
-
-    it("should use user options as-is without merging matched defaults", () => {
-      const options = getProviderOptionsWithOverride("qwen3-max", "alibaba", { foo: "bar" })
-      expect(options).toEqual({ alibaba: { foo: "bar" } })
-    })
-
     it("should skip reasoning-only recommendations when top-level reasoning is explicit", () => {
       const options = getProviderOptionsWithOverride("gpt-5-mini", "openai", undefined, "minimal")
       expect(options).toBeUndefined()
@@ -507,44 +239,6 @@ describe("getProviderOptions", () => {
         },
       })
     })
-
-    it("should prefer canonical OpenAI-compatible keys when both forms are present", () => {
-      const options = getProviderOptionsWithOverride("glm-4-flash", "volcengine", {
-        reasoning_effort: "high",
-        reasoningEffort: "minimal",
-        verbosity: "high",
-        textVerbosity: "low",
-      })
-
-      expect(options).toEqual({
-        volcengine: {
-          reasoningEffort: "minimal",
-          textVerbosity: "low",
-        },
-      })
-    })
-
-    it("should preserve Open Responses option names exactly as entered", () => {
-      const options = getProviderOptionsWithOverride("gpt-5-mini", "open-responses", {
-        reasoning_effort: "minimal",
-        verbosity: "low",
-      })
-
-      expect(options).toEqual({
-        "open-responses": {
-          reasoning_effort: "minimal",
-          verbosity: "low",
-        },
-      })
-    })
-
-    it("should continue recommending provider options for Open Responses", () => {
-      const options = getProviderOptionsWithOverride("qwen3-max", "open-responses")
-
-      expect(options).toEqual({
-        "open-responses": { enableThinking: false },
-      })
-    })
   })
 
   describe("recommendation metadata", () => {
@@ -559,25 +253,6 @@ describe("getProviderOptions", () => {
 
     it("should return undefined for models without recommendations", () => {
       expect(getRecommendedProviderOptionsMatch("plain-model")).toBeUndefined()
-    })
-
-    it("should expose recommendation matches for newly covered defaults", () => {
-      expect(getRecommendedProviderOptionsMatch("kimi-k2-turbo")?.options).toEqual({
-        thinking: { type: "disabled" },
-        reasoningHistory: "disabled",
-      })
-
-      expect(getRecommendedProviderOptionsMatch("qwen3.5-flash")?.options).toEqual({
-        enableThinking: false,
-      })
-
-      expect(getRecommendedProviderOptionsMatch("DeepSeek-V4-Flash")?.options).toEqual({
-        thinking: { type: "disabled" },
-      })
-
-      expect(getRecommendedProviderOptionsMatch("GPT-5.4-Pro")?.options).toEqual({
-        reasoningEffort: "medium",
-      })
     })
   })
 })

@@ -1,7 +1,7 @@
 import type { AutosaveController } from "@/components/form/autosave-controller"
 import type { APIProviderConfig } from "@/types/config/provider"
 import type { FeatureKey } from "@/utils/constants/feature-providers"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useSelector } from "@tanstack/react-store"
 import { useAtomValue, useSetAtom } from "jotai"
 import { createContext, use, useState } from "react"
@@ -37,7 +37,6 @@ import {
 import { API_PROVIDER_ITEMS } from "@/utils/constants/providers"
 import { getSelectionToolbarActions, patchSelectionToolbarAction } from "@/utils/custom-actions"
 import { i18n } from "@/utils/i18n"
-import { providerSupportsTranslationOnlyMode } from "@/utils/providers/translation-only-gate"
 import { cn } from "@/utils/styles/utils"
 import { APIKeyField } from "./provider-config-form/api-key-field"
 import { AdvancedOptionsSection } from "./provider-config-form/components/advanced-options-section"
@@ -45,7 +44,6 @@ import { ConfigHeader as ProviderConfigHeader } from "./provider-config-form/con
 import { formOpts, useAppForm } from "./provider-config-form/form"
 import { ProviderHeadersField } from "./provider-config-form/provider-headers-field"
 import { ProviderOptionsField } from "./provider-config-form/provider-options-field"
-import { ProviderSpecificSettingsField } from "./provider-config-form/provider-specific-settings-field"
 import { ProviderURLField } from "./provider-config-form/provider-url-field"
 import { ReasoningField } from "./provider-config-form/reasoning-field"
 import { TemperatureField } from "./provider-config-form/temperature-field"
@@ -254,8 +252,8 @@ function Attribution({ children }: { children: React.ReactNode }) {
 function ConfigHeader() {
   const form = useApiProviderForm()
   const providerType = useSelector(form.store, (state) => state.values.provider)
-  const apiKey = useSelector(form.store, (state) => state.values.apiKey)
-  return <ProviderConfigHeader providerType={providerType} apiKey={apiKey} />
+
+  return <ProviderConfigHeader providerType={providerType} />
 }
 
 function NameField() {
@@ -306,7 +304,7 @@ function ConnectionFields() {
 }
 
 function ProviderSpecificFields() {
-  return <ProviderSpecificSettingsField form={useApiProviderForm()} />
+  return <></>
 }
 
 function TranslationModelFields() {
@@ -390,16 +388,8 @@ function CompatibleFeatureAssignments() {
     return null
   }
 
-  return FEATURE_KEYS.filter(
-    (featureKey) =>
-      FEATURE_PROVIDER_DEFS[featureKey].isProvider(providerType) &&
-      // While translationOnly page mode is active, providers without markup
-      // support cannot take the page-translate assignment (translation-only-gate.ts).
-      !(
-        featureKey === "pageTranslation" &&
-        config.pageTranslation.mode === "translationOnly" &&
-        !providerSupportsTranslationOnlyMode(providerType)
-      ),
+  return FEATURE_KEYS.filter((featureKey) =>
+    FEATURE_PROVIDER_DEFS[featureKey].isProvider(providerType),
   ).map((featureKey) => {
     const isAssigned = FEATURE_PROVIDER_DEFS[featureKey].getProviderId(config) === providerId
     return (

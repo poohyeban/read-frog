@@ -1,5 +1,5 @@
 import type { AddPatternResult } from "@/hooks/use-pattern-list"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { useState } from "react"
 import { Button } from "@/components/ui/base-ui/button"
 import { Input } from "@/components/ui/base-ui/input"

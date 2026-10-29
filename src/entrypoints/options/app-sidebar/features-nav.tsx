@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { Link, useLocation } from "react-router"
 import {
   SidebarGroup,
@@ -25,7 +25,7 @@ export function FeaturesNav() {
             {
               path: "/selection-toolbar",
               label: i18n.t("options.selectionToolbar.title"),
-              icon: "tabler:text-cursor",
+              icon: "tabler:cursor-text",
             },
             {
               path: "/context-menu",

@@ -447,18 +447,6 @@ describe("built-in site rules", () => {
     expect(resolved.excludeSelector).toContain(".forum-bottombar")
   })
 
-  it("matches current Microsoft Store URLs without a dead PRE-only scope", () => {
-    for (const url of [
-      "https://apps.microsoft.com/store/detail/example/9nksqgp7f2nh",
-      "https://apps.microsoft.com/detail/9nksqgp7f2nh",
-    ]) {
-      const microsoft = resolveSiteRule(url, BUILT_IN_SITE_RULES, [], [])
-
-      expect(microsoft.matchedRuleIds).toContain("microsoft")
-      expect(microsoft.includeSelector).toBeNull()
-    }
-  })
-
   it("uses class selectors for ArtStation blog card chrome", () => {
     const rule = BUILT_IN_SITE_RULES.find((candidate) => candidate.id === "artstationBlog")
     expect(rule?.excludeSelectors).toContain(".blog-card-thumbnail")
@@ -520,34 +508,6 @@ describe("built-in site rules", () => {
   // `utils/host/dom/filter` only fires for `text/plain` documents, so on this
   // text/html page the whole body was dropped from the walk while every sibling
   // field (Product Name, Category, Quantity) translated normally.
-  it("un-blocks PRE on Alibaba's RFQ sourcing portal", () => {
-    const resolved = resolveSiteRule(
-      "https://sourcing.alibaba.com/rfq_detail.htm?p=ID1op9Nz9xuJFsQZPZUe4DBR",
-      BUILT_IN_SITE_RULES,
-      [],
-      [],
-    )
-
-    expect(resolved.matchedRuleIds).toContain("alibaba-sourcing-rfq")
-    expect(resolved.dontWalkTags).not.toBeNull()
-    expect(resolved.dontWalkTags!.has("PRE")).toBe(false)
-    expect(resolved.dontWalkTags!.has("SCRIPT")).toBe(true)
-    // Removal must not register as an explicit add, or the plain-text `<pre>`
-    // exemption in `utils/host/dom/filter` would read it as an authoring
-    // decision to keep PRE blocked.
-    expect(resolved.dontWalkTagsExplicitAdds?.has("PRE") ?? false).toBe(false)
-
-    const elsewhere = resolveSiteRule("https://www.alibaba.com/", BUILT_IN_SITE_RULES, [], [])
-    expect(elsewhere.dontWalkTags).toBeNull()
-
-    const disabled = resolveSiteRule(
-      "https://sourcing.alibaba.com/rfq_detail.htm",
-      BUILT_IN_SITE_RULES,
-      [],
-      ["alibaba-sourcing-rfq"],
-    )
-    expect(disabled.dontWalkTags).toBeNull()
-  })
 
   // A GameFAQs text guide is a text/html page whose whole body is a run of
   // `<pre id="faqspan-N">` blocks, so the PRE block left nothing to translate

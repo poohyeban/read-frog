@@ -67,3 +67,11 @@ flowchart LR
 发现 `@read-frog/layout-engine` 的单独许可证限制独立修改产品使用，移除其全部运行时依赖，复用原 GPL 代码的字段列表渲染 AI 解释。下一阶段从 package/锁文件删除该包。`@read-frog/definitions` 仍提供核心语言表和校验，需保留并继续审计实际用途。
 
 类型/Lint 通过；Chromium 构建成功（WXT 11.65 MB，5.446 秒）。首次全量：190 文件/2141 测试通过，14 文件失败（删除功能的旧断言、旧配置键/迁移预期、渲染测试替身）；更新后失败范围复跑 12 文件通过、2 文件失败，最后 2 文件/15 测试也通过。保留流式取消、重试、Provider 切换测试。最终仍将重新运行全量以核实阶段间组合结果。
+
+## Phase 3
+
+Provider 收敛到 OpenAI / OpenAI-compatible / Gemini / Ollama，以及待终审的 Google Translate。删除无消费者模块、失效 SDK、专属资源、旧迁移样本、环境变量/官方 monorepo 别名、自动发布配置和 Nx。图标使用现有 Tabler MIT 数据与 Iconify offline 渲染，移除图标 CDN/代理和官方电子书桥接。精简语言资源，保留运行时实际使用的键及动态键前缀。
+
+Manifest 删除 cookies、identity、offscreen、sidePanel、unlimitedStorage；保留 storage、tabs、alarms、contextMenus、scripting、webNavigation 和任意网页/自定义 API 主机访问。移除上游固定开发扩展 ID。扩展与 npm 名称改为 Read Frog Lite，版本 0.1.0。
+
+锁文件更新并安装成功。移除自动下载 Node 的 runtime 声明，要求本机 Node >=24；这是为避免依赖删减时包管理器改选新 Node 并访问未配置镜像，原基线的 Node 26.12.1 与最终 Node 24.19.0 差异会影响耗时比较。类型/Lint 通过，生产构建 9.01 MB，3.807 秒，不再需要任何环境变量。全量 186 文件/1924 测试通过，2 个真实免费翻译测试按 AGENTS.md 跳过；仅 4 个已删除电子书桥接用例失败，其专属测试文件随后删除。

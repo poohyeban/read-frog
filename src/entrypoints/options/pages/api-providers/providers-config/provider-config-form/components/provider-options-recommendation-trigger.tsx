@@ -1,5 +1,5 @@
 import type { JSONValue } from "ai"
-import { Icon } from "@iconify/react"
+import { Icon } from "@iconify/react/offline"
 import { dequal } from "dequal"
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react"
 import { Button } from "@/components/ui/base-ui/button"

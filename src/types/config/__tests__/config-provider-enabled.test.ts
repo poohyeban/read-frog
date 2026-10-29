@@ -12,22 +12,6 @@ function getIssuePaths(input: unknown) {
 }
 
 describe("config provider enabled validation", () => {
-  it("fails when a built-in feature uses a disabled provider", () => {
-    const providersConfig = DEFAULT_CONFIG.providersConfig.map((provider) => {
-      if (provider.id === "microsoft-translate-default") {
-        return { ...provider, enabled: false }
-      }
-      return provider
-    })
-
-    const issuePaths = getIssuePaths({
-      ...DEFAULT_CONFIG,
-      providersConfig,
-    })
-
-    expect(issuePaths).toContain("pageTranslation.providerId")
-  })
-
   it("fails when a custom action uses a disabled provider", () => {
     const action = createDefaultDictionaryAction()
     if (!action) {
