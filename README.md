@@ -1,10 +1,12 @@
 # Read Frog Lite
 
-**Read Frog Lite 0.2.0 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
+**Read Frog Lite 0.2.1 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
 
 普通使用者可以直接下载扩展安装包，**不需要下载源码或在个人电脑编译**。翻译、语音合成和语音转录服务均由用户选择；扩展不提供内置免费额度，也不通过 Read Frog 官方服务器中转请求。
 
-[直接下载 v0.2.0 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.0/read-frog-lite-0.2.0-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [完整验收 CI](https://github.com/poohyeban/read-frog/actions/runs/40827815730) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
+[直接下载 v0.2.1 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.1/read-frog-lite-0.2.1-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
+
+0.2.1 修复划词图标与 Provider 图片，并增加 DevTools 诊断；DeepSeek 的词典 / 长难句兼容性仍在定位，尚未修改请求格式。详见[本版说明](docs/restore/RELEASE-0.2.1.md)。
 
 ## 目录
 
@@ -46,7 +48,7 @@
 ### 首次安装：无需编译
 
 1. 打开本 Fork 的 [Releases](https://github.com/poohyeban/read-frog/releases)，选择所需版本，或使用上方的直接下载链接。
-2. 下载 Assets 中的 **`read-frog-lite-0.2.0-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
+2. 下载 Assets 中的 **`read-frog-lite-0.2.1-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
 3. 解压扩展 ZIP，将扩展目录保存在固定位置。Release 下载不受 Actions Artifact 的 30 天保留期限制。
 4. Chrome 打开 `chrome://extensions`，Edge 打开 `edge://extensions`，开启开发者模式，选择“加载已解压的扩展程序”。
 5. 选择**直接包含 `manifest.json` 的目录**，确认名称为 Read Frog Lite。打开扩展设置配置服务，再刷新要翻译的网页。
@@ -305,7 +307,7 @@ git push origin v0.2.0
 
 `v0.2.0` 已用于本次版本，后续版本使用新的 tag，不移动已发布 tag，不覆盖已发布附件。没有匹配的成功 CI、Artifact 已过期或校验值不符时，发布会失败，应补齐对应验证 / 产物记录。工作流只对显式 tag 或手动发布生效，普通 main / README 提交不会发布 Release。
 
-0.2.0 参考指标：源码 992 文件，直接依赖 runtime 55 / dev 37，生产目录 14,543,554 字节，扩展 ZIP 4,598,062 字节；精确 bundle 大小和 ZIP SHA256 见 [`final-metrics.json`](docs/restore/final-metrics.json)。这些是该版本实测数据，后续代码变化需重新记录，不能沿用旧指标。
+0.2.0 参考指标：源码 992 文件，直接依赖 runtime 55 / dev 37，生产目录 14,543,554 字节，扩展 ZIP 4,598,062 字节；历史记录见 [`metrics-0.2.0.json`](docs/restore/metrics-0.2.0.json)。当前发布产物的精确大小和 SHA256 见 [`final-metrics.json`](docs/restore/final-metrics.json)，不能沿用旧版本的校验值。
 
 ## 常见问题
 
@@ -327,6 +329,19 @@ git push origin v0.2.0
 
 提交问题时提供扩展版本 / Commit、浏览器版本、页面类型、Provider 协议、复现步骤和已脱敏的错误状态。不要贴 Key、自定义鉴权头或包含私密文本的完整网络记录。
 
+### 词典 / 长难句失败：收集开发者日志
+
+从 0.2.1 起，Action 的运行错误只在开发者控制台记录，不在面板显示红色错误框；缺少 Provider 等配置提示仍会显示。失败后可以切换服务或点击重试。
+
+1. 更新已加载的扩展目录，在 `chrome://extensions` 点击重新加载，确认版本为 0.2.1，然后刷新 YouTube 或普通网页。
+2. 在出问题的网页按 F12，打开 **Console**，开启 **Preserve log**。确认没有启用会隐藏扩展消息的 **Selected context only**，过滤 `[Read Frog Lite][stream]`。
+3. 重新选词，打开词典或长难句分析。复制该前缀后的 JSON，附上触发操作及浏览器版本即可。
+4. 如果页面没有该日志，在 `chrome://extensions` 打开 Read Frog Lite 的 **Service worker → Inspect**，保持窗口打开再复现，复制同一前缀日志。
+
+日志包含请求编号、失败阶段、HTTP 状态、请求输出格式及固定错误分类；页面与后台使用相同 requestId。`httpStatus: 400` + `responseFormat: json_schema` 可帮助定位结构化协议；`reason: no_receiver` 则表示扩展流端口未找到接收端。没有捕获到的字段会省略，不推测 HTTP 状态。
+
+诊断仅输出到本机 Console，不上传、不持久化；不会记录 Key、鉴权头、完整地址、Prompt、选中文字或原始响应。请勿提供整个 Network / HAR、完整控制台导出或配置文件。实现边界、官方 DeepSeek 适配差异与测试见[定位记录](docs/restore/DIAGNOSIS-ACTION-ICONS.md)。
+
 ## 来源、许可证与工程记录
 
 原项目由 [Mengxi](https://github.com/mengxi-ream) 和 Read Frog contributors 开发，保留原 Git 历史、版权与 [GPLv3](LICENSE)。修改版分发时应保留许可证 / 作者归属，并按 GPLv3 提供对应源码；不要将此修改版标称为官方发行版。
@@ -339,7 +354,7 @@ git push origin v0.2.0
 | [完整恢复报告](docs/restore/REPORT.md)                                                                                                                    | 实际恢复清单、协议、来源、网络、许可证、测试与限制          |
 | [Phase 1](docs/restore/PHASE1.md) / [2](docs/restore/PHASE2.md) / [3](docs/restore/PHASE3.md) / [4](docs/restore/PHASE4.md) / [5](docs/restore/PHASE5.md) | 各阶段实现决策；同目录 `phase*-files.json` 记录上游文件来源 |
 | [人工验收](docs/restore/MANUAL-ACCEPTANCE.md)                                                                                                             | Chrome / Edge、视频站点、真实服务与隐私检查步骤             |
-| [构建指标](docs/restore/final-metrics.json)                                                                                                               | 0.2.0 实测数据与 ZIP 校验值                                 |
+| [构建指标](docs/restore/final-metrics.json)                                                                                                               | 当前发布产物实测数据与 ZIP 校验值                           |
 | [旧减法报告](docs/lite/)                                                                                                                                  | 历史 0.1 状态，不代表当前功能范围                           |
 | [LICENSES](LICENSES/) / [第三方通知](public/THIRD-PARTY-NOTICES.txt)                                                                                      | 生成数据、图标和打包依赖的许可记录                          |
 

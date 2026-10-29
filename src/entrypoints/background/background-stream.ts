@@ -23,6 +23,7 @@ import { BACKGROUND_STREAM_PORTS } from "@/types/background-stream"
 import { isLLMProviderConfig, llmProviderConfigItemSchema } from "@/types/config/provider"
 import { createStructuredObjectSchema } from "@/utils/ai/structured-object-schema"
 import { extractAISDKErrorMessage } from "@/utils/error/extract-message"
+import { createStreamDiagnostic, reportStreamDiagnostic } from "@/utils/error/stream-diagnostics"
 import { logger } from "@/utils/logger"
 import { buildLocalGenerateTextParams } from "@/utils/providers/generate-params"
 import { getLanguageModelForConfig, getModelById } from "@/utils/providers/model"
@@ -181,9 +182,18 @@ function createStreamPortHandler<TSerializablePayload, TResponse>(
       if (!parseResult.success) {
         if (parseResult.streamRequestId) {
           streamRequestId = parseResult.streamRequestId
+          const diagnostic = createStreamDiagnostic(
+            { code: "invalid_request" },
+            {
+              requestId: streamRequestId,
+              port: port.name,
+              phase: "start",
+            },
+          )
+          reportStreamDiagnostic(diagnostic, "background")
           safePost({
             type: "error",
-            error: { message: invalidStreamStartPayloadMessage },
+            error: { message: invalidStreamStartPayloadMessage, diagnostic },
           })
         }
 
@@ -230,11 +240,17 @@ function createStreamPortHandler<TSerializablePayload, TResponse>(
           return
         }
 
-        logger.error("[Background] Stream Function failed")
+        const diagnostic = createStreamDiagnostic(finalError, {
+          requestId: streamRequestId,
+          port: port.name,
+          phase: "request",
+        })
+        reportStreamDiagnostic(diagnostic, "background")
         safePost({
           type: "error",
           error: {
             message: extractAISDKErrorMessage(finalError),
+            diagnostic,
             action: finalError instanceof BackgroundStreamError ? finalError.action : undefined,
           },
         })

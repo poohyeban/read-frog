@@ -1916,10 +1916,8 @@ describe("selection toolbar requests", () => {
     )
   })
 
-  it("renders custom action errors inline and clears them after a successful rerun", async () => {
-    streamBackgroundStructuredObjectMock
-      .mockRejectedValueOnce(new Error("Structured output failed"))
-      .mockResolvedValueOnce(createStructuredObjectSnapshot({ summary: "fresh" }))
+  it("keeps runtime errors out of the action panel and still allows a successful rerun", async () => {
+    streamBackgroundStructuredObjectMock.mockRejectedValue(new Error("Structured output failed"))
 
     const paragraph = document.createElement("p")
     paragraph.textContent = "Selected text inside a paragraph."
@@ -1934,15 +1932,21 @@ describe("selection toolbar requests", () => {
 
     fireEvent.click(screen.getByRole("button", { name: actionName }))
 
-    const alert = await screen.findByRole("alert")
-    expect(alert).toHaveTextContent("options.selectionToolbar.errors.customActionFailed")
-    expect(alert).toHaveTextContent("options.selectionToolbar.errors.customActionFailedFallback")
-    expect(alert).not.toHaveTextContent("Structured output failed")
+    await act(async () => {
+      await Promise.resolve()
+    })
+    expect(streamBackgroundStructuredObjectMock).toHaveBeenCalled()
+    expect(screen.queryByRole("alert")).toBeNull()
+    expect(screen.queryByText("Structured output failed")).toBeNull()
 
+    const callsBeforeRerun = streamBackgroundStructuredObjectMock.mock.calls.length
+    streamBackgroundStructuredObjectMock.mockResolvedValue(
+      createStructuredObjectSnapshot({ summary: "fresh" }),
+    )
     fireEvent.click(screen.getByRole("button", { name: "Regenerate" }))
 
     await waitFor(() => {
-      expect(streamBackgroundStructuredObjectMock).toHaveBeenCalledTimes(2)
+      expect(streamBackgroundStructuredObjectMock).toHaveBeenCalledTimes(callsBeforeRerun + 1)
     })
 
     await waitFor(() => {

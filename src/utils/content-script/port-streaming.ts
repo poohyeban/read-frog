@@ -7,6 +7,7 @@ import type {
 import type { ErrorAction } from "@/utils/error-action"
 import { browser } from "#imports"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { createStreamDiagnostic, reportStreamDiagnostic } from "@/utils/error/stream-diagnostics"
 
 /**
  * Rejection message when the background port drops mid-stream (service worker
@@ -46,8 +47,30 @@ export function createPortStreamPromise<TResponse = string>(
   return new Promise<TResponse>((resolve, reject) => {
     const { signal, onChunk, keepAliveIntervalMs = 20_000 } = options
 
+    if (signal?.aborted) {
+      reject(new DOMException("aborted", "AbortError"))
+      return
+    }
+
     const streamRequestId = getRandomUUID()
-    const port = browser.runtime.connect({ name: portName })
+    const diagnose = (error: unknown, phase: "connect" | "send" | "disconnect" | "request") => {
+      reportStreamDiagnostic(
+        createStreamDiagnostic(error, {
+          requestId: streamRequestId,
+          port: portName,
+          phase,
+        }),
+        "content",
+      )
+    }
+    let port: ReturnType<typeof browser.runtime.connect>
+    try {
+      port = browser.runtime.connect({ name: portName })
+    } catch (error) {
+      diagnose(error, "connect")
+      reject(new Error(STREAM_PORT_DISCONNECTED_MESSAGE))
+      return
+    }
 
     let settled = false
     let messageListener: ((event: StreamPortResponse<TResponse>) => void) | undefined
@@ -76,6 +99,7 @@ export function createPortStreamPromise<TResponse = string>(
         return
       }
       settled = true
+      cleanup()
 
       try {
         port.disconnect()
@@ -85,11 +109,10 @@ export function createPortStreamPromise<TResponse = string>(
       }
 
       callback()
-      cleanup()
     }
 
     messageListener = (event: StreamPortResponse<TResponse>) => {
-      if (!event || event.streamRequestId !== streamRequestId) {
+      if (settled || !event || event.streamRequestId !== streamRequestId) {
         return
       }
 
@@ -104,21 +127,26 @@ export function createPortStreamPromise<TResponse = string>(
       }
 
       if (event.type === "error") {
+        if (event.error.diagnostic) {
+          reportStreamDiagnostic(event.error.diagnostic, "content")
+        } else {
+          diagnose(event.error, "request")
+        }
         finalize(() => reject(new StreamPortError(event.error)))
       }
     }
 
     disconnectListener = () => {
+      // Chrome exposes lastError only during this callback. Reading it also
+      // prevents the unhelpful "Unchecked runtime.lastError" console warning.
+      const lastError = browser.runtime.lastError
+      if (settled) return
+      diagnose(lastError ?? new Error(STREAM_PORT_DISCONNECTED_MESSAGE), "disconnect")
       finalize(() => reject(new Error(STREAM_PORT_DISCONNECTED_MESSAGE)))
     }
 
     abortListener = () => {
       finalize(() => reject(new DOMException("aborted", "AbortError")))
-    }
-
-    if (signal?.aborted) {
-      abortListener()
-      return
     }
 
     port.onMessage.addListener(messageListener)
@@ -134,9 +162,15 @@ export function createPortStreamPromise<TResponse = string>(
       payload: serializablePayload,
     }
 
-    port.postMessage(startMessage)
+    try {
+      port.postMessage(startMessage)
+    } catch (error) {
+      diagnose(error, "send")
+      finalize(() => reject(new Error(STREAM_PORT_DISCONNECTED_MESSAGE)))
+      return
+    }
 
-    if (keepAliveIntervalMs > 0) {
+    if (!settled && keepAliveIntervalMs > 0) {
       keepAliveTimer = setInterval(() => {
         if (settled) {
           return

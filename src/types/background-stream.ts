@@ -3,6 +3,7 @@ import type { Browser } from "#imports"
 import type { AISDKReasoning, LLMProviderConfig } from "@/types/config/provider"
 import type { SelectionToolbarCustomActionOutputType } from "@/types/config/selection-toolbar"
 import type { ErrorAction } from "@/utils/error-action"
+import type { StreamDiagnostic } from "@/utils/error/stream-diagnostics"
 
 interface BaseBackgroundStreamSerializablePayload {
   providerId: string
@@ -69,7 +70,8 @@ export interface StreamPortErrorPayload {
   message: string
   /** What the user can do about it, when the background knows. */
   action?: ErrorAction
-  /** Classified where the original error still exists, for failure analytics. */
+  /** Sanitized developer diagnostics; never rendered in the panel. */
+  diagnostic?: StreamDiagnostic
 }
 
 export type StreamPortResponse<T = string> =
