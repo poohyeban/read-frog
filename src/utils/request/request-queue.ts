@@ -37,6 +37,8 @@ type QueuedRequestTask = RequestTask & {
 export interface QueueOptions {
   rate: number // tokens/sec
   capacity: number // token bucket size
+  /** Independent attempt limit. Omitted preserves the existing unlimited behavior. */
+  maxConcurrent?: number
   timeoutMs: number
   maxRetries: number
   baseRetryDelayMs: number
@@ -49,6 +51,7 @@ export class RequestQueue {
   private executingTasks = new Map<string, QueuedRequestTask>()
   private nextScheduleTimer: NodeJS.Timeout | null = null
   private retryPolicy: RequestRetryPolicy
+  private activeAttempts = new Set<symbol>()
 
   // token bucket
   private bucketTokens: number
@@ -63,6 +66,7 @@ export class RequestQueue {
   private consecutiveRateLimits = 0
 
   constructor(private options: QueueOptions) {
+    this.validateConcurrency(options.maxConcurrent)
     this.retryPolicy = options.retryPolicy ?? defaultRequestRetryPolicy
     this.bucketTokens = options.capacity
     this.lastRefill = Date.now()
@@ -120,6 +124,7 @@ export class RequestQueue {
   }
 
   setQueueOptions(options: Partial<QueueOptions>) {
+    if (Object.hasOwn(options, "maxConcurrent")) this.validateConcurrency(options.maxConcurrent)
     const { retryPolicy, ...queueOptions } = options
     const parseConfigStatus = requestQueueConfigSchema.partial().safeParse(queueOptions)
     if (parseConfigStatus.error) {
@@ -128,6 +133,7 @@ export class RequestQueue {
     // Settle token accrual under the OLD rate before switching.
     this.refillTokens()
     this.options = deepmerge(this.options, queueOptions) as QueueOptions
+    if (Object.hasOwn(options, "maxConcurrent")) this.options.maxConcurrent = options.maxConcurrent
     if (retryPolicy) {
       this.retryPolicy = retryPolicy
     }
@@ -195,6 +201,7 @@ export class RequestQueue {
    * dispatch is blocked instead of flushing tiny.
    */
   nextDispatchEtaMs(): number {
+    if (!this.hasAvailableSlot()) return Infinity
     this.refillTokens()
     const now = Date.now()
     const pauseDelayMs = Math.max(0, this.pausedUntil - now)
@@ -218,7 +225,7 @@ export class RequestQueue {
       return
     }
 
-    while (this.bucketTokens >= 1 && this.waitingQueue.size() > 0) {
+    while (this.hasAvailableSlot() && this.bucketTokens >= 1 && this.waitingQueue.size() > 0) {
       const now = Date.now()
 
       const task = this.waitingQueue.peek()
@@ -240,7 +247,7 @@ export class RequestQueue {
       }
     }
 
-    if (this.waitingQueue.size() > 0) {
+    if (this.hasAvailableSlot() && this.waitingQueue.size() > 0) {
       const nextTask = this.waitingQueue.peek()
       if (nextTask) {
         const now = Date.now()
@@ -270,55 +277,82 @@ export class RequestQueue {
     }, delayMs)
   }
 
-  private async executeTask(task: QueuedRequestTask) {
-    // console.info(`🏃 Starting execution of task ${task.id} (attempt ${task.retryCount + 1}) at ${Date.now()}`)
+  private validateConcurrency(value: number | undefined) {
+    if (value !== undefined && (!Number.isSafeInteger(value) || value < 1)) {
+      throw new Error("maxConcurrent must be a positive integer or undefined")
+    }
+  }
 
-    let timeoutId: NodeJS.Timeout | null = null
+  private hasAvailableSlot(): boolean {
+    return this.activeAttempts.size < (this.options.maxConcurrent ?? Infinity)
+  }
+
+  private async executeTask(task: QueuedRequestTask) {
+    const attempt = Symbol("request attempt")
+    this.activeAttempts.add(attempt)
     const abortController = new AbortController()
     task.abortController = abortController
     const timeoutMs = task.timeoutMs ?? this.options.timeoutMs
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
+    let timedOut = false
+    let transportSettled = false
+    let transport: Promise<unknown> | undefined
+    let rejectAborted!: (reason: unknown) => void
+    const aborted = new Promise<never>((_resolve, reject) => {
+      rejectAborted = reject
+    })
+    const onAbort = () => rejectAborted(abortController.signal.reason)
+    abortController.signal.addEventListener("abort", onAbort, { once: true })
 
     try {
-      // Create a timeout promise
-      const timeoutPromise = new Promise((_, reject) => {
+      const timeout = new Promise<never>((_resolve, reject) => {
         timeoutId = setTimeout(() => {
-          // console.info(`⏰ Task ${task.id} timed out after ${timeoutMs}ms`)
-          const timeoutError = new Error(`Task ${task.id} timed out after ${timeoutMs}ms`)
-          // Reject before aborting: the race must settle with the timeout error
-          // (which the retry policy treats as retryable), not with whatever abort
-          // error the cancelled thunk rejects with.
-          reject(timeoutError)
-          abortController.abort(timeoutError)
+          timedOut = true
+          const error = new Error(`Task ${task.id} timed out after ${timeoutMs}ms`)
+          reject(error)
+          abortController.abort(error)
         }, timeoutMs)
       })
-
-      // Race between the actual task and timeout; the signal cancels the
-      // in-flight attempt on timeout so a retry never runs concurrently with it
-      const result = await Promise.race([task.thunk(abortController.signal), timeoutPromise])
-
-      // Clear timeout if task completed successfully
-      if (timeoutId) {
-        clearTimeout(timeoutId)
-        timeoutId = null
+      try {
+        transport = Promise.resolve(task.thunk(abortController.signal))
+      } catch (error) {
+        transport = Promise.reject(error)
       }
-
-      // console.info(`✅ Task ${task.id} completed successfully at ${Date.now()}`)
-      // Any completed request proves the provider recovered from rate limiting.
+      void transport.then(
+        () => {
+          transportSettled = true
+        },
+        () => {
+          transportSettled = true
+        },
+      )
+      const result = await Promise.race([transport, timeout, aborted])
       this.consecutiveRateLimits = 0
-      if (!task.drained) {
-        task.resolve(result)
-      }
+      if (!task.drained) task.resolve(result)
     } catch (error) {
-      // Clear timeout if it hasn't fired yet
-      if (timeoutId) {
-        clearTimeout(timeoutId)
-        timeoutId = null
-      }
+      if (timeoutId !== undefined) clearTimeout(timeoutId)
+      if (task.drained) return
 
-      // console.error(`❌ Task ${task.id} failed at ${Date.now()}:`, error)
-
-      if (task.drained) {
-        return
+      if (timedOut && !transportSettled && transport && this.options.maxRetries > 0) {
+        // AbortSignal is cooperative. Give fetch a bounded opportunity to settle,
+        // but never overlap an unconfirmed abort with an automatic retry. A
+        // broken transport must not leave the logical queue permanently locked.
+        let graceTimer: ReturnType<typeof setTimeout> | undefined
+        await Promise.race([
+          transport.then(
+            () => {},
+            () => {},
+          ),
+          new Promise<void>((resolve) => {
+            graceTimer = setTimeout(resolve, 100)
+          }),
+        ])
+        if (graceTimer !== undefined) clearTimeout(graceTimer)
+        if (task.drained) return
+        if (!transportSettled) {
+          task.reject(error)
+          return
+        }
       }
 
       const now = Date.now()
@@ -330,62 +364,32 @@ export class RequestQueue {
         rateLimitRetryCount: task.rateLimitRetryCount,
         consecutiveRateLimits: this.consecutiveRateLimits,
       })
-
-      // Check if we should retry
       if (decision.action === "retry") {
         task.retryCount++
-        // Schedule retry
-        const retryAt = now + decision.delayMs
-        task.scheduleAt = retryAt
-
-        // console.warn(`🔄 Retrying task ${task.id} (attempt ${task.retryCount}/${this.options.maxRetries}) after ${Math.round(decision.delayMs)}ms`)
-
-        // Move task back to waiting queue for retry
+        task.scheduleAt = now + decision.delayMs
         this.waitingTasks.set(task.hash, task)
-        this.waitingQueue.push(task, retryAt)
-        this.schedule()
+        this.waitingQueue.push(task, task.scheduleAt)
       } else if (decision.action === "pause-and-retry") {
-        // Rate limited: pause dispatching and re-enqueue the task instead of
-        // draining the backlog. Count one pause per pause WINDOW, not per
-        // failing sibling — with capacity>1 several in-flight attempts can all
-        // 429 within milliseconds; only the first (arriving un-paused)
-        // increments the consecutive counter, the rest just extend the pause.
-        if (now >= this.pausedUntil) {
-          this.consecutiveRateLimits++
-        }
+        if (now >= this.pausedUntil) this.consecutiveRateLimits++
         this.pausedUntil = Math.max(this.pausedUntil, now + decision.pauseMs)
-        // Post-pause probe: resume with at most one token so recovery sends a
-        // single request first instead of bursting `capacity` requests at a
-        // provider that may still be limited.
         this.bucketTokens = Math.min(this.bucketTokens, 1)
         this.lastRefill = now
         task.rateLimitRetryCount++
         task.scheduleAt = this.pausedUntil
         this.waitingTasks.set(task.hash, task)
         this.waitingQueue.push(task, task.scheduleAt)
-        this.schedule()
+      } else if (decision.failQueue) {
+        this.failCurrentBacklog(error)
       } else {
-        // Max retries exceeded, reject the promise
-        // console.error(`💀 Task ${task.id} failed permanently after ${this.options.maxRetries} retries`)
-        if (decision.failQueue) {
-          this.failCurrentBacklog(error)
-        } else {
-          task.reject(error)
-        }
+        task.reject(error)
       }
     } finally {
-      // Ensure timeout is always cleared
-      if (timeoutId) {
-        clearTimeout(timeoutId)
-      }
-
-      if (task.abortController === abortController) {
-        task.abortController = undefined
-      }
-
-      if (this.executingTasks.get(task.hash) === task) {
-        this.executingTasks.delete(task.hash)
-      }
+      if (timeoutId !== undefined) clearTimeout(timeoutId)
+      abortController.signal.removeEventListener("abort", onAbort)
+      if (task.abortController === abortController) task.abortController = undefined
+      if (this.executingTasks.get(task.hash) === task) this.executingTasks.delete(task.hash)
+      this.activeAttempts.delete(attempt)
+      // Re-enqueued retries cannot begin until this attempt's cleanup finishes.
       this.schedule()
     }
   }
@@ -431,7 +435,15 @@ export class RequestQueue {
 
   private refillTokens() {
     const now = Date.now()
-    const timeSinceLastRefill = now - this.lastRefill
+    // Earn at most one probe token during a cooldown, never a full burst.
+    const pausedElapsed = Math.max(0, Math.min(now, this.pausedUntil) - this.lastRefill)
+    if (pausedElapsed > 0) {
+      this.bucketTokens = Math.min(
+        1,
+        this.bucketTokens + (pausedElapsed / 1000) * this.options.rate,
+      )
+    }
+    const timeSinceLastRefill = Math.max(0, now - Math.max(this.lastRefill, this.pausedUntil))
     const tokensToAdd = (timeSinceLastRefill / 1000) * this.options.rate
     this.bucketTokens = Math.min(this.bucketTokens + tokensToAdd, this.options.capacity)
 
