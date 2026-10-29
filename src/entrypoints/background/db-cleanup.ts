@@ -14,6 +14,14 @@ export const SUMMARY_CACHE_MAX_AGE_MINUTES = 7 * 24 * 60
 export async function setUpDatabaseCleanup() {
   const cleanupJobs = new Map<string, () => Promise<void>>([
     [
+      "ai-segmentation-cache-cleanup",
+      createCacheCleanup({
+        table: db.aiSegmentationCache,
+        maxAgeMinutes: 7 * 24 * 60,
+        label: "AI segmentation cache",
+      }),
+    ],
+    [
       TRANSLATION_CACHE_CLEANUP_ALARM,
       createCacheCleanup({
         table: db.translationCache,
@@ -92,4 +100,8 @@ export async function cleanupAllSummaryCache() {
     logger.error("Failed to cleanup all summary cache:")
     throw error
   }
+}
+
+export async function cleanupAllAiSegmentationCache() {
+  await db.aiSegmentationCache.clear()
 }

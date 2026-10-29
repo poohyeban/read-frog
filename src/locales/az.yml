@@ -159,10 +159,12 @@ options:
         pageTranslation: Səhifə tərcüməsi
         selectionTranslation: Seçim alətlər panelində tərcümə
         inputTranslation: Daxil edilən mətnin tərcüməsi
+        videoSubtitles: Video subtitrləri
       descriptions:
         pageTranslation: Bütün səhifəni ikidilli və ya əvəzetmə rejimində tərcümə edir.
         selectionTranslation: Seçdiyiniz mətni seçim alətlər paneli vasitəsilə tərcümə edir.
         inputTranslation: Mətn sahəsinə yazdığınızı göndərməzdən əvvəl tərcümə edir.
+        videoSubtitles: Subtitrləri video pleyerdə göründükcə tərcümə edir.
     aiContentAware:
       title: Süni intellektlə kontekstə uyğun tərcümə
       description: Daha dəqiq tərcümə üçün süni intellektə səhifə və ya video kontekstini təqdim edin
@@ -249,6 +251,9 @@ options:
     turnOn: "Aktiv et"
     clash: "“$1” ilə eyni qısayol. Birini dəyişin."
     taken: "$1 artıq “$2” tərəfindən istifadə olunur."
+    subtitlesToggle:
+      title: Subtitr tərcüməsi
+      description: Tərcümə edilmiş video subtitrlərini aktiv və ya deaktiv edin.
   selectionToolbar:
     title: Seçim alətlər paneli
     pageDescription: Mətn seçdikdə hansı əməliyyatların göründüyünü və alətlər panelinin harada açıldığını təyin edin.
@@ -1041,6 +1046,130 @@ options:
           confirm: Təsdiqlə
           cancel: Ləğv et
           description: Bütün $1 termin həmişəlik silinəcək. Bu əməliyyatı geri qaytarmaq mümkün deyil.
+  videoSubtitles:
+    title: Video subtitrləri
+    pageDescription: İzləyərkən subtitrləri ayrıca provayder, üslub və sorğu parametrləri ilə tərcümə edin.
+    preference:
+      title: Əsas parametrlər
+      enable:
+        title: Video subtitrlərini aktiv et
+        description: YouTube, X və Netflix-də video pleyerin idarəetmə panelinə tərcümə düyməsi əlavə edir.
+      autoStart:
+        title: Açılan kimi tərcümə et
+        description: Düyməyə basmadan video yüklənən kimi tərcüməyə başlayın.
+      aiSegmentation:
+        title: Süni intellektlə ağıllı seqmentləşdirmə
+        description: Süni intellekt subtitrləri cümlələrə yenidən bölür. Tərcümələr daha gec gəlir. Güclü LLM tələb olunur; zəif modellər sətirləri buraxa və ya sürüşdürə bilər.
+      wordLookupAction:
+        title: Söz axtarışı əməliyyatı
+        description: Altyazıdakı sözə kliklədikdə işə düşən AI əməliyyatı. Standart olaraq lüğətdir; öz əməliyyatınızı seçə bilərsiniz.
+    aiQuota:
+      title: Süni intellekt subtitrlərinin kvotası
+      description: Süni intellektlə nitqin tanınması istənilən video üçün dəqiq subtitrlər yaradır
+      launchBonusPromo: Əlavə 300 dəqiqə transkripsiya üçün $1 tarixindən əvvəl abunə olun
+      loginRequired: Süni intellekt subtitrlərinin kvotasını görmək üçün daxil olun
+      upgradeRequired: Süni intellekt subtitrləri üçün Pro və ya Ultra abunəliyi tələb olunur
+      pools:
+        subscription: Aylıq kvota
+        launchBonus: İlk buraxılış hədiyyəsi
+      resetsOn: $1 tarixində yenilənir
+      expiresOn: $1 tarixində bitir
+      loadError: Kvotanızı yükləmək mümkün olmadı. Daha sonra yenidən cəhd edin.
+      remainingOf: $1 / $2 dəqiqə qalıb
+      used: $1 dəqiqə istifadə edilib
+    style:
+      title: Subtitr üslubu
+      description: Canlı önbaxışla göstərilmə rejimini, mövqeyi, şriftləri, rəngləri və fonu təyin edin
+      customizeStyle: Üslubu fərdiləşdir
+      displayMode:
+        title: Göstərilmə rejimi
+        bilingual: İkidilli
+        originalOnly: Yalnız orijinal
+        translationOnly: Yalnız tərcümə
+      translationPosition:
+        title: Tərcümənin mövqeyi
+        above: Yuxarıda
+        below: Aşağıda
+      generalSettings: Ümumi
+      mainSubtitle: Əsas subtitr
+      translationSubtitle: Tərcümə subtitri
+      fontFamily: Şrift
+      fontScale: Şriftin miqyası
+      color: Rəng
+      fontWeight: Şriftin qalınlığı
+      backgroundOpacity: Fonun qeyri-şəffaflığı
+      reset: Standart dəyərlərə qaytar
+      customCSS:
+        title: Fərdi CSS
+        description: Yuxarıdakı şrift və rənglərə əlavə olaraq subtitr sətirləri üçün CSS
+        presetTemplate: Hazır şablon
+        presetTemplateDescription: Hazır şablon tətbiq edin, məsələn, dinləmə məşqi zamanı tərcüməni gizlətmək üçün bulanıqlaşdırın
+        presetPlaceholder: Şablon seçin
+        presets:
+          blurTranslation: Tərcüməni bulanıqlaşdır
+          dashedTranslation: Qırıq xətli tərcümə
+          dimOriginal: Orijinalı solğunlaşdır
+        editor:
+          placeholder: |
+            /* Nümunə: tərcüməni bulanıqlaşdır və kursor üzərinə gələndə göstər */
+            .subtitles-translation {
+              filter: blur(6px);
+            }
+
+            .subtitles-translation:hover {
+              filter: none;
+            }
+
+            /* İstifadə edə biləcəyiniz selektorlar: .read-frog-subtitles-box, .subtitles-main, .subtitles-translation */
+          docsLink: Necə tənzimləməli?
+          saveButton: Yadda saxla
+          savedButton: Yadda saxlanıldı
+          validation:
+            validating: Yoxlanılır...
+            valid: CSS düzgündür
+            syntaxError: CSS sintaksis xətaları var
+            tooLong: CSS həddindən artıq uzundur
+            saved: Bütün dəyişikliklər yadda saxlanıldı
+    customPrompts:
+      title: Fərdi subtitr təlimatları
+      description: Veb səhifə tərcüməsi təlimatlarından ayrı saxlanılan subtitr tərcüməsi şablonları
+      managePrompts: Təlimatları idarə et
+      editPrompt:
+        promptCellInput:
+          input: Tərcümə ediləcək subtitr mətni
+          targetLanguage: Hədəf dili
+          webTitle: Veb səhifənin başlığı
+          webDescription: Səhifənin metaməlumatlarından götürülmüş təsviri
+          videoSummary: Videonun xülasəsi (süni intellektlə ağıllı kontekst tələb olunur)
+    subtitlesQueue:
+      title: Subtitr növbəsi
+      description: Subtitr sorğularının göndərilmə sürəti və hər sorğudakı sətir sayı
+      manageQueue: Növbəni idarə et
+      requestQueueConfig:
+        title: Tərcümə sürəti
+        capacity:
+          description: "Maksimum ani sorğu sayı: eyni anda neçə sorğu göndərilə bilər"
+        rate:
+          description: "Saniyədə sorğu sayı: ani sorğulardan sonrakı sabit sürət. Onluq kəsrlər də qəbul olunur, məsələn, 0.25 hər 4 saniyədə bir sorğu göndərir"
+      batchQueueConfig:
+        title: Toplu tərcümə
+        description: Toplu tərcümə üçün simvol hədlərini və maksimum subtitr sətri sayını təyin edin (yalnız LLM tərcüməsinə təsir edir)
+        maxCharactersPerBatch:
+          description: "Maksimum simvol sayı: bir süni intellekt sorğusunun daşıdığı mətn miqdarı"
+        maxItemsPerBatch:
+          description: "Maksimum subtitr sətri sayı: bir sorğuda neçə sətir birləşdirilir. Süni intellektdən istifadə etməyən provayderlər hər iki parametrə məhəl qoymur"
+    cache:
+      title: Keş
+      clearCache:
+        title: Süni intellekt seqmentləşdirmə keşini təmizlə
+        description: Əvvəl izlədiyiniz videonun yenidən bölünməməsi üçün saxlanılan seqmentləşdirmə nəticələri
+        clearing: Təmizlənir...
+        dialog:
+          title: Süni intellekt seqmentləşdirmə keşinin təmizlənməsi
+          trigger: Keşi təmizlə
+          confirm: Təsdiqlə
+          cancel: Ləğv et
+          description: Keşdəki bütün süni intellekt seqmentləşdirmə nəticələri silinəcək. Növbəti dəfə süni intellekt seqmentləşdirməsi aktiv halda video açdıqda subtitrlər yenidən işlənəcək.
 translateService:
   builtInModels: Daxili modellər
   llmModels: LLM modelləri
@@ -1270,3 +1399,62 @@ translationHub:
 dataTypes:
   string: Mətn
   number: Ədəd
+subtitles:
+  sidebar:
+    close: Süni intellekt xülasəsini bağla
+    menu:
+      label: Süni intellekt xülasəsi
+    summary:
+      generating: Xülasə yaradılır…
+      failedTitle: Yaratmaq mümkün olmadı
+      retry: Yenidən cəhd et
+      needsModel: Bu videonun xülasəsini almaq üçün subtitr parametrlərində LLM modeli seçin.
+      openSettings: Parametrləri aç
+      needsSubtitles: Bu videonun subtitrləri yoxdur. Əvvəlcə süni intellektlə subtitr yaratmağa çalışın.
+  loadingAiSubtitles: Süni intellekt subtitrləri yüklənir… (təxminən 3 dəqiqə)
+  aiSubtitlesHint: Təkmil süni intellektlə nitqin tanınması dəqiq subtitrlər yaradır. Rəsmi subtitrlər olmadıqda da əlçatandır.
+  requestAiSubtitles: Süni intellekt subtitrləri istə
+  usingAiSubtitles: Süni intellekt subtitrlərindən istifadə olunur
+  toggle:
+    enabled: Subtitr tərcüməsi aktivdir
+    disabled: Subtitr tərcüməsi deaktivdir
+  actions:
+    downloadTranslated: Tərcümə edilmiş subtitrləri endir
+    downloadTranslatedPreparing: Subtitrlər hazırlanır, uzun videolar bir qədər vaxt apara bilər
+    downloadTranslatedTranslating: Subtitrlər tərcümə edilir
+    downloadTranslatedComplete: Tərcümə edilmiş subtitrlər endirildi
+    downloadSource: Orijinal subtitrləri endir
+  state:
+    loading: Read Frog subtitrləri yükləyir
+    translating: Tərcümə edilir…
+    error: Xəta baş verdi
+  errors:
+    http429: 429 YouTube subtitr API-sinə həddindən artıq sorğu göndərilib, daha sonra yenidən cəhd edin
+    http404: 404 YouTube subtitrləri tapılmadı
+    http403: 403 YouTube subtitrlərinə girişə icazə verilmədi
+    http500: 500 YouTube server xətası
+    httpUnknown: HTTP xətası $1
+    invalidResponse: YouTube subtitr cavabının formatı yanlışdır
+    networkError: Subtitrlər gətirilərkən şəbəkə xətası baş verdi
+    fetchSubTimeout: Subtitrlərin gətirilməsi üçün vaxt bitdi
+    buttonNotFound: Subtitr düyməsi tapılmadı
+    noSubtitlesFound: Bu video üçün subtitr yoxdur
+    trackFileNotLoaded: Subtitrləri yükləmək mümkün olmadı, səhifəni yeniləməyə cəhd edin
+    videoNotFound: Video elementi tapılmadı
+    controlsBarNotFound: İdarəetmə paneli tapılmadı
+    aiRateLimited: Həddindən artıq sorğu var, daha sonra yenidən cəhd edin
+    aiAuthFailed: API autentifikasiyası alınmadı, API açarınızı yoxlayın
+    aiServiceUnavailable: Tərcümə xidməti müvəqqəti olaraq əlçatan deyil
+    aiQuotaExceeded: Aylıq süni intellekt subtitr kvotası bitib
+    aiQuotaExceededWithReset: Aylıq süni intellekt subtitr kvotası bitib · $1 tarixində yenilənir
+    aiLoginRequired: Süni intellekt subtitrlərinin kvotasını görmək üçün daxil olun
+    aiSubscriptionRequired: Süni intellekt subtitrləri üçün Pro və ya Ultra abunəliyi tələb olunur
+    aiPaymentRequired: Süni intellekt subtitrləri yaratmağa davam etmək üçün ödəniş üsulunuzu yeniləyin
+    aiVideoTooLong: Bu video süni intellekt subtitrləri üçün həddindən artıq uzundur
+    aiLiveReplayUnsupported: Canlı yayım yazıları üçün süni intellekt subtitrləri hələ əlçatan deyil
+    aiStillProcessing: Transkripsiya hələ davam edir. Nəticəni almaq üçün bir neçə dəqiqə sonra yenidən klikləyin
+    aiRequestFailed: Süni intellekt subtitr sorğusu alınmadı, daha sonra yenidən cəhd edin
+    aiNoResponse: Süni intellekt xidməti cavab vermədi, orijinal mətndən istifadə olunur
+    translatedExportFailed: Tərcümə edilmiş subtitrləri yaratmaq mümkün olmadı
+    translatedExportIncomplete: Bütün subtitr sətirlərini tərcümə etmək mümkün olmadı
+    translatedExportSameLanguage: Mənbə və hədəf dilləri eynidir

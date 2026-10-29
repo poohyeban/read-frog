@@ -85,8 +85,42 @@ const GlossaryEditorPage = lazy(() =>
 const CustomActionsPage = lazy(() =>
   import("./pages/custom-actions").then((module) => ({ default: module.CustomActionsPage })),
 )
+const VideoSubtitlesPage = lazy(() =>
+  import("./pages/video-subtitles").then((module) => ({ default: module.VideoSubtitlesPage })),
+)
+const SubtitlePromptsPage = lazy(() =>
+  import("./pages/video-subtitles/custom-prompts/prompts").then((module) => ({
+    default: module.SubtitlesCustomPromptsPage,
+  })),
+)
+const SubtitlesCustomCssPage = lazy(() =>
+  import("./pages/video-subtitles/subtitles-style/custom-css").then((module) => ({
+    default: module.SubtitlesCustomCssPage,
+  })),
+)
+const SubtitlesStylePage = lazy(() =>
+  import("./pages/video-subtitles/subtitles-style/style-editor").then((module) => ({
+    default: module.SubtitlesStylePage,
+  })),
+)
+const SubtitlesAutoStartPage = lazy(() =>
+  import("./pages/video-subtitles/preference/auto-start-page").then((module) => ({
+    default: module.SubtitlesAutoStartPage,
+  })),
+)
+const SubtitlesQueuePage = lazy(() =>
+  import("./pages/video-subtitles/subtitles-queue/queue-page").then((module) => ({
+    default: module.SubtitlesQueuePage,
+  })),
+)
 const ROUTE_COMPONENTS: Record<RoutePath, ComponentType> = {
   "/": ApiProvidersPage,
+  "/video-subtitles/style": SubtitlesStylePage,
+  "/video-subtitles/auto-start": SubtitlesAutoStartPage,
+  "/video-subtitles/subtitles-queue": SubtitlesQueuePage,
+  "/video-subtitles": VideoSubtitlesPage,
+  "/video-subtitles/prompts": SubtitlePromptsPage,
+  "/video-subtitles/style/custom-css": SubtitlesCustomCssPage,
   "/custom-actions": CustomActionsPage,
   "/input-translation": InputTranslationPage,
   "/floating-button": FloatingButtonPage,

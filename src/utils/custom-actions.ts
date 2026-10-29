@@ -144,3 +144,13 @@ export function duplicateSelectionToolbarAction(
     name: getUniqueName(action.name, new Set(allActions.map((candidate) => candidate.name))),
   }
 }
+
+export function resolveWordLookupAction(config: Config): SelectionToolbarCustomAction {
+  const action = findSelectionToolbarAction(
+    config.selectionToolbar,
+    config.videoSubtitles.wordLookupActionId,
+  )
+  return action && action.enabled !== false
+    ? action
+    : getBuiltInDictionaryAction(config.selectionToolbar)
+}

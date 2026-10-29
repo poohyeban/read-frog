@@ -18,6 +18,7 @@ describe("Lite 0.1 configuration upgrade", () => {
     })
     const {
       inputTranslation: _input,
+      videoSubtitles: _video,
       floatingButton: _floating,
       glossary: _glossary,
       ...stored
@@ -33,6 +34,7 @@ describe("Lite 0.1 configuration upgrade", () => {
       ...stored,
       selectionToolbar: { ...toolbar, builtInActions },
     })
+    expect(upgraded.videoSubtitles.providerId).toBe(legacy.pageTranslation.providerId)
     expect(upgraded.inputTranslation.providerId).toBe(legacy.pageTranslation.providerId)
     expect(upgraded.providersConfig).toEqual(legacy.providersConfig)
     expect(upgraded.language.targetCode).toBe("jpn")

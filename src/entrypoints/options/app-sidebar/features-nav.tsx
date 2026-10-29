@@ -18,6 +18,11 @@ export function FeaturesNav() {
         <SidebarMenu>
           {[
             {
+              path: "/video-subtitles",
+              label: i18n.t("options.videoSubtitles.title"),
+              icon: "tabler:subtitles",
+            },
+            {
               path: "/custom-actions",
               label: i18n.t("options.selectionToolbar.customActions.title"),
               icon: "tabler:sparkles",

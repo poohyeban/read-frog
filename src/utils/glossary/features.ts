@@ -18,6 +18,7 @@ import type { FeatureKey } from "../constants/feature-providers"
  */
 export const GLOSSARY_FEATURE_KEYS = [
   "pageTranslation",
+  "videoSubtitles",
 
   "selectionTranslation",
   "inputTranslation",

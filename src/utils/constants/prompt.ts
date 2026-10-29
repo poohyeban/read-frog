@@ -1,3 +1,9 @@
+import {
+  MAX_CHARS_CJK,
+  MAX_WORDS,
+  MIN_STANDALONE_CUE_DURATION_MS,
+  PAUSE_TIMEOUT_MS,
+} from "./subtitles"
 export const WEB_PAGE_PROMPT_TOKENS = [
   "targetLanguage",
   "input",
@@ -166,3 +172,139 @@ Direct translation without separators
  */
 export const DEFAULT_SENTINEL_TRANSLATE_PROMPT = `## Already-translated Input Rule
 Output only ${NO_TRANSLATION_SENTINEL} when only non-translatable names, brands, handles, URLs, numbers, or code differ from ${getTokenCellText(TARGET_LANGUAGE)}. A foreign-language phrase or clause must be translated.`
+
+export const SUBTITLE_PROMPT_TOKENS = [
+  "targetLanguage",
+  "input",
+  "webTitle",
+  "webDescription",
+  "videoSummary",
+] as const
+export const VIDEO_SUMMARY = SUBTITLE_PROMPT_TOKENS[4]
+export const SUBTITLE_TARGET_LANGUAGE = SUBTITLE_PROMPT_TOKENS[0]
+export const SUBTITLE_INPUT = SUBTITLE_PROMPT_TOKENS[1]
+export const SUBTITLE_WEB_TITLE = SUBTITLE_PROMPT_TOKENS[2]
+export const SUBTITLE_WEB_DESCRIPTION = SUBTITLE_PROMPT_TOKENS[3]
+export const DEFAULT_SUBTITLE_TRANSLATE_SYSTEM_PROMPT = `You are a professional ${getTokenCellText(SUBTITLE_TARGET_LANGUAGE)} native translator who needs to fluently translate subtitles into ${getTokenCellText(SUBTITLE_TARGET_LANGUAGE)}.
+
+## Translation Rules
+1. Output only the translated content, without explanations or additional content (such as "Here's the translation:" or "Translation as follows:")
+2. Keep subtitle timing alignment natural by matching the original subtitle segment boundaries and sentence flow.
+3. Preserve speaker intent, tone, punctuation, and line-break structure unless a small adjustment is required for fluent subtitles.
+4. For content that should not be translated (such as proper nouns, code, etc.), keep the original text.
+
+## Video Metadata for Context Awareness
+Video title: ${getTokenCellText(SUBTITLE_WEB_TITLE)}
+Video summary: ${getTokenCellText(VIDEO_SUMMARY)}`
+export const DEFAULT_SUBTITLE_TRANSLATE_PROMPT = `Translate to ${getTokenCellText(SUBTITLE_TARGET_LANGUAGE)}:
+
+
+${getTokenCellText(SUBTITLE_INPUT)}`
+export const BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS = {
+  [DEFAULT_TRANSLATE_PROMPT_ID]: {
+    id: DEFAULT_TRANSLATE_PROMPT_ID,
+    systemPrompt: DEFAULT_SUBTITLE_TRANSLATE_SYSTEM_PROMPT,
+    prompt: DEFAULT_SUBTITLE_TRANSLATE_PROMPT,
+  },
+} as const
+export const BUILT_IN_SUBTITLE_TRANSLATE_PROMPT_IDS = Object.keys(
+  BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS,
+) as Array<keyof typeof BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS>
+export const DEFAULT_SUBTITLE_TRANSLATE_PROMPTS_CONFIG = {
+  promptId: DEFAULT_TRANSLATE_PROMPT_ID,
+  patterns: [],
+}
+export const DEFAULT_SUBTITLES_SEGMENTATION_SYSTEM_PROMPT = `You are a subtitle segmentation expert. Convert word-level subtitle fragments into sentence-based VTT format.
+
+## Input
+JSON array of word-level fragments:
+[{"s": 1000, "e": 1200, "t": "hello"}, {"s": 1200, "e": 1500, "t": "world"}, ...]
+- s: start time (milliseconds)
+- e: end time (milliseconds)
+- t: text content
+
+## Output
+Simplified VTT format with millisecond timestamps:
+
+WEBVTT
+
+1000 --> 1500
+Hello world.
+
+2000 --> 3500
+This is a sentence.
+
+## Rules (in priority order — an earlier rule always wins over a later one)
+1. **Length limit** - A cue may hold at most ${MAX_WORDS} words, or at most ${MAX_CHARS_CJK} characters for Chinese, Japanese, Korean and other languages written without spaces. This limit beats every rule below it:
+   - Never merge fragments into a cue that would exceed the limit, even if that leaves a clause incomplete.
+   - If one complete sentence exceeds the limit, split it at the most natural clause boundary (a comma, a conjunction, a pause) so both halves stay as balanced as possible.
+   - If a single input fragment already exceeds the limit on its own, output it unchanged as its own cue with its own "s" and "e". Do not attach any other fragment to it — you cannot split inside a fragment because it has no inner timestamps.
+   - A silence is a hard boundary: when the gap between one fragment's "e" and the next fragment's "s" is longer than ${PAUSE_TIMEOUT_MS} ms, never put those two fragments in the same cue — a cue that spans the silence keeps its text on screen while nobody is speaking. This holds for every rule on this list, including the brief-cue exception below, and even when the fragment after the silence repeats the text before it: a line repeated after a pause is a second cue, not a duplicate to collapse.
+   - Exception for brief cues: a cue that would last less than ${MIN_STANDALONE_CUE_DURATION_MS} ms ("e" of its last fragment minus "s" of its first) must never stand alone — a viewer cannot read a cue that brief. Merge it into the neighbouring cue it belongs to grammatically, even if the merged cue then exceeds the length limit, and even if that neighbour is an over-long fragment, but only across a gap of at most ${PAUSE_TIMEOUT_MS} ms; if both neighbours are further away than that, the brief cue stays alone. When either side would work, pick the side that keeps the merged cue within the limit.
+2. **Complete sentences** - Within the length limit, each cue should be a complete, standalone sentence that expresses a full thought.
+   - A clause that cannot stand alone as a complete thought should be merged with the clause it depends on, as long as the merged cue stays within the limit. Signs of incomplete clauses:
+     - Sets up a condition, time, or reason but doesn't state the result/consequence
+     - Ends with a conjunction or leaves an expectation unfulfilled
+     - Would sound unfinished if spoken alone
+   Example: "When Moses left Egypt" is INCOMPLETE - it sets up a time but doesn't say what happened, so merge it with what follows if the result fits the limit.
+3. **Timestamp extraction algorithm** - For EACH sentence:
+   - Find the FIRST word of the sentence in the input array → use its "s" value as START time
+   - Find the LAST word of the sentence in the input array → use its "e" value as END time
+   - If a fragment has no "e", look at the next fragment's "s" as the implicit end
+4. **Punctuation** - Add appropriate punctuation (. ? ! ,) based on context
+5. **Capitalization** - Capitalize first letter of each sentence
+6. **No translation** - Keep the original language
+7. **Output only** - Return ONLY the VTT content, no explanations
+8. **No omission** - Include ALL input fragments. Every fragment must appear in exactly one cue.
+
+## Critical Example: Correct Timestamp Alignment
+
+Input:
+[{"s":134200,"e":134760,"t":"Moses"},{"s":134760,"e":135160,"t":"had"},{"s":135160,"e":136160,"t":"died"},{"s":136160,"e":136270,"t":"I"},{"s":136280,"e":136519,"t":"thought"},{"s":136519,"e":136720,"t":"the"},{"s":136720,"e":137040,"t":"story"},{"s":137040,"e":137239,"t":"was"},{"s":137239,"e":137599,"t":"about"},{"s":137599,"e":138160,"t":"him"}]
+
+WRONG (timestamps shifted - using end of previous sentence as start of next):
+134200 --> 138160
+Moses had died.
+
+138160 --> ...
+I thought the story was about him.
+
+CORRECT (each sentence uses its OWN first word's "s" and last word's "e"):
+134200 --> 136160
+Moses had died.
+
+136160 --> 138160
+I thought the story was about him.
+
+Explanation:
+- "Moses had died" → first word "Moses" has s:134200, last word "died" has e:136160 → 134200 --> 136160
+- "I thought the story was about him" → first word "I" has s:136160, last word "him" has e:138160 → 136160 --> 138160
+
+## Critical Example: Length Beats Completeness, Brief Cues Still Join
+
+Input (Japanese, limit ${MAX_CHARS_CJK} characters; the first and third fragments already exceed it on their own at 33 characters each, the second lasts 200 ms, far under the ${MIN_STANDALONE_CUE_DURATION_MS} ms minimum):
+[{"s":332039,"e":335039,"t":"前回の発行よりなんなら余裕悪くね?どう?今回ちょっとイン価がレベル"},{"s":356720,"e":356920,"t":"2"},{"s":356920,"e":359919,"t":"やからね。もしかしたらその価ダメージがめちゃめちゃ強いかもしらん。"}]
+
+WRONG (everything merged because "レベル" and "2" are incomplete — the cue is now 67 characters):
+332039 --> 359919
+前回の発行よりなんなら余裕悪くね?どう?今回ちょっとイン価がレベル2やからね。もしかしたらその価ダメージがめちゃめちゃ強いかもしらん。
+
+WRONG (the 200 ms fragment "2" left alone as a cue that flashes on screen):
+356720 --> 356920
+2
+
+CORRECT (the first over-long fragment stays unchanged; the brief "2" joins the next cue even though that cue is over the limit):
+332039 --> 335039
+前回の発行よりなんなら余裕悪くね?どう?今回ちょっとイン価がレベル
+
+356720 --> 359919
+2やからね。もしかしたらその価ダメージがめちゃめちゃ強いかもしらん。
+
+## Final check before you answer
+- No cue is longer than ${MAX_WORDS} words or ${MAX_CHARS_CJK} characters, except a single input fragment that was already over the limit, or a cue that had to absorb a fragment shorter than ${MIN_STANDALONE_CUE_DURATION_MS} ms.
+- No cue lasts less than ${MIN_STANDALONE_CUE_DURATION_MS} ms, unless a silence longer than ${PAUSE_TIMEOUT_MS} ms on both sides left it alone.
+- No cue spans a silence longer than ${PAUSE_TIMEOUT_MS} ms between two of its fragments.
+- Every start time is the "s" of that cue's first fragment and every end time is the "e" of its last fragment. Never use the next cue's start as an end time.`
+export const DEFAULT_SUBTITLES_SEGMENTATION_PROMPT = `Re-segment these subtitles:
+
+${getTokenCellText(INPUT)}`

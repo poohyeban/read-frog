@@ -2,6 +2,7 @@ import { langCodeISO6393Schema, langLevel } from "@read-frog/definitions"
 import { z } from "zod"
 import { BUILT_IN_ACTION_IDS, BUILT_IN_ACTION_KEYS } from "@/utils/constants/custom-action"
 import { FEATURE_KEYS, FEATURE_PROVIDER_DEFS } from "@/utils/constants/feature-providers"
+import { DEFAULT_VIDEO_SUBTITLES_CONFIG } from "@/utils/constants/restored-config"
 import {
   DEFAULT_INPUT_TRANSLATION_CONFIG,
   DEFAULT_FLOATING_BUTTON_CONFIG,
@@ -22,6 +23,7 @@ import { selectionToolbarCustomActionsSchema } from "./selection-toolbar"
 import { selectionToolbarBuiltInActionsSchema } from "./selection-toolbar"
 import { shortcutSchema } from "./shortcut"
 import { siteRulesConfigSchema } from "./site-rules"
+import { videoSubtitlesSchema } from "./subtitles"
 import { translateConfigSchema } from "./translate"
 
 // Language schema
@@ -118,6 +120,7 @@ export const configSchema = z
     inputTranslation: inputTranslationSchema.optional(),
     floatingButton: floatingButtonSchema.default(DEFAULT_FLOATING_BUTTON_CONFIG),
     glossary: glossaryConfigSchema,
+    videoSubtitles: videoSubtitlesSchema.optional(),
 
     siteControl: siteControlSchema,
     siteRules: siteRulesConfigSchema,
@@ -127,6 +130,10 @@ export const configSchema = z
     ...data,
     inputTranslation: data.inputTranslation ?? {
       ...DEFAULT_INPUT_TRANSLATION_CONFIG,
+      providerId: data.pageTranslation.providerId,
+    },
+    videoSubtitles: data.videoSubtitles ?? {
+      ...DEFAULT_VIDEO_SUBTITLES_CONFIG,
       providerId: data.pageTranslation.providerId,
     },
   }))

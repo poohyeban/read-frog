@@ -159,10 +159,12 @@ options:
         pageTranslation: 網頁翻譯
         selectionTranslation: 選取文字翻譯
         inputTranslation: 輸入翻譯
+        videoSubtitles: 影片字幕
       descriptions:
         pageTranslation: 翻譯整個網頁，雙語對照或直接取代原文。
         selectionTranslation: 透過劃詞工具列翻譯你選取的文字。
         inputTranslation: 在送出前翻譯你寫在輸入框裡的內容。
+        videoSubtitles: 翻譯影片播放器中隨播放出現的字幕。
     aiContentAware:
       title: AI 智慧上下文翻譯
       description: 把網頁或影片的上下文提供給 AI，讓翻譯更準確
@@ -249,6 +251,9 @@ options:
     turnOn: "去開啟"
     clash: "與「$1」的快速鍵相同，請修改其中一個。"
     taken: "$1 已被「$2」使用。"
+    subtitlesToggle:
+      title: 字幕翻譯
+      description: 開啟或關閉影片的翻譯字幕。
   selectionToolbar:
     title: 選取工具列
     pageDescription: 設定選取文字時出現哪些操作，以及工具列在哪些網站顯示。
@@ -1046,6 +1051,130 @@ options:
           confirm: 確認
           cancel: 取消
           description: 全部 $1 筆術語將被永久刪除。此操作無法復原。
+  videoSubtitles:
+    title: 影片字幕
+    pageDescription: 邊看邊譯影片字幕，並單獨設定提供者、樣式和請求參數。
+    preference:
+      title: 基礎設定
+      enable:
+        title: 開啟影片字幕
+        description: 在 YouTube、X 和 Netflix 的影片播放器控制列加上翻譯按鈕。
+      autoStart:
+        title: 打開影片就翻譯
+        description: 影片載入完成後自動開始翻譯字幕，不用再點按鈕。
+      aiSegmentation:
+        title: AI 智慧斷句
+        description: 讓 AI 把字幕重新切成完整句子，會增加翻譯回應時間。需要較強的 LLM，弱模型可能漏句或錯位。
+      wordLookupAction:
+        title: 點詞查詢指令
+        description: 點擊字幕裡的單字時執行的 AI 指令。預設是詞典，也可以換成你自己的指令。
+    aiQuota:
+      title: AI 字幕額度
+      description: AI 利用語音轉文字技術取得任何影片的準確字幕
+      launchBonusPromo: $1 之前購買會員額外贈送 300 分鐘轉錄額度
+      loginRequired: 登入後查看你的 AI 字幕額度
+      upgradeRequired: AI 字幕需要 Pro 或 Ultra 訂閱
+      pools:
+        subscription: 每月額度
+        launchBonus: 上線贈送
+      resetsOn: $1 重置
+      expiresOn: $1 過期
+      loadError: 無法載入額度，請稍後重試。
+      remainingOf: 剩餘 $1 / $2 分鐘
+      used: 已用 $1 分鐘
+    style:
+      title: 字幕樣式
+      description: 顯示模式、位置、字型、顏色和背景，都對著預覽調
+      customizeStyle: 自訂樣式
+      displayMode:
+        title: 顯示模式
+        bilingual: 雙語模式
+        originalOnly: 僅原文
+        translationOnly: 僅譯文
+      translationPosition:
+        title: 譯文位置
+        above: 上方
+        below: 下方
+      generalSettings: 通用設定
+      mainSubtitle: 主字幕
+      translationSubtitle: 翻譯字幕
+      fontFamily: 字型
+      fontScale: 字號
+      color: 顏色
+      fontWeight: 字重
+      backgroundOpacity: 背景透明度
+      reset: 重設為預設值
+      customCSS:
+        title: 自訂 CSS
+        description: 在上面的字型和顏色之上，為字幕行追加 CSS
+        presetTemplate: 預設模板
+        presetTemplateDescription: 快速套用預設模板，例如暫時遮住譯文用於聽力訓練學習的模糊效果
+        presetPlaceholder: 選擇模板
+        presets:
+          blurTranslation: 模糊譯文
+          dashedTranslation: 虛線譯文
+          dimOriginal: 弱化原文
+        editor:
+          placeholder: |
+            /* 範例：先把譯文模糊，滑鼠移上去再顯示 */
+            .subtitles-translation {
+              filter: blur(6px);
+            }
+
+            .subtitles-translation:hover {
+              filter: none;
+            }
+
+            /* 可用的選擇器：.read-frog-subtitles-box、.subtitles-main、.subtitles-translation */
+          docsLink: 如何設定？
+          saveButton: 儲存
+          savedButton: 已儲存
+          validation:
+            validating: 驗證中…
+            valid: CSS 有效
+            syntaxError: CSS 存在語法錯誤
+            tooLong: CSS 過長
+            saved: 所有變更已儲存
+    customPrompts:
+      title: 自訂字幕提示詞
+      description: 字幕翻譯專用的提示詞範本，與網頁翻譯提示詞分開
+      managePrompts: 管理提示詞
+      editPrompt:
+        promptCellInput:
+          input: 要翻譯的字幕文字
+          targetLanguage: 目標語言
+          webTitle: 網頁標題
+          webDescription: 頁面中繼資料的網頁描述
+          videoSummary: 影片摘要（需啟用 AI 智慧上下文）
+    subtitlesQueue:
+      title: 字幕佇列
+      description: 字幕請求發出的速度，以及每個請求承載的字幕行數
+      manageQueue: 管理佇列
+      requestQueueConfig:
+        title: 翻譯速率
+        capacity:
+          description: 最大突發請求數：同一時刻最多能送出多少個請求
+        rate:
+          description: 每秒請求數：突發之後的穩定速度。可以填小數，0.25 表示每 4 秒送出一個請求
+      batchQueueConfig:
+        title: 批次翻譯
+        description: 設定批次翻譯時的字元數限制和最大字幕條數（僅對大型語言模型翻譯有效）
+        maxCharactersPerBatch:
+          description: 最大字元數：一次 AI 請求最多帶多少文字
+        maxItemsPerBatch:
+          description: 最大字幕條數：多少條字幕合併成一次請求。非 AI 的翻譯服務不受這兩項影響
+    cache:
+      title: 快取
+      clearCache:
+        title: 清除 AI 斷句快取
+        description: 已儲存的斷句結果，看過的影片不用重新斷句
+        clearing: 清除中…
+        dialog:
+          title: 清除 AI 斷句快取
+          trigger: 清除快取
+          confirm: 確認
+          cancel: 取消
+          description: 這將刪除所有已快取的 AI 斷句結果。下次播放啟用 AI 斷句的影片時，將重新處理字幕。
 translateService:
   builtInModels: 內建模型
   llmModels: 大語言模型
@@ -1275,3 +1404,69 @@ translationHub:
 dataTypes:
   string: 文字
   number: 數字
+subtitles:
+  sidebar:
+    close: 關閉學習面板
+    needsSubtitles: 這部影片沒有字幕，建議先使用 AI 產生字幕。
+    menu:
+      label: 學習
+    summary:
+      tab: AI 總結
+      generating: 正在產生總結…
+      failedTitle: 產生失敗
+      retry: 重試
+      needsModel: 請先為影片字幕選擇一個 LLM 模型，才能總結這部影片。
+      openSettings: 前往設定
+    transcript:
+      tab: 字幕
+      failedTitle: 字幕載入失敗
+      retry: 重試
+      emptyTitle: 沒有可顯示的字幕
+      backToCurrent: 回到目前
+  loadingAiSubtitles: 正在載入 AI 字幕（預計 3 分鐘）
+  aiSubtitlesHint: 透過先進 AI 辨識語音生成準確字幕，無官方字幕時依然可用。
+  requestAiSubtitles: 請求 AI 字幕
+  usingAiSubtitles: 正在使用 AI 字幕
+  toggle:
+    enabled: 字幕翻譯已開啟
+    disabled: 字幕翻譯已關閉
+  actions:
+    downloadTranslated: 下載翻譯字幕
+    downloadTranslatedPreparing: 正在準備字幕，長影片可能需要更久
+    downloadTranslatedTranslating: 正在翻譯字幕
+    downloadTranslatedComplete: 翻譯字幕已下載
+    downloadSource: 下載原始字幕
+  state:
+    loading: 陪讀蛙字幕載入中
+    translating: 翻譯中…
+    error: 發生錯誤
+  errors:
+    http429: 429 YouTube 字幕 API 請求次數過多，請稍後再試
+    http404: 404 找不到 YouTube 字幕
+    http403: 403 YouTube 字幕存取被拒絕
+    http500: 500 YouTube 伺服器錯誤
+    httpUnknown: HTTP 錯誤 $1
+    invalidResponse: YouTube 字幕回應格式無效
+    networkError: 取得字幕時發生網路錯誤
+    fetchSubTimeout: 取得字幕逾時
+    buttonNotFound: 找不到字幕按鈕
+    noSubtitlesFound: 這部影片沒有字幕
+    trackFileNotLoaded: 字幕載入失敗，請重新整理頁面後再試一次
+    videoNotFound: 找不到影片元素
+    controlsBarNotFound: 找不到控制列
+    aiRateLimited: 請求過於頻繁，請稍後再試
+    aiAuthFailed: API 認證失敗，請檢查 API 金鑰
+    aiServiceUnavailable: 翻譯服務暫時無法使用
+    aiQuotaExceeded: 本月 AI 字幕額度已用完
+    aiQuotaExceededWithReset: 本月 AI 字幕額度已用完，$1 重置
+    aiLoginRequired: 登入後查看你的 AI 字幕額度
+    aiSubscriptionRequired: AI 字幕需要 Pro 或 Ultra 訂閱
+    aiPaymentRequired: 請更新付款方式後繼續產生 AI 字幕
+    aiVideoTooLong: 影片過長，暫不支援產生 AI 字幕
+    aiLiveReplayUnsupported: 暫不支援為直播回放產生 AI 字幕
+    aiStillProcessing: 轉錄仍在進行中，幾分鐘後再點一次即可繼續取得
+    aiRequestFailed: AI 字幕請求失敗，請稍後重試
+    aiNoResponse: AI 服務未回應，使用原文顯示
+    translatedExportFailed: 產生翻譯字幕失敗
+    translatedExportIncomplete: 未能翻譯所有字幕行
+    translatedExportSameLanguage: 來源語言和目標語言相同

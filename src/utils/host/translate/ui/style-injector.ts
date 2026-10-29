@@ -154,3 +154,20 @@ export async function ensureCustomCSS(root: StyleRoot, cssText: string): Promise
     documentCachedCSS = cssText
   }
 }
+
+const SUBTITLES_CUSTOM_STYLE_ID = "read-frog-subtitles-custom-styles"
+const subtitlesCustomCSSMap = new WeakMap<StyleRoot, CSSStyleSheet>()
+export async function ensureSubtitlesCustomCSS(root: StyleRoot, cssText: string): Promise<void> {
+  if (supportsConstructableStyleSheets(root)) {
+    let sheet = subtitlesCustomCSSMap.get(root)
+    if (!sheet) {
+      sheet = new CSSStyleSheet()
+      // Set in map first to prevent race condition with concurrent calls
+      subtitlesCustomCSSMap.set(root, sheet)
+      root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet]
+    }
+    await sheet.replace(cssText)
+  } else {
+    injectStyleElement(root, SUBTITLES_CUSTOM_STYLE_ID, cssText)
+  }
+}

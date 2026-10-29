@@ -48,6 +48,12 @@ vi.mock("@/utils/logger", () => ({ logger: loggerMock }))
 
 const caches = [
   {
+    alarm: "ai-segmentation-cache-cleanup",
+    table: cacheTables.aiSegmentationCache,
+    label: "AI segmentation cache",
+    clear: "cleanupAllAiSegmentationCache",
+  },
+  {
     alarm: "cache-cleanup",
     table: cacheTables.translationCache,
     label: "Translation cache",
@@ -98,7 +104,7 @@ describe("database cleanup", () => {
   it("creates daily alarms with a one-minute delay without running cleanup on setup", async () => {
     await setUpAlarmListener()
 
-    expect(alarms.create).toHaveBeenCalledTimes(2)
+    expect(alarms.create).toHaveBeenCalledTimes(jobs.length)
     expect(alarms.onAlarm.addListener).toHaveBeenCalledTimes(1)
     for (const { alarm, table } of jobs) {
       expect(alarms.create).toHaveBeenCalledWith(alarm, {

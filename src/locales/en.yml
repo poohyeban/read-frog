@@ -159,10 +159,12 @@ options:
         pageTranslation: Page translation
         selectionTranslation: Selection toolbar translation
         inputTranslation: Input translation
+        videoSubtitles: Video subtitles
       descriptions:
         pageTranslation: Translates the whole page in bilingual or replace mode.
         selectionTranslation: Translates the text you select from the selection toolbar.
         inputTranslation: Translates what you type into an input box before you send it.
+        videoSubtitles: Translates subtitles as they appear in a video player.
     aiContentAware:
       title: AI smart context translation
       description: Give the AI context from the page or video so it translates more accurately
@@ -249,6 +251,9 @@ options:
     turnOn: "Turn on"
     clash: "Same key as “$1”. Change one of them."
     taken: "$1 is already used by “$2”."
+    subtitlesToggle:
+      title: Subtitle translation
+      description: Turn translated video subtitles on or off.
   selectionToolbar:
     title: Selection Toolbar
     pageDescription: Set which actions appear when you select text, and where the toolbar shows up.
@@ -1183,6 +1188,130 @@ options:
           confirm: Confirm
           cancel: Cancel
           description: All $1 terms will be permanently deleted. This action cannot be undone.
+  videoSubtitles:
+    title: Video Subtitles
+    pageDescription: Translate subtitles as you watch, with their own provider, style, and request settings.
+    preference:
+      title: Basics
+      enable:
+        title: Enable video subtitles
+        description: Puts a translate button in the video player's controls on YouTube, X and Netflix.
+      autoStart:
+        title: Translate on open
+        description: Start translating as soon as a video loads, without pressing the button.
+      aiSegmentation:
+        title: AI smart segmentation
+        description: Lets AI re-cut the subtitles into sentences. Translations take longer. Needs a strong LLM; weaker models may drop or misalign lines.
+      wordLookupAction:
+        title: Word lookup action
+        description: The AI action that answers a click on a word in the subtitles. Dictionary unless you pick one of your own.
+    aiQuota:
+      title: AI subtitles quota
+      description: AI speech recognition gets you accurate subtitles for any video
+      launchBonusPromo: Subscribe before $1 for an extra 300 transcription minutes
+      loginRequired: Log in to view your AI subtitles quota
+      upgradeRequired: AI subtitles require a Pro or Ultra subscription
+      pools:
+        subscription: Monthly quota
+        launchBonus: Launch gift
+      resetsOn: Resets on $1
+      expiresOn: Expires on $1
+      loadError: Unable to load your quota. Please try again later.
+      remainingOf: $1 / $2 min left
+      used: Used $1 min
+    style:
+      title: Subtitle style
+      description: Display mode, position, fonts, colors and background, set against a live preview
+      customizeStyle: Customize style
+      displayMode:
+        title: Display mode
+        bilingual: Bilingual
+        originalOnly: Original only
+        translationOnly: Translation only
+      translationPosition:
+        title: Translation position
+        above: Above
+        below: Below
+      generalSettings: General
+      mainSubtitle: Main subtitle
+      translationSubtitle: Translation subtitle
+      fontFamily: Font
+      fontScale: Font scale
+      color: Color
+      fontWeight: Font weight
+      backgroundOpacity: Background opacity
+      reset: Reset to default
+      customCSS:
+        title: Custom CSS
+        description: Extra CSS for the subtitle lines, on top of the fonts and colors above
+        presetTemplate: Preset template
+        presetTemplateDescription: Apply a ready-made template — such as blurring the translation to cover it while you train your listening
+        presetPlaceholder: Choose a template
+        presets:
+          blurTranslation: Blur translation
+          dashedTranslation: Dashed translation
+          dimOriginal: Dim original
+        editor:
+          placeholder: |
+            /* Example: blur the translation, and reveal it on hover */
+            .subtitles-translation {
+              filter: blur(6px);
+            }
+
+            .subtitles-translation:hover {
+              filter: none;
+            }
+
+            /* Selectors you can use: .read-frog-subtitles-box, .subtitles-main, .subtitles-translation */
+          docsLink: How to configure?
+          saveButton: Save
+          savedButton: Saved
+          validation:
+            validating: Validating...
+            valid: CSS is valid
+            syntaxError: CSS has syntax errors
+            tooLong: CSS is too long
+            saved: All changes saved
+    customPrompts:
+      title: Custom subtitle prompts
+      description: Prompt templates for subtitle translation, kept apart from the webpage translation ones
+      managePrompts: Manage prompts
+      editPrompt:
+        promptCellInput:
+          input: Subtitle text to translate
+          targetLanguage: Target language
+          webTitle: Webpage title
+          webDescription: Webpage description from page metadata
+          videoSummary: Video summary (requires AI smart context)
+    subtitlesQueue:
+      title: Subtitle queue
+      description: How fast subtitle requests go out and how many lines each carries
+      manageQueue: Manage queue
+      requestQueueConfig:
+        title: Translation rate
+        capacity:
+          description: "Maximum burst requests: how many can go out at once"
+        rate:
+          description: "Requests per second: the steady pace after a burst. Decimals work, so 0.25 sends one request every 4 seconds"
+      batchQueueConfig:
+        title: Batch translation
+        description: Configure character limits and maximum subtitle line count for batch translation (only effective for LLM translation)
+        maxCharactersPerBatch:
+          description: "Maximum characters: how much text one AI request carries"
+        maxItemsPerBatch:
+          description: "Maximum subtitle lines: how many lines share one request. Providers that are not AI ignore both"
+    cache:
+      title: Cache
+      clearCache:
+        title: Clear AI segmentation cache
+        description: Segmentation results kept so a video you have already watched is not cut again
+        clearing: Clearing...
+        dialog:
+          title: Clear AI segmentation cache
+          trigger: Clear cache
+          confirm: Confirm
+          cancel: Cancel
+          description: This will delete all cached AI segmentation results. The next time you play a video with AI segmentation enabled, it will re-process the subtitles.
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -1412,3 +1541,69 @@ translationHub:
 dataTypes:
   string: Text
   number: Number
+subtitles:
+  sidebar:
+    close: Close the learning panel
+    needsSubtitles: This video has no subtitles — try generating AI subtitles first.
+    menu:
+      label: Learning
+    summary:
+      tab: AI summary
+      generating: Generating the summary…
+      failedTitle: Could not generate
+      retry: Try again
+      needsModel: Pick an LLM model for video subtitles to summarize this video.
+      openSettings: Open settings
+    transcript:
+      tab: Subtitles
+      failedTitle: Could not load subtitles
+      retry: Try again
+      emptyTitle: No subtitles to show
+      backToCurrent: Back to current
+  loadingAiSubtitles: Loading AI subtitles… (estimated 3 min)
+  aiSubtitlesHint: Accurate subtitles generated by advanced AI speech recognition — available even when no official subtitles exist.
+  requestAiSubtitles: Request AI subtitles
+  usingAiSubtitles: Using AI subtitles
+  toggle:
+    enabled: Subtitle translation on
+    disabled: Subtitle translation off
+  actions:
+    downloadTranslated: Download translated subtitles
+    downloadTranslatedPreparing: Preparing subtitles, longer videos may take a while
+    downloadTranslatedTranslating: Translating subtitles
+    downloadTranslatedComplete: Translated subtitles downloaded
+    downloadSource: Download source subtitles
+  state:
+    loading: Read Frog loading captions
+    translating: Translating…
+    error: Error occurred
+  errors:
+    http429: 429 Too many requests to youtube subtitle API, please try again later
+    http404: 404 Youtube captions not found
+    http403: 403 Youtube caption access denied
+    http500: 500 Youtube server error
+    httpUnknown: HTTP error $1
+    invalidResponse: Invalid Youtube subtitle response format
+    networkError: Network error occurred when fetching captions
+    fetchSubTimeout: Fetching captions timed out
+    buttonNotFound: Subtitle button not found
+    noSubtitlesFound: No subtitles available for this video
+    trackFileNotLoaded: Subtitles failed to load, please try refreshing the page
+    videoNotFound: Video element not found
+    controlsBarNotFound: Controls bar not found
+    aiRateLimited: Too many requests, please try again later
+    aiAuthFailed: API authentication failed, please check your API key
+    aiServiceUnavailable: Translation service temporarily unavailable
+    aiQuotaExceeded: Monthly AI subtitle quota used up
+    aiQuotaExceededWithReset: Monthly AI subtitle quota used up · resets on $1
+    aiLoginRequired: Log in to view your AI subtitles quota
+    aiSubscriptionRequired: AI subtitles require a Pro or Ultra subscription
+    aiPaymentRequired: Update your payment method to keep generating AI subtitles
+    aiVideoTooLong: This video is too long for AI subtitles
+    aiLiveReplayUnsupported: AI subtitles aren't available for live stream replays yet
+    aiStillProcessing: Transcription is still running — click again in a few minutes to pick it up
+    aiRequestFailed: AI subtitle request failed, please try again later
+    aiNoResponse: AI service did not respond, using original text
+    translatedExportFailed: Failed to generate translated subtitles
+    translatedExportIncomplete: Failed to translate all subtitle lines
+    translatedExportSameLanguage: Source and target languages are the same

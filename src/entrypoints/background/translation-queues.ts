@@ -18,6 +18,7 @@ import {
 import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { logger } from "@/utils/logger"
+import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
 import { BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
@@ -440,3 +441,24 @@ export function createWebPageTranslationQueues() {
 /**
  * Create subtitle translation queues and watch their configuration
  */
+
+const selectSubtitlesQueueConfig = (config: Config) => ({
+  requestQueueConfig: config.videoSubtitles.requestQueueConfig,
+  batchQueueConfig: config.videoSubtitles.batchQueueConfig,
+})
+export function createSubtitlesTranslationQueues() {
+  const queuesPromise = loadQueueSetupConfig("subtitles", selectSubtitlesQueueConfig).then(
+    ({ requestQueueConfig, batchQueueConfig, configSource }) =>
+      createTranslationQueues({
+        requestQueueConfig,
+        batchQueueConfig,
+        promptResolver: getSubtitlesTranslatePrompt,
+        queueName: "subtitles",
+        configSource,
+      }),
+  )
+
+  watchQueueConfig("subtitles", queuesPromise, selectSubtitlesQueueConfig)
+
+  return queuesPromise
+}

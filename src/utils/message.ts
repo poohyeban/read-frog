@@ -8,10 +8,45 @@ import type { TranslationTextFormat } from "@/types/config/translate"
 import type { ProviderRequestRouting } from "@/types/provider-request"
 import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
 import type { MatchedTerm } from "@/utils/glossary/types"
+import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
 interface ProtocolMap {
+  clearAiSegmentationCache: () => Promise<void>
+  enqueueSubtitlesTranslateRequest: (data: {
+    text: string
+    langConfig: Config["language"]
+    providerRef: SerializableProviderRef
+    scheduleAt: number
+    hash: string
+    webTitle?: string | null
+    webDescription?: string | null
+    summary?: string | null
+    // See `enqueueTranslateRequest`.
+    glossaryTerms?: MatchedTerm[]
+    glossaryRevision?: number
+  }) => Promise<string>
+  getSubtitlesSummary: (data: {
+    videoTitle: string
+    subtitlesContext: string
+    providerRef: PromptableProviderRef
+  }) => Promise<string | null>
+  getCachedVideoSummary: (data: {
+    transcript: string
+    targetLanguage: string
+    providerRef: PromptableProviderRef
+  }) => Promise<string | null>
+  saveVideoSummary: (data: {
+    transcript: string
+    targetLanguage: string
+    providerRef: PromptableProviderRef
+    summary: string
+  }) => Promise<void>
+  aiSegmentSubtitles: (data: {
+    jsonContent: string
+    providerRef: PromptableProviderRef
+  }) => Promise<string>
   getGlossarySnapshot: (data: {
     url: string | undefined
     targetLang: LangCodeISO6393

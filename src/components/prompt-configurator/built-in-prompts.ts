@@ -1,6 +1,7 @@
 import type { TranslatePromptObj } from "@/types/config/translate"
 import {
   BUILT_IN_PAGE_TRANSLATE_PROMPTS,
+  BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS,
   DEFAULT_TRANSLATE_PROMPT_ID,
   PRECISION_REWRITE_TRANSLATE_PROMPT_ID,
 } from "@/utils/constants/prompt"
@@ -50,6 +51,10 @@ function localizeBuiltInPrompts(
 
 export function getBuiltInPageTranslatePrompts(): BuiltInPrompt[] {
   return localizeBuiltInPrompts(BUILT_IN_PAGE_TRANSLATE_PROMPTS)
+}
+
+export function getBuiltInSubtitleTranslatePrompts(): BuiltInPrompt[] {
+  return localizeBuiltInPrompts(BUILT_IN_SUBTITLE_TRANSLATE_PROMPTS)
 }
 
 export function getPageTranslatePromptSelectItems(patterns: TranslatePromptObj[]) {

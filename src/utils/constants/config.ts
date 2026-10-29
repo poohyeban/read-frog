@@ -21,6 +21,7 @@ import {
   DEFAULT_PROVIDER_CONFIG_LIST,
   DEFAULT_TRANSLATE_PROVIDER_ID,
 } from "./providers"
+import { DEFAULT_VIDEO_SUBTITLES_CONFIG } from "./restored-config"
 import { DEFAULT_INPUT_TRANSLATION_CONFIG, DEFAULT_FLOATING_BUTTON_CONFIG } from "./restored-config"
 import { DEFAULT_SELECTION_OVERLAY_OPACITY } from "./selection"
 import {
@@ -158,6 +159,7 @@ export const DEFAULT_CONFIG: Config = {
     },
   },
 
+  videoSubtitles: { ...DEFAULT_VIDEO_SUBTITLES_CONFIG },
   inputTranslation: { ...DEFAULT_INPUT_TRANSLATION_CONFIG },
   floatingButton: { ...DEFAULT_FLOATING_BUTTON_CONFIG },
   glossary: { ...DEFAULT_GLOSSARY_CONFIG },

@@ -4,7 +4,12 @@ import { isTranslateProvider } from "@/types/config/provider"
 import { mergeWithArrayOverwrite } from "../atoms/config"
 import { getProviderConfigById } from "../config/helpers"
 
-export const FEATURE_KEYS = ["pageTranslation", "selectionTranslation", "inputTranslation"] as const
+export const FEATURE_KEYS = [
+  "pageTranslation",
+  "selectionTranslation",
+  "inputTranslation",
+  "videoSubtitles",
+] as const
 
 export type FeatureKey = (typeof FEATURE_KEYS)[number]
 
@@ -15,6 +20,11 @@ export interface FeatureProviderDef {
 }
 
 export const FEATURE_PROVIDER_DEFS = {
+  videoSubtitles: {
+    isProvider: isTranslateProvider,
+    getProviderId: (c: Config) => c.videoSubtitles.providerId,
+    configPath: ["videoSubtitles", "providerId"],
+  },
   inputTranslation: {
     isProvider: isTranslateProvider,
     getProviderId: (c: Config) => c.inputTranslation.providerId,
@@ -35,6 +45,7 @@ export const FEATURE_PROVIDER_DEFS = {
 
 /** Maps FeatureKey (with dots) to i18n-safe key (with underscores) for `options.apiProviders.featureProviders.features.*` */
 export const FEATURE_KEY_I18N_MAP = {
+  videoSubtitles: "videoSubtitles",
   inputTranslation: "inputTranslation",
   pageTranslation: "pageTranslation",
 

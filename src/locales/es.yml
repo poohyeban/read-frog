@@ -159,10 +159,12 @@ options:
         pageTranslation: Traducción de página
         selectionTranslation: Traducción de la barra de selección
         inputTranslation: Traducción de entrada
+        videoSubtitles: Subtítulos de video
       descriptions:
         pageTranslation: Traduce la página completa en modo bilingüe o de reemplazo.
         selectionTranslation: Traduce el texto que seleccionas desde la barra de selección.
         inputTranslation: Traduce lo que escribes en un campo de texto antes de enviarlo.
+        videoSubtitles: Traduce los subtítulos que aparecen en el reproductor de video.
     aiContentAware:
       title: Traducción con contexto inteligente de IA
       description: Da a la IA contexto de la página o el video para que traduzca con más precisión
@@ -249,6 +251,9 @@ options:
     turnOn: "Activar"
     clash: "Mismo atajo que «$1». Cambia uno de ellos."
     taken: "«$2» ya usa $1."
+    subtitlesToggle:
+      title: Traducción de subtítulos
+      description: Activa o desactiva los subtítulos traducidos del vídeo.
   selectionToolbar:
     title: Barra de selección
     pageDescription: Define qué acciones aparecen al seleccionar texto y dónde se muestra la barra.
@@ -1041,6 +1046,130 @@ options:
           confirm: Confirmar
           cancel: Cancelar
           description: Se eliminarán permanentemente los $1 términos. Esta acción no se puede deshacer.
+  videoSubtitles:
+    title: Subtítulos de video
+    pageDescription: Traduce los subtítulos mientras ves el video, con proveedor, estilo y ajustes propios.
+    preference:
+      title: Aspectos básicos
+      enable:
+        title: Activar subtítulos de video
+        description: Añade un botón de traducción a los controles del reproductor en YouTube, X y Netflix.
+      autoStart:
+        title: Traducir al abrir el video
+        description: Empieza a traducir en cuanto se carga el video, sin pulsar el botón.
+      aiSegmentation:
+        title: Segmentación inteligente de IA
+        description: La IA vuelve a cortar los subtítulos en frases. Las traducciones tardan más. Requiere un LLM potente; los modelos más débiles pueden omitir o desalinear líneas.
+      wordLookupAction:
+        title: Acción al buscar una palabra
+        description: La acción de IA que responde al hacer clic en una palabra de los subtítulos. Diccionario, salvo que elijas una tuya.
+    aiQuota:
+      title: Cuota de subtítulos con IA
+      description: El reconocimiento de voz con IA te da subtítulos precisos para cualquier vídeo
+      launchBonusPromo: Suscríbete antes del $1 y obtén 300 minutos de transcripción adicionales
+      loginRequired: Inicia sesión para ver tu cuota de subtítulos con IA
+      upgradeRequired: Los subtítulos con IA requieren una suscripción Pro o Ultra
+      pools:
+        subscription: Cuota mensual
+        launchBonus: Regalo de lanzamiento
+      resetsOn: Se restablece el $1
+      expiresOn: Caduca el $1
+      loadError: No se pudo cargar tu cuota. Inténtalo de nuevo más tarde.
+      remainingOf: Quedan $1 / $2 min
+      used: Usados $1 min
+    style:
+      title: Estilo de subtítulos
+      description: Modo de visualización, posición, fuentes, colores y fondo, ajustados sobre una vista previa en vivo
+      customizeStyle: Personalizar estilo
+      displayMode:
+        title: Modo de visualización
+        bilingual: Bilingüe
+        originalOnly: Solo original
+        translationOnly: Solo traducción
+      translationPosition:
+        title: Posición de la traducción
+        above: Arriba
+        below: Abajo
+      generalSettings: General
+      mainSubtitle: Subtítulo principal
+      translationSubtitle: Subtítulo de traducción
+      fontFamily: Fuente
+      fontScale: Escala de fuente
+      color: Color
+      fontWeight: Grosor de fuente
+      backgroundOpacity: Opacidad del fondo
+      reset: Restablecer a predeterminado
+      customCSS:
+        title: CSS personalizado
+        description: CSS adicional para las líneas de subtítulos, además de las fuentes y colores de arriba
+        presetTemplate: Plantilla predefinida
+        presetTemplateDescription: Aplica una plantilla lista para usar, como difuminar la traducción para taparla mientras practicas comprensión auditiva
+        presetPlaceholder: Elegir una plantilla
+        presets:
+          blurTranslation: Difuminar traducción
+          dashedTranslation: Traducción subrayada a trazos
+          dimOriginal: Atenuar original
+        editor:
+          placeholder: |
+            /* Ejemplo: difumina la traducción y muéstrala al pasar el cursor */
+            .subtitles-translation {
+              filter: blur(6px);
+            }
+
+            .subtitles-translation:hover {
+              filter: none;
+            }
+
+            /* Selectores disponibles: .read-frog-subtitles-box, .subtitles-main, .subtitles-translation */
+          docsLink: ¿Cómo configurar?
+          saveButton: Guardar
+          savedButton: Guardado
+          validation:
+            validating: Validando...
+            valid: CSS válido
+            syntaxError: CSS tiene errores de sintaxis
+            tooLong: CSS es demasiado largo
+            saved: Todos los cambios guardados
+    customPrompts:
+      title: Prompts personalizados de subtítulos
+      description: Plantillas de prompts solo para la traducción de subtítulos, separadas de las de traducción de páginas web
+      managePrompts: Gestionar prompts
+      editPrompt:
+        promptCellInput:
+          input: Texto de subtítulos a traducir
+          targetLanguage: Idioma de destino
+          webTitle: Título de la página web
+          webDescription: Descripción de la página web desde los metadatos
+          videoSummary: Resumen del video (requiere contexto inteligente de IA)
+    subtitlesQueue:
+      title: Cola de subtítulos
+      description: Con qué rapidez salen las solicitudes de subtítulos y cuántas líneas lleva cada una
+      manageQueue: Gestionar cola
+      requestQueueConfig:
+        title: Tasa de traducción
+        capacity:
+          description: "Solicitudes máximas en ráfaga: cuántas pueden salir a la vez"
+        rate:
+          description: "Solicitudes por segundo: el ritmo estable tras la ráfaga. Admite decimales, así que 0.25 envía una solicitud cada 4 segundos"
+      batchQueueConfig:
+        title: Traducción por lotes
+        description: Configura límites de caracteres y recuento máximo de líneas de subtítulos para la traducción por lotes (solo efectivo para traducción LLM)
+        maxCharactersPerBatch:
+          description: "Caracteres máximos: cuánto texto lleva cada solicitud a la IA"
+        maxItemsPerBatch:
+          description: "Líneas máximas: cuántas líneas de subtítulos comparten una solicitud. Los proveedores que no son de IA ignoran ambos"
+    cache:
+      title: Caché
+      clearCache:
+        title: Borrar caché de segmentación de IA
+        description: Resultados de segmentación guardados para no volver a cortar un video que ya has visto
+        clearing: Borrando...
+        dialog:
+          title: Borrar caché de segmentación de IA
+          trigger: Borrar caché
+          confirm: Confirmar
+          cancel: Cancelar
+          description: Esto eliminará todos los resultados de segmentación AI en caché. La próxima vez que reproduzcas un video con segmentación AI activada, se volverán a procesar los subtítulos.
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -1270,3 +1399,69 @@ translationHub:
 dataTypes:
   string: Texto
   number: Número
+subtitles:
+  sidebar:
+    close: Cerrar el panel de aprendizaje
+    needsSubtitles: "Este video no tiene subtítulos: prueba a generarlos con IA primero."
+    menu:
+      label: Aprendizaje
+    summary:
+      tab: Resumen de IA
+      generating: Generando el resumen…
+      failedTitle: No se pudo generar
+      retry: Reintentar
+      needsModel: Elige un modelo LLM para los subtítulos y así resumir este video.
+      openSettings: Abrir ajustes
+    transcript:
+      tab: Subtítulos
+      failedTitle: No se pudieron cargar los subtítulos
+      retry: Reintentar
+      emptyTitle: No hay subtítulos que mostrar
+      backToCurrent: Volver al actual
+  loadingAiSubtitles: Cargando subtítulos con IA… (estimado 3 min)
+  aiSubtitlesHint: Subtítulos precisos generados por reconocimiento de voz con IA avanzada, disponibles incluso sin subtítulos oficiales.
+  requestAiSubtitles: Solicitar subtítulos con IA
+  usingAiSubtitles: Usando subtítulos con IA
+  toggle:
+    enabled: Traducción de subtítulos activada
+    disabled: Traducción de subtítulos desactivada
+  actions:
+    downloadTranslated: Descargar subtítulos traducidos
+    downloadTranslatedPreparing: Preparando subtítulos, los videos largos pueden tardar más
+    downloadTranslatedTranslating: Traduciendo subtítulos
+    downloadTranslatedComplete: Subtítulos traducidos descargados
+    downloadSource: Descargar subtítulos de origen
+  state:
+    loading: Read Frog está cargando subtítulos
+    translating: Traduciendo…
+    error: Se produjo un error
+  errors:
+    http429: 429 Demasiadas solicitudes a la API de subtítulos de youtube; inténtalo de nuevo más tarde
+    http404: 404 Subtítulos de Youtube no encontrados
+    http403: 403 Acceso a subtítulos de Youtube denegado
+    http500: 500 Error del servidor de Youtube
+    httpUnknown: Error HTTP $1
+    invalidResponse: Formato de respuesta de subtítulos de Youtube no válido
+    networkError: Se produjo un error de red al obtener subtítulos
+    fetchSubTimeout: Se agotó el tiempo al obtener subtítulos
+    buttonNotFound: Botón de subtítulos no encontrado
+    noSubtitlesFound: No hay subtítulos disponibles para este video
+    trackFileNotLoaded: No se pudieron cargar los subtítulos; intenta actualizar la página
+    videoNotFound: Elemento de video no encontrado
+    controlsBarNotFound: Barra de controles no encontrada
+    aiRateLimited: Demasiadas solicitudes, inténtalo de nuevo más tarde
+    aiAuthFailed: Error de autenticación de API; revisa tu clave API
+    aiServiceUnavailable: Servicio de traducción temporalmente no disponible
+    aiQuotaExceeded: Cuota mensual de subtítulos con IA agotada
+    aiQuotaExceededWithReset: Cuota mensual de subtítulos con IA agotada · se restablece el $1
+    aiLoginRequired: Inicia sesión para ver tu cuota de subtítulos con IA
+    aiSubscriptionRequired: Los subtítulos con IA requieren una suscripción Pro o Ultra
+    aiPaymentRequired: Actualiza tu método de pago para seguir generando subtítulos con IA
+    aiVideoTooLong: Este video es demasiado largo para los subtítulos con IA
+    aiLiveReplayUnsupported: Los subtítulos con IA aún no están disponibles para repeticiones de transmisiones en vivo
+    aiStillProcessing: La transcripción sigue en curso — vuelve a hacer clic en unos minutos para retomarla
+    aiRequestFailed: Error al solicitar subtítulos con IA, inténtalo de nuevo más tarde
+    aiNoResponse: El servicio AI no respondió; se usa el texto original
+    translatedExportFailed: No se pudieron generar los subtítulos traducidos
+    translatedExportIncomplete: No se pudieron traducir todas las líneas de subtítulos
+    translatedExportSameLanguage: El idioma de origen y el de destino son iguales

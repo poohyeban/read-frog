@@ -7,10 +7,12 @@ import { initI18n, setUiLanguage } from "@/utils/i18n"
 import { logger } from "@/utils/logger"
 import { onMessage } from "@/utils/message"
 import { openOptionsPage } from "@/utils/navigation"
+import { runAiSegmentSubtitles } from "./ai-segmentation"
 import { dispatchBackgroundStreamPort } from "./background-stream"
 import { initializeActionIcons, registerActionIconListeners } from "./browser-action-icon"
 import { ensureInitializedConfig } from "./config"
 import { initializeContextMenu, registerContextMenuListeners } from "./context-menu"
+import { cleanupAllAiSegmentationCache } from "./db-cleanup"
 import {
   cleanupAllSummaryCache,
   cleanupAllTranslationCache,
@@ -20,7 +22,9 @@ import { setupGlossaryMessageHandlers } from "./glossary"
 import { setupIframeInjection } from "./iframe-injection"
 import { setupLLMGenerateTextMessageHandlers } from "./llm-generate-text"
 import { setupPageTranslationHandlers } from "./page-translation"
+import { setupSubtitlesTranslationHandlers } from "./subtitles-translation"
 import { translationMessage } from "./translation-signal"
+import { setupVideoSummaryHandlers } from "./video-summary"
 
 export default defineBackground({
   type: "module",
@@ -46,9 +50,11 @@ export default defineBackground({
       dispatchBackgroundStreamPort(port)
     })
 
+    onMessage("clearAiSegmentationCache", cleanupAllAiSegmentationCache)
     onMessage("clearAllTranslationRelatedCache", async () => {
       await cleanupAllTranslationCache()
       await cleanupAllSummaryCache()
+      await cleanupAllAiSegmentationCache()
     })
 
     translationMessage()
@@ -65,6 +71,9 @@ export default defineBackground({
     // the SW so wake-triggering messages are never dropped during init.
     setupPageTranslationHandlers()
     setupGlossaryMessageHandlers()
+    setupSubtitlesTranslationHandlers()
+    setupVideoSummaryHandlers()
+    onMessage("aiSegmentSubtitles", (message) => runAiSegmentSubtitles(message.data))
 
     void setUpDatabaseCleanup()
 

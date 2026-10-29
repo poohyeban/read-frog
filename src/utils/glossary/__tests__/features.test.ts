@@ -3,9 +3,10 @@ import { FEATURE_KEYS } from "@/utils/constants/feature-providers"
 import { GLOSSARY_FEATURE_KEYS } from "../features"
 
 describe("GLOSSARY_FEATURE_KEYS", () => {
-  it("covers exactly the three restored prompt-based translation features", () => {
+  it("covers exactly the four prompt-based translation features", () => {
     expect(GLOSSARY_FEATURE_KEYS).toEqual([
       "pageTranslation",
+      "videoSubtitles",
       "selectionTranslation",
       "inputTranslation",
     ])

@@ -158,10 +158,12 @@ options:
         pageTranslation: Перевод страницы
         selectionTranslation: Перевод выделения
         inputTranslation: Перевод ввода
+        videoSubtitles: Субтитры видео
       descriptions:
         pageTranslation: Переводит страницу целиком — в двуязычном режиме или с заменой оригинала.
         selectionTranslation: Переводит выделенный текст через панель выделения.
         inputTranslation: Переводит то, что вы набрали в поле ввода, перед отправкой.
+        videoSubtitles: Переводит субтитры, которые появляются в видеоплеере.
     aiContentAware:
       title: Умный контекстный перевод ИИ
       description: Передавайте ИИ контекст страницы или видео, чтобы перевод был точнее
@@ -248,6 +250,9 @@ options:
     turnOn: "Включить"
     clash: "То же сочетание, что у «$1». Измените одно из них."
     taken: "$1 уже используется для «$2»."
+    subtitlesToggle:
+      title: Перевод субтитров
+      description: Включает или выключает переведённые субтитры видео.
   selectionToolbar:
     title: Панель выделения
     pageDescription: Укажите, какие действия появляются при выделении текста и где показывать панель.
@@ -1036,6 +1041,130 @@ options:
           confirm: Подтвердить
           cancel: Отмена
           description: "Все термины будут удалены безвозвратно. Всего: $1. Это действие нельзя отменить."
+  videoSubtitles:
+    title: Видео субтитры
+    pageDescription: Переводите субтитры во время просмотра — с отдельным провайдером, стилем и настройками запросов.
+    preference:
+      title: Основное
+      enable:
+        title: Включить видеосубтитры
+        description: Добавляет кнопку перевода в панель управления плеера на YouTube, X и Netflix.
+      autoStart:
+        title: Переводить сразу при открытии
+        description: Начинать перевод субтитров, как только видео загрузилось, без нажатия кнопки.
+      aiSegmentation:
+        title: Умная сегментация ИИ
+        description: ИИ заново делит субтитры на предложения. Перевод будет появляться дольше. Нужна сильная LLM; слабые модели могут терять или сдвигать строки.
+      wordLookupAction:
+        title: Действие для слова
+        description: ИИ-действие, которое запускается при нажатии на слово в субтитрах. По умолчанию словарь, можно выбрать своё.
+    aiQuota:
+      title: Лимит ИИ-субтитров
+      description: ИИ распознаёт речь и создаёт точные субтитры для любого видео
+      launchBonusPromo: Оформите подписку до $1 и получите дополнительно 300 минут расшифровки
+      loginRequired: Войдите, чтобы посмотреть лимит ИИ-субтитров
+      upgradeRequired: Для ИИ-субтитров нужна подписка Pro или Ultra
+      pools:
+        subscription: Месячная квота
+        launchBonus: Подарок к запуску
+      resetsOn: Сброс $1
+      expiresOn: Истекает $1
+      loadError: Не удалось загрузить лимит. Повторите попытку позже.
+      remainingOf: Осталось $1 / $2 мин
+      used: Использовано $1 мин
+    style:
+      title: Стиль субтитров
+      description: Режим отображения, положение, шрифты, цвета и фон — всё настраивается по живому предпросмотру
+      customizeStyle: Настроить стиль
+      displayMode:
+        title: Режим отображения
+        bilingual: Двуязычный
+        originalOnly: Только оригинал
+        translationOnly: Только перевод
+      translationPosition:
+        title: Позиция перевода
+        above: Сверху
+        below: Снизу
+      generalSettings: Общие настройки
+      mainSubtitle: Основные субтитры
+      translationSubtitle: Перевод субтитров
+      fontFamily: Шрифт
+      fontScale: Размер шрифта
+      color: Цвет
+      fontWeight: Толщина шрифта
+      backgroundOpacity: Прозрачность фона
+      reset: Сбросить по умолчанию
+      customCSS:
+        title: Пользовательский CSS
+        description: Дополнительный CSS для строк субтитров, поверх шрифтов и цветов выше
+        presetTemplate: Готовый шаблон
+        presetTemplateDescription: Быстро примените готовый шаблон — например, размытие перевода, чтобы скрыть его во время тренировки аудирования
+        presetPlaceholder: Выбрать шаблон
+        presets:
+          blurTranslation: Размыть перевод
+          dashedTranslation: Пунктир под переводом
+          dimOriginal: Приглушить оригинал
+        editor:
+          placeholder: |
+            /* Пример: размыть перевод и показывать его при наведении */
+            .subtitles-translation {
+              filter: blur(6px);
+            }
+
+            .subtitles-translation:hover {
+              filter: none;
+            }
+
+            /* Доступные селекторы: .read-frog-subtitles-box, .subtitles-main, .subtitles-translation */
+          docsLink: Как настроить?
+          saveButton: Сохранить
+          savedButton: Сохранено
+          validation:
+            validating: Проверка...
+            valid: CSS корректен
+            syntaxError: CSS содержит синтаксические ошибки
+            tooLong: CSS слишком длинный
+            saved: Все изменения сохранены
+    customPrompts:
+      title: Пользовательские промпты субтитров
+      description: Шаблоны промптов только для перевода субтитров, отдельно от промптов перевода веб-страниц
+      managePrompts: Управление промптами
+      editPrompt:
+        promptCellInput:
+          input: Текст субтитров для перевода
+          targetLanguage: Целевой язык
+          webTitle: Заголовок веб-страницы
+          webDescription: Описание веб-страницы из метаданных
+          videoSummary: Краткое содержание видео (требуется умный контекст ИИ)
+    subtitlesQueue:
+      title: Очередь субтитров
+      description: Как быстро уходят запросы субтитров и сколько строк несёт каждый
+      manageQueue: Управление очередью
+      requestQueueConfig:
+        title: Скорость перевода
+        capacity:
+          description: "Максимум запросов в пике: сколько уходит одновременно"
+        rate:
+          description: "Запросов в секунду: ровный темп после пика. Дробные значения работают: 0.25 — один запрос каждые 4 секунды"
+      batchQueueConfig:
+        title: Пакетный перевод
+        description: Настройте лимиты символов и максимальное количество строк субтитров для пакетного перевода (действует только для LLM-перевода)
+        maxCharactersPerBatch:
+          description: "Максимум символов: сколько текста уходит в один запрос к ИИ"
+        maxItemsPerBatch:
+          description: "Максимум строк субтитров: сколько строк объединяются в один запрос. Сервисы без ИИ не учитывают оба значения"
+    cache:
+      title: Кэш
+      clearCache:
+        title: Очистить кэш ИИ-сегментации
+        description: "Сохранённые результаты сегментации: уже просмотренное видео не разбивается заново"
+        clearing: Очистка...
+        dialog:
+          title: Очистить кэш ИИ-сегментации
+          trigger: Очистить кэш
+          confirm: Подтвердить
+          cancel: Отмена
+          description: Все кэшированные результаты AI сегментации будут удалены. При следующем воспроизведении видео с включенной AI сегментацией субтитры будут обработаны заново.
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -1265,3 +1394,69 @@ translationHub:
 dataTypes:
   string: Текст
   number: Число
+subtitles:
+  sidebar:
+    close: Закрыть панель обучения
+    needsSubtitles: У этого видео нет субтитров — сначала попробуйте создать их с помощью ИИ.
+    menu:
+      label: Обучение
+    summary:
+      tab: Сводка ИИ
+      generating: Создаём сводку…
+      failedTitle: Не удалось создать
+      retry: Повторить
+      needsModel: Выберите LLM-модель для субтитров, чтобы получить сводку этого видео.
+      openSettings: Открыть настройки
+    transcript:
+      tab: Субтитры
+      failedTitle: Не удалось загрузить субтитры
+      retry: Повторить
+      emptyTitle: Нет субтитров для показа
+      backToCurrent: К текущему
+  loadingAiSubtitles: Загрузка ИИ-субтитров… (ожидается 3 мин)
+  aiSubtitlesHint: Точные субтитры создаются с помощью передового ИИ-распознавания речи и доступны даже без официальных субтитров.
+  requestAiSubtitles: Запросить ИИ-субтитры
+  usingAiSubtitles: Используются ИИ-субтитры
+  toggle:
+    enabled: Перевод субтитров включён
+    disabled: Перевод субтитров выключен
+  actions:
+    downloadTranslated: Скачать переведённые субтитры
+    downloadTranslatedPreparing: Подготовка субтитров, длинные видео могут занять больше времени
+    downloadTranslatedTranslating: Перевод субтитров
+    downloadTranslatedComplete: Переведённые субтитры скачаны
+    downloadSource: Скачать исходные субтитры
+  state:
+    loading: Read Frog загрузка субтитров
+    translating: Перевод…
+    error: Произошла ошибка
+  errors:
+    http429: 429 Слишком много запросов к API YouTube субтитров, пожалуйста, попробуйте снова позже
+    http404: 404 Субтитры YouTube не найдены
+    http403: 403 Доступ к субтитрам YouTube запрещён
+    http500: 500 Произошла ошибка сервера YouTube
+    httpUnknown: Ошибка HTTP $1
+    invalidResponse: Неверный формат ответа субтитров YouTube
+    networkError: Произошла сетевая ошибка при получении субтитров
+    fetchSubTimeout: Истекло время ожидания при получении субтитров
+    buttonNotFound: Кнопка субтитров не найдена
+    noSubtitlesFound: Для этого видео нет субтитров
+    trackFileNotLoaded: Не удалось загрузить субтитры, попробуйте обновить страницу
+    videoNotFound: Видео элемент не найден
+    controlsBarNotFound: Панель управления не найдена
+    aiRateLimited: Слишком много запросов, пожалуйста, повторите позже
+    aiAuthFailed: Ошибка аутентификации API, проверьте ваш API ключ
+    aiServiceUnavailable: Служба перевода временно недоступна
+    aiQuotaExceeded: Месячный лимит ИИ-субтитров исчерпан
+    aiQuotaExceededWithReset: Месячный лимит ИИ-субтитров исчерпан · сброс $1
+    aiLoginRequired: Войдите, чтобы посмотреть лимит ИИ-субтитров
+    aiSubscriptionRequired: Для ИИ-субтитров нужна подписка Pro или Ultra
+    aiPaymentRequired: Обновите способ оплаты, чтобы продолжить создание ИИ-субтитров
+    aiVideoTooLong: Это видео слишком длинное для ИИ-субтитров
+    aiLiveReplayUnsupported: ИИ-субтитры пока недоступны для записей прямых трансляций
+    aiStillProcessing: Транскрипция ещё идёт — нажмите ещё раз через несколько минут
+    aiRequestFailed: Не удалось запросить ИИ-субтитры, повторите попытку позже
+    aiNoResponse: Служба AI не ответила, отображается оригинальный текст
+    translatedExportFailed: Не удалось создать переведённые субтитры
+    translatedExportIncomplete: Не удалось перевести все строки субтитров
+    translatedExportSameLanguage: Исходный и целевой языки совпадают

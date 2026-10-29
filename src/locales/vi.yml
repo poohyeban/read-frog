@@ -158,10 +158,12 @@ options:
         pageTranslation: Dịch trang
         selectionTranslation: Dịch thanh công cụ chọn
         inputTranslation: Dịch đầu vào
+        videoSubtitles: Phụ đề video
       descriptions:
         pageTranslation: Dịch toàn bộ trang ở chế độ song ngữ hoặc thay thế bản gốc.
         selectionTranslation: Dịch đoạn văn bản bạn chọn từ thanh công cụ bôi đen.
         inputTranslation: Dịch nội dung bạn gõ trong ô nhập trước khi gửi.
+        videoSubtitles: Dịch phụ đề hiện ra trong trình phát video.
     aiContentAware:
       title: Dịch ngữ cảnh thông minh AI
       description: Cung cấp cho AI ngữ cảnh của trang hoặc video để dịch chính xác hơn
@@ -248,6 +250,9 @@ options:
     turnOn: "Bật"
     clash: "Trùng phím tắt với “$1”. Hãy đổi một trong hai."
     taken: "$1 đã được dùng cho “$2”."
+    subtitlesToggle:
+      title: Dịch phụ đề
+      description: Bật hoặc tắt phụ đề đã dịch của video.
   selectionToolbar:
     title: Thanh công cụ chọn
     pageDescription: Đặt các thao tác xuất hiện khi bạn chọn văn bản và nơi hiển thị thanh công cụ.
@@ -1036,6 +1041,130 @@ options:
           confirm: Xác nhận
           cancel: Hủy
           description: Toàn bộ $1 thuật ngữ sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.
+  videoSubtitles:
+    title: Phụ đề video
+    pageDescription: Dịch phụ đề khi đang xem, với nhà cung cấp, kiểu hiển thị và thiết lập yêu cầu riêng.
+    preference:
+      title: Cơ bản
+      enable:
+        title: Bật phụ đề video
+        description: Thêm nút dịch vào thanh điều khiển của trình phát trên YouTube, X và Netflix.
+      autoStart:
+        title: Mở video là dịch
+        description: Bắt đầu dịch ngay khi video tải xong, không cần bấm nút.
+      aiSegmentation:
+        title: AI phân đoạn thông minh
+        description: AI cắt lại phụ đề thành từng câu. Bản dịch sẽ phản hồi chậm hơn. Cần LLM mạnh; mô hình yếu có thể bỏ sót hoặc lệch dòng.
+      wordLookupAction:
+        title: Hành động tra từ
+        description: Hành động AI chạy khi bạn nhấp vào một từ trong phụ đề. Mặc định là từ điển, bạn có thể chọn hành động của riêng mình.
+    aiQuota:
+      title: Hạn mức phụ đề AI
+      description: AI dùng công nghệ nhận dạng giọng nói để tạo phụ đề chính xác cho mọi video
+      launchBonusPromo: Đăng ký trước $1 để nhận thêm 300 phút chuyển lời nói thành văn bản
+      loginRequired: Đăng nhập để xem hạn mức phụ đề AI của bạn
+      upgradeRequired: Phụ đề AI cần gói Pro hoặc Ultra
+      pools:
+        subscription: Hạn mức hằng tháng
+        launchBonus: Quà ra mắt
+      resetsOn: Đặt lại vào $1
+      expiresOn: Hết hạn vào $1
+      loadError: Không thể tải hạn mức. Vui lòng thử lại sau.
+      remainingOf: Còn $1 / $2 phút
+      used: Đã dùng $1 phút
+    style:
+      title: Kiểu phụ đề
+      description: Chế độ hiển thị, vị trí, phông chữ, màu sắc và nền, chỉnh ngay trên bản xem trước
+      customizeStyle: Tùy chỉnh kiểu
+      displayMode:
+        title: Chế độ hiển thị
+        bilingual: Song ngữ
+        originalOnly: Chỉ bản gốc
+        translationOnly: Chỉ bản dịch
+      translationPosition:
+        title: Vị trí bản dịch
+        above: Phía trên
+        below: Phía dưới
+      generalSettings: Cài đặt chung
+      mainSubtitle: Phụ đề chính
+      translationSubtitle: Phụ đề dịch
+      fontFamily: Phông chữ
+      fontScale: Cỡ chữ
+      color: Màu sắc
+      fontWeight: Độ đậm chữ
+      backgroundOpacity: Độ trong suốt nền
+      reset: Đặt lại về mặc định
+      customCSS:
+        title: CSS tùy chỉnh
+        description: CSS bổ sung cho các dòng phụ đề, ngoài phông chữ và màu sắc ở trên
+        presetTemplate: Mẫu dựng sẵn
+        presetTemplateDescription: Áp dụng nhanh một mẫu dựng sẵn — ví dụ làm mờ bản dịch để che đi khi luyện nghe
+        presetPlaceholder: Chọn mẫu
+        presets:
+          blurTranslation: Làm mờ bản dịch
+          dashedTranslation: Gạch nét đứt bản dịch
+          dimOriginal: Làm nhạt bản gốc
+        editor:
+          placeholder: |
+            /* Ví dụ: làm mờ bản dịch, di chuột vào để xem */
+            .subtitles-translation {
+              filter: blur(6px);
+            }
+
+            .subtitles-translation:hover {
+              filter: none;
+            }
+
+            /* Các bộ chọn có thể dùng: .read-frog-subtitles-box, .subtitles-main, .subtitles-translation */
+          docsLink: Cấu hình như thế nào?
+          saveButton: Lưu
+          savedButton: Đã lưu
+          validation:
+            validating: Đang xác thực...
+            valid: CSS hợp lệ
+            syntaxError: CSS có lỗi cú pháp
+            tooLong: CSS quá dài
+            saved: Tất cả thay đổi đã được lưu
+    customPrompts:
+      title: Lời nhắc phụ đề tùy chỉnh
+      description: Mẫu lời nhắc chỉ dùng cho dịch phụ đề, tách biệt với lời nhắc dịch trang web
+      managePrompts: Quản lý prompt
+      editPrompt:
+        promptCellInput:
+          input: Văn bản phụ đề cần dịch
+          targetLanguage: Ngôn ngữ đích
+          webTitle: Tiêu đề trang web
+          webDescription: Mô tả trang web từ siêu dữ liệu trang
+          videoSummary: Tóm tắt video (yêu cầu ngữ cảnh thông minh AI)
+    subtitlesQueue:
+      title: Hàng đợi phụ đề
+      description: Yêu cầu phụ đề gửi đi nhanh đến mức nào và mỗi yêu cầu mang bao nhiêu dòng
+      manageQueue: Quản lý hàng đợi
+      requestQueueConfig:
+        title: Tốc độ dịch
+        capacity:
+          description: "Số yêu cầu tối đa cùng lúc: bao nhiêu yêu cầu được gửi đi một lượt"
+        rate:
+          description: "Số yêu cầu mỗi giây: tốc độ đều sau đợt gửi dồn. Dùng được số thập phân, 0.25 là 4 giây một yêu cầu"
+      batchQueueConfig:
+        title: Dịch theo lô
+        description: Cấu hình giới hạn ký tự và số dòng phụ đề tối đa cho dịch theo lô (chỉ có hiệu lực với dịch LLM)
+        maxCharactersPerBatch:
+          description: "Số ký tự tối đa: mỗi yêu cầu tới AI mang bao nhiêu văn bản"
+        maxItemsPerBatch:
+          description: "Số dòng tối đa: bao nhiêu dòng phụ đề gộp chung một yêu cầu. Nhà cung cấp không dùng AI bỏ qua cả hai"
+    cache:
+      title: Bộ nhớ đệm
+      clearCache:
+        title: Xóa bộ nhớ đệm AI phân đoạn
+        description: Kết quả phân đoạn đã lưu, video đã xem không phải cắt lại
+        clearing: Đang xóa...
+        dialog:
+          title: Xóa bộ nhớ đệm AI phân đoạn
+          trigger: Xóa bộ nhớ đệm
+          confirm: Xác nhận
+          cancel: Hủy
+          description: Tất cả kết quả AI phân đoạn đã lưu trong bộ nhớ đệm sẽ bị xóa. Lần tới khi phát video có bật AI phân đoạn, phụ đề sẽ được xử lý lại.
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -1265,3 +1394,69 @@ translationHub:
 dataTypes:
   string: Văn bản
   number: Số
+subtitles:
+  sidebar:
+    close: Đóng bảng học tập
+    needsSubtitles: Video này không có phụ đề — hãy thử tạo phụ đề bằng AI trước.
+    menu:
+      label: Học tập
+    summary:
+      tab: Tóm tắt AI
+      generating: Đang tạo bản tóm tắt…
+      failedTitle: Không tạo được
+      retry: Thử lại
+      needsModel: Hãy chọn một mô hình LLM cho phụ đề để tóm tắt video này.
+      openSettings: Mở cài đặt
+    transcript:
+      tab: Phụ đề
+      failedTitle: Không tải được phụ đề
+      retry: Thử lại
+      emptyTitle: Không có phụ đề để hiển thị
+      backToCurrent: Về vị trí hiện tại
+  loadingAiSubtitles: Đang tải phụ đề AI… (dự kiến 3 phút)
+  aiSubtitlesHint: Phụ đề chính xác được tạo bằng công nghệ nhận dạng giọng nói AI tiên tiến, dùng được ngay cả khi không có phụ đề chính thức.
+  requestAiSubtitles: Yêu cầu phụ đề AI
+  usingAiSubtitles: Đang dùng phụ đề AI
+  toggle:
+    enabled: Đã bật dịch phụ đề
+    disabled: Đã tắt dịch phụ đề
+  actions:
+    downloadTranslated: Tải phụ đề đã dịch
+    downloadTranslatedPreparing: Đang chuẩn bị phụ đề, video dài có thể mất nhiều thời gian hơn
+    downloadTranslatedTranslating: Đang dịch phụ đề
+    downloadTranslatedComplete: Đã tải phụ đề đã dịch
+    downloadSource: Tải phụ đề gốc
+  state:
+    loading: Read Frog đang tải phụ đề
+    translating: Đang dịch…
+    error: Đã xảy ra lỗi
+  errors:
+    http429: 429 Đã gửi quá nhiều yêu cầu đến API phụ đề Youtube, vui lòng thử lại sau
+    http404: 404 Không tìm thấy phụ đề Youtube
+    http403: 403 Không được phép truy cập phụ đề Youtube
+    http500: 500 Lỗi máy chủ Youtube
+    httpUnknown: Lỗi HTTP $1
+    invalidResponse: Định dạng phản hồi phụ đề Youtube không hợp lệ
+    networkError: Xảy ra lỗi mạng khi lấy phụ đề
+    fetchSubTimeout: Quá thời gian lấy phụ đề
+    buttonNotFound: Không tìm thấy nút phụ đề
+    noSubtitlesFound: Video hiện tại không có phụ đề
+    trackFileNotLoaded: Không tải được phụ đề, vui lòng thử tải lại trang
+    videoNotFound: Không tìm thấy phần tử video
+    controlsBarNotFound: Không tìm thấy thanh điều khiển
+    aiRateLimited: Quá nhiều yêu cầu, vui lòng thử lại sau
+    aiAuthFailed: Xác thực API thất bại, vui lòng kiểm tra API key của bạn
+    aiServiceUnavailable: Dịch vụ dịch thuật tạm thời không khả dụng
+    aiQuotaExceeded: Đã dùng hết hạn mức phụ đề AI trong tháng
+    aiQuotaExceededWithReset: Đã dùng hết hạn mức phụ đề AI trong tháng · đặt lại vào $1
+    aiLoginRequired: Đăng nhập để xem hạn mức phụ đề AI của bạn
+    aiSubscriptionRequired: Phụ đề AI cần gói Pro hoặc Ultra
+    aiPaymentRequired: Cập nhật phương thức thanh toán để tiếp tục tạo phụ đề AI
+    aiVideoTooLong: Video này quá dài để tạo phụ đề AI
+    aiLiveReplayUnsupported: Phụ đề AI chưa hỗ trợ bản phát lại của buổi phát trực tiếp
+    aiStillProcessing: Quá trình phiên âm vẫn đang chạy — hãy bấm lại sau vài phút
+    aiRequestFailed: Yêu cầu phụ đề AI thất bại, vui lòng thử lại sau
+    aiNoResponse: Dịch vụ AI không phản hồi, hiển thị văn bản gốc
+    translatedExportFailed: Không thể tạo phụ đề đã dịch
+    translatedExportIncomplete: Không thể dịch tất cả các dòng phụ đề
+    translatedExportSameLanguage: Ngôn ngữ nguồn và ngôn ngữ đích giống nhau

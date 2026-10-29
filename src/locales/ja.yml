@@ -158,10 +158,12 @@ options:
         pageTranslation: ページ翻訳
         selectionTranslation: 選択ツールバー翻訳
         inputTranslation: 入力翻訳
+        videoSubtitles: 動画字幕
       descriptions:
         pageTranslation: ページ全体を対訳または置き換えで翻訳します。
         selectionTranslation: 選択ツールバーから、選択したテキストを翻訳します。
         inputTranslation: 入力欄に書いた文章を、送信する前に翻訳します。
+        videoSubtitles: 動画プレーヤーに表示される字幕を翻訳します。
     aiContentAware:
       title: AI スマートコンテキスト翻訳
       description: ページや動画の文脈を AI に渡して、翻訳の精度を上げます
@@ -248,6 +250,9 @@ options:
     turnOn: "オンにする"
     clash: "「$1」と同じキーです。どちらかを変更してください。"
     taken: "$1 はすでに「$2」で使われています。"
+    subtitlesToggle:
+      title: 字幕翻訳
+      description: 動画の翻訳字幕をオンまたはオフにします。
   selectionToolbar:
     title: 選択ツールバー
     pageDescription: テキストを選択したときに表示するアクションと、ツールバーを表示するサイトを設定します。
@@ -1036,6 +1041,130 @@ options:
           confirm: 確認
           cancel: キャンセル
           description: $1 件の用語がすべて完全に削除されます。この操作は元に戻せません。
+  videoSubtitles:
+    title: 動画字幕
+    pageDescription: 視聴しながら字幕を翻訳します。プロバイダー・スタイル・リクエスト設定は個別に指定できます。
+    preference:
+      title: 基本設定
+      enable:
+        title: 動画字幕を有効にする
+        description: YouTube、X、Netflix の動画プレーヤーのコントロールバーに翻訳ボタンを表示します。
+      autoStart:
+        title: 動画を開いたら翻訳する
+        description: 動画の読み込みが終わり次第、ボタンを押さなくても字幕の翻訳を始めます。
+      aiSegmentation:
+        title: AI スマート区切り
+        description: AI が字幕を文単位に切り直します。翻訳の応答が遅くなります。高性能な LLM が必要です。性能の低いモデルでは字幕の欠落やずれが起きることがあります。
+      wordLookupAction:
+        title: 単語クリック時のアクション
+        description: 字幕の単語をクリックしたときに実行する AI アクション。既定は辞書で、自分のアクションにも変更できます。
+    aiQuota:
+      title: AI字幕の利用枠
+      description: AIの音声認識で、どんな動画にも正確な字幕を生成します
+      launchBonusPromo: $1 までに加入すると、文字起こし 300 分を追加でプレゼント
+      loginRequired: ログインしてAI字幕の利用枠を確認
+      upgradeRequired: AI字幕には Pro または Ultra プランが必要です
+      pools:
+        subscription: 月間クォータ
+        launchBonus: リリース記念ギフト
+      resetsOn: $1 にリセット
+      expiresOn: $1 に失効
+      loadError: 利用枠を読み込めませんでした。しばらくしてから再試行してください。
+      remainingOf: 残り $1 / $2 分
+      used: 使用済み $1 分
+    style:
+      title: 字幕スタイル
+      description: 表示モード・位置・フォント・色・背景を、プレビューを見ながら設定します
+      customizeStyle: スタイルを編集
+      displayMode:
+        title: 表示モード
+        bilingual: バイリンガル
+        originalOnly: 原文のみ
+        translationOnly: 翻訳のみ
+      translationPosition:
+        title: 翻訳の位置
+        above: 上
+        below: 下
+      generalSettings: 一般設定
+      mainSubtitle: メイン字幕
+      translationSubtitle: 翻訳字幕
+      fontFamily: フォント
+      fontScale: フォントサイズ
+      color: 色
+      fontWeight: フォントウェイト
+      backgroundOpacity: 背景の透明度
+      reset: デフォルトにリセット
+      customCSS:
+        title: カスタム CSS
+        description: 上のフォントや色に加えて、字幕行に CSS を追加します
+        presetTemplate: プリセットテンプレート
+        presetTemplateDescription: プリセットテンプレートをすぐに適用します。たとえばリスニング練習の間だけ訳文をぼかして隠す効果など
+        presetPlaceholder: テンプレートを選択
+        presets:
+          blurTranslation: 訳文をぼかす
+          dashedTranslation: 訳文に破線
+          dimOriginal: 原文を弱める
+        editor:
+          placeholder: |
+            /* 例：訳文をぼかし、カーソルを重ねたときに表示する */
+            .subtitles-translation {
+              filter: blur(6px);
+            }
+
+            .subtitles-translation:hover {
+              filter: none;
+            }
+
+            /* 使用できるセレクター：.read-frog-subtitles-box、.subtitles-main、.subtitles-translation */
+          docsLink: 設定方法は?
+          saveButton: 保存
+          savedButton: 保存済み
+          validation:
+            validating: 検証中...
+            valid: CSSは有効です
+            syntaxError: CSSに構文エラーがあります
+            tooLong: CSSが長すぎます
+            saved: すべての変更が保存されました
+    customPrompts:
+      title: カスタム字幕プロンプト
+      description: 字幕翻訳専用のプロンプトテンプレート。ウェブページ翻訳のプロンプトとは別に管理します
+      managePrompts: プロンプトを管理
+      editPrompt:
+        promptCellInput:
+          input: 翻訳する字幕テキスト
+          targetLanguage: 対象言語
+          webTitle: ウェブページタイトル
+          webDescription: ページメタデータのウェブページ説明
+          videoSummary: 動画要約（AI スマートコンテキストが必要）
+    subtitlesQueue:
+      title: 字幕キュー
+      description: 字幕リクエストを送る速さと、1回あたりの行数
+      manageQueue: キューを管理
+      requestQueueConfig:
+        title: 翻訳速度
+        capacity:
+          description: 最大バーストリクエスト数：一度に送れるリクエストの数
+        rate:
+          description: 1 秒あたりのリクエスト数：バースト後の一定ペース。小数も使え、0.25 なら 4 秒に 1 回送ります
+      batchQueueConfig:
+        title: バッチ翻訳
+        description: バッチ翻訳時の文字数制限と最大字幕行数を設定（大規模言語モデル翻訳でのみ有効）
+        maxCharactersPerBatch:
+          description: 最大文字数：1 回の AI リクエストで送るテキストの量
+        maxItemsPerBatch:
+          description: 最大字幕行数：1 回のリクエストにまとめる字幕の数。AI 以外の翻訳サービスには効きません
+    cache:
+      title: キャッシュ
+      clearCache:
+        title: AI区切りキャッシュをクリア
+        description: 保存された区切り結果。一度見た動画は処理し直しになりません
+        clearing: クリア中...
+        dialog:
+          title: AI区切りキャッシュをクリア
+          trigger: キャッシュをクリア
+          confirm: 確認
+          cancel: キャンセル
+          description: すべてのキャッシュされたAI区切り結果が削除されます。次回AI区切りを有効にして動画を再生すると、字幕が再処理されます。
 translateService:
   builtInModels: Built-in Models
   llmModels: LLM Models
@@ -1265,3 +1394,69 @@ translationHub:
 dataTypes:
   string: テキスト
   number: 数値
+subtitles:
+  sidebar:
+    close: 学習パネルを閉じる
+    needsSubtitles: この動画には字幕がありません。まず AI 字幕の生成をお試しください。
+    menu:
+      label: 学習
+    summary:
+      tab: AI 要約
+      generating: 要約を生成しています…
+      failedTitle: 生成できませんでした
+      retry: 再試行
+      needsModel: この動画を要約するには、字幕用の LLM モデルを選んでください。
+      openSettings: 設定を開く
+    transcript:
+      tab: 字幕
+      failedTitle: 字幕を読み込めませんでした
+      retry: 再試行
+      emptyTitle: 表示できる字幕がありません
+      backToCurrent: 現在位置へ戻る
+  loadingAiSubtitles: AI字幕を読み込み中…（推定3分）
+  aiSubtitlesHint: 先進的なAI音声認識により正確な字幕を生成。公式字幕がない動画でも利用できます。
+  requestAiSubtitles: AI字幕をリクエスト
+  usingAiSubtitles: AI字幕を使用中
+  toggle:
+    enabled: 字幕翻訳をオンにしました
+    disabled: 字幕翻訳をオフにしました
+  actions:
+    downloadTranslated: 翻訳字幕をダウンロード
+    downloadTranslatedPreparing: 字幕を準備中。長い動画は時間がかかる場合があります
+    downloadTranslatedTranslating: 字幕を翻訳中
+    downloadTranslatedComplete: 翻訳字幕をダウンロードしました
+    downloadSource: 元字幕をダウンロード
+  state:
+    loading: Read Frog 字幕読み込み中
+    translating: 翻訳中…
+    error: エラーが発生しました
+  errors:
+    http429: 429 YouTube字幕APIへのリクエストが多すぎます。しばらくしてから再試行してください
+    http404: 404 YouTubeの字幕が見つかりません
+    http403: 403 YouTube字幕へのアクセスが拒否されました
+    http500: 500 YouTubeサーバーエラー
+    httpUnknown: HTTP エラー $1
+    invalidResponse: YouTube字幕のレスポンス形式が無効です
+    networkError: 字幕取得時にネットワークエラーが発生しました
+    fetchSubTimeout: 字幕の取得がタイムアウトしました
+    buttonNotFound: 字幕ボタンが見つかりません
+    noSubtitlesFound: この動画には字幕がありません
+    trackFileNotLoaded: 字幕を読み込めませんでした。ページを再読み込みしてみてください
+    videoNotFound: 動画要素が見つかりません
+    controlsBarNotFound: コントロールバーが見つかりません
+    aiRateLimited: リクエストが多すぎます。後でもう一度お試しください
+    aiAuthFailed: API認証に失敗しました。APIキーを確認してください
+    aiServiceUnavailable: 翻訳サービスは一時的に利用できません
+    aiQuotaExceeded: 今月のAI字幕の利用枠を使い切りました
+    aiQuotaExceededWithReset: 今月のAI字幕の利用枠を使い切りました・$1 にリセット
+    aiLoginRequired: ログインしてAI字幕の利用枠を確認
+    aiSubscriptionRequired: AI字幕には Pro または Ultra プランが必要です
+    aiPaymentRequired: AI字幕の生成を続けるにはお支払い方法を更新してください
+    aiVideoTooLong: この動画は長すぎるためAI字幕を生成できません
+    aiLiveReplayUnsupported: ライブ配信のアーカイブはまだAI字幕に対応していません
+    aiStillProcessing: 文字起こしは進行中です。数分後にもう一度クリックしてください
+    aiRequestFailed: AI字幕のリクエストに失敗しました。しばらくしてから再試行してください
+    aiNoResponse: AIサービスが応答しませんでした。原文を表示します
+    translatedExportFailed: 翻訳字幕の生成に失敗しました
+    translatedExportIncomplete: すべての字幕行を翻訳できませんでした
+    translatedExportSameLanguage: 元の言語と翻訳先の言語が同じです

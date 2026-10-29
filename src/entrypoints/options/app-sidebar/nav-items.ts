@@ -1,4 +1,11 @@
 export const ROUTE_DEFS = [
+  { path: "/video-subtitles/style" },
+  { path: "/video-subtitles/auto-start" },
+  { path: "/video-subtitles/subtitles-queue" },
+
+  { path: "/video-subtitles" },
+  { path: "/video-subtitles/prompts" },
+  { path: "/video-subtitles/style/custom-css" },
   { path: "/custom-actions" },
   { path: "/input-translation" },
   { path: "/floating-button" },
