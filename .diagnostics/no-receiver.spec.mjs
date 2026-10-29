@@ -57,6 +57,22 @@ test("diagnose missing message receivers in the published 0.2.2 extension", asyn
           })
         }),
     )
+    // Chrome enables extension error collection when the extension starts in
+    // developer mode. Restart this fresh test-profile extension before baseline.
+    const collectingWorker = context.waitForEvent("serviceworker", {
+      predicate: (next) => next !== worker,
+    })
+    await worker.evaluate(() => {
+      setTimeout(() => chrome.runtime.reload(), 0)
+    })
+    worker = await collectingWorker
+    await expect
+      .poll(() =>
+        worker.evaluate(async () =>
+          Boolean((await chrome.storage.local.get("readFrogLiteConfig")).readFrogLiteConfig),
+        ),
+      )
+      .toBe(true)
     const errors = async () => {
       return manager.evaluate(
         (id) =>
