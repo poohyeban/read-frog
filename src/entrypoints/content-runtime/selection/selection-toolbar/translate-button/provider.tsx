@@ -5,7 +5,6 @@ import type { SelectionToolbarInlineError } from "@/components/ui/selection-popo
 import type { BackgroundTextStreamSnapshot, ThinkingSnapshot } from "@/types/background-stream"
 import type { LLMProviderConfig } from "@/types/config/provider"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
-import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { useAtomValue, useSetAtom } from "jotai"
 import {
   createContext,
@@ -36,6 +35,7 @@ import { resolveGlossaryTermsFromCache } from "@/utils/glossary/active-matcher"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
 import { getOrGenerateWebPageSummary } from "@/utils/host/translate/webpage-summary"
+import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { onMessage } from "@/utils/message"
 import { getTranslatePromptFromConfig } from "@/utils/prompts/translate"
 import { resolveModelId } from "@/utils/providers/model-id"

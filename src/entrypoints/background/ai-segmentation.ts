@@ -59,7 +59,7 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
   }
 
   // The ref is resolved on the content side, where a session already holds one:
-  // resolving here would cost a hostedAi.status round trip per block.
+
   const cacheKey = Sha256Hex(Sha256Hex(jsonContent), getProviderCacheIdentity(providerRef))
   const cached = await db.aiSegmentationCache.get(cacheKey)
   if (cached) {
@@ -102,7 +102,7 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
     logger.info("[Background] AI subtitle segmentation completed")
     return result
   } catch (error) {
-    logger.error("[Background] AI subtitle segmentation failed:", error)
+    logger.error("[Background] AI subtitle segmentation failed:")
     throw error
   }
 }

@@ -26,6 +26,7 @@ import { extractAISDKErrorMessage } from "@/utils/error/extract-message"
 import { logger } from "@/utils/logger"
 import { buildLocalGenerateTextParams } from "@/utils/providers/generate-params"
 import { getLanguageModelForConfig, getModelById } from "@/utils/providers/model"
+import { attachRequestErrorMeta, getRequestErrorMeta } from "@/utils/request/retry-policy"
 
 const invalidStreamStartPayloadMessage = "Invalid stream start payload"
 const aiStreamProtocolErrorMessage = "Invalid AI stream response."
@@ -308,19 +309,6 @@ function getStreamPartError(part: Record<string, unknown>): unknown {
 // Pinned with `satisfies` so a code renamed in the contract fails this build
 // instead of silently falling through to the generic error path.
 
-/**
- * Every pool but Ultra's has a bigger plan above it, so running one dry offers
- * the upgrade. Ultra is the top of the ladder: pricing has nothing to sell a
- * subscriber there, so the message stands alone. A payload that fails to parse
- * still offers it — nearly everyone who hits a wall is below Ultra.
- */
-
-/**
- * Names the plan the wall asks for: "Pro or Ultra" when Pro is enough. A
- * payload that fails to parse, as from a server that predates `upgradeTo`,
- * reads as Ultra, the only plan that server walls behind.
- */
-
 function getStreamFinishReason(part: Record<string, unknown>): string | undefined {
   return typeof part.finishReason === "string" ? part.finishReason : undefined
 }
@@ -572,18 +560,25 @@ export async function generateTextForProviderRef(
   // computed from the snapshot the caller captured — and would fail outright
   // for a row deleted from another tab while the config was already in hand.
   const model = getLanguageModelForConfig(providerRef.config)
-  const { text } = await generateText({
-    model,
-    instructions,
-    prompt,
-    // maxRetries: 0 — retries belong to the RequestQueue, which meters them
-    // against the token bucket; ai-sdk's hidden default (2) would issue extra
-    // HTTP attempts invisible to the rate limiter.
-    maxRetries: maxRetries ?? 0,
-    abortSignal: signal,
-    ...buildLocalGenerateTextParams(providerRef.config),
-  })
-  return text.trim()
+  try {
+    const { text } = await generateText({
+      model,
+      instructions,
+      prompt,
+      // maxRetries: 0 — retries belong to the RequestQueue, which meters them
+      // against the token bucket; ai-sdk's hidden default (2) would issue extra
+      // HTTP attempts invisible to the rate limiter.
+      maxRetries: maxRetries ?? 0,
+      abortSignal: signal,
+      ...buildLocalGenerateTextParams(providerRef.config),
+    })
+    return text.trim()
+  } catch (error) {
+    throw attachRequestErrorMeta(
+      new Error(extractAISDKErrorMessage(error)),
+      getRequestErrorMeta(error),
+    )
+  }
 }
 
 export async function runStreamTextInBackground(

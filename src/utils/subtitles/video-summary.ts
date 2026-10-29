@@ -2,10 +2,10 @@ import type { SubtitlesFragment } from "./types"
 import type { BackgroundStreamTextSerializablePayload } from "@/types/background-stream"
 import type { Config } from "@/types/config/config"
 import type { ProviderRefForCapability } from "@/utils/providers/provider-registry"
-import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { getLocalConfig } from "@/utils/config/storage"
 import { VIDEO_SUMMARY_TRANSCRIPT_CHAR_BUDGET } from "@/utils/constants/subtitles"
 import { streamBackgroundText } from "@/utils/content-script/background-stream-client"
+import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { sendMessage } from "@/utils/message"
 import { getVideoSummaryPrompt } from "@/utils/prompts/summary"
 import { resolveSubtitlesProvider, resolveSubtitlesProviderRef } from "./processor/translator"
@@ -88,13 +88,6 @@ export function stripLeadingHeading(summary: string): string {
 
 export type VideoSummaryAvailability = { status: "ok" } | { status: "needsModel" }
 
-/**
- * The subtitles provider list is gated on the wider translate capability, so
- * the default Microsoft provider is a legal choice there and then cannot be
- * prompted. Checked before the panel opens rather than after a request fails.
- *
- * A plan/quota refusal stays itself: the user did pick a model.
- */
 export async function checkVideoSummaryAvailability(): Promise<VideoSummaryAvailability> {
   const config = await getLocalConfig()
   if (!config) {

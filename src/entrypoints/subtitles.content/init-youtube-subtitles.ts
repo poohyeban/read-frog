@@ -145,8 +145,8 @@ export function initYoutubeSubtitles(ctx: ContentScriptContext) {
   }
 
   const tryInit = () => {
-    queue = queue.then(syncSession).catch((error) => {
-      logger.error("[subtitles] failed to sync the YouTube subtitles session", error)
+    queue = queue.then(syncSession).catch(() => {
+      logger.error("[subtitles] failed to sync the YouTube subtitles session")
     })
   }
 

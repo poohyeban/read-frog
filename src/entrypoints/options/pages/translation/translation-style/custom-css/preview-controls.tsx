@@ -1,4 +1,3 @@
-import { LANG_CODE_ISO6391_OPTIONS } from "@read-frog/definitions"
 import { Field, FieldLabel } from "@/components/ui/base-ui/field"
 import {
   Select,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/base-ui/select"
 import { Textarea } from "@/components/ui/base-ui/textarea"
 import { i18n } from "@/utils/i18n"
+import { LANG_CODE_ISO6391_OPTIONS } from "@/utils/languages"
 
 export interface PreviewControlsProps {
   language: string

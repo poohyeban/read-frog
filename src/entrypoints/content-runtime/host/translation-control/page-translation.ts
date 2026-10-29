@@ -1,5 +1,5 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { Config } from "@/types/config/config"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import debounce from "debounce"
 import { getLocalConfig } from "@/utils/config/storage"
 import {

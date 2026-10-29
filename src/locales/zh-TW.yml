@@ -323,7 +323,6 @@ options:
       noEnabledLlmProvider: 請先啟用至少一個 LLM 提供者後再建立自訂 AI 指令
       tabs:
         config: 設定
-        notebase: 筆記庫
         hasErrors: 有錯誤
         connected: 已連線
         needsAttention: 需要處理
@@ -440,51 +439,6 @@ options:
             tooLong: 版面超過 $1 個字元，無法儲存。
             fieldNotShown: 「$1」未在此版面中顯示。
             reservedFieldName: 欄位名稱「$1」是版面保留名稱，請重新命名該欄位。
-        notebase:
-          title: 筆記庫連線
-          description: 將這個指令的結構化結果儲存到遠端筆記庫。
-          loginRequiredTitle: 登入後才能設定筆記庫
-          loginRequiredDescription: 先到 readfrog.app 登入，再選擇筆記庫與編輯對應。
-          loginRequiredConnectedDescription: 這個連線來自下方帳號。如果登入原帳號，會恢復欄位對應；如果登入其他帳號，建立或連線筆記庫時會清除先前的欄位對應。
-          loginAction: 前往登入
-          connectedAccountLabel: 已連線帳號
-          currentAccountLabel: 目前帳號
-          unknownConnectedAccount: 未知帳號
-          tableLabel: 筆記庫
-          tablePlaceholder: 選擇一個筆記庫
-          tableClearOption: 不連線筆記庫
-          clearConnectionAction: 清空連線
-          refreshAction: 重新整理
-          emptyTitle: 還沒有筆記庫
-          emptyDescription: 先到 readfrog.app 建立一個筆記庫，再回來對應欄位。
-          openNotebaseAction: 開啟筆記庫
-          accessDeniedTitle: 無法存取筆記庫
-          accessDeniedDescription: 目前帳號沒有權限載入筆記庫資料。
-          listErrorTitle: 載入筆記庫失敗
-          listErrorDescription: 請稍後再試一次。
-          accountMismatchTitle: 筆記庫連線屬於其他帳號
-          accountMismatchDescription: 目前連線綁定到下方已連線帳號。可清除連線，或選擇目前帳號可存取的筆記庫。
-          tableUnavailableTitle: 所選筆記庫已無法使用
-          tableUnavailableDescription: 這個筆記庫不存在，或目前帳號無法開啟。可以清空連線，或重新選擇一個筆記庫。
-          tableUnavailableOption: 無法使用
-          schemaErrorTitle: 載入筆記庫 schema 失敗
-          schemaErrorDescription: 請稍後再試一次重新整理。
-          schemaLoading: 正在載入筆記庫 schema…
-          mappingsLabel: 欄位對應
-          localFieldLabel: 指令欄位
-          remoteFieldLabel: 筆記庫欄位
-          columnUnavailableOption: 已刪除
-          invalidMappingsTitle: 有些對應需要處理
-          invalidMappingsDescription: 無效對應會被保留。儲存到筆記庫前請先修復它們。
-          noFieldSavedTitle: 沒有欄位會存進這個筆記庫
-          noFieldSavedDescription: 至少為一個欄位選擇筆記庫欄位，才能儲存筆記。
-          mappingSummary: 存 $1 · 不存 $2 · 待定 $3
-          skipFieldOption: 不儲存
-          undecidedFieldPlaceholder: 選擇筆記庫欄位或不儲存
-          mappingMissingLocal: 對應的指令欄位已不存在。
-          mappingMissingRemote: 對應的筆記庫欄位已不存在。
-          mappingMissingSchema: 重新整理筆記庫 schema 後才能驗證這個對應。
-          mappingIncompatible: 欄位類型已不相容。
         tokens:
           selection: 選取的文字內容
           paragraphs: 與選取範圍相交的段落內容，會以空行串接，傳給自訂 AI 指令時會截斷到前 2000 個字元
@@ -1052,7 +1006,7 @@ options:
       importModeMerge: 附加到清單
       importModeReplace: 取代清單
       importEmpty: 該檔案中找不到術語。
-      importMissingHeader: 該檔案不是 Read Frog 的詞彙庫匯出檔。它需要這些欄位：
+      importMissingHeader: 該檔案不是 Read Frog Lite 的詞彙庫匯出檔。它需要這些欄位：
       importOverflow: 本次匯入會超出上限 $1 條術語，未做任何變更。
       importSuccess: 已匯入 $1 條新術語，更新 $2 條。
       importSkipped: 已略過 $1 列無效資料和 $2 筆重複項目。
@@ -1089,20 +1043,6 @@ options:
       wordLookupAction:
         title: 點詞查詢指令
         description: 點擊字幕裡的單字時執行的 AI 指令。預設是詞典，也可以換成你自己的指令。
-    aiQuota:
-      title: AI 字幕額度
-      description: AI 利用語音轉文字技術取得任何影片的準確字幕
-      launchBonusPromo: $1 之前購買會員額外贈送 300 分鐘轉錄額度
-      loginRequired: 登入後查看你的 AI 字幕額度
-      upgradeRequired: AI 字幕需要 Pro 或 Ultra 訂閱
-      pools:
-        subscription: 每月額度
-        launchBonus: 上線贈送
-      resetsOn: $1 重置
-      expiresOn: $1 過期
-      loadError: 無法載入額度，請稍後重試。
-      remainingOf: 剩餘 $1 / $2 分鐘
-      used: 已用 $1 分鐘
     style:
       title: 字幕樣式
       description: 顯示模式、位置、字型、顏色和背景，都對著預覽調
@@ -1523,14 +1463,7 @@ subtitles:
     aiRateLimited: 請求過於頻繁，請稍後再試
     aiAuthFailed: API 認證失敗，請檢查 API 金鑰
     aiServiceUnavailable: 翻譯服務暫時無法使用
-    aiQuotaExceeded: 本月 AI 字幕額度已用完
-    aiQuotaExceededWithReset: 本月 AI 字幕額度已用完，$1 重置
-    aiLoginRequired: 登入後查看你的 AI 字幕額度
-    aiSubscriptionRequired: AI 字幕需要 Pro 或 Ultra 訂閱
-    aiPaymentRequired: 請更新付款方式後繼續產生 AI 字幕
-    aiVideoTooLong: 影片過長，暫不支援產生 AI 字幕
     aiLiveReplayUnsupported: 暫不支援為直播回放產生 AI 字幕
-    aiStillProcessing: 轉錄仍在進行中，幾分鐘後再點一次即可繼續取得
     aiRequestFailed: AI 字幕請求失敗，請稍後重試
     aiNoResponse: AI 服務未回應，使用原文顯示
     translatedExportFailed: 產生翻譯字幕失敗

@@ -943,7 +943,8 @@ describe("selection toolbar requests", () => {
 
     const alert = await screen.findByRole("alert")
     expect(alert).toHaveTextContent("translationHub.translationFailed")
-    expect(alert).toHaveTextContent("Standard translation failed")
+    expect(alert).toHaveTextContent("translationHub.translationFailedFallback")
+    expect(alert).not.toHaveTextContent("Standard translation failed")
     expect(toastAddMock).not.toHaveBeenCalled()
 
     const translationContent = screen.getByTestId("translation-content")
@@ -1935,7 +1936,8 @@ describe("selection toolbar requests", () => {
 
     const alert = await screen.findByRole("alert")
     expect(alert).toHaveTextContent("options.selectionToolbar.errors.customActionFailed")
-    expect(alert).toHaveTextContent("Structured output failed")
+    expect(alert).toHaveTextContent("options.selectionToolbar.errors.customActionFailedFallback")
+    expect(alert).not.toHaveTextContent("Structured output failed")
 
     fireEvent.click(screen.getByRole("button", { name: "Regenerate" }))
 

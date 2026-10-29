@@ -1,4 +1,3 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { JSONValue } from "ai"
 import type { RefObject } from "react"
 import type { SelectionToolbarInlineError } from "@/components/ui/selection-popover/inline-error"
@@ -10,6 +9,7 @@ import type { Config } from "@/types/config/config"
 import type { AISDKReasoning } from "@/types/config/provider"
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
 import type { CachedWebPageContext } from "@/utils/host/translate/webpage-context"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import type { CustomActionProviderRef } from "@/utils/providers/provider-registry"
 
 export interface SelectionToolbarCustomActionRequestSlice {
@@ -17,7 +17,6 @@ export interface SelectionToolbarCustomActionRequestSlice {
   action: SelectionToolbarCustomAction | null
   provider: CustomActionProviderRef | null
 }
-import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { useEffect, useRef, useState } from "react"
 import {
   createSelectionToolbarPrecheckError,
@@ -37,6 +36,7 @@ import {
   replaceSelectionToolbarCustomActionPromptTokens,
 } from "@/utils/custom-action-prompt"
 import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
+import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { resolveModelId } from "@/utils/providers/model-id"
 import { getProviderOptionsWithOverride } from "@/utils/providers/options"
 import { getTopLevelReasoning } from "@/utils/providers/reasoning"

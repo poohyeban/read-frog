@@ -1,4 +1,4 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { detectLanguage } from "@/utils/content/language"
 import { shouldSkipByLanguage } from "../translate-text"

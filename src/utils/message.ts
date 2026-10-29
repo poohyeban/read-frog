@@ -1,4 +1,3 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type {
   BackgroundGenerateTextPayload,
   BackgroundGenerateTextResponse,
@@ -13,6 +12,7 @@ import type {
 } from "@/types/tts-playback"
 import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
 import type { MatchedTerm } from "@/utils/glossary/types"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import type { SpeechAudio } from "@/utils/providers/audio/types"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"

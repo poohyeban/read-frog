@@ -358,7 +358,6 @@ options:
         пользовательских AI-действий
       tabs:
         config: Настройка
-        notebase: Notebase
         hasErrors: Есть ошибки
         connected: Подключено
         needsAttention: Требует внимания
@@ -496,61 +495,6 @@ options:
             tooLong: Макет длиннее $1 символов и не может быть сохранён.
             fieldNotShown: «$1» не показывается в этом макете.
             reservedFieldName: Имя поля «$1» зарезервировано в макетах. Переименуйте поле.
-        notebase:
-          title: Подключение Notebase
-          description: Сохранить структурированные результаты этого действия в удалённую
-            Notebase.
-          loginRequiredTitle: Войдите, чтобы настроить Notebase
-          loginRequiredDescription: Войдите на readfrog.app, прежде чем выбирать notebase
-            или редактировать сопоставления.
-          loginRequiredConnectedDescription: Это подключение создано аккаунтом ниже. Если
-            войти в тот же аккаунт, сопоставления полей будут восстановлены.
-            Если войти в другой аккаунт, прежние сопоставления будут очищены при
-            создании или подключении Notebase.
-          loginAction: Войти
-          connectedAccountLabel: Подключённый аккаунт
-          currentAccountLabel: Текущий аккаунт
-          unknownConnectedAccount: Неизвестный аккаунт
-          tableLabel: Notebase
-          tablePlaceholder: Выберите notebase
-          tableClearOption: Не подключать notebase
-          clearConnectionAction: Очистить подключение
-          refreshAction: Обновить
-          emptyTitle: Notebase пока нет
-          emptyDescription: Создайте notebase на readfrog.app, затем вернитесь сюда и
-            сопоставьте поля.
-          openNotebaseAction: Открыть Notebase
-          accessDeniedTitle: Нет доступа к Notebase
-          accessDeniedDescription: У этого аккаунта нет разрешения на загрузку данных Notebase.
-          listErrorTitle: Не удалось загрузить список Notebase
-          listErrorDescription: Попробуйте обновить список Notebase чуть позже.
-          accountMismatchTitle: Подключение Notebase принадлежит другому аккаунту
-          accountMismatchDescription: Это подключение связано с аккаунтом ниже. Очистите
-            его или выберите Notebase, доступную текущему аккаунту.
-          tableUnavailableTitle: Выбранная notebase больше недоступна
-          tableUnavailableDescription: Эта Notebase больше не существует или не
-            открывается. Очистите подключение или выберите другую Notebase.
-          tableUnavailableOption: недоступно
-          schemaErrorTitle: Не удалось загрузить схему notebase
-          schemaErrorDescription: Попробуйте обновить схему ещё раз чуть позже.
-          schemaLoading: Загрузка схемы notebase...
-          mappingsLabel: Сопоставления полей
-          localFieldLabel: Поле действия
-          remoteFieldLabel: Поле Notebase
-          columnUnavailableOption: удалено
-          invalidMappingsTitle: Некоторые сопоставления требуют внимания
-          invalidMappingsDescription: Некорректные сопоставления сохранены. Исправьте их
-            перед сохранением в Notebase.
-          noFieldSavedTitle: В этот Notebase не сохраняется ни одно поле
-          noFieldSavedDescription: Чтобы сохранять заметки, выберите поле Notebase хотя бы
-            для одного поля.
-          mappingSummary: "Сохраняются: $1 · Пропущены: $2 · Не решено: $3"
-          skipFieldOption: Не сохранять
-          undecidedFieldPlaceholder: Выберите поле Notebase или не сохраняйте
-          mappingMissingLocal: Сопоставленное поле действия больше не существует.
-          mappingMissingRemote: Сопоставленное поле notebase больше не существует.
-          mappingMissingSchema: Обновите схему notebase, чтобы проверить это сопоставление.
-          mappingIncompatible: Типы полей больше не совпадают.
         tokens:
           selection: Содержимое выделенного текста
           paragraphs: Текст абзацев, пересекающихся с выделением, объединённый пустыми
@@ -1044,7 +988,7 @@ options:
     enable:
       title: Включить плавающую кнопку
       description: Отображать плавающую кнопку на веб-страницах для быстрого доступа к
-        функциям Read Frog
+        функциям Read Frog Lite
     display:
       title: Отображение
       side:
@@ -1170,7 +1114,7 @@ options:
       importModeMerge: Добавить к списку
       importModeReplace: Заменить список
       importEmpty: В этом файле не найдено терминов.
-      importMissingHeader: "Это не файл экспорта глоссария Read Frog. В нём должны
+      importMissingHeader: "Это не файл экспорта глоссария Read Frog Lite. В нём должны
         быть эти столбцы:"
       importOverflow: Этот импорт превысит лимит на $1 терминов. Ничего не изменено.
       importSuccess: "Импортировано новых терминов: $1, обновлено: $2."
@@ -1218,20 +1162,6 @@ options:
         title: Действие для слова
         description: ИИ-действие, которое запускается при нажатии на слово в субтитрах.
           По умолчанию словарь, можно выбрать своё.
-    aiQuota:
-      title: Лимит ИИ-субтитров
-      description: ИИ распознаёт речь и создаёт точные субтитры для любого видео
-      launchBonusPromo: Оформите подписку до $1 и получите дополнительно 300 минут расшифровки
-      loginRequired: Войдите, чтобы посмотреть лимит ИИ-субтитров
-      upgradeRequired: Для ИИ-субтитров нужна подписка Pro или Ultra
-      pools:
-        subscription: Месячная квота
-        launchBonus: Подарок к запуску
-      resetsOn: Сброс $1
-      expiresOn: Истекает $1
-      loadError: Не удалось загрузить лимит. Повторите попытку позже.
-      remainingOf: Осталось $1 / $2 мин
-      used: Использовано $1 мин
     style:
       title: Стиль субтитров
       description: Режим отображения, положение, шрифты, цвета и фон — всё
@@ -1345,9 +1275,9 @@ options:
       language:
         title: Голос для языка
         description: Выберите язык, а затем голос, которым он будет читаться. Сброс
-          вернёт голос, который Read Frog подбирает для этого языка.
+          вернёт голос, который Read Frog Lite подбирает для этого языка.
         reset: Сброс
-        previewSample: Привет от Read Frog! Так я буду звучать при чтении вслух.
+        previewSample: Привет от Read Frog Lite! Так я буду звучать при чтении вслух.
       fallback:
         title: Резервный голос
         description: Голос для языков, которым вы не назначили собственный.
@@ -1647,7 +1577,7 @@ subtitles:
     downloadTranslatedComplete: Переведённые субтитры скачаны
     downloadSource: Скачать исходные субтитры
   state:
-    loading: Read Frog загрузка субтитров
+    loading: Read Frog Lite загрузка субтитров
     translating: Перевод…
     error: Произошла ошибка
   errors:
@@ -1668,14 +1598,7 @@ subtitles:
     aiRateLimited: Слишком много запросов, пожалуйста, повторите позже
     aiAuthFailed: Ошибка аутентификации API, проверьте ваш API ключ
     aiServiceUnavailable: Служба перевода временно недоступна
-    aiQuotaExceeded: Месячный лимит ИИ-субтитров исчерпан
-    aiQuotaExceededWithReset: Месячный лимит ИИ-субтитров исчерпан · сброс $1
-    aiLoginRequired: Войдите, чтобы посмотреть лимит ИИ-субтитров
-    aiSubscriptionRequired: Для ИИ-субтитров нужна подписка Pro или Ultra
-    aiPaymentRequired: Обновите способ оплаты, чтобы продолжить создание ИИ-субтитров
-    aiVideoTooLong: Это видео слишком длинное для ИИ-субтитров
     aiLiveReplayUnsupported: ИИ-субтитры пока недоступны для записей прямых трансляций
-    aiStillProcessing: Транскрипция ещё идёт — нажмите ещё раз через несколько минут
     aiRequestFailed: Не удалось запросить ИИ-субтитры, повторите попытку позже
     aiNoResponse: Служба AI не ответила, отображается оригинальный текст
     translatedExportFailed: Не удалось создать переведённые субтитры

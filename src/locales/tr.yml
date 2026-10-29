@@ -352,7 +352,6 @@ options:
         sağlayıcısını etkinleştirin
       tabs:
         config: Yapılandırma
-        notebase: Notebase
         hasErrors: Hatalar var
         connected: Bağlı
         needsAttention: İlgilenilmesi gerekiyor
@@ -490,59 +489,6 @@ options:
             tooLong: Bu düzen $1 karakterden uzun ve kaydedilemez.
             fieldNotShown: '"$1" bu düzende gösterilmiyor.'
             reservedFieldName: '"$1" alan adı düzenlerde ayrılmıştır. Alanı yeniden adlandırın.'
-        notebase:
-          title: Notebase bağlantısı
-          description: Bu eylemin yapılandırılmış sonuçlarını uzak bir Notebase'e kaydedin.
-          loginRequiredTitle: Notebase yapılandırmak için giriş yapın
-          loginRequiredDescription: notebase seçmeden veya eşlemeleri düzenlemeden önce
-            readfrog.app'te oturum açın.
-          loginRequiredConnectedDescription: Bu bağlantı aşağıdaki hesapla oluşturuldu.
-            Aynı hesapla giriş yaparsanız alan eşlemeleri geri yüklenir. Başka
-            bir hesapla giriş yaparsanız Notebase oluştururken veya bağlarken
-            önceki eşlemeler temizlenir.
-          loginAction: Giriş yap
-          connectedAccountLabel: Bağlı hesap
-          currentAccountLabel: Geçerli hesap
-          unknownConnectedAccount: Bilinmeyen hesap
-          tableLabel: Notebase
-          tablePlaceholder: Bir notebase seçin
-          tableClearOption: Notebase bağlama
-          clearConnectionAction: Bağlantıyı temizle
-          refreshAction: Yenile
-          emptyTitle: Henüz Notebase yok
-          emptyDescription: readfrog.app'te bir notebase oluşturun, sonra alanları eşlemek
-            için buraya dönün.
-          openNotebaseAction: Notebase'i aç
-          accessDeniedTitle: Notebase'e erişilemiyor
-          accessDeniedDescription: Bu hesabın Notebase verilerini yükleme izni yok.
-          listErrorTitle: Notebase listesi yüklenemedi
-          listErrorDescription: Biraz sonra Notebase listesini yeniden yenilemeyi deneyin.
-          accountMismatchTitle: Notebase bağlantısı başka bir hesaba ait
-          accountMismatchDescription: Bu bağlantı aşağıdaki bağlı hesaba aittir.
-            Bağlantıyı temizleyin veya geçerli hesabın erişebildiği bir Notebase
-            seçin.
-          tableUnavailableTitle: Seçilen notebase artık kullanılamıyor
-          tableUnavailableDescription: Bu Notebase artık yok veya açılamıyor. Bağlantıyı
-            temizleyin veya başka bir Notebase seçin.
-          tableUnavailableOption: kullanılamıyor
-          schemaErrorTitle: notebase şeması yüklenemedi
-          schemaErrorDescription: Kısa süre sonra yeniden yenilemeyi deneyin.
-          schemaLoading: notebase şeması yükleniyor...
-          mappingsLabel: Alan eşlemeleri
-          localFieldLabel: Eylem alanı
-          remoteFieldLabel: Notebase alanı
-          columnUnavailableOption: silinmiş
-          invalidMappingsTitle: Bazı eşlemeler ilgi gerektiriyor
-          invalidMappingsDescription: Geçersiz eşlemeler korunur. Notebase'e kaydetmeden önce düzeltin.
-          noFieldSavedTitle: Bu Notebase'e hiçbir alan kaydedilmiyor
-          noFieldSavedDescription: Not kaydetmek için en az bir alana bir Notebase alanı seçin.
-          mappingSummary: Kaydedilen $1 · Atlanan $2 · Kararsız $3
-          skipFieldOption: Kaydetme
-          undecidedFieldPlaceholder: Bir Notebase alanı seçin ya da kaydetmeyin
-          mappingMissingLocal: Eşlenen eylem alanı artık yok.
-          mappingMissingRemote: Eşlenen notebase alanı artık yok.
-          mappingMissingSchema: Bu eşlemeyi doğrulamak için notebase şemasını yenileyin.
-          mappingIncompatible: Alan türleri artık eşleşmiyor.
         tokens:
           selection: Seçilen metin içeriği
           paragraphs: Seçimle kesişen paragraf metni; boş satırlarla birleştirilir ve özel
@@ -1034,7 +980,7 @@ options:
     demoImageAlt: Yüzen buton demosu
     enable:
       title: Yüzen butonu etkinleştir
-      description: Read Frog özelliklerine hızlı erişim için web sayfalarında yüzen
+      description: Read Frog Lite özelliklerine hızlı erişim için web sayfalarında yüzen
         butonu görüntüle
     display:
       title: Görünüm
@@ -1164,7 +1110,7 @@ options:
       importModeMerge: Listeye ekle
       importModeReplace: Listeyi değiştir
       importEmpty: Bu dosyada terim bulunamadı.
-      importMissingHeader: "Bu dosya bir Read Frog sözlük dışa aktarımı değil. Şu sütunlar gerekli:"
+      importMissingHeader: "Bu dosya bir Read Frog Lite sözlük dışa aktarımı değil. Şu sütunlar gerekli:"
       importOverflow: Bu içe aktarma limiti $1 terim aşacak. Hiçbir şey değiştirilmedi.
       importSuccess: $1 yeni terim içe aktarıldı, $2 terim güncellendi.
       importSkipped: $1 geçersiz satır ve $2 yinelenen terim atlandı.
@@ -1210,20 +1156,6 @@ options:
         title: Sözcük arama eylemi
         description: Altyazıdaki bir sözcüğe tıklandığında çalışan yapay zeka eylemi.
           Varsayılan sözlüktür; kendi eyleminizi seçebilirsiniz.
-    aiQuota:
-      title: Yapay zekâ altyazı kotası
-      description: Yapay zeka konuşma tanıma ile her video için doğru altyazı üretir
-      launchBonusPromo: $1 tarihinden önce abone olun, 300 dakika ek deşifre hediyesi kazanın
-      loginRequired: Yapay zeka altyazı kotanızı görmek için giriş yapın
-      upgradeRequired: Yapay zeka altyazıları için Pro veya Ultra aboneliği gerekir
-      pools:
-        subscription: Aylık kota
-        launchBonus: Lansman hediyesi
-      resetsOn: $1 tarihinde sıfırlanır
-      expiresOn: $1 tarihinde sona erer
-      loadError: Kotanız yüklenemedi. Lütfen daha sonra tekrar deneyin.
-      remainingOf: $1 / $2 dk kaldı
-      used: $1 dk kullanıldı
     style:
       title: Altyazı stili
       description: Görüntüleme modu, konum, yazı tipleri, renkler ve arka plan — canlı
@@ -1339,9 +1271,9 @@ options:
       language:
         title: Dil sesi
         description: Bir dil seçin, ardından o dili okuyacak sesi belirleyin.
-          Sıfırlamak, Read Frog'un o dil için seçtiği sesi geri getirir.
+          Sıfırlamak, Read Frog Lite'un o dil için seçtiği sesi geri getirir.
         reset: Sıfırla
-        previewSample: Read Frog'dan merhaba! Yüksek sesle okurken böyle ses çıkaracağım.
+        previewSample: Read Frog Lite'dan merhaba! Yüksek sesle okurken böyle ses çıkaracağım.
       fallback:
         title: Yedek ses
         description: Kendine ait bir ses atamadığınız diller bu sesle okunur.
@@ -1641,7 +1573,7 @@ subtitles:
     downloadTranslatedComplete: Çevrilmiş altyazılar indirildi
     downloadSource: Kaynak altyazıları indir
   state:
-    loading: Read Frog altyazılar yükleniyor
+    loading: Read Frog Lite altyazılar yükleniyor
     translating: Çevriliyor…
     error: Bir hata oluştu
   errors:
@@ -1662,15 +1594,7 @@ subtitles:
     aiRateLimited: Çok fazla istek, lütfen daha sonra tekrar deneyin
     aiAuthFailed: API kimlik doğrulaması başarısız, lütfen API anahtarınızı kontrol edin
     aiServiceUnavailable: Çeviri hizmeti geçici olarak kullanılamıyor
-    aiQuotaExceeded: Aylık yapay zeka altyazı kotanız doldu
-    aiQuotaExceededWithReset: Aylık yapay zeka altyazı kotanız doldu · $1 tarihinde sıfırlanır
-    aiLoginRequired: Yapay zeka altyazı kotanızı görmek için giriş yapın
-    aiSubscriptionRequired: Yapay zeka altyazıları için Pro veya Ultra aboneliği gerekir
-    aiPaymentRequired: Yapay zeka altyazıları oluşturmaya devam etmek için ödeme
-      yönteminizi güncelleyin
-    aiVideoTooLong: Bu video yapay zeka altyazıları için çok uzun
     aiLiveReplayUnsupported: Canlı yayın tekrarları için yapay zeka altyazıları henüz kullanılamıyor
-    aiStillProcessing: Yazıya dökme hâlâ sürüyor — birkaç dakika sonra tekrar tıklayın
     aiRequestFailed: Yapay zeka altyazı isteği başarısız oldu, lütfen daha sonra tekrar deneyin
     aiNoResponse: AI hizmeti yanıt vermedi, orijinal metin gösteriliyor
     translatedExportFailed: Çevrilmiş altyazılar oluşturulamadı

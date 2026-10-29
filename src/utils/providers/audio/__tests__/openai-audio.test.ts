@@ -115,6 +115,13 @@ describe("OpenAI audio protocol over a local HTTP endpoint", () => {
       response_format: "mp3",
     })
   })
+  it("rejects a response whose audio format does not match the selected format", async () => {
+    const c = config()
+    c.tts.outputFormat = "wav"
+    await expect(
+      getSpeechProvider(c).synthesize({ text: "Hello", voice: "test" }),
+    ).rejects.toMatchObject({ code: "INVALID_RESPONSE" })
+  })
   it("sends multipart audio and converts validated seconds to native subtitle milliseconds", async () => {
     const result = await getTranscriptionProvider(config()).transcribe(audio())
     expect(result).toMatchObject({

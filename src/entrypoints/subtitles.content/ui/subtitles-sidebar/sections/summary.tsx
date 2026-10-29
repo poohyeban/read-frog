@@ -46,7 +46,7 @@ export function SummarySection() {
   // Owned here rather than by the menu entry: the transcript tab needs no
   // model, so an unusable provider must not keep the panel shut.
   // Neither the key nor the freshness may be pinned to the id alone: repairing
-  // the provider, or a quota that frees up, has to be able to reach this.
+
   const provider = useQuery({
     queryKey: ["subtitles", "summary-provider", providerRef],
     queryFn: checkVideoSummaryAvailability,

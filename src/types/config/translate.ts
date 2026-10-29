@@ -1,4 +1,3 @@
-import { langCodeISO6393Schema } from "@read-frog/definitions"
 import { z } from "zod"
 import { DEFAULT_NODE_TRANSLATION_SHORTCUT_KEY, HOTKEYS } from "@/utils/constants/hotkeys"
 import {
@@ -18,6 +17,7 @@ import {
   MIN_WORDS_PER_NODE,
 } from "@/utils/constants/translate"
 import { TRANSLATION_NODE_STYLE } from "@/utils/constants/translation-node-style"
+import { langCodeISO6393Schema } from "@/utils/languages"
 import { shortcutSchema } from "./shortcut"
 
 export const requestQueueConfigSchema = z.object({

@@ -83,7 +83,11 @@ function service(config: Config, capability: "tts" | "transcription") {
     const type = response.headers.get("content-type")?.split(";")[0]?.toLowerCase() ?? ""
     if (
       capability === "tts"
-        ? !["audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/wave"].includes(type)
+        ? !(
+            config.tts.outputFormat === "wav"
+              ? ["audio/wav", "audio/x-wav", "audio/wave"]
+              : ["audio/mpeg", "audio/mp3"]
+          ).includes(type)
         : type !== "application/json"
     )
       throw new AudioServiceError(

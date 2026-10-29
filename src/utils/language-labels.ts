@@ -1,9 +1,9 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { GlossaryTargetLang } from "@/utils/glossary/target-language"
-import { LANG_CODE_TO_LOCALE_NAME } from "@read-frog/definitions"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { camelCase } from "case-anything"
 import { ALL_LANGUAGES } from "@/utils/glossary/target-language"
 import { i18n } from "@/utils/i18n"
+import { LANG_CODE_TO_LOCALE_NAME } from "@/utils/languages"
 
 export function getLanguageName(code: LangCodeISO6393) {
   return i18n.t(`languages.${camelCase(code)}` as never)

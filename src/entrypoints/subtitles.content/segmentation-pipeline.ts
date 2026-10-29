@@ -24,15 +24,7 @@ export class SegmentationPipeline {
   private getSourceLanguage: () => string
   private preSegmented: boolean
   private onChunkSegmented: ChunkSegmentedHandler | null
-  /**
-   * Resolved once per session by the adapter and narrowed to a promptable
-   * ref, so segmentation neither pays a hostedAi.status round trip per block
-   * nor sends a translate-only provider on a doomed generation per chunk.
-   * Null means AI segmentation cannot run (no provider, the provider has no
-   * model to prompt, or the hosted tier was unavailable when the session
-   * started); chunks then fall back to rule-based optimization until a new
-   * session resolves a fresh ref.
-   */
+
   private providerRef: PromptableProviderRef | null
 
   constructor(options: {

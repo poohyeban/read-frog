@@ -362,7 +362,6 @@ options:
         azı bir LLM provayderini aktiv edin
       tabs:
         config: Konfiqurasiya
-        notebase: Notebase
         hasErrors: Xətalar var
         connected: Qoşulub
         needsAttention: Diqqət tələb edir
@@ -502,60 +501,6 @@ options:
             fieldNotShown: '"$1" bu tərtibatda göstərilmir.'
             reservedFieldName: '"$1" sahə adı tərtibatlarda ehtiyatda saxlanılır. Sahənin
               adını dəyişin.'
-        notebase:
-          title: Notebase qoşulması
-          description: Bu əməliyyatın strukturlaşdırılmış nəticələrini uzaqdakı Notebase
-            daxilində saxlayın.
-          loginRequiredTitle: Notebase parametrlərini tənzimləmək üçün daxil olun
-          loginRequiredDescription: Notebase seçməzdən və ya uyğunlaşdırmaları redaktə
-            etməzdən əvvəl readfrog.app saytında daxil olun.
-          loginRequiredConnectedDescription: Bu qoşulma aşağıdakı hesab tərəfindən
-            yaradılıb. Eyni hesabla daxil olsanız, sahə uyğunlaşdırmaları bərpa
-            ediləcək. Başqa hesabla daxil olsanız, Notebase yaradarkən və ya
-            qoşarkən əvvəlki uyğunlaşdırmalar silinəcək.
-          loginAction: Daxil ol
-          connectedAccountLabel: Qoşulmuş hesab
-          currentAccountLabel: Cari hesab
-          unknownConnectedAccount: Naməlum hesab
-          tableLabel: Notebase
-          tablePlaceholder: Notebase seçin
-          tableClearOption: Notebase ilə əlaqəni kəs
-          clearConnectionAction: Qoşulmanı sil
-          refreshAction: Yenilə
-          emptyTitle: Hələ Notebase yoxdur
-          emptyDescription: readfrog.app saytında Notebase yaradın, sonra sahələri
-            uyğunlaşdırmaq üçün buraya qayıdın.
-          openNotebaseAction: Notebase səhifəsini aç
-          accessDeniedTitle: Notebase əlçatan deyil
-          accessDeniedDescription: Bu hesabın Notebase məlumatlarını yükləməyə icazəsi yoxdur.
-          listErrorTitle: Notebase siyahısını yükləmək mümkün olmadı
-          listErrorDescription: Bir qədər sonra Notebase siyahısını yenidən yeniləməyə çalışın.
-          accountMismatchTitle: Notebase qoşulması başqa hesaba aiddir
-          accountMismatchDescription: Bu qoşulma aşağıdakı hesaba bağlıdır. Onu silin və
-            ya cari hesab üçün əlçatan Notebase seçin.
-          tableUnavailableTitle: Seçilmiş Notebase artıq əlçatan deyil
-          tableUnavailableDescription: Bu Notebase artıq mövcud deyil və ya açıla bilmir.
-            Qoşulmanı silin və ya başqa Notebase seçin.
-          tableUnavailableOption: əlçatan deyil
-          schemaErrorTitle: Notebase sxemini yükləmək mümkün olmadı
-          schemaErrorDescription: Bir qədər sonra sxemi yenidən yeniləməyə çalışın.
-          schemaLoading: Notebase sxemi yüklənir...
-          mappingsLabel: Sahə uyğunlaşdırmaları
-          localFieldLabel: Əməliyyat sahəsi
-          remoteFieldLabel: Notebase sahəsi
-          columnUnavailableOption: silinib
-          invalidMappingsTitle: Bəzi uyğunlaşdırmaları yoxlamaq lazımdır
-          invalidMappingsDescription: Yanlış uyğunlaşdırmalar saxlanılır. Notebase
-            daxilində yadda saxlamazdan əvvəl onları düzəldin.
-          noFieldSavedTitle: Bu Notebase-ə heç bir sahə yadda saxlanılmır
-          noFieldSavedDescription: Qeydləri yadda saxlamaq üçün ən azı bir sahəyə Notebase sahəsi seçin.
-          mappingSummary: Saxlanılır $1 · Ötürülür $2 · Qərarsız $3
-          skipFieldOption: Saxlama
-          undecidedFieldPlaceholder: Notebase sahəsi seçin və ya saxlamayın
-          mappingMissingLocal: Uyğunlaşdırılmış əməliyyat sahəsi artıq mövcud deyil.
-          mappingMissingRemote: Uyğunlaşdırılmış Notebase sahəsi artıq mövcud deyil.
-          mappingMissingSchema: Bu uyğunlaşdırmanı yoxlamaq üçün Notebase sxemini yeniləyin.
-          mappingIncompatible: Sahə növləri artıq uyğun gəlmir.
         tokens:
           selection: Seçilmiş mətnin məzmunu
           paragraphs: Boş sətirlərlə birləşdirilmiş, seçimlə kəsişən abzasların mətni;
@@ -1061,7 +1006,7 @@ options:
     demoImageAlt: Üzən düymə nümunəsi
     enable:
       title: Üzən düyməni aktiv et
-      description: Read Frog funksiyalarına sürətli çıxış üçün veb səhifələrdə üzən
+      description: Read Frog Lite funksiyalarına sürətli çıxış üçün veb səhifələrdə üzən
         düyməni göstərin
     display:
       title: Görünüş
@@ -1189,7 +1134,7 @@ options:
       importModeMerge: Siyahıya əlavə et
       importModeReplace: Siyahını əvəz et
       importEmpty: Bu faylda termin tapılmadı.
-      importMissingHeader: "Bu fayl Read Frog lüğət ixracı deyil. Bu sütunlar tələb olunur:"
+      importMissingHeader: "Bu fayl Read Frog Lite lüğət ixracı deyil. Bu sütunlar tələb olunur:"
       importOverflow: Bu idxal limiti $1 termin aşacaq. Heç nə dəyişdirilmədi.
       importSuccess: $1 yeni termin idxal edildi, $2 termin yeniləndi.
       importSkipped: $1 yanlış sətir və $2 təkrar buraxıldı.
@@ -1235,21 +1180,6 @@ options:
         title: Söz axtarışı əməliyyatı
         description: Altyazıdakı sözə kliklədikdə işə düşən AI əməliyyatı. Standart
           olaraq lüğətdir; öz əməliyyatınızı seçə bilərsiniz.
-    aiQuota:
-      title: Süni intellekt subtitrlərinin kvotası
-      description: Süni intellektlə nitqin tanınması istənilən video üçün dəqiq
-        subtitrlər yaradır
-      launchBonusPromo: Əlavə 300 dəqiqə transkripsiya üçün $1 tarixindən əvvəl abunə olun
-      loginRequired: Süni intellekt subtitrlərinin kvotasını görmək üçün daxil olun
-      upgradeRequired: Süni intellekt subtitrləri üçün Pro və ya Ultra abunəliyi tələb olunur
-      pools:
-        subscription: Aylıq kvota
-        launchBonus: İlk buraxılış hədiyyəsi
-      resetsOn: $1 tarixində yenilənir
-      expiresOn: $1 tarixində bitir
-      loadError: Kvotanızı yükləmək mümkün olmadı. Daha sonra yenidən cəhd edin.
-      remainingOf: $1 / $2 dəqiqə qalıb
-      used: $1 dəqiqə istifadə edilib
     style:
       title: Subtitr üslubu
       description: Canlı önbaxışla göstərilmə rejimini, mövqeyi, şriftləri, rəngləri
@@ -1365,10 +1295,10 @@ options:
       noVoicesFound: Səs tapılmadı
       language:
         title: Dil üçün səs
-        description: Əvvəl dili, sonra onu səsləndirəcək səsi seçin. Sıfırlama Read Frog
+        description: Əvvəl dili, sonra onu səsləndirəcək səsi seçin. Sıfırlama Read Frog Lite
           genişlənməsinin həmin dil üçün seçdiyi səsi bərpa edir.
         reset: Sıfırla
-        previewSample: Read Frog sizə salam deyir! Ucadan oxuyarkən səsim belə olacaq.
+        previewSample: Read Frog Lite sizə salam deyir! Ucadan oxuyarkən səsim belə olacaq.
       fallback:
         title: Ehtiyat səs
         description: Ayrıca səs təyin etmədiyiniz dillər üçün istifadə olunan səs.
@@ -1663,7 +1593,7 @@ subtitles:
     downloadTranslatedComplete: Tərcümə edilmiş subtitrlər endirildi
     downloadSource: Orijinal subtitrləri endir
   state:
-    loading: Read Frog subtitrləri yükləyir
+    loading: Read Frog Lite subtitrləri yükləyir
     translating: Tərcümə edilir…
     error: Xəta baş verdi
   errors:
@@ -1684,16 +1614,7 @@ subtitles:
     aiRateLimited: Həddindən artıq sorğu var, daha sonra yenidən cəhd edin
     aiAuthFailed: API autentifikasiyası alınmadı, API açarınızı yoxlayın
     aiServiceUnavailable: Tərcümə xidməti müvəqqəti olaraq əlçatan deyil
-    aiQuotaExceeded: Aylıq süni intellekt subtitr kvotası bitib
-    aiQuotaExceededWithReset: Aylıq süni intellekt subtitr kvotası bitib · $1 tarixində yenilənir
-    aiLoginRequired: Süni intellekt subtitrlərinin kvotasını görmək üçün daxil olun
-    aiSubscriptionRequired: Süni intellekt subtitrləri üçün Pro və ya Ultra abunəliyi tələb olunur
-    aiPaymentRequired: Süni intellekt subtitrləri yaratmağa davam etmək üçün ödəniş
-      üsulunuzu yeniləyin
-    aiVideoTooLong: Bu video süni intellekt subtitrləri üçün həddindən artıq uzundur
     aiLiveReplayUnsupported: Canlı yayım yazıları üçün süni intellekt subtitrləri hələ əlçatan deyil
-    aiStillProcessing: Transkripsiya hələ davam edir. Nəticəni almaq üçün bir neçə
-      dəqiqə sonra yenidən klikləyin
     aiRequestFailed: Süni intellekt subtitr sorğusu alınmadı, daha sonra yenidən cəhd edin
     aiNoResponse: Süni intellekt xidməti cavab vermədi, orijinal mətndən istifadə olunur
     translatedExportFailed: Tərcümə edilmiş subtitrləri yaratmaq mümkün olmadı

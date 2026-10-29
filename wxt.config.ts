@@ -9,7 +9,7 @@ export default defineConfig({
   manifestVersion: 3,
   manifest: {
     name: "Read Frog Lite",
-    description: "Private page and selection translation with your own API.",
+    description: "Independent page, selection and subtitle translation with your own services.",
     default_locale: "en",
     permissions: [
       "offscreen",

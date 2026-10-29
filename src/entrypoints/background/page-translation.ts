@@ -45,7 +45,7 @@ async function getValidatedCachedTranslation(
     if (!isHtmlAttributeMarkerIntegrityError(error)) throw error
 
     await db.translationCache.delete(hash)
-    logger.warn("Deleted cached translation with invalid HTML attribute markers", error)
+    logger.warn("Deleted cached translation with invalid HTML attribute markers")
     return undefined
   }
 }

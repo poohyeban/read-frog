@@ -49,3 +49,6 @@ scripts/output/
 
 reference/
 .gstack/
+
+playwright-report/
+test-results/

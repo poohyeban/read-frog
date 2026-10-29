@@ -454,7 +454,7 @@ describe("background-stream", () => {
       type: "error",
       streamRequestId: "req-text-error",
       error: {
-        message: "Incorrect API key provided",
+        message: "Unexpected error occurred",
       },
     })
     expect(mockPort.postMessage).not.toHaveBeenCalledWith(expect.objectContaining({ type: "done" }))
@@ -480,7 +480,7 @@ describe("background-stream", () => {
       type: "error",
       streamRequestId: "req-text-pre-stream-error",
       error: {
-        message: "Model is undefined",
+        message: "Unexpected error occurred",
         action: undefined,
       },
     })

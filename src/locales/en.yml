@@ -352,7 +352,6 @@ options:
       noEnabledLlmProvider: Enable at least one LLM provider before creating custom AI actions
       tabs:
         config: Config
-        notebase: Notebase
         hasErrors: Has errors
         connected: Connected
         needsAttention: Needs attention
@@ -483,58 +482,6 @@ options:
             tooLong: This layout is longer than $1 characters and can't be saved.
             fieldNotShown: “$1” isn't shown in this layout.
             reservedFieldName: The field name “$1” is reserved in layouts. Rename the field.
-        notebase:
-          title: Notebase connection
-          description: Save this action's structured results to a remote notebase.
-          loginRequiredTitle: Log in to configure Notebase
-          loginRequiredDescription: Sign in on readfrog.app before choosing a notebase or
-            editing mappings.
-          loginRequiredConnectedDescription: This connection was created by the account
-            below. If you log in as the same account, field mappings will be
-            restored. If you log in as another account, the previous mappings
-            will be cleared when you create or connect a Notebase.
-          loginAction: Log in
-          connectedAccountLabel: Connected account
-          currentAccountLabel: Current account
-          unknownConnectedAccount: Unknown account
-          tableLabel: Notebase
-          tablePlaceholder: Select a notebase
-          tableClearOption: Disconnect notebase
-          clearConnectionAction: Clear connection
-          refreshAction: Refresh
-          emptyTitle: No notebases yet
-          emptyDescription: Create a notebase on readfrog.app, then come back here to map fields.
-          openNotebaseAction: Open Notebase
-          accessDeniedTitle: Cannot access Notebase
-          accessDeniedDescription: This account does not have permission to load Notebase data.
-          listErrorTitle: Failed to load notebases
-          listErrorDescription: Try refreshing the Notebase list again in a moment.
-          accountMismatchTitle: Notebase connection belongs to another account
-          accountMismatchDescription: This connection is tied to the connected account
-            below. Clear it, or choose a Notebase available to the current
-            account.
-          tableUnavailableTitle: Selected notebase is no longer available
-          tableUnavailableDescription: This Notebase no longer exists or cannot be opened.
-            Clear the connection or choose another Notebase.
-          tableUnavailableOption: unavailable
-          schemaErrorTitle: Failed to load notebase schema
-          schemaErrorDescription: Try refreshing the schema again in a moment.
-          schemaLoading: Loading notebase schema...
-          mappingsLabel: Field mappings
-          localFieldLabel: Action field
-          remoteFieldLabel: Notebase field
-          columnUnavailableOption: removed
-          invalidMappingsTitle: Some mappings need attention
-          invalidMappingsDescription: Invalid mappings are preserved. Fix them before saving to Notebase.
-          noFieldSavedTitle: No field is saved to this Notebase
-          noFieldSavedDescription: Pick a Notebase field for at least one field to save notes here.
-          mappingSummary: Saved $1 · Skipped $2 · Undecided $3
-          skipFieldOption: Don't save
-          undecidedFieldPlaceholder: Pick a notebase field or don't save
-          mappingMissingLocal: The mapped action field no longer exists.
-          mappingMissingRemote: The mapped notebase field no longer exists.
-          mappingMissingSchema: Refresh the notebase schema to validate this mapping.
-          mappingIncompatible: The field types no longer match.
         tokens:
           selection: Selected text content
           paragraphs: Intersecting paragraph text joined with blank lines, truncated to
@@ -1305,7 +1252,7 @@ options:
       importModeMerge: Add to list
       importModeReplace: Replace list
       importEmpty: No terms found in that file.
-      importMissingHeader: "That file is not a Read Frog glossary export. It needs these columns:"
+      importMissingHeader: "That file is not a Read Frog Lite glossary export. It needs these columns:"
       importOverflow: That import would exceed the limit by $1 terms. Nothing was changed.
       importSuccess: Imported $1 new and updated $2 terms.
       importSkipped: Skipped $1 invalid rows and $2 duplicates.
@@ -1351,20 +1298,6 @@ options:
         title: Word lookup action
         description: The AI action that answers a click on a word in the subtitles.
           Dictionary unless you pick one of your own.
-    aiQuota:
-      title: AI subtitles quota
-      description: AI speech recognition gets you accurate subtitles for any video
-      launchBonusPromo: Subscribe before $1 for an extra 300 transcription minutes
-      loginRequired: Log in to view your AI subtitles quota
-      upgradeRequired: AI subtitles require a Pro or Ultra subscription
-      pools:
-        subscription: Monthly quota
-        launchBonus: Launch gift
-      resetsOn: Resets on $1
-      expiresOn: Expires on $1
-      loadError: Unable to load your quota. Please try again later.
-      remainingOf: $1 / $2 min left
-      used: Used $1 min
     style:
       title: Subtitle style
       description: Display mode, position, fonts, colors and background, set against a
@@ -1478,9 +1411,9 @@ options:
       language:
         title: Language voice
         description: Pick a language, then the voice that reads it aloud. Reset puts
-          back the voice Read Frog picks for that language.
+          back the voice Read Frog Lite picks for that language.
         reset: Reset
-        previewSample: Hello from Read Frog! This is how I will sound when reading aloud.
+        previewSample: Hello from Read Frog Lite! This is how I will sound when reading aloud.
       fallback:
         title: Fallback voice
         description: The voice for any language you have not given one of its own.
@@ -1779,7 +1712,7 @@ subtitles:
     downloadTranslatedComplete: Translated subtitles downloaded
     downloadSource: Download source subtitles
   state:
-    loading: Read Frog loading captions
+    loading: Read Frog Lite loading captions
     translating: Translating…
     error: Error occurred
   errors:
@@ -1799,14 +1732,7 @@ subtitles:
     aiRateLimited: Too many requests, please try again later
     aiAuthFailed: API authentication failed, please check your API key
     aiServiceUnavailable: Translation service temporarily unavailable
-    aiQuotaExceeded: Monthly AI subtitle quota used up
-    aiQuotaExceededWithReset: Monthly AI subtitle quota used up · resets on $1
-    aiLoginRequired: Log in to view your AI subtitles quota
-    aiSubscriptionRequired: AI subtitles require a Pro or Ultra subscription
-    aiPaymentRequired: Update your payment method to keep generating AI subtitles
-    aiVideoTooLong: This video is too long for AI subtitles
     aiLiveReplayUnsupported: AI subtitles aren't available for live stream replays yet
-    aiStillProcessing: Transcription is still running — click again in a few minutes to pick it up
     aiRequestFailed: AI subtitle request failed, please try again later
     aiNoResponse: AI service did not respond, using original text
     translatedExportFailed: Failed to generate translated subtitles

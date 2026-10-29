@@ -1,5 +1,5 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { Config } from "@/types/config/config"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { getFinalSourceCode } from "@/utils/config/languages"
 import { urlMatchesPattern } from "@/utils/url-pattern"
 

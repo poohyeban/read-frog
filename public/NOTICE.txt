@@ -1,0 +1,6 @@
+Read Frog Lite 0.2.0 — modified version of Read Frog; not the official release.
+Copyright: Mengxi and Read Frog contributors; modifications retain GNU GPLv3.
+Upstream source: https://github.com/mengxi-ream/read-frog (v1.54.1, aa6d54d1)
+Corresponding modified source: https://github.com/poohyeban/read-frog/tree/codex/read-frog-independent
+See LICENSE, THIRD-PARTY-NOTICES.txt and ISO-639-LICENSE.txt.
+No Read Frog account, subscription, hosted AI or telemetry is required.

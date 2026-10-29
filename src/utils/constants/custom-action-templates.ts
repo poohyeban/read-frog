@@ -118,7 +118,7 @@ export function createSentenceAnalysisDefinition(providerId: string): CustomActi
     systemPrompt: i18n.t(`${SA_PREFIX}.systemPrompt`, [annotations, translation]),
     prompt: i18n.t(`${SA_PREFIX}.prompt`),
     // The sentence itself comes first: it is the selection, not something the
-    // model writes, so "save to notebase" keeps it (a sentence analysis card
+
     // cannot be drawn without it) and it names the note. Field types are only
     // string and number, so the annotations travel as a JSON array inside a
     // string field. Each one quotes a span of the sentence; the card parses
@@ -163,7 +163,7 @@ export function createImproveWritingDefinition(providerId: string): CustomAction
     systemPrompt: i18n.t(`${IW_PREFIX}.systemPrompt`, [setting, annotations, improved, summary]),
     prompt: i18n.t(`${IW_PREFIX}.prompt`),
     // In the order the card fills: the writer's own text (the selection, which
-    // the model does not write, kept so "save to notebase" stores it), the
+
     // setting the model judges everything by, the marks (a JSON array inside a
     // string field, like Sentence Analysis's), the rewrite, and the one-line
     // summary.

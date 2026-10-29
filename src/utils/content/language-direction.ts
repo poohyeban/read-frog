@@ -1,5 +1,5 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
-import { ISO6393_TO_6391, RTL_LANG_CODES } from "@read-frog/definitions"
+import type { LangCodeISO6393 } from "@/utils/languages"
+import { ISO6393_TO_6391, RTL_LANG_CODES } from "@/utils/languages"
 
 interface LanguageDirectionAndLang {
   dir: "ltr" | "rtl"

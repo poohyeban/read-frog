@@ -291,7 +291,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     isScopeCancelled,
     executeBatch: async (dataList, meta) => {
       // Stable for this RequestQueue task: automatic retries must reuse the
-      // idempotency key because the first hosted response may have been lost.
+
       // A BatchQueue retry/fallback invokes this adapter again and gets a new
       // key for that new real model call.
 
@@ -304,7 +304,6 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       )
 
       const batchThunk = async (signal?: AbortSignal): Promise<string[]> => {
-        // Homogeneous per batch: hostedFeature is part of the batch key.
         return await executeBatchTranslation(dataList, promptResolver, signal)
       }
 
@@ -361,8 +360,8 @@ async function loadQueueSetupConfig(
   let config: Config | null = null
   try {
     config = await ensureInitializedConfig()
-  } catch (error) {
-    logger.error(`[translation-queues] failed to load config for ${queueName} queue`, error)
+  } catch {
+    logger.error(`[translation-queues] failed to load config for ${queueName} queue`)
   }
   return {
     ...selectConfig(config ?? DEFAULT_CONFIG),
@@ -399,8 +398,8 @@ function watchQueueConfig(
         batchQueue.setBatchConfig(selected.batchQueueConfig)
         lastAppliedJson = json
         logger.info(`[translation-queues] ${queueName} queue config updated`, selected)
-      } catch (error) {
-        logger.error(`[translation-queues] failed to apply ${queueName} queue config change`, error)
+      } catch {
+        logger.error(`[translation-queues] failed to apply ${queueName} queue config change`)
       }
     })
   })

@@ -1,8 +1,8 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { GlossaryTargetLang } from "@/utils/glossary/target-language"
-import { langCodeISO6393Schema } from "@read-frog/definitions"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { ALL_LANGUAGES } from "@/utils/glossary/target-language"
 import { getLanguageLabel, getLanguageName } from "@/utils/language-labels"
+import { langCodeISO6393Schema } from "@/utils/languages"
 
 /**
  * `T` is only constrained to `string` so a surface can offer a row that is not a

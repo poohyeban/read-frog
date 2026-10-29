@@ -98,7 +98,7 @@ export default defineBackground({
 
     // i18n bootstrap for the non-React background context. Runs after the synchronous
     // listener registration above (MV3 requires listeners before the first await). The
-    // context menu and the uninstall-survey URL both resolve i18n.t at registration time,
+
     // so they must be created AFTER initI18n or they freeze in the wrong language.
     void (async () => {
       await backgroundReady
@@ -108,7 +108,7 @@ export default defineBackground({
     // Keep background-resolved strings in the selected language when it changes.
     // The context menu re-creates itself via its own config watcher
     // (registerContextMenuListeners), so here we only drive the i18next singleton and
-    // re-set the frozen (localized) uninstall-survey URL.
+
     storageAdapter.watch<Config>(CONFIG_STORAGE_KEY, (newConfig) => {
       void (async () => {
         await backgroundReady

@@ -345,7 +345,6 @@ options:
       noEnabledLlmProvider: Hãy bật ít nhất một nhà cung cấp LLM trước khi tạo hành động AI tùy chỉnh
       tabs:
         config: Cấu hình
-        notebase: Notebase
         hasErrors: Có lỗi
         connected: Đã kết nối
         needsAttention: Cần chú ý
@@ -481,59 +480,6 @@ options:
             tooLong: Bố cục này dài hơn $1 ký tự và không thể lưu.
             fieldNotShown: '"$1" không được hiển thị trong bố cục này.'
             reservedFieldName: Tên trường "$1" là tên dành riêng trong bố cục. Hãy đổi tên trường.
-        notebase:
-          title: Kết nối Notebase
-          description: Lưu kết quả có cấu trúc của hành động này vào Notebase từ xa.
-          loginRequiredTitle: Đăng nhập để cấu hình Notebase
-          loginRequiredDescription: Hãy đăng nhập trên readfrog.app trước khi chọn
-            notebase hoặc chỉnh sửa ánh xạ.
-          loginRequiredConnectedDescription: Kết nối này được tạo bởi tài khoản bên dưới.
-            Nếu đăng nhập bằng cùng tài khoản, ánh xạ trường sẽ được khôi phục.
-            Nếu đăng nhập bằng tài khoản khác, các ánh xạ cũ sẽ bị xóa khi bạn
-            tạo hoặc kết nối Notebase.
-          loginAction: Đăng nhập
-          connectedAccountLabel: Tài khoản đã kết nối
-          currentAccountLabel: Tài khoản hiện tại
-          unknownConnectedAccount: Tài khoản không xác định
-          tableLabel: Notebase
-          tablePlaceholder: Chọn một notebase
-          tableClearOption: Không kết nối notebase
-          clearConnectionAction: Xóa kết nối
-          refreshAction: Làm mới
-          emptyTitle: Chưa có Notebase nào
-          emptyDescription: Hãy tạo một notebase trên readfrog.app rồi quay lại đây để ánh
-            xạ các trường.
-          openNotebaseAction: Mở Notebase
-          accessDeniedTitle: Không thể truy cập Notebase
-          accessDeniedDescription: Tài khoản này không có quyền tải dữ liệu Notebase.
-          listErrorTitle: Không tải được danh sách Notebase
-          listErrorDescription: Hãy thử làm mới danh sách Notebase sau ít phút nữa.
-          accountMismatchTitle: Kết nối Notebase thuộc tài khoản khác
-          accountMismatchDescription: Kết nối này gắn với tài khoản bên dưới. Hãy xóa kết
-            nối hoặc chọn một Notebase mà tài khoản hiện tại có thể truy cập.
-          tableUnavailableTitle: Notebase đã chọn không còn khả dụng
-          tableUnavailableDescription: Notebase này không còn tồn tại hoặc không mở được.
-            Hãy xóa kết nối hoặc chọn một Notebase khác.
-          tableUnavailableOption: không khả dụng
-          schemaErrorTitle: Không tải được schema notebase
-          schemaErrorDescription: Hãy thử làm mới lại sau ít phút nữa.
-          schemaLoading: Đang tải schema notebase...
-          mappingsLabel: Ánh xạ trường
-          localFieldLabel: Trường của hành động
-          remoteFieldLabel: Trường Notebase
-          columnUnavailableOption: đã xóa
-          invalidMappingsTitle: Một số ánh xạ cần được xử lý
-          invalidMappingsDescription: Các ánh xạ không hợp lệ vẫn được giữ lại. Hãy sửa
-            chúng trước khi lưu vào Notebase.
-          noFieldSavedTitle: Không có trường nào được lưu vào Notebase này
-          noFieldSavedDescription: Hãy chọn trường Notebase cho ít nhất một trường để lưu ghi chú.
-          mappingSummary: Lưu $1 · Bỏ qua $2 · Chưa quyết định $3
-          skipFieldOption: Không lưu
-          undecidedFieldPlaceholder: Chọn một trường Notebase hoặc không lưu
-          mappingMissingLocal: Trường của hành động đã ánh xạ không còn tồn tại.
-          mappingMissingRemote: Trường notebase đã ánh xạ không còn tồn tại.
-          mappingMissingSchema: Hãy làm mới schema notebase để xác thực ánh xạ này.
-          mappingIncompatible: Kiểu trường không còn khớp nữa.
         tokens:
           selection: Nội dung văn bản đã chọn
           paragraphs: Nội dung các đoạn giao với vùng chọn, được nối bằng dòng trống, sẽ
@@ -1015,7 +961,7 @@ options:
     enable:
       title: Bật nút nổi
       description: Hiển thị nút nổi trên các trang web để truy cập nhanh các tính năng
-        Read Frog
+        Read Frog Lite
     display:
       title: Hiển thị
       side:
@@ -1142,7 +1088,7 @@ options:
       importModeMerge: Thêm vào danh sách
       importModeReplace: Thay thế danh sách
       importEmpty: Không tìm thấy thuật ngữ nào trong tệp đó.
-      importMissingHeader: "Tệp đó không phải là tệp xuất bộ thuật ngữ của Read Frog.
+      importMissingHeader: "Tệp đó không phải là tệp xuất bộ thuật ngữ của Read Frog Lite.
         Nó cần các cột sau:"
       importOverflow: Lần nhập này sẽ vượt giới hạn $1 thuật ngữ. Không có gì thay đổi.
       importSuccess: Đã nhập $1 thuật ngữ mới và cập nhật $2 thuật ngữ.
@@ -1188,21 +1134,6 @@ options:
         title: Hành động tra từ
         description: Hành động AI chạy khi bạn nhấp vào một từ trong phụ đề. Mặc định là
           từ điển, bạn có thể chọn hành động của riêng mình.
-    aiQuota:
-      title: Hạn mức phụ đề AI
-      description: AI dùng công nghệ nhận dạng giọng nói để tạo phụ đề chính xác cho
-        mọi video
-      launchBonusPromo: Đăng ký trước $1 để nhận thêm 300 phút chuyển lời nói thành văn bản
-      loginRequired: Đăng nhập để xem hạn mức phụ đề AI của bạn
-      upgradeRequired: Phụ đề AI cần gói Pro hoặc Ultra
-      pools:
-        subscription: Hạn mức hằng tháng
-        launchBonus: Quà ra mắt
-      resetsOn: Đặt lại vào $1
-      expiresOn: Hết hạn vào $1
-      loadError: Không thể tải hạn mức. Vui lòng thử lại sau.
-      remainingOf: Còn $1 / $2 phút
-      used: Đã dùng $1 phút
     style:
       title: Kiểu phụ đề
       description: Chế độ hiển thị, vị trí, phông chữ, màu sắc và nền, chỉnh ngay trên
@@ -1315,9 +1246,9 @@ options:
       language:
         title: Giọng nói theo ngôn ngữ
         description: Chọn một ngôn ngữ, rồi chọn giọng đọc ngôn ngữ đó. Đặt lại sẽ trả
-          về giọng mà Read Frog chọn cho ngôn ngữ này.
+          về giọng mà Read Frog Lite chọn cho ngôn ngữ này.
         reset: Đặt lại
-        previewSample: Xin chào từ Read Frog! Đây là cách tôi sẽ phát âm khi đọc to.
+        previewSample: Xin chào từ Read Frog Lite! Đây là cách tôi sẽ phát âm khi đọc to.
       fallback:
         title: Giọng dự phòng
         description: Ngôn ngữ nào bạn chưa gán giọng riêng sẽ được đọc bằng giọng này.
@@ -1617,7 +1548,7 @@ subtitles:
     downloadTranslatedComplete: Đã tải phụ đề đã dịch
     downloadSource: Tải phụ đề gốc
   state:
-    loading: Read Frog đang tải phụ đề
+    loading: Read Frog Lite đang tải phụ đề
     translating: Đang dịch…
     error: Đã xảy ra lỗi
   errors:
@@ -1637,14 +1568,7 @@ subtitles:
     aiRateLimited: Quá nhiều yêu cầu, vui lòng thử lại sau
     aiAuthFailed: Xác thực API thất bại, vui lòng kiểm tra API key của bạn
     aiServiceUnavailable: Dịch vụ dịch thuật tạm thời không khả dụng
-    aiQuotaExceeded: Đã dùng hết hạn mức phụ đề AI trong tháng
-    aiQuotaExceededWithReset: Đã dùng hết hạn mức phụ đề AI trong tháng · đặt lại vào $1
-    aiLoginRequired: Đăng nhập để xem hạn mức phụ đề AI của bạn
-    aiSubscriptionRequired: Phụ đề AI cần gói Pro hoặc Ultra
-    aiPaymentRequired: Cập nhật phương thức thanh toán để tiếp tục tạo phụ đề AI
-    aiVideoTooLong: Video này quá dài để tạo phụ đề AI
     aiLiveReplayUnsupported: Phụ đề AI chưa hỗ trợ bản phát lại của buổi phát trực tiếp
-    aiStillProcessing: Quá trình phiên âm vẫn đang chạy — hãy bấm lại sau vài phút
     aiRequestFailed: Yêu cầu phụ đề AI thất bại, vui lòng thử lại sau
     aiNoResponse: Dịch vụ AI không phản hồi, hiển thị văn bản gốc
     translatedExportFailed: Không thể tạo phụ đề đã dịch

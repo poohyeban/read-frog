@@ -1,18 +1,18 @@
-import type { LangCodeISO6393, LangLevel } from "@read-frog/definitions"
 import type { Config } from "@/types/config/config"
 import type { TranslateProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { WebPagePromptContext } from "@/types/content"
 import type { MatchedTerm } from "@/utils/glossary/types"
+import type { LangCodeISO6393, LangLevel } from "@/utils/languages"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
-import { LANG_CODE_TO_EN_NAME } from "@read-frog/definitions"
 import { toastManager } from "@/components/ui/base-ui/toast"
 import { isAPIProviderConfig } from "@/types/config/provider"
 import { isNoTranslationSentinel } from "@/utils/constants/prompt"
 import { detectLanguage } from "@/utils/content/language"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
 import { i18n } from "@/utils/i18n"
+import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { logger } from "@/utils/logger"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
 import { serializeProviderRef } from "@/utils/providers/provider-ref"
@@ -38,20 +38,6 @@ import { getPageTranslationSessionId } from "./translation-session"
  */
 export const MIN_LENGTH_FOR_SKIP_LANGUAGE_DETECTION = 10
 
-/**
- * Check if text should be skipped based on language detection.
- *
- * Deliberately franc-only. This runs once per paragraph, so routing it through
- * an LLM cost one hosted call per paragraph — hundreds per article, against the
- * same weekly pool that funds page translation and subtitles, and against a
- * BYOK user's own budget. The whole-page source language is detected once and
- * cached; this second, uncached, per-paragraph pass existed only for pages that
- * mix languages, and the value of a right answer here (avoid one redundant
- * translation) never justified the per-paragraph price of getting it.
- *
- * `languageDetection.mode` still governs the once-per-page source detection,
- * where a wrong answer corrupts the prompt for every paragraph.
- */
 export async function shouldSkipByLanguage(
   text: string,
   skipLanguages: LangCodeISO6393[],
@@ -159,17 +145,6 @@ async function buildWebPageHashComponents(
  * ping-pong.
  */
 
-/**
- * Resolve the transport ref for the requested provider. Snapshot misses do
- * happen off the happy path — a mid-session provider/tier switch, node
- * translation without an active session — and each translation unit resolves
- * independently, so without coalescing a dense batch would fan out one
- * hosted-status fetch per paragraph. Concurrent misses for the same system
- * provider share one serialization (per-key, so interleaved keys cannot evict
- * each other's in-flight fetch), and an active session adopts the result so
- * later paragraphs skip the network entirely.
- */
-
 export interface TranslateTextOptions {
   text: string
   langConfig: {
@@ -194,12 +169,6 @@ export interface TranslateTextOptions {
    * arrangement as `enableAIContentAware`.
    */
   glossaryEnabled?: boolean
-  /**
-   * Which hosted route a system provider bills against; local providers
-   * ignore it. Required so every entry point states its route where the
-   * function is named — a defaulted route once let page translation gate on
-   * and bill against the wrong quota.
-   */
 }
 
 /**
@@ -227,7 +196,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
   }
 
   // Early cancellation gate: a session stopped while this paragraph was still
-  // preparing must not fire a post-cancel hosted-status fetch below just to
+
   // throw at the final gate.
   if (sessionId !== undefined && getPageTranslationSessionId() !== sessionId) {
     throw new TranslationCancelledError(sessionId)

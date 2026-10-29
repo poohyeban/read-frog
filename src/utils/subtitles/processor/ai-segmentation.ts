@@ -88,16 +88,6 @@ export function parseSimplifiedVttToFragments(vtt: string): SubtitlesFragment[] 
   return fragments
 }
 
-/**
- * Perform AI segmentation on a block of subtitle fragments.
- *
- * `providerRef` is resolved once per session/run by the caller: segmentation
- * runs per look-ahead block, and a hosted ref costs a hostedAi.status round
- * trip to resolve, so resolving here would pay that per block. Both subtitle
- * routes gate on the same hosted feature, so the session's `videoSubtitles`
- * ref serves segmentation as-is; the wider-budget segmentation route is picked
- * in the background by the message handler.
- */
 export async function aiSegmentBlock(
   fragments: SubtitlesFragment[],
   providerRef: PromptableProviderRef,
@@ -114,7 +104,6 @@ export async function aiSegmentBlock(
 
   const jsonContent = formatFragmentsToJson(cleanedFragments)
 
-  // A hosted prompt is capped server-side, and the live path stays far under it
   // (one look-ahead window), but the download path segments a whole file. Split
   // rather than truncate: dropping the tail of subtitle JSON silently loses
   // cues, which is a correctness bug, not a degraded result. Local providers

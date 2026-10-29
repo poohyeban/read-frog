@@ -204,7 +204,6 @@ export function useInputTranslation() {
           setTextWithUndo(element, translatedText)
         }
       } catch {
-        // A hosted plan/quota denial is a state the user can act on, not a
         // defect: without this the spinner just appears and disappears and
         // the feature reads as broken.
 

@@ -1,6 +1,6 @@
-import type { LangCodeISO6393 } from "@read-frog/definitions"
-import { langCodeISO6393Schema } from "@read-frog/definitions"
+import type { LangCodeISO6393 } from "@/utils/languages"
 import { franc } from "franc"
+import { langCodeISO6393Schema } from "@/utils/languages"
 
 const DEFAULT_MIN_LENGTH = 10
 

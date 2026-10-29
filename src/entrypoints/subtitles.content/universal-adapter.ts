@@ -862,8 +862,6 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
 
       // Resolve through the capability registry, not providersConfig: Built-in
       // AI is synthesized by the registry and is never a row there, so the
-      // lookup returned undefined and every hosted subtitle run was reported as
-      // provider "unknown" — the one metric that would size hosted adoption.
 
       const currentVideoId = this.config.getVideoId?.() ?? ""
       const hasCurrentSession =
@@ -1025,7 +1023,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
 
     // Source track for display fallback; scheduler only receives translated cues
     // later. Published before the provider resolve below, which none of this
-    // depends on: for a hosted provider that resolve can reach the network, and
+
     // this is the only path that puts captions on screen for the translated
     // flow — so sequencing it second made the original captions wait on a round
     // trip they never needed, and a hung request (backgroundFetch carries no
@@ -1033,7 +1031,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     this.publishSourceTrack(this.sessionProcessedFragments)
 
     // Resolved once per session; the cache key needs the same identity the
-    // background will use, and a hosted ref costs one status fetch here rather
+
     // than one per fragment. Narrowed once for the whole session: segmentation
     // and the summary are generations, so a translate-only provider keeps the
     // rule-based recut and skips the summary without a doomed prompt attempt
@@ -1055,8 +1053,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
         getVideoElement: () => this.subtitlesScheduler?.getVideoElement() ?? null,
         getSourceLanguage: () => this.fetcher.getSourceLanguage(),
         // The session ref covers segmentation too: both subtitle routes gate on
-        // the same hosted feature, and per-block re-resolution would cost a
-        // hostedAi.status round trip per look-ahead window.
+
         providerRef: promptableProviderRef,
         preSegmented: this.fetcher.isPreSegmented?.(),
         onChunkSegmented: (chunk, nextFragments) => {

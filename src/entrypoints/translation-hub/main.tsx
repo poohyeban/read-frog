@@ -17,6 +17,7 @@ import { renderPersistentReactRoot } from "@/utils/react-root"
 import { queryClient } from "@/utils/tanstack-query"
 import { applyTheme, getLocalThemeMode, isDarkMode } from "@/utils/theme"
 import App from "./app"
+import "@/utils/iconify/local-icons"
 import "@fontsource-variable/inter/index.css"
 import "@/assets/styles/theme.css"
 

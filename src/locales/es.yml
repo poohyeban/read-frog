@@ -359,7 +359,6 @@ options:
         AI personalizadas
       tabs:
         config: Configuración
-        notebase: Notebase
         hasErrors: Hay errores
         connected: Conectado
         needsAttention: Requiere atención
@@ -497,62 +496,6 @@ options:
             fieldNotShown: «$1» no aparece en este diseño.
             reservedFieldName: El nombre de campo «$1» está reservado en los diseños. Cambia
               el nombre del campo.
-        notebase:
-          title: Conexión de Notebase
-          description: Guarda los resultados estructurados de esta acción en una Notebase
-            remota.
-          loginRequiredTitle: Inicia sesión para configurar Notebase
-          loginRequiredDescription: Inicia sesión en readfrog.app antes de elegir una
-            Notebase o editar asignaciones.
-          loginRequiredConnectedDescription: Esta conexión fue creada por la cuenta de
-            abajo. Si inicias sesión con la misma cuenta, se restaurarán las
-            asignaciones de campos. Si inicias sesión con otra cuenta, las
-            asignaciones anteriores se borrarán al crear o conectar una
-            Notebase.
-          loginAction: Iniciar sesión
-          connectedAccountLabel: Cuenta conectada
-          currentAccountLabel: Cuenta actual
-          unknownConnectedAccount: Cuenta desconocida
-          tableLabel: Notebase
-          tablePlaceholder: Selecciona una Notebase
-          tableClearOption: Desconectar Notebase
-          clearConnectionAction: Borrar conexión
-          refreshAction: Actualizar
-          emptyTitle: Aún no hay Notebases
-          emptyDescription: Crea una Notebase en readfrog.app y vuelve aquí para asignar campos.
-          openNotebaseAction: Abrir Notebase
-          accessDeniedTitle: No se puede acceder a Notebase
-          accessDeniedDescription: Esta cuenta no tiene permiso para cargar datos de Notebase.
-          listErrorTitle: No se pudieron cargar las Notebases
-          listErrorDescription: Intenta actualizar la lista de Notebase de nuevo en un momento.
-          accountMismatchTitle: La conexión de Notebase pertenece a otra cuenta
-          accountMismatchDescription: Esta conexión está vinculada a la cuenta conectada
-            de abajo. Bórrala o elige una Notebase disponible para la cuenta
-            actual.
-          tableUnavailableTitle: La Notebase seleccionada ya no está disponible
-          tableUnavailableDescription: Esta Notebase ya no existe o no se puede abrir.
-            Borra la conexión o elige otra Notebase.
-          tableUnavailableOption: no disponible
-          schemaErrorTitle: No se pudo cargar el esquema de la Notebase
-          schemaErrorDescription: Intenta actualizar el esquema de nuevo en un momento.
-          schemaLoading: Cargando esquema de la Notebase...
-          mappingsLabel: Asignaciones de campos
-          localFieldLabel: Campo de acción
-          remoteFieldLabel: Campo de Notebase
-          columnUnavailableOption: eliminado
-          invalidMappingsTitle: Algunas asignaciones requieren atención
-          invalidMappingsDescription: Las asignaciones no válidas se conservan. Corrígelas
-            antes de guardar en Notebase.
-          noFieldSavedTitle: Ningún campo se guarda en esta Notebase
-          noFieldSavedDescription: Elige un campo de Notebase para al menos un campo y así
-            poder guardar notas.
-          mappingSummary: Se guardan $1 · Omitidos $2 · Sin decidir $3
-          skipFieldOption: No guardar
-          undecidedFieldPlaceholder: Elige un campo de Notebase o no guardar
-          mappingMissingLocal: El campo de acción asignado ya no existe.
-          mappingMissingRemote: El campo de Notebase asignado ya no existe.
-          mappingMissingSchema: Actualiza el esquema de la Notebase para validar esta asignación.
-          mappingIncompatible: Los tipos de campo ya no coinciden.
         tokens:
           selection: Contenido del texto seleccionado
           paragraphs: Texto de párrafos intersectados unido con líneas en blanco, truncado
@@ -1053,7 +996,7 @@ options:
     enable:
       title: Activar botón flotante
       description: Muestra el botón flotante en páginas web para acceder rápidamente a
-        las funciones de Read Frog
+        las funciones de Read Frog Lite
     display:
       title: Visualización
       side:
@@ -1228,21 +1171,6 @@ options:
         title: Acción al buscar una palabra
         description: La acción de IA que responde al hacer clic en una palabra de los
           subtítulos. Diccionario, salvo que elijas una tuya.
-    aiQuota:
-      title: Cuota de subtítulos con IA
-      description: El reconocimiento de voz con IA te da subtítulos precisos para
-        cualquier vídeo
-      launchBonusPromo: Suscríbete antes del $1 y obtén 300 minutos de transcripción adicionales
-      loginRequired: Inicia sesión para ver tu cuota de subtítulos con IA
-      upgradeRequired: Los subtítulos con IA requieren una suscripción Pro o Ultra
-      pools:
-        subscription: Cuota mensual
-        launchBonus: Regalo de lanzamiento
-      resetsOn: Se restablece el $1
-      expiresOn: Caduca el $1
-      loadError: No se pudo cargar tu cuota. Inténtalo de nuevo más tarde.
-      remainingOf: Quedan $1 / $2 min
-      used: Usados $1 min
     style:
       title: Estilo de subtítulos
       description: Modo de visualización, posición, fuentes, colores y fondo,
@@ -1359,9 +1287,9 @@ options:
       language:
         title: Voz por idioma
         description: Elige un idioma y luego la voz que lo lee en voz alta. Restablecer
-          devuelve la voz que Read Frog elige para ese idioma.
+          devuelve la voz que Read Frog Lite elige para ese idioma.
         reset: Restablecer
-        previewSample: ¡Hola desde Read Frog! Así sonaré al leer en voz alta.
+        previewSample: ¡Hola desde Read Frog Lite! Así sonaré al leer en voz alta.
       fallback:
         title: Voz alternativa
         description: La voz para cualquier idioma al que no le hayas asignado una propia.
@@ -1662,7 +1590,7 @@ subtitles:
     downloadTranslatedComplete: Subtítulos traducidos descargados
     downloadSource: Descargar subtítulos de origen
   state:
-    loading: Read Frog está cargando subtítulos
+    loading: Read Frog Lite está cargando subtítulos
     translating: Traduciendo…
     error: Se produjo un error
   errors:
@@ -1683,16 +1611,8 @@ subtitles:
     aiRateLimited: Demasiadas solicitudes, inténtalo de nuevo más tarde
     aiAuthFailed: Error de autenticación de API; revisa tu clave API
     aiServiceUnavailable: Servicio de traducción temporalmente no disponible
-    aiQuotaExceeded: Cuota mensual de subtítulos con IA agotada
-    aiQuotaExceededWithReset: Cuota mensual de subtítulos con IA agotada · se restablece el $1
-    aiLoginRequired: Inicia sesión para ver tu cuota de subtítulos con IA
-    aiSubscriptionRequired: Los subtítulos con IA requieren una suscripción Pro o Ultra
-    aiPaymentRequired: Actualiza tu método de pago para seguir generando subtítulos con IA
-    aiVideoTooLong: Este video es demasiado largo para los subtítulos con IA
     aiLiveReplayUnsupported: Los subtítulos con IA aún no están disponibles para
       repeticiones de transmisiones en vivo
-    aiStillProcessing: La transcripción sigue en curso — vuelve a hacer clic en unos
-      minutos para retomarla
     aiRequestFailed: Error al solicitar subtítulos con IA, inténtalo de nuevo más tarde
     aiNoResponse: El servicio AI no respondió; se usa el texto original
     translatedExportFailed: No se pudieron generar los subtítulos traducidos

@@ -322,7 +322,6 @@ options:
       noEnabledLlmProvider: カスタム AI アクションを作成する前に、少なくとも1つのLLMプロバイダーを有効化してください
       tabs:
         config: 設定
-        notebase: Notebase
         hasErrors: エラーがあります
         connected: 接続済み
         needsAttention: 要確認
@@ -442,53 +441,6 @@ options:
             tooLong: このレイアウトは $1 文字を超えているため保存できません。
             fieldNotShown: 「$1」はこのレイアウトに表示されません。
             reservedFieldName: フィールド名「$1」はレイアウトの予約名です。フィールドの名前を変更してください。
-        notebase:
-          title: Notebase 接続
-          description: このアクションの構造化された結果をリモート Notebase に保存します。
-          loginRequiredTitle: Notebase を設定するにはログインが必要です
-          loginRequiredDescription: notebase を選択したりマッピングを編集したりする前に、readfrog.app にログインしてください。
-          loginRequiredConnectedDescription:
-            この接続は下のアカウントで作成されました。同じアカウントでログインするとフィールドマッピングが復元されます。別のアカウントでログインした場合、Notebase
-            を作成または接続すると以前のマッピングは消去されます。
-          loginAction: ログイン
-          connectedAccountLabel: 接続済みアカウント
-          currentAccountLabel: 現在のアカウント
-          unknownConnectedAccount: 不明なアカウント
-          tableLabel: Notebase
-          tablePlaceholder: notebase を選択
-          tableClearOption: notebase を接続しない
-          clearConnectionAction: 接続をクリア
-          refreshAction: 更新
-          emptyTitle: Notebase がまだありません
-          emptyDescription: readfrog.app で notebase を作成してから、ここに戻ってフィールドをマッピングしてください。
-          openNotebaseAction: Notebase を開く
-          accessDeniedTitle: Notebase にアクセスできません
-          accessDeniedDescription: このアカウントには Notebase データを読み込む権限がありません。
-          listErrorTitle: Notebase 一覧を読み込めませんでした
-          listErrorDescription: 少し待ってから Notebase 一覧をもう一度更新してください。
-          accountMismatchTitle: Notebase 接続は別のアカウントに属しています
-          accountMismatchDescription: この接続は下の接続済みアカウントに紐づいています。接続をクリアするか、現在のアカウントで利用できる Notebase を選択してください。
-          tableUnavailableTitle: 選択した notebase は利用できなくなりました
-          tableUnavailableDescription: この Notebase は存在しないか開けません。接続をクリアするか、別の Notebase を選択してください。
-          tableUnavailableOption: 利用不可
-          schemaErrorTitle: notebase スキーマの読み込みに失敗しました
-          schemaErrorDescription: 少し待ってからもう一度更新してください。
-          schemaLoading: notebase スキーマを読み込み中...
-          mappingsLabel: フィールドマッピング
-          localFieldLabel: アクションフィールド
-          remoteFieldLabel: Notebase フィールド
-          columnUnavailableOption: 削除済み
-          invalidMappingsTitle: 一部のマッピングに対応が必要です
-          invalidMappingsDescription: 無効なマッピングは保持されます。Notebase に保存する前に修正してください。
-          noFieldSavedTitle: この Notebase に保存されるフィールドがありません
-          noFieldSavedDescription: ノートを保存するには、少なくとも 1 つのフィールドに Notebase フィールドを選んでください。
-          mappingSummary: 保存 $1 · 保存しない $2 · 未決定 $3
-          skipFieldOption: 保存しない
-          undecidedFieldPlaceholder: Notebase フィールドを選ぶか、保存しない
-          mappingMissingLocal: マッピングされたアクションフィールドは存在しなくなりました。
-          mappingMissingRemote: マッピングされた notebase フィールドは存在しなくなりました。
-          mappingMissingSchema: このマッピングを検証するには、notebase スキーマを更新してください。
-          mappingIncompatible: フィールドの型が一致しなくなりました。
         tokens:
           selection: 選択したテキスト内容
           paragraphs: 選択範囲と交差する段落内容。空行で連結され、カスタム AI アクションに送信する際は先頭 2000 文字に切り詰められます
@@ -939,7 +891,7 @@ options:
     demoImageAlt: フローティングボタンデモ
     enable:
       title: フローティングボタンを有効化
-      description: ウェブページにフローティングボタンを表示し、Read Frog機能に素早くアクセス
+      description: ウェブページにフローティングボタンを表示し、Read Frog Lite機能に素早くアクセス
     display:
       title: 表示
       side:
@@ -1059,7 +1011,7 @@ options:
       importModeMerge: リストに追加
       importModeReplace: リストを置き換え
       importEmpty: そのファイルに用語が見つかりませんでした。
-      importMissingHeader: "このファイルは Read Frog の用語集エクスポートではありません。次の列が必要です:"
+      importMissingHeader: "このファイルは Read Frog Lite の用語集エクスポートではありません。次の列が必要です:"
       importOverflow: このインポートは上限を $1 件超えます。変更は行われていません。
       importSuccess: $1 件を新規にインポートし、$2 件を更新しました。
       importSkipped: 無効な行 $1 件と重複 $2 件をスキップしました。
@@ -1098,20 +1050,6 @@ options:
       wordLookupAction:
         title: 単語クリック時のアクション
         description: 字幕の単語をクリックしたときに実行する AI アクション。既定は辞書で、自分のアクションにも変更できます。
-    aiQuota:
-      title: AI字幕の利用枠
-      description: AIの音声認識で、どんな動画にも正確な字幕を生成します
-      launchBonusPromo: $1 までに加入すると、文字起こし 300 分を追加でプレゼント
-      loginRequired: ログインしてAI字幕の利用枠を確認
-      upgradeRequired: AI字幕には Pro または Ultra プランが必要です
-      pools:
-        subscription: 月間クォータ
-        launchBonus: リリース記念ギフト
-      resetsOn: $1 にリセット
-      expiresOn: $1 に失効
-      loadError: 利用枠を読み込めませんでした。しばらくしてから再試行してください。
-      remainingOf: 残り $1 / $2 分
-      used: 使用済み $1 分
     style:
       title: 字幕スタイル
       description: 表示モード・位置・フォント・色・背景を、プレビューを見ながら設定します
@@ -1215,9 +1153,9 @@ options:
       noVoicesFound: ボイスが見つかりません
       language:
         title: 言語別ボイス
-        description: 言語を選び、その言語を読み上げるボイスを指定します。リセットすると Read Frog がその言語に選ぶボイスに戻ります。
+        description: 言語を選び、その言語を読み上げるボイスを指定します。リセットすると Read Frog Lite がその言語に選ぶボイスに戻ります。
         reset: リセット
-        previewSample: Read Frog からこんにちは！朗読するときはこのように聞こえます。
+        previewSample: Read Frog Lite からこんにちは！朗読するときはこのように聞こえます。
       fallback:
         title: フォールバックボイス
         description: 個別にボイスを指定していない言語は、このボイスで読み上げます。
@@ -1513,7 +1451,7 @@ subtitles:
     downloadTranslatedComplete: 翻訳字幕をダウンロードしました
     downloadSource: 元字幕をダウンロード
   state:
-    loading: Read Frog 字幕読み込み中
+    loading: Read Frog Lite 字幕読み込み中
     translating: 翻訳中…
     error: エラーが発生しました
   errors:
@@ -1533,14 +1471,7 @@ subtitles:
     aiRateLimited: リクエストが多すぎます。後でもう一度お試しください
     aiAuthFailed: API認証に失敗しました。APIキーを確認してください
     aiServiceUnavailable: 翻訳サービスは一時的に利用できません
-    aiQuotaExceeded: 今月のAI字幕の利用枠を使い切りました
-    aiQuotaExceededWithReset: 今月のAI字幕の利用枠を使い切りました・$1 にリセット
-    aiLoginRequired: ログインしてAI字幕の利用枠を確認
-    aiSubscriptionRequired: AI字幕には Pro または Ultra プランが必要です
-    aiPaymentRequired: AI字幕の生成を続けるにはお支払い方法を更新してください
-    aiVideoTooLong: この動画は長すぎるためAI字幕を生成できません
     aiLiveReplayUnsupported: ライブ配信のアーカイブはまだAI字幕に対応していません
-    aiStillProcessing: 文字起こしは進行中です。数分後にもう一度クリックしてください
     aiRequestFailed: AI字幕のリクエストに失敗しました。しばらくしてから再試行してください
     aiNoResponse: AIサービスが応答しませんでした。原文を表示します
     translatedExportFailed: 翻訳字幕の生成に失敗しました
