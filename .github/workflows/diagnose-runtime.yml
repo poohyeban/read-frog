@@ -1,0 +1,33 @@
+name: Diagnose runtime receiver errors
+on:
+  push:
+    branches: [codex/diagnose-runtime-no-receiver]
+    paths: [".diagnostics/**", ".github/workflows/diagnose-runtime.yml"]
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --global pnpm@12.10.1
+      - run: pnpm install --frozen-lockfile
+      - name: Use the unchanged published extension
+        run: |
+          curl --fail --location https://github.com/poohyeban/read-frog/releases/download/v0.2.2/read-frog-lite-0.2.2-chrome.zip -o /tmp/extension.zip
+          echo 'e22d2337226563c5c6f38fea92e84b9c6320e0f91c9c1fded07f1efd81e030f8  /tmp/extension.zip' | sha256sum --check
+          unzip -q /tmp/extension.zip -d .diagnostics/extension
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Reproduce and collect message evidence
+        run: xvfb-run --auto-servernum pnpm exec playwright test --config .diagnostics/playwright.config.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: runtime-receiver-diagnosis
+          path: .diagnostics/artifacts/
+          include-hidden-files: true
+          retention-days: 14
