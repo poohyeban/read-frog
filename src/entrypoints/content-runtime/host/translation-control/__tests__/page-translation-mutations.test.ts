@@ -880,6 +880,51 @@ describe("pageTranslationManager mutation re-walk", () => {
     manager.stop()
   })
 
+  it("coalesces parent and descendant mutation additions into one chunked scan", async () => {
+    const manager = new PageTranslationManager()
+    await manager.start()
+    await flushDomUpdates()
+    mockWalkAndLabelElementChunked.mockClear()
+    const parent = document.createElement("section")
+    document.body.append(parent)
+    for (let index = 0; index < 50; index++) {
+      const child = document.createElement("p")
+      child.textContent = `Added paragraph ${index}`
+      parent.append(child)
+    }
+    await flushDomUpdates()
+    expect(mockWalkAndLabelElementChunked).toHaveBeenCalledExactlyOnceWith(
+      parent,
+      "walk-id",
+      DEFAULT_CONFIG,
+      expect.objectContaining({ shouldContinue: expect.any(Function) }),
+    )
+    manager.stop()
+  })
+
+  it("does not resume observation after stopping a suspended incremental scan", async () => {
+    const manager = new PageTranslationManager()
+    await manager.start()
+    await flushDomUpdates()
+    const observer = intersectionObservers.at(-1)!
+    observer.observe.mockClear()
+    let finish!: (result: { forceBlock: boolean; isInlineNode: boolean }) => void
+    mockWalkAndLabelElementChunked.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve
+        }),
+    )
+    const paragraph = document.createElement("p")
+    paragraph.textContent = "New content"
+    document.body.append(paragraph)
+    await flushDomUpdates()
+    manager.stop()
+    finish({ forceBlock: false, isInlineNode: false })
+    await flushDomUpdates()
+    expect(observer.observe).not.toHaveBeenCalled()
+  })
+
   it("only rechecks branches with cached blockers after an ancestor attribute changes", async () => {
     document.body.innerHTML = `<div id="ancestor">
       <section><p id="blocked" hidden>Hidden content</p></section>
@@ -895,6 +940,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       const unrelated = document.getElementById("unrelated") as HTMLElement
       mockIsDontWalkIntoAndDontTranslateAsChildElement.mockClear()
       mockWalkAndLabelElement.mockClear()
+      mockWalkAndLabelElementChunked.mockClear()
 
       ancestor.classList.add("highlighted")
       await flushDomUpdates()
@@ -911,7 +957,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         unrelated.firstElementChild,
         DEFAULT_CONFIG,
       )
-      expect(mockWalkAndLabelElement).not.toHaveBeenCalled()
+      expect(mockWalkAndLabelElementChunked).not.toHaveBeenCalled()
     } finally {
       manager.stop()
     }
@@ -1139,6 +1185,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     registerBilingualTranslationState(state)
     await flushDomUpdates()
     mockWalkAndLabelElement.mockClear()
+    mockWalkAndLabelElementChunked.mockClear()
     mockTranslateNodesBilingualMode.mockClear()
 
     // Everything the extension inserts during a translation pass: translated
@@ -1152,7 +1199,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     tweet.append(siblingWrapper)
     await flushDomUpdates()
 
-    expect(mockWalkAndLabelElement).not.toHaveBeenCalled()
+    expect(mockWalkAndLabelElementChunked).not.toHaveBeenCalled()
     expect(mockTranslateNodesBilingualMode).not.toHaveBeenCalled()
 
     unregisterBilingualTranslationState(state)
@@ -1186,6 +1233,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     await flushDomUpdates()
     observer.observe.mockClear()
     mockWalkAndLabelElement.mockClear()
+    mockWalkAndLabelElementChunked.mockClear()
     mockTranslateNodesBilingualMode.mockClear()
 
     // Google AI Overview citation hover temporarily moves the existing Text
@@ -1203,7 +1251,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     }
 
     expect(observer.observe).not.toHaveBeenCalled()
-    expect(mockWalkAndLabelElement).not.toHaveBeenCalled()
+    expect(mockWalkAndLabelElementChunked).not.toHaveBeenCalled()
     expect(mockTranslateNodesBilingualMode).not.toHaveBeenCalled()
     expect(summary.querySelectorAll(".read-frog-translated-content-wrapper")).toHaveLength(1)
 
@@ -1241,6 +1289,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     await flushDomUpdates()
     observer.observe.mockClear()
     mockWalkAndLabelElement.mockClear()
+    mockWalkAndLabelElementChunked.mockClear()
     mockTranslateNodesBilingualMode.mockClear()
 
     try {
@@ -1253,9 +1302,9 @@ describe("pageTranslationManager mutation re-walk", () => {
 
       // The addition must never become a walk root of its own.
       expect(observer.observe).not.toHaveBeenCalledWith(inserted)
-      expect(mockWalkAndLabelElement.mock.calls.some(([element]) => element === inserted)).toBe(
-        false,
-      )
+      expect(
+        mockWalkAndLabelElementChunked.mock.calls.some(([element]) => element === inserted),
+      ).toBe(false)
 
       // ...but the enclosing unit still recovers, exactly once.
       expect(mockTranslateNodesBilingualMode).toHaveBeenCalledTimes(1)
@@ -1299,6 +1348,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     await flushDomUpdates()
     observer.observe.mockClear()
     mockWalkAndLabelElement.mockClear()
+    mockWalkAndLabelElementChunked.mockClear()
 
     try {
       const second = document.createElement("p")
@@ -1307,7 +1357,9 @@ describe("pageTranslationManager mutation re-walk", () => {
       feed.append(second)
       await flushDomUpdates()
 
-      expect(mockWalkAndLabelElement.mock.calls.some(([element]) => element === second)).toBe(true)
+      expect(
+        mockWalkAndLabelElementChunked.mock.calls.some(([element]) => element === second),
+      ).toBe(true)
       expect(observer.observe).toHaveBeenCalledWith(second)
     } finally {
       unregisterBilingualTranslationState(state)
@@ -1338,6 +1390,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     await flushDomUpdates()
     observer.observe.mockClear()
     mockWalkAndLabelElement.mockClear()
+    mockWalkAndLabelElementChunked.mockClear()
 
     try {
       const added = document.createElement("span")
@@ -1345,7 +1398,9 @@ describe("pageTranslationManager mutation re-walk", () => {
       bio.append(added)
       await flushDomUpdates()
 
-      expect(mockWalkAndLabelElement.mock.calls.some(([element]) => element === added)).toBe(true)
+      expect(mockWalkAndLabelElementChunked.mock.calls.some(([element]) => element === added)).toBe(
+        true,
+      )
       expect(observer.observe).toHaveBeenCalledWith(added)
     } finally {
       unregisterTranslationOnlyAnchorState(bio)
@@ -1391,6 +1446,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     await flushDomUpdates()
     observer.observe.mockClear()
     mockWalkAndLabelElement.mockClear()
+    mockWalkAndLabelElementChunked.mockClear()
     mockTranslateNodesBilingualMode.mockClear()
 
     try {
@@ -1408,7 +1464,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         await flushDomUpdates()
       }
       expect(observer.observe).not.toHaveBeenCalled()
-      expect(mockWalkAndLabelElement).not.toHaveBeenCalled()
+      expect(mockWalkAndLabelElementChunked).not.toHaveBeenCalled()
       expect(mockTranslateNodesBilingualMode).not.toHaveBeenCalled()
       expect(summary.querySelectorAll(".read-frog-translated-content-wrapper")).toHaveLength(2)
 
@@ -1494,18 +1550,20 @@ describe("pageTranslationManager mutation re-walk", () => {
         const observer = intersectionObservers[0]!
         expect(observer.observe).not.toHaveBeenCalledWith(paragraph)
         mockWalkAndLabelElement.mockClear()
+        mockWalkAndLabelElementChunked.mockClear()
         observer.observe.mockClear()
 
         const hiddenParagraph = document.createElement("p")
         hiddenParagraph.textContent = "Added while hidden"
         container.append(hiddenParagraph)
         await flushDomUpdates()
-        expect(mockWalkAndLabelElement).not.toHaveBeenCalled()
+        expect(mockWalkAndLabelElementChunked).not.toHaveBeenCalled()
         expect(observer.observe).not.toHaveBeenCalled()
 
         controller.classList.remove("collapsed")
         await flushDomUpdates()
         mockWalkAndLabelElement.mockClear()
+        mockWalkAndLabelElementChunked.mockClear()
         const changedParagraph =
           mutationType === "childList" ? document.createElement("p") : paragraph
         if (mutationType === "childList") {
@@ -1516,7 +1574,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         }
         await flushDomUpdates()
         expect(observer.observe).toHaveBeenCalledWith(changedParagraph)
-        expect(mockWalkAndLabelElement).toHaveBeenCalledTimes(1)
+        expect(mockWalkAndLabelElementChunked).toHaveBeenCalledTimes(1)
         await observer.triggerIntersect(changedParagraph)
         await flushDomUpdates()
         expect(mockTranslateWalkedElement).toHaveBeenCalledWith(
@@ -1605,6 +1663,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       try {
         await flushDomUpdates()
         mockWalkAndLabelElement.mockClear()
+        mockWalkAndLabelElementChunked.mockClear()
         mockTranslateNodesBilingualMode.mockClear()
         container.classList.add("notranslate")
         await flushDomUpdates()
@@ -1612,7 +1671,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         await flushDomUpdates()
         source.data = "Latest edit while excluded"
         await flushDomUpdates()
-        expect(mockWalkAndLabelElement).not.toHaveBeenCalled()
+        expect(mockWalkAndLabelElementChunked).not.toHaveBeenCalled()
         expect(mockTranslateNodesBilingualMode).not.toHaveBeenCalled()
 
         host.hidden = true
@@ -1683,16 +1742,18 @@ describe("pageTranslationManager mutation re-walk", () => {
       }
       host.hidden = sourceKind === "unblocked source"
       mockWalkAndLabelElement.mockClear()
+      mockWalkAndLabelElementChunked.mockClear()
       try {
         summary.prepend(host)
         await flushDomUpdates()
 
         if (sourceKind === "unblocked source") {
           mockWalkAndLabelElement.mockClear()
+          mockWalkAndLabelElementChunked.mockClear()
           host.hidden = false
           await flushDomUpdates()
         }
-        expect(mockWalkAndLabelElement).toHaveBeenCalledExactlyOnceWith(
+        expect(mockWalkAndLabelElementChunked).toHaveBeenCalledExactlyOnceWith(
           sourceKind === "current source" ? shadowContainer : host,
           "walk-id",
           DEFAULT_CONFIG,
@@ -1705,12 +1766,13 @@ describe("pageTranslationManager mutation re-walk", () => {
         // Register every nested observer even though labeling starts only once.
         observer.observe.mockClear()
         mockWalkAndLabelElement.mockClear()
+        mockWalkAndLabelElementChunked.mockClear()
         const laterParagraph = document.createElement("p")
         laterParagraph.textContent = "Later innermost content"
         innermostContainer.append(laterParagraph)
         await flushDomUpdates()
         expect(observer.observe).toHaveBeenCalledExactlyOnceWith(laterParagraph)
-        expect(mockWalkAndLabelElement).toHaveBeenCalledTimes(1)
+        expect(mockWalkAndLabelElementChunked).toHaveBeenCalledTimes(1)
       } finally {
         unregisterBilingualTranslationState(state)
         manager.stop()
@@ -1764,6 +1826,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       await flushDomUpdates()
       observer.observe.mockClear()
       mockWalkAndLabelElement.mockClear()
+      mockWalkAndLabelElementChunked.mockClear()
       mockIsDontWalkIntoButTranslateAsChildElement.mockImplementation((element: HTMLElement) =>
         element.classList.contains("notranslate"),
       )
@@ -1812,7 +1875,7 @@ describe("pageTranslationManager mutation re-walk", () => {
 
       const shadowParagraph = shadowRoot.getElementById("blocked-shadow-paragraph") as HTMLElement
       expect(observer.observe).not.toHaveBeenCalledWith(shadowParagraph)
-      expect(mockWalkAndLabelElement).not.toHaveBeenCalledWith(
+      expect(mockWalkAndLabelElementChunked).not.toHaveBeenCalledWith(
         shadowContainer,
         "walk-id",
         DEFAULT_CONFIG,
@@ -1837,6 +1900,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       // Unblocking the outer ancestor must preserve any remaining inner gate,
       // including for content added while that host is still blocked.
       mockWalkAndLabelElement.mockClear()
+      mockWalkAndLabelElementChunked.mockClear()
       const paragraphAfterOuterUnblock = document.createElement("p")
       paragraphAfterOuterUnblock.textContent = "Content added after the outer element opens"
       mutationContainer.append(paragraphAfterOuterUnblock)
@@ -1844,7 +1908,7 @@ describe("pageTranslationManager mutation re-walk", () => {
 
       const stillBlocked = blockedTarget.startsWith("nested")
       expect(observer.observe).toHaveBeenCalledTimes(stillBlocked ? 0 : 1)
-      expect(mockWalkAndLabelElement).toHaveBeenCalledTimes(stillBlocked ? 0 : 1)
+      expect(mockWalkAndLabelElementChunked).toHaveBeenCalledTimes(stillBlocked ? 0 : 1)
 
       if (stillBlocked) host.removeAttribute(attribute)
       await flushDomUpdates()
@@ -2110,6 +2174,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     registerBilingualTranslationState(state)
     await flushDomUpdates()
     mockWalkAndLabelElement.mockClear()
+    mockWalkAndLabelElementChunked.mockClear()
     mockTranslateNodesBilingualMode.mockClear()
 
     // Node identity churn with identical text (React re-render writing the
@@ -2117,7 +2182,7 @@ describe("pageTranslationManager mutation re-walk", () => {
     wrapper.replaceChildren(document.createTextNode("中文译文"))
     await flushDomUpdates()
 
-    expect(mockWalkAndLabelElement).not.toHaveBeenCalled()
+    expect(mockWalkAndLabelElementChunked).not.toHaveBeenCalled()
     expect(mockTranslateNodesBilingualMode).not.toHaveBeenCalled()
 
     unregisterBilingualTranslationState(state)

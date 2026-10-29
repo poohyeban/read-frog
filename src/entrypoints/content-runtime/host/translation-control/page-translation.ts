@@ -23,8 +23,9 @@ import {
   isHTMLElement,
   isWalkBlockedElement as isWalkBlockedElementFilter,
 } from "@/utils/host/dom/filter"
-import { deepQueryAllSelector, deepQueryTopLevelSelector } from "@/utils/host/dom/find"
+import { deepQueryAllSelector } from "@/utils/host/dom/find"
 import { isLatexmlTextBoxReflowRecord } from "@/utils/host/dom/latexml-text-box"
+import { coalesceScanRoots } from "@/utils/host/dom/scan-roots"
 import {
   canSplitGiantWithoutStrandingOwnText,
   walkAndLabelElement,
@@ -292,6 +293,8 @@ export class PageTranslationManager implements IPageTranslationManager {
   private translationSessionVersion = 0
   /** Pending initial chunked walk; mutation handling serializes behind it. */
   private initialWalkDone: Promise<void> | null = null
+  private pendingScanRoots = new Map<HTMLElement, Config>()
+  private scanRun: symbol | null = null
   private titleObserver: MutationObserver | null = null
   // Non-null exactly while the tab title is being tracked.
   private lastSourceTitle: string | null = null
@@ -559,6 +562,8 @@ export class PageTranslationManager implements IPageTranslationManager {
     this.isPageTranslating = false
     this.translationSessionVersion += 1
     this.walkId = null
+    this.pendingScanRoots.clear()
+    this.scanRun = null
     this.walkBlockedElementsCache = new WeakSet()
     this.ancestorsWithWalkBlockedElements = new WeakSet()
     this.refreshingTranslatedSources = new WeakSet()
@@ -768,6 +773,49 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
   }
 
+  private queueSubtreeScan(container: HTMLElement, config: Config): void {
+    if (!this.isPageTranslating || !container.isConnected) return
+    this.pendingScanRoots.set(container, config)
+    if (this.scanRun) return
+    const run = Symbol("subtree scans")
+    this.scanRun = run
+    const sessionVersion = this.translationSessionVersion
+    void this.drainSubtreeScans(run, sessionVersion).catch(() => {
+      logger.error("Incremental translation scan failed")
+    })
+  }
+
+  private async drainSubtreeScans(run: symbol, sessionVersion: number): Promise<void> {
+    try {
+      // Group additions/reveals from one Mutation delivery before selecting
+      // roots; parent/child additions must not each traverse the same text.
+      await Promise.resolve()
+      while (
+        this.scanRun === run &&
+        this.isPageTranslating &&
+        this.translationSessionVersion === sessionVersion &&
+        this.pendingScanRoots.size > 0
+      ) {
+        const batch = new Map(this.pendingScanRoots)
+        this.pendingScanRoots.clear()
+        for (const root of coalesceScanRoots(batch.keys())) {
+          if (this.scanRun !== run || this.translationSessionVersion !== sessionVersion) return
+          if (!root.isConnected) continue
+          const config = batch.get(root)!
+          this.observeIsolatedDescendantsMutations(root, config)
+          await this.observeTopLevelParagraphs(root, config, { chunked: true })
+        }
+      }
+    } finally {
+      if (this.scanRun === run) {
+        this.scanRun = null
+        // An enqueue can land between the final await and this cleanup.
+        const next = this.pendingScanRoots.entries().next().value
+        if (next) this.queueSubtreeScan(next[0], next[1])
+      }
+    }
+  }
+
   private async observeTopLevelParagraphs(
     container: HTMLElement,
     existingConfig?: Config,
@@ -795,9 +843,10 @@ export class PageTranslationManager implements IPageTranslationManager {
     if (options.chunked) {
       const result = await walkAndLabelElementChunked(container, walkId, config, {
         onBlockedElement,
-        shouldContinue: () => this.isPageTranslating && this.walkId === walkId,
+        shouldContinue: () =>
+          this.isPageTranslating && this.walkId === walkId && container.isConnected,
       })
-      if (result === null || this.walkId !== walkId) return
+      if (result === null || this.walkId !== walkId || !container.isConnected) return
     } else {
       walkAndLabelElement(container, walkId, config, { onBlockedElement })
     }
@@ -1129,16 +1178,6 @@ export class PageTranslationManager implements IPageTranslationManager {
   }
 
   /**
-   * Initialize walkability state for an element and its descendants
-   */
-  private addWalkBlockedElements(element: HTMLElement, config: Config): void {
-    const walkBlockedElements = deepQueryTopLevelSelector(element, (el) =>
-      this.isWalkBlockedElement(el, config),
-    )
-    walkBlockedElements.forEach((el) => this.cacheWalkBlockedElement(el))
-  }
-
-  /**
    * Start observing mutations for a container and all its shadow roots
    */
   private observeMutations(container: HTMLElement, config?: Config): void {
@@ -1312,7 +1351,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       shadowWalkRoots.forEach((host) => this.walkBlockedElementsCache.delete(host))
       // Also recover on a characterData-only first update, before the
       // ordinary fast path rejects text with no registered translation.
-      void this.observeTopLevelParagraphs(revealedRoot, config)
+      this.queueSubtreeScan(revealedRoot, config)
       this.observeIsolatedDescendantsMutations(revealedRoot, config)
     }
     return { config, revealedRoot }
@@ -1419,16 +1458,14 @@ export class PageTranslationManager implements IPageTranslationManager {
         }
         rec.addedNodes.forEach((node) => {
           if (isHTMLElement(node)) {
-            this.addWalkBlockedElements(node, config)
-            void this.observeTopLevelParagraphs(node, config)
-            this.observeIsolatedDescendantsMutations(node, config)
+            this.queueSubtreeScan(node, config)
           }
         })
       } else if (this.isWalkabilityAttributeMutation(rec)) {
         const el = rec.target
         if (!isHTMLElement(el)) continue
         for (const unblocked of this.collectNewlyWalkableSubtrees(el, config)) {
-          void this.observeTopLevelParagraphs(unblocked, config)
+          this.queueSubtreeScan(unblocked, config)
           // A blocked addition under a current source can skip isolated-tree
           // registration. Observe future shadow mutations when it unblocks.
           // Descendant hosts may still be blocked after this ancestor opens.
@@ -1604,7 +1641,7 @@ export class PageTranslationManager implements IPageTranslationManager {
             // The walker already crosses nested shadow roots, so recursive
             // observer registration above must not scan those subtrees again.
             if (config && options.scanIsolatedTrees && walkable) {
-              void this.observeTopLevelParagraphs(child, config)
+              this.queueSubtreeScan(child, config)
             }
           }
         }

@@ -10,11 +10,11 @@ const {
   mockSendMessage,
   mockTranslateWalkedElement,
   mockValidateTranslationConfigAndToast,
-  mockWalkAndLabelElement,
+  mockWalkAndLabelElementChunked,
 } = vi.hoisted(() => ({
   mockGetLocalConfig: vi.fn<(...args: any[]) => any>(),
   mockDeepQueryTopLevelSelector: vi.fn<(...args: any[]) => any>(),
-  mockWalkAndLabelElement: vi.fn<(...args: any[]) => any>(),
+  mockWalkAndLabelElementChunked: vi.fn<(...args: any[]) => any>(),
   mockTranslateWalkedElement: vi.fn<(...args: any[]) => any>(),
   mockValidateTranslationConfigAndToast: vi.fn<(...args: any[]) => any>(),
   mockSendMessage: vi.fn<(...args: any[]) => any>(),
@@ -38,10 +38,8 @@ vi.mock("@/utils/host/dom/find", () => ({
 
 vi.mock("@/utils/host/dom/traversal", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/utils/host/dom/traversal")>()),
-  walkAndLabelElement: mockWalkAndLabelElement,
-  walkAndLabelElementChunked: vi
-    .fn<(...args: any[]) => any>()
-    .mockResolvedValue({ forceBlock: false, isInlineNode: false }),
+  walkAndLabelElement: vi.fn<(...args: any[]) => any>(),
+  walkAndLabelElementChunked: mockWalkAndLabelElementChunked,
 }))
 
 vi.mock("@/utils/host/translate/node-manipulation", () => ({
@@ -104,7 +102,7 @@ describe("pageTranslationManager mutation observer root", () => {
     const manager = new PageTranslationManager()
     await manager.start()
     await flushDomUpdates()
-    mockWalkAndLabelElement.mockClear()
+    mockWalkAndLabelElementChunked.mockClear()
 
     // Body-replacing SPA visit: the soft URL-change path deliberately keeps
     // observers attached instead of restarting, so the mutation observer must
@@ -116,7 +114,7 @@ describe("pageTranslationManager mutation observer root", () => {
     await flushDomUpdates()
 
     // The swap itself must be walked like any inserted subtree...
-    expect(mockWalkAndLabelElement).toHaveBeenCalledWith(
+    expect(mockWalkAndLabelElementChunked).toHaveBeenCalledWith(
       newBody,
       expect.any(String),
       DEFAULT_CONFIG,
@@ -124,13 +122,13 @@ describe("pageTranslationManager mutation observer root", () => {
     )
 
     // ...and content inserted into the NEW body afterwards must still be seen.
-    mockWalkAndLabelElement.mockClear()
+    mockWalkAndLabelElementChunked.mockClear()
     const lateParagraph = document.createElement("p")
     lateParagraph.textContent = "Late route B content"
     newBody.appendChild(lateParagraph)
     await flushDomUpdates()
 
-    expect(mockWalkAndLabelElement).toHaveBeenCalledWith(
+    expect(mockWalkAndLabelElementChunked).toHaveBeenCalledWith(
       lateParagraph,
       expect.any(String),
       DEFAULT_CONFIG,
