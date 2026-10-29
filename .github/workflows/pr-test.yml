@@ -95,6 +95,10 @@ jobs:
           cp scripts/output/performance/build.json "$GITHUB_WORKSPACE/scripts/output/performance/baseline-build.json"
       - name: Record the same production UI script against the baseline
         run: PERF_BROWSER=true PERF_LABEL=baseline PERF_EXTENSION_PATH="$RUNNER_TEMP/read-frog-025/.output/chrome-mv3" xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
+      - name: Repeat production observations in reverse order
+        run: |
+          PERF_BROWSER=true PERF_LABEL=baseline-repeat PERF_EXTENSION_PATH="$RUNNER_TEMP/read-frog-025/.output/chrome-mv3" xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
+          PERF_BROWSER=true PERF_LABEL=current-repeat xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
       - name: Upload performance observations (no timing thresholds)
         if: always()
         uses: actions/upload-artifact@v4
