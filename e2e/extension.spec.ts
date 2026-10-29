@@ -177,6 +177,8 @@ test("unpacked MV3: translation, DeepSeek actions, diagnostics, images and crede
         config.language.sourceCode = "eng"
         config.language.targetCode = "cmn"
         config.pageTranslation.page.translateTitle = false
+        config.pageTranslation.node.enabled = true
+        config.pageTranslation.node.hotkey = "backtick"
         config.pageTranslation.batchQueueConfig.maxItemsPerBatch = 1
         config.inputTranslation.fromLang = "eng"
         config.inputTranslation.toLang = "cmn"
@@ -206,6 +208,28 @@ test("unpacked MV3: translation, DeepSeek actions, diagnostics, images and crede
     expect(await readFile(".output/chrome-mv3/content-scripts/subtitles.js", "utf8")).toContain(
       logoDataURL,
     )
+    // A generic SPA retains our wrapper while replacing its own text node.
+    // No YouTube URL/selector is involved; page translation is still OFF.
+    const article = page.locator("#article")
+    await article.hover()
+    await page.keyboard.press("`")
+    await expect(article.locator(".read-frog-translated-content-wrapper")).toContainText(translated)
+    const nextTitle = "This is the new article heading after client-side navigation."
+    await article.evaluate((element, text) => {
+      history.pushState({}, "", "?article=second")
+      element.firstChild!.remove()
+      element.append(text)
+    }, nextTitle)
+    await expect(article).toHaveText(nextTitle)
+    await expect(article.locator(".read-frog-translated-content-wrapper")).toHaveCount(0)
+    await article.hover()
+    await page.keyboard.press("`")
+    await expect(article.locator(".read-frog-translated-content-wrapper")).toContainText(translated)
+    expect(apiRequests.some((request) => request.body.includes(nextTitle))).toBe(true)
+    await article.evaluate((element, text) => {
+      element.textContent = text
+    }, original)
+    await expect(article.locator(".read-frog-translated-content-wrapper")).toHaveCount(0)
     await page.keyboard.press("Alt+e")
     await expect(page.locator("#article .read-frog-translated-content-wrapper")).toContainText(
       translated,

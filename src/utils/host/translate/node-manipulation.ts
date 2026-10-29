@@ -3,6 +3,7 @@ import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { getEffectiveSiteRule } from "@/utils/site-rules/effective"
 import { isHTMLElement } from "../dom/filter"
 import { walkAndLabelElement } from "../dom/traversal"
+import { beginNodeTranslation } from "./core/node-translation-lifecycle"
 import { translateWalkedElement } from "./core/translation-walker"
 import { validateTranslationConfigAndToast } from "./translate-text"
 import { beginNodeSiteRuleCSSOperation } from "./ui/node-site-rule-css"
@@ -35,21 +36,26 @@ export async function removeOrShowNodeTranslation(node: Element, config: Config)
   const rootNode = node.getRootNode()
   const styleRoot = rootNode instanceof ShadowRoot ? rootNode : document
   const siteRule = getEffectiveSiteRule(config, window.location.href)
-  const releaseSiteRuleCSS = await beginNodeSiteRuleCSSOperation(styleRoot, siteRule.injectedCss)
-
+  const lifecycle = beginNodeTranslation(node, id)
   try {
-    walkAndLabelElement(node, id, config)
-    await translateWalkedElement(
-      node,
-      id,
-      config,
-      true,
-      undefined,
-      undefined,
-      config.pageTranslation.node.forceRetranslation,
-    )
+    const releaseSiteRuleCSS = await beginNodeSiteRuleCSSOperation(styleRoot, siteRule.injectedCss)
+    try {
+      if (!lifecycle.isActive()) return false
+      walkAndLabelElement(node, id, config)
+      await translateWalkedElement(
+        node,
+        id,
+        config,
+        true,
+        undefined,
+        lifecycle.isActive,
+        config.pageTranslation.node.forceRetranslation,
+      )
+    } finally {
+      await releaseSiteRuleCSS()
+    }
   } finally {
-    await releaseSiteRuleCSS()
+    lifecycle.finish()
   }
   return true
 }
