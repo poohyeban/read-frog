@@ -23,6 +23,10 @@ jobs:
           unzip -q /tmp/extension.zip -d .diagnostics/extension
       - run: pnpm exec playwright install --with-deps chromium
       - name: Reproduce and collect message evidence
+        env:
+          SUBTITLE_EXTENSION_PATH: .diagnostics/extension
+          SUBTITLE_ARTIFACT_DIR: .diagnostics/artifacts/subtitles
+          EXPECT_SUBTITLE_BUGS: "true"
         run: xvfb-run --auto-servernum pnpm exec playwright test --config .diagnostics/playwright.config.mjs
       - uses: actions/upload-artifact@v4
         if: always()
