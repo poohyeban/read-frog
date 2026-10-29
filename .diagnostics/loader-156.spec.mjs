@@ -21,10 +21,17 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
       channel: "chromium",
       executablePath,
       headless: false,
+      ignoreDefaultArgs: ["--disable-back-forward-cache"],
       args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
     })
     evidence.browser = context.browser().version()
     await context.tracing.start({ screenshots: true, snapshots: true })
+    await context.addInitScript(() => {
+      window.__diagnosticPageShows = []
+      window.addEventListener("pageshow", (event) => {
+        window.__diagnosticPageShows.push({ persisted: event.persisted })
+      })
+    })
     await context.route("https://www.youtube.com/**", (route) =>
       route.fulfill({ contentType: "text/html", body: fixture }),
     )
@@ -117,6 +124,7 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
         runtimeURL: await worker.evaluate(() => chrome.runtime.getURL("content-runtime.js")),
         hostCount: await page.locator("read-frog-lite").count(),
         subtitleHostCount: await page.locator("#read-frog-subtitles-ui-host").count(),
+        pageShows: await page.evaluate(() => window.__diagnosticPageShows),
         errors: await errors(),
         pageErrors: [...evidence.pageErrors],
         console: [...evidence.console],
@@ -154,23 +162,31 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
       const tab = (await chrome.tabs.query({})).find((tab) => tab.url === url)
       try {
         const discarded = await chrome.tabs.discard(tab.id)
-        return { id: tab.id, discarded: discarded?.discarded ?? false }
+        return { id: discarded?.id, oldId: tab.id, discarded: discarded?.discarded ?? false }
       } catch (error) {
         return { error: error.message }
       }
     }, discardedURL)
-    if (discardResult.discarded) {
-      await worker.evaluate(
-        async (id) => chrome.tabs.update(id, { active: true }),
-        discardResult.id,
-      )
-      await expect.poll(() => context.pages().some((p) => p.url() === discardedURL)).toBe(true)
-      page = context.pages().find((p) => p.url() === discardedURL)
-      observe(page)
+    try {
+      if (discardResult.discarded) {
+        await worker.evaluate(
+          async (id) => chrome.tabs.update(id, { active: true }),
+          discardResult.id,
+        )
+        await expect.poll(() => context.pages().some((p) => p.url() === discardedURL)).toBe(true)
+        page = context.pages().find((p) => p.url() === discardedURL)
+        observe(page)
+      }
+      await page.bringToFront()
+      await page.waitForTimeout(800)
+      await capture("discard and reactivate", page, { discardResult })
+    } catch (error) {
+      evidence.cases.push({
+        label: "discard and reactivate: harness unavailable",
+        discardResult,
+        error: error.message,
+      })
     }
-    await page.bringToFront()
-    await page.waitForTimeout(800)
-    await capture("discard and reactivate", page, { discardResult })
 
     // Deliberately invalidate the extension while paused immediately before a
     // startup API/import. Only debugger scheduling changes; ZIP bytes do not.
