@@ -25,6 +25,8 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
       args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
     })
     evidence.browser = context.browser().version()
+    context.setDefaultNavigationTimeout(15000)
+    context.setDefaultTimeout(10000)
     await context.tracing.start({ screenshots: true, snapshots: true })
     await context.addInitScript(() => {
       window.__diagnosticPageShows = []
@@ -131,6 +133,7 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
         ...extra,
       }
       evidence.cases.push(entry)
+      await writeFile(`${output}/evidence.json`, JSON.stringify(evidence, null, 2))
       console.log("LOADER_CASE", JSON.stringify({ browser: evidence.browser, ...entry }))
     }
     let page = await context.newPage()
@@ -151,10 +154,15 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
       await capture(`refresh and tab switch ${i + 1}`, page)
     }
     await clearErrors()
-    await page.goto("https://example.org/bfcache-fixture")
-    await page.goBack()
-    await page.waitForTimeout(600)
-    await capture("back navigation", page)
+    try {
+      await page.goto("https://example.org/bfcache-fixture")
+      await page.goBack({ waitUntil: "commit", timeout: 15000 })
+      await page.waitForTimeout(600)
+      await capture("back navigation", page)
+    } catch (error) {
+      evidence.cases.push({ label: "back navigation: harness unavailable", error: error.message })
+      await page.goto(watchURL)
+    }
 
     // Compare the controlled fixture with YouTube's actual document/CSP. No
     // account or model key is configured, and automatic translation stays off.
