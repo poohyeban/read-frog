@@ -91,6 +91,19 @@ describe("subtitles scheduler", () => {
     expect(subtitlesStore.get(currentSubtitleAtom)?.text).toBe("later")
   })
 
+  it("stopping an old scheduler cannot erase a replacement session's state", () => {
+    vi.useFakeTimers()
+    const old = new SubtitlesScheduler({ videoElement: createVideo() })
+    old.setState("error", { message: "old failure" })
+    old.stop()
+    const replacement = new SubtitlesScheduler({ videoElement: createVideo() })
+    replacement.setState("loading")
+    vi.advanceTimersByTime(5000)
+    expect(subtitlesStore.get(subtitlesStateAtom)?.state).toBe("loading")
+    expect(vi.getTimerCount()).toBe(0)
+    replacement.stop()
+  })
+
   it("auto-hides error state after a delay", () => {
     vi.useFakeTimers()
 

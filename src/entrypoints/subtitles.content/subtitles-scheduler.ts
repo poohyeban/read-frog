@@ -157,6 +157,7 @@ export class SubtitlesScheduler {
   }
 
   stop() {
+    this.clearErrorAutoHide()
     this.active = false
     this.detachListeners()
     this.updateVisibility()
