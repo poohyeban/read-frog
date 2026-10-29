@@ -5,8 +5,8 @@ let input = ""
 for await (const chunk of process.stdin) input += chunk
 const groups = JSON.parse(input)
 const packages = Object.values(groups).flat()
-// Iconify is build-time listed but its offline renderer ships in the extension.
-for (const name of ["@iconify/react", "@iconify/types", "@iconify/utils"]) {
+// shadcn is build-time tooling; its imported CSS still ships in the extension.
+for (const name of ["shadcn"]) {
   const entry = path.resolve("node_modules", name)
   let location
   try {
