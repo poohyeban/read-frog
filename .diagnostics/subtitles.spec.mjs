@@ -206,7 +206,14 @@ test("subtitles continue across batches, translate long active cues and clean up
       pageErrors: evidence.pageErrors.slice(errorsBefore),
     }
     await page.screenshot({ path: `${artifactDir}/after-extension-reload.png` })
+    // Wake the replacement worker and wait until the reloaded extension is ready
+    // before refreshing the tab; its old worker disappearing is only the start.
+    const options = await context.newPage()
+    await options.goto(`chrome-extension://${worker.url().split("/")[2]}/options.html`)
+    await options.waitForFunction(() => typeof chrome.runtime?.id === "string")
+    await page.bringToFront()
     await page.reload()
+    await expect(page.locator("#read-frog-subtitles-ui-host")).toBeAttached()
     await moveTo(1)
     await expect(translation).toContainText("已翻译字幕 0。")
     evidence.recoveredAfterPageRefresh = true
