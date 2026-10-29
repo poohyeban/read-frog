@@ -42,6 +42,7 @@ tsconfig.local.json
 docs/*
 !docs/lite/
 !docs/restore/
+!docs/performance/
 
 /repos
 
