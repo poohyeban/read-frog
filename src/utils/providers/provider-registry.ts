@@ -1,6 +1,7 @@
 import type { ProviderConfig, ProvidersConfig } from "@/types/config/provider"
 import type { FeatureKey } from "@/utils/constants/feature-providers"
 import type { ProviderSelectorOption } from "@/utils/providers/provider-display"
+import { isAudioProviderConfig } from "@/types/config/provider"
 import { isLLMProviderConfig, isTranslateProviderConfig } from "@/types/config/provider"
 
 export type ProviderCapability = FeatureKey | "customAction"
@@ -19,6 +20,8 @@ export interface LocalProviderRef<T extends ProviderConfig = ProviderConfig> {
 export type ResolvedProviderRef<T extends ProviderConfig = ProviderConfig> = LocalProviderRef<T>
 
 const LOCAL_PROVIDER_CAPABILITY_PREDICATES = {
+  tts: isAudioProviderConfig,
+  transcription: isAudioProviderConfig,
   pageTranslation: isTranslateProviderConfig,
   inputTranslation: isTranslateProviderConfig,
   videoSubtitles: isTranslateProviderConfig,
@@ -106,7 +109,7 @@ export function resolveProviderRefForCapability<C extends ProviderCapability>(
   providerId: string,
 ): ProviderRefForCapability<C> | null {
   const providerConfig = providersConfig.find((provider) => provider.id === providerId)
-  if (providerConfig) {
+  if (providerConfig?.enabled) {
     if (!isLocalProviderConfigCompatibleWithCapability(capability, providerConfig)) {
       return null
     }

@@ -59,3 +59,9 @@ export function isDedicatedLLMProviderConfig(
 export function isAPIProviderConfig(config: ProviderConfig): config is APIProviderConfig {
   return isAPIProvider(config.provider)
 }
+
+export function isAudioProviderConfig(
+  config: ProviderConfig,
+): config is Extract<ProviderConfig, { provider: "openai" | "openai-compatible" }> {
+  return config.provider === "openai" || config.provider === "openai-compatible"
+}

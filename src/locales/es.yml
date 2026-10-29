@@ -185,11 +185,15 @@ options:
         selectionTranslation: Traducción de la barra de selección
         inputTranslation: Traducción de entrada
         videoSubtitles: Subtítulos de video
+        tts: Speech (TTS)
+        transcription: Transcription (ASR)
       descriptions:
         pageTranslation: Traduce la página completa en modo bilingüe o de reemplazo.
         selectionTranslation: Traduce el texto que seleccionas desde la barra de selección.
         inputTranslation: Traduce lo que escribes en un campo de texto antes de enviarlo.
         videoSubtitles: Traduce los subtítulos que aparecen en el reproductor de video.
+        tts: Choose the audio model, voice and speed in Speech settings.
+        transcription: Choose the audio model and language in Transcription settings.
     aiContentAware:
       title: Traducción con contexto inteligente de IA
       description: Da a la IA contexto de la página o el video para que traduzca con
@@ -1344,6 +1348,30 @@ options:
           description: Esto eliminará todos los resultados de segmentación AI en caché. La
             próxima vez que reproduzcas un video con segmentación AI activada,
             se volverán a procesar los subtítulos.
+  tts:
+    title: Texto a voz
+    pageDescription: Read text aloud with your configured speech service. Voice IDs
+      are defined by that service.
+    voice:
+      title: Voz
+      selectPlaceholder: Selecciona una voz
+      noVoicesFound: No se encontraron voces
+      language:
+        title: Voz por idioma
+        description: Elige un idioma y luego la voz que lo lee en voz alta. Restablecer
+          devuelve la voz que Read Frog elige para ese idioma.
+        reset: Restablecer
+        previewSample: ¡Hola desde Read Frog! Así sonaré al leer en voz alta.
+      fallback:
+        title: Voz alternativa
+        description: La voz para cualquier idioma al que no le hayas asignado una propia.
+    speech:
+      title: Habla
+      rate:
+        title: Velocidad
+        description: Cuánto más rápido o más lento lee la voz respecto a su propio
+          ritmo, de -100 a 100 por ciento.
+      error: Introduce un número entero entre $1 y $2
 translateService:
   title: Servicio de traducción
   description: Solo para traducir la página web
@@ -1679,3 +1707,23 @@ speak:
   noTextSelected: No hay texto seleccionado
   openaiNotConfigured: El proveedor OpenAI no está configurado o activado
   openaiApiKeyNotConfigured: La clave API de OpenAI no está configurada
+audioServices:
+  service: Audio service
+  provider: Provider
+  providerDescription: Manage the endpoint, API key and headers in API Providers.
+    Only OpenAI-style audio protocols are supported here.
+  model: Audio model
+  modelDescription: Enter the model name accepted by your service. This is
+    independent of its text translation model.
+  timeout: Timeout (milliseconds, 1000–600000)
+  notConfigured: Select a provider and configure its audio model before using this service.
+  selected: The selected service will receive audio or text only when you request it.
+  clear: Clear selection
+  transcription: Transcription (ASR)
+  transcriptionDescription: Configure the audio transcription interface. This
+    version does not capture video audio or submit videos for transcription.
+  language: Input language
+  languageDescription: Optional ISO 639-1 code, such as en or zh. Leave blank for
+    service-side detection.
+  responseFormat: Response format
+  outputFormat: Audio output format

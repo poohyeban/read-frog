@@ -172,7 +172,7 @@ export const pageCustomPromptsConfigSchema = createCustomPromptsConfigSchema(
 export const customPromptsConfigSchema = pageCustomPromptsConfigSchema
 
 export const translateConfigSchema = z.object({
-  providerId: z.string().nonempty(),
+  providerId: z.string(),
   mode: translationModeSchema,
   modeShortcut: shortcutSchema,
   node: z.object({

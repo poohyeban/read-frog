@@ -113,8 +113,16 @@ const SubtitlesQueuePage = lazy(() =>
     default: module.SubtitlesQueuePage,
   })),
 )
+const TextToSpeechPage = lazy(() =>
+  import("./pages/text-to-speech").then((m) => ({ default: m.TextToSpeechPage })),
+)
+const TranscriptionPage = lazy(() =>
+  import("./pages/transcription").then((m) => ({ default: m.TranscriptionPage })),
+)
 const ROUTE_COMPONENTS: Record<RoutePath, ComponentType> = {
   "/": ApiProvidersPage,
+  "/text-to-speech": TextToSpeechPage,
+  "/transcription": TranscriptionPage,
   "/video-subtitles/style": SubtitlesStylePage,
   "/video-subtitles/auto-start": SubtitlesAutoStartPage,
   "/video-subtitles/subtitles-queue": SubtitlesQueuePage,

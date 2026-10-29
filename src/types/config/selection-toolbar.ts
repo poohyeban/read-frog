@@ -36,7 +36,7 @@ export const selectionToolbarCustomActionOutputFieldSchema = z.object({
 
 export const selectionToolbarBuiltInActionStateSchema = z.object({
   enabled: z.boolean(),
-  providerId: z.string().nonempty(),
+  providerId: z.string(),
   shortcut: shortcutSchema.optional(),
 })
 
@@ -69,7 +69,7 @@ export const selectionToolbarCustomActionSchema = z
     name: z.string().nonempty(),
     enabled: z.boolean().optional(),
     icon: z.string(),
-    providerId: z.string().nonempty(),
+    providerId: z.string(),
     systemPrompt: z.string(),
     prompt: z.string(),
     outputSchema: z.array(selectionToolbarCustomActionOutputFieldSchema).min(1),

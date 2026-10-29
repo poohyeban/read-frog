@@ -1,4 +1,6 @@
 export const ROUTE_DEFS = [
+  { path: "/text-to-speech" },
+  { path: "/transcription" },
   { path: "/video-subtitles/style" },
   { path: "/video-subtitles/auto-start" },
   { path: "/video-subtitles/subtitles-queue" },

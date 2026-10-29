@@ -38,7 +38,7 @@ export function selectTTSVoice(
   }
 
   if (detectedLanguage && detectedLanguage in ttsConfig.languageVoices) {
-    return ttsConfig.languageVoices[detectedLanguage] ?? ttsConfig.defaultVoice
+    return ttsConfig.languageVoices[detectedLanguage] || ttsConfig.defaultVoice
   }
 
   return ttsConfig.defaultVoice

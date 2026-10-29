@@ -17,6 +17,12 @@ export function FeaturesNav() {
       <SidebarGroupContent>
         <SidebarMenu>
           {[
+            { path: "/text-to-speech", label: i18n.t("options.tts.title"), icon: "tabler:volume" },
+            {
+              path: "/transcription",
+              label: i18n.t("audioServices.transcription"),
+              icon: "tabler:microphone",
+            },
             {
               path: "/video-subtitles",
               label: i18n.t("options.videoSubtitles.title"),

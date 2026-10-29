@@ -164,11 +164,15 @@ options:
         selectionTranslation: 划词翻译
         inputTranslation: 输入翻译
         videoSubtitles: 视频字幕
+        tts: 语音朗读
+        transcription: 音频转录
       descriptions:
         pageTranslation: 翻译整个网页，双语对照或直接替换原文。
         selectionTranslation: 通过划词工具栏翻译你选中的文本。
         inputTranslation: 在发送前翻译你写在输入框里的内容。
         videoSubtitles: 翻译视频播放器中随播放出现的字幕。
+        tts: 在语音朗读设置中选择模型、语音和语速。
+        transcription: 在语音转录设置中填写模型及语言。
     aiContentAware:
       title: AI 智能上下文翻译
       description: 把网页或视频的上下文提供给 AI，让翻译更准确
@@ -1193,6 +1197,27 @@ options:
           confirm: 确认
           cancel: 取消
           description: 这将删除所有已缓存的 AI 断句结果。下次播放启用 AI 断句的视频时，将重新处理字幕。
+  tts:
+    title: 文本转语音
+    pageDescription: 使用你配置的语音服务朗读文本；语音名称由服务定义。
+    voice:
+      title: 语音
+      selectPlaceholder: 请选择一个声音
+      noVoicesFound: 未找到语音
+      language:
+        title: 语言语音
+        description: 先选择一种语言，再挑选朗读它时使用的语音。重置会换回陪读蛙为该语言选定的语音。
+        reset: 重置
+        previewSample: 来自 Read Frog 的问候！这是我朗读时的声音。
+      fallback:
+        title: 兜底语音
+        description: 你还没有单独指定语音的语言，都用这个语音朗读。
+    speech:
+      title: 朗读
+      rate:
+        title: 语速
+        description: 相对语音本身的语速快多少或慢多少，取值 -100 到 100 个百分点。
+      error: 请输入 $1 到 $2 之间的整数
 translateService:
   title: 翻译服务
   description: 仅用于翻译网页内容
@@ -1521,3 +1546,19 @@ speak:
   noTextSelected: 未选择文本
   openaiNotConfigured: OpenAI 提供商未配置或未启用
   openaiApiKeyNotConfigured: OpenAI API Key 未配置
+audioServices:
+  service: 音频服务
+  provider: 服务 Provider
+  providerDescription: 在 API Provider 页面管理服务地址、密钥及请求头。此处支持 OpenAI 风格音频协议。
+  model: 音频模型名称
+  modelDescription: 填写服务接受的模型名称，与文本翻译模型独立。
+  timeout: 超时（毫秒，1000–600000）
+  notConfigured: 使用前请选择 Provider 并配置音频模型。
+  selected: 仅在主动使用时，向所选服务发送文本或音频。
+  clear: 清除选择
+  transcription: 语音转录（ASR）
+  transcriptionDescription: 配置音频转录接口。本版本不捕获视频音频，也不会自动提交视频转录任务。
+  language: 输入语言
+  languageDescription: 可选 ISO 639-1 代码，例如 en 或 zh；留空由服务识别。
+  responseFormat: 响应格式
+  outputFormat: 音频输出格式

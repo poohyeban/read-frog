@@ -12,7 +12,7 @@ function getIssuePaths(input: unknown) {
 }
 
 describe("config provider enabled validation", () => {
-  it("fails when the built-in Dictionary uses a disabled provider", () => {
+  it("preserves settings when the built-in Dictionary provider is disabled", () => {
     const providersConfig = DEFAULT_CONFIG.providersConfig.map((provider) =>
       provider.id === "openai-default" ? { ...provider, enabled: false } : provider,
     )
@@ -30,7 +30,7 @@ describe("config provider enabled validation", () => {
       },
     })
 
-    expect(issuePaths).toContain("selectionToolbar.builtInActions.dictionary.providerId")
+    expect(issuePaths).toEqual([])
   })
 
   it("rejects an unknown provider for selection toolbar translation", () => {

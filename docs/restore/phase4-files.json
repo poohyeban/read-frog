@@ -1,0 +1,22 @@
+[
+  {
+    "path": "src/entrypoints/options/pages/text-to-speech/index.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "reuse": "original UI; remove Edge-only pitch/volume/catalog and analytics; retain language picker, rate input, preview and reset"
+  },
+  {
+    "path": "src/entrypoints/options/pages/text-to-speech/speech/index.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "reuse": "original UI; remove Edge-only pitch/volume/catalog and analytics; retain language picker, rate input, preview and reset"
+  },
+  {
+    "path": "src/entrypoints/options/pages/text-to-speech/voice/index.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "reuse": "original UI; remove Edge-only pitch/volume/catalog and analytics; retain language picker, rate input, preview and reset"
+  },
+  {
+    "path": "src/entrypoints/options/pages/text-to-speech/voice/language-voice-item.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "reuse": "original UI; remove Edge-only pitch/volume/catalog and analytics; retain language picker, rate input, preview and reset"
+  }
+]

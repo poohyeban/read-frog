@@ -187,11 +187,15 @@ options:
         selectionTranslation: Seçim alətlər panelində tərcümə
         inputTranslation: Daxil edilən mətnin tərcüməsi
         videoSubtitles: Video subtitrləri
+        tts: Speech (TTS)
+        transcription: Transcription (ASR)
       descriptions:
         pageTranslation: Bütün səhifəni ikidilli və ya əvəzetmə rejimində tərcümə edir.
         selectionTranslation: Seçdiyiniz mətni seçim alətlər paneli vasitəsilə tərcümə edir.
         inputTranslation: Mətn sahəsinə yazdığınızı göndərməzdən əvvəl tərcümə edir.
         videoSubtitles: Subtitrləri video pleyerdə göründükcə tərcümə edir.
+        tts: Choose the audio model, voice and speed in Speech settings.
+        transcription: Choose the audio model and language in Transcription settings.
     aiContentAware:
       title: Süni intellektlə kontekstə uyğun tərcümə
       description: Daha dəqiq tərcümə üçün süni intellektə səhifə və ya video
@@ -1351,6 +1355,30 @@ options:
           description: Keşdəki bütün süni intellekt seqmentləşdirmə nəticələri silinəcək.
             Növbəti dəfə süni intellekt seqmentləşdirməsi aktiv halda video
             açdıqda subtitrlər yenidən işlənəcək.
+  tts:
+    title: Mətnin səsləndirilməsi
+    pageDescription: Read text aloud with your configured speech service. Voice IDs
+      are defined by that service.
+    voice:
+      title: Səs
+      selectPlaceholder: Səs seçin
+      noVoicesFound: Səs tapılmadı
+      language:
+        title: Dil üçün səs
+        description: Əvvəl dili, sonra onu səsləndirəcək səsi seçin. Sıfırlama Read Frog
+          genişlənməsinin həmin dil üçün seçdiyi səsi bərpa edir.
+        reset: Sıfırla
+        previewSample: Read Frog sizə salam deyir! Ucadan oxuyarkən səsim belə olacaq.
+      fallback:
+        title: Ehtiyat səs
+        description: Ayrıca səs təyin etmədiyiniz dillər üçün istifadə olunan səs.
+    speech:
+      title: Nitq
+      rate:
+        title: Sürət
+        description: Səsləndirmənin normal tempdən nə qədər sürətli və ya yavaş
+          olacağını -100 ilə 100 faiz arasında təyin edin.
+      error: $1 ilə $2 arasında tam ədəd daxil edin
 translateService:
   title: Tərcümə xidməti
   description: Yalnız veb səhifənin tərcüməsi üçün
@@ -1680,3 +1708,23 @@ speak:
   noTextSelected: Mətn seçilməyib
   openaiNotConfigured: OpenAI provayderi tənzimlənməyib və ya aktiv deyil
   openaiApiKeyNotConfigured: OpenAI API açarı təyin edilməyib
+audioServices:
+  service: Audio service
+  provider: Provider
+  providerDescription: Manage the endpoint, API key and headers in API Providers.
+    Only OpenAI-style audio protocols are supported here.
+  model: Audio model
+  modelDescription: Enter the model name accepted by your service. This is
+    independent of its text translation model.
+  timeout: Timeout (milliseconds, 1000–600000)
+  notConfigured: Select a provider and configure its audio model before using this service.
+  selected: The selected service will receive audio or text only when you request it.
+  clear: Clear selection
+  transcription: Transcription (ASR)
+  transcriptionDescription: Configure the audio transcription interface. This
+    version does not capture video audio or submit videos for transcription.
+  language: Input language
+  languageDescription: Optional ISO 639-1 code, such as en or zh. Leave blank for
+    service-side detection.
+  responseFormat: Response format
+  outputFormat: Audio output format

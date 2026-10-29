@@ -5,6 +5,8 @@ import { mergeWithArrayOverwrite } from "../atoms/config"
 import { getProviderConfigById } from "../config/helpers"
 
 export const FEATURE_KEYS = [
+  "tts",
+  "transcription",
   "pageTranslation",
   "selectionTranslation",
   "inputTranslation",
@@ -20,6 +22,16 @@ export interface FeatureProviderDef {
 }
 
 export const FEATURE_PROVIDER_DEFS = {
+  tts: {
+    isProvider: (p: string) => p === "openai" || p === "openai-compatible",
+    getProviderId: (c: Config) => c.tts.providerId,
+    configPath: ["tts", "providerId"],
+  },
+  transcription: {
+    isProvider: (p: string) => p === "openai" || p === "openai-compatible",
+    getProviderId: (c: Config) => c.transcription.providerId,
+    configPath: ["transcription", "providerId"],
+  },
   videoSubtitles: {
     isProvider: isTranslateProvider,
     getProviderId: (c: Config) => c.videoSubtitles.providerId,
@@ -45,6 +57,8 @@ export const FEATURE_PROVIDER_DEFS = {
 
 /** Maps FeatureKey (with dots) to i18n-safe key (with underscores) for `options.apiProviders.featureProviders.features.*` */
 export const FEATURE_KEY_I18N_MAP = {
+  tts: "tts",
+  transcription: "transcription",
   videoSubtitles: "videoSubtitles",
   inputTranslation: "inputTranslation",
   pageTranslation: "pageTranslation",

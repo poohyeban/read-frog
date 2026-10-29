@@ -37,7 +37,7 @@ const languageSchema = z.object({
 
 const selectionToolbarFeatureSchema = z.object({
   enabled: z.boolean(),
-  providerId: z.string().nonempty(),
+  providerId: z.string(),
   shortcut: shortcutSchema,
 })
 
@@ -87,7 +87,7 @@ const inputTranslationLangSchema = z.union([
 ])
 const inputTranslationSchema = z.object({
   enabled: z.boolean(),
-  providerId: z.string().nonempty(),
+  providerId: z.string(),
   fromLang: inputTranslationLangSchema,
   toLang: inputTranslationLangSchema,
   enableCycle: z.boolean(),
@@ -167,16 +167,17 @@ export const configSchema = z
     for (const featureKey of FEATURE_KEYS) {
       const def = FEATURE_PROVIDER_DEFS[featureKey]
       const providerId = def.getProviderId(data)
+      if (!providerId) continue
 
       if (
         !doesProviderSupportsCapability(featureKey, data.providersConfig, providerId, {
-          requireEnable: true,
+          requireEnable: false,
         })
       ) {
         ctx.addIssue({
           code: "invalid_value",
           values: getProviderIdsForCapability(featureKey, data.providersConfig, {
-            requireEnable: true,
+            requireEnable: false,
           }),
           message: `Invalid provider id "${providerId}".`,
           path: [...def.configPath],
@@ -202,15 +203,16 @@ export const configSchema = z
     ]
 
     actionProviderEntries.forEach(({ providerId, path }) => {
+      if (!providerId) return
       if (
         !doesProviderSupportsCapability("customAction", data.providersConfig, providerId, {
-          requireEnable: true,
+          requireEnable: false,
         })
       ) {
         ctx.addIssue({
           code: "invalid_value",
           values: getProviderIdsForCapability("customAction", data.providersConfig, {
-            requireEnable: true,
+            requireEnable: false,
           }),
           message: `Invalid provider id "${providerId}".`,
           path: [...path],

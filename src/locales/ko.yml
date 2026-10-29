@@ -169,11 +169,15 @@ options:
         selectionTranslation: 선택 툴바 번역
         inputTranslation: 입력 번역
         videoSubtitles: 비디오 자막
+        tts: Speech (TTS)
+        transcription: Transcription (ASR)
       descriptions:
         pageTranslation: 페이지 전체를 대역 또는 원문 대체 방식으로 번역합니다.
         selectionTranslation: 선택 도구 모음에서 선택한 텍스트를 번역합니다.
         inputTranslation: 입력창에 쓴 내용을 보내기 전에 번역합니다.
         videoSubtitles: 동영상 플레이어에 표시되는 자막을 번역합니다.
+        tts: Choose the audio model, voice and speed in Speech settings.
+        transcription: Choose the audio model and language in Transcription settings.
     aiContentAware:
       title: AI 스마트 컨텍스트 번역
       description: 페이지나 영상의 맥락을 AI에 전달해 번역 정확도를 높입니다
@@ -1222,6 +1226,28 @@ options:
           confirm: 확인
           cancel: 취소
           description: 모든 캐시된 AI 분할 결과가 삭제됩니다. 다음에 AI 분할이 활성화된 비디오를 재생하면 자막이 다시 처리됩니다.
+  tts:
+    title: 텍스트 음성 변환
+    pageDescription: Read text aloud with your configured speech service. Voice IDs
+      are defined by that service.
+    voice:
+      title: 음성
+      selectPlaceholder: 음성을 선택하세요
+      noVoicesFound: 음성을 찾을 수 없습니다
+      language:
+        title: 언어별 음성
+        description: 언어를 고른 다음 그 언어를 읽어 줄 음성을 지정합니다. 재설정하면 Read Frog가 그 언어에 정해 둔 음성으로 돌아갑니다.
+        reset: 재설정
+        previewSample: Read Frog의 인사입니다! 제가 읽어 드릴 때 이렇게 들립니다.
+      fallback:
+        title: 대체 음성
+        description: 따로 음성을 지정하지 않은 언어는 이 음성으로 읽습니다.
+    speech:
+      title: 읽어 주기
+      rate:
+        title: 속도
+        description: 음성 본래의 속도보다 얼마나 빠르거나 느리게 읽을지, -100에서 100 퍼센트.
+      error: $1에서 $2 사이의 정수를 입력하세요
 translateService:
   title: 번역 서비스
   description: 웹페이지 번역 전용
@@ -1550,3 +1576,23 @@ speak:
   noTextSelected: 텍스트가 선택되지 않았습니다
   openaiNotConfigured: OpenAI 공급자가 구성되지 않았거나 활성화되지 않았습니다
   openaiApiKeyNotConfigured: OpenAI API 키가 구성되지 않았습니다
+audioServices:
+  service: Audio service
+  provider: Provider
+  providerDescription: Manage the endpoint, API key and headers in API Providers.
+    Only OpenAI-style audio protocols are supported here.
+  model: Audio model
+  modelDescription: Enter the model name accepted by your service. This is
+    independent of its text translation model.
+  timeout: Timeout (milliseconds, 1000–600000)
+  notConfigured: Select a provider and configure its audio model before using this service.
+  selected: The selected service will receive audio or text only when you request it.
+  clear: Clear selection
+  transcription: Transcription (ASR)
+  transcriptionDescription: Configure the audio transcription interface. This
+    version does not capture video audio or submit videos for transcription.
+  language: Input language
+  languageDescription: Optional ISO 639-1 code, such as en or zh. Leave blank for
+    service-side detection.
+  responseFormat: Response format
+  outputFormat: Audio output format

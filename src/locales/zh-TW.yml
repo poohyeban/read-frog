@@ -164,11 +164,15 @@ options:
         selectionTranslation: 選取文字翻譯
         inputTranslation: 輸入翻譯
         videoSubtitles: 影片字幕
+        tts: 语音朗读
+        transcription: 音频转录
       descriptions:
         pageTranslation: 翻譯整個網頁，雙語對照或直接取代原文。
         selectionTranslation: 透過劃詞工具列翻譯你選取的文字。
         inputTranslation: 在送出前翻譯你寫在輸入框裡的內容。
         videoSubtitles: 翻譯影片播放器中隨播放出現的字幕。
+        tts: 在语音朗读设置中选择模型、语音和语速。
+        transcription: 在语音转录设置中填写模型及语言。
     aiContentAware:
       title: AI 智慧上下文翻譯
       description: 把網頁或影片的上下文提供給 AI，讓翻譯更準確
@@ -1192,6 +1196,27 @@ options:
           confirm: 確認
           cancel: 取消
           description: 這將刪除所有已快取的 AI 斷句結果。下次播放啟用 AI 斷句的影片時，將重新處理字幕。
+  tts:
+    title: 文字轉語音
+    pageDescription: 使用你配置的语音服务朗读文本；语音名称由服务定义。
+    voice:
+      title: 語音
+      selectPlaceholder: 請選擇一個語音
+      noVoicesFound: 找不到語音
+      language:
+        title: 語言語音
+        description: 先選擇一種語言，再挑選朗讀它時使用的語音。重設會換回陪讀蛙為該語言選定的語音。
+        reset: 重設
+        previewSample: 陪讀蛙向你問好！這是朗讀功能的語音。
+      fallback:
+        title: 備用語音
+        description: 你還沒有單獨指定語音的語言，都用這個語音朗讀。
+    speech:
+      title: 朗讀
+      rate:
+        title: 語速
+        description: 相對語音本身的語速快多少或慢多少，範圍 -100 到 100 個百分點。
+      error: 請輸入 $1 到 $2 之間的整數
 translateService:
   title: 翻譯服務
   description: 僅用於翻譯網頁內容
@@ -1520,3 +1545,19 @@ speak:
   noTextSelected: 未選取文字
   openaiNotConfigured: 尚未設定或啟用 OpenAI 提供者
   openaiApiKeyNotConfigured: 尚未設定 OpenAI API 金鑰
+audioServices:
+  service: 音频服务
+  provider: 服务 Provider
+  providerDescription: 在 API Provider 页面管理服务地址、密钥及请求头。此处支持 OpenAI 风格音频协议。
+  model: 音频模型名称
+  modelDescription: 填写服务接受的模型名称，与文本翻译模型独立。
+  timeout: 超时（毫秒，1000–600000）
+  notConfigured: 使用前请选择 Provider 并配置音频模型。
+  selected: 仅在主动使用时，向所选服务发送文本或音频。
+  clear: 清除选择
+  transcription: 语音转录（ASR）
+  transcriptionDescription: 配置音频转录接口。本版本不捕获视频音频，也不会自动提交视频转录任务。
+  language: 输入语言
+  languageDescription: 可选 ISO 639-1 代码，例如 en 或 zh；留空由服务识别。
+  responseFormat: 响应格式
+  outputFormat: 音频输出格式

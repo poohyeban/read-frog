@@ -183,12 +183,16 @@ options:
         selectionTranslation: Перевод выделения
         inputTranslation: Перевод ввода
         videoSubtitles: Субтитры видео
+        tts: Speech (TTS)
+        transcription: Transcription (ASR)
       descriptions:
         pageTranslation: Переводит страницу целиком — в двуязычном режиме или с заменой
           оригинала.
         selectionTranslation: Переводит выделенный текст через панель выделения.
         inputTranslation: Переводит то, что вы набрали в поле ввода, перед отправкой.
         videoSubtitles: Переводит субтитры, которые появляются в видеоплеере.
+        tts: Choose the audio model, voice and speed in Speech settings.
+        transcription: Choose the audio model and language in Transcription settings.
     aiContentAware:
       title: Умный контекстный перевод ИИ
       description: Передавайте ИИ контекст страницы или видео, чтобы перевод был точнее
@@ -1330,6 +1334,30 @@ options:
           description: Все кэшированные результаты AI сегментации будут удалены. При
             следующем воспроизведении видео с включенной AI сегментацией
             субтитры будут обработаны заново.
+  tts:
+    title: Синтез речи
+    pageDescription: Read text aloud with your configured speech service. Voice IDs
+      are defined by that service.
+    voice:
+      title: Голос
+      selectPlaceholder: Выберите голос
+      noVoicesFound: Голоса не найдены
+      language:
+        title: Голос для языка
+        description: Выберите язык, а затем голос, которым он будет читаться. Сброс
+          вернёт голос, который Read Frog подбирает для этого языка.
+        reset: Сброс
+        previewSample: Привет от Read Frog! Так я буду звучать при чтении вслух.
+      fallback:
+        title: Резервный голос
+        description: Голос для языков, которым вы не назначили собственный.
+    speech:
+      title: Чтение вслух
+      rate:
+        title: Скорость
+        description: Насколько быстрее или медленнее собственного темпа читает голос, от
+          -100 до 100 процентов.
+      error: Введите целое число от $1 до $2
 translateService:
   title: Сервис перевода
   description: Только для перевода веб-страницы
@@ -1662,3 +1690,23 @@ speak:
   noTextSelected: Текст не выделен
   openaiNotConfigured: Провайдер OpenAI не настроен или не включён
   openaiApiKeyNotConfigured: API-ключ OpenAI не настроен
+audioServices:
+  service: Audio service
+  provider: Provider
+  providerDescription: Manage the endpoint, API key and headers in API Providers.
+    Only OpenAI-style audio protocols are supported here.
+  model: Audio model
+  modelDescription: Enter the model name accepted by your service. This is
+    independent of its text translation model.
+  timeout: Timeout (milliseconds, 1000–600000)
+  notConfigured: Select a provider and configure its audio model before using this service.
+  selected: The selected service will receive audio or text only when you request it.
+  clear: Clear selection
+  transcription: Transcription (ASR)
+  transcriptionDescription: Configure the audio transcription interface. This
+    version does not capture video audio or submit videos for transcription.
+  language: Input language
+  languageDescription: Optional ISO 639-1 code, such as en or zh. Leave blank for
+    service-side detection.
+  responseFormat: Response format
+  outputFormat: Audio output format

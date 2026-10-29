@@ -3,6 +3,7 @@ import type { Config } from "@/types/config/config"
 import { createOpenAI } from "@ai-sdk/openai"
 import { z } from "zod"
 import { getProviderHeaders } from "../headers"
+import { resolveProviderRefForCapability } from "../provider-registry"
 import { AudioServiceError } from "./types"
 
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024
@@ -24,7 +25,11 @@ const segmentSchema = z
 
 function service(config: Config, capability: "tts" | "transcription") {
   const settings = config[capability]
-  const provider = config.providersConfig.find((p) => p.id === settings.providerId && p.enabled)
+  const provider = resolveProviderRefForCapability(
+    capability,
+    config.providersConfig,
+    settings.providerId,
+  )?.config
   if (
     !provider ||
     !["openai", "openai-compatible"].includes(provider.provider) ||

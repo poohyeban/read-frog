@@ -177,11 +177,15 @@ options:
         selectionTranslation: Selection toolbar translation
         inputTranslation: Input translation
         videoSubtitles: Video subtitles
+        tts: Speech (TTS)
+        transcription: Transcription (ASR)
       descriptions:
         pageTranslation: Translates the whole page in bilingual or replace mode.
         selectionTranslation: Translates the text you select from the selection toolbar.
         inputTranslation: Translates what you type into an input box before you send it.
         videoSubtitles: Translates subtitles as they appear in a video player.
+        tts: Choose the audio model, voice and speed in Speech settings.
+        transcription: Choose the audio model and language in Transcription settings.
     aiContentAware:
       title: AI smart context translation
       description: Give the AI context from the page or video so it translates more
@@ -1463,6 +1467,30 @@ options:
           description: This will delete all cached AI segmentation results. The next time
             you play a video with AI segmentation enabled, it will re-process
             the subtitles.
+  tts:
+    title: Text to Speech
+    pageDescription: Read text aloud with your configured speech service. Voice IDs
+      are defined by that service.
+    voice:
+      title: Voice
+      selectPlaceholder: Select a voice
+      noVoicesFound: No voices found
+      language:
+        title: Language voice
+        description: Pick a language, then the voice that reads it aloud. Reset puts
+          back the voice Read Frog picks for that language.
+        reset: Reset
+        previewSample: Hello from Read Frog! This is how I will sound when reading aloud.
+      fallback:
+        title: Fallback voice
+        description: The voice for any language you have not given one of its own.
+    speech:
+      title: Speech
+      rate:
+        title: Rate
+        description: How much faster or slower the voice reads than its own pace, from
+          -100 to 100 percent.
+      error: Enter a whole number between $1 and $2
 translateService:
   title: Translation Service
   description: For translate the webpage only
@@ -1793,3 +1821,23 @@ speak:
   noTextSelected: No text selected
   openaiNotConfigured: OpenAI provider is not configured or enabled
   openaiApiKeyNotConfigured: OpenAI API key is not configured
+audioServices:
+  service: Audio service
+  provider: Provider
+  providerDescription: Manage the endpoint, API key and headers in API Providers.
+    Only OpenAI-style audio protocols are supported here.
+  model: Audio model
+  modelDescription: Enter the model name accepted by your service. This is
+    independent of its text translation model.
+  timeout: Timeout (milliseconds, 1000–600000)
+  notConfigured: Select a provider and configure its audio model before using this service.
+  selected: The selected service will receive audio or text only when you request it.
+  clear: Clear selection
+  transcription: Transcription (ASR)
+  transcriptionDescription: Configure the audio transcription interface. This
+    version does not capture video audio or submit videos for transcription.
+  language: Input language
+  languageDescription: Optional ISO 639-1 code, such as en or zh. Leave blank for
+    service-side detection.
+  responseFormat: Response format
+  outputFormat: Audio output format

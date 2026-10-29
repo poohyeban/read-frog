@@ -8,6 +8,7 @@ import {
   useCustomActionProviders,
   useFeatureProvider,
 } from "@/components/llm-providers/use-feature-providers"
+import { Button } from "@/components/ui/base-ui/button"
 import {
   FEATURE_KEYS,
   getFeatureDescriptionI18nKey,
@@ -86,13 +87,20 @@ function FeatureProviderItem({ featureKey }: { featureKey: FeatureKey }) {
       }
       description={i18n.t(getFeatureDescriptionI18nKey(featureKey))}
     >
-      <ProviderSelector
-        providers={providers}
-        value={providerId}
-        onChange={setProviderId}
-        triggerSize="sm"
-        selectContentProps={SELECT_CONTENT_PROPS}
-      />
+      <div className="flex items-center gap-2">
+        <ProviderSelector
+          providers={providers}
+          value={providerId}
+          onChange={setProviderId}
+          triggerSize="sm"
+          selectContentProps={SELECT_CONTENT_PROPS}
+        />
+        {providerId && (
+          <Button variant="ghost" size="sm" onClick={() => setProviderId("")}>
+            {i18n.t("audioServices.clear")}
+          </Button>
+        )}
+      </div>
     </ConfigItem>
   )
 }
