@@ -358,6 +358,37 @@ test("unpacked MV3: translation, DeepSeek actions, diagnostics, images and crede
     await expect(options.getByText("Local regression API").first()).toBeVisible()
     await options.reload()
     await expect(options.getByText("Local regression API").first()).toBeVisible()
+    await options.getByRole("button", { name: "Add provider", exact: true }).click()
+    const dialog = options.getByRole("dialog", { name: "Add new provider" })
+    await expect(
+      dialog
+        .getByRole("heading", { name: "Built-in LLM providers", exact: true })
+        .locator("..")
+        .getByRole("button", { name: "DeepSeek", exact: true }),
+    ).toBeVisible()
+    const lightLogos = new Map<string, string>()
+    for (const colorScheme of ["light", "dark"] as const) {
+      await options.emulateMedia({ colorScheme })
+      await expect(options.locator("html")).toHaveClass(new RegExp(`\\b${colorScheme}\\b`))
+      const logos: string[] = []
+      for (const name of ["OpenAI", "DeepSeek", "Gemini", "Ollama", "Custom Chat Complete"]) {
+        const icon = dialog.getByRole("button", { name, exact: true }).locator("img")
+        await expect(icon).toHaveAttribute("src", /^data:image\/svg\+xml/)
+        await expect
+          .poll(() =>
+            icon.evaluate(
+              (element: HTMLImageElement) => element.complete && element.naturalWidth > 0,
+            ),
+          )
+          .toBe(true)
+        const src = (await icon.getAttribute("src"))!
+        logos.push(src)
+        if (colorScheme === "light") lightLogos.set(name, src)
+        else if (name === "OpenAI" || name === "Ollama") expect(src).not.toBe(lightLogos.get(name))
+      }
+      expect(new Set(logos).size).toBe(5)
+    }
+    await options.keyboard.press("Escape")
     expect(apiRequests.length).toBeGreaterThanOrEqual(3)
     expect(apiRequests.every((request) => request.authorization === `Bearer ${credential}`)).toBe(
       true,

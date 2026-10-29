@@ -9,6 +9,12 @@ import type {
 import type { Theme } from "@/types/config/theme"
 import { camelCase } from "case-anything"
 import customProviderLogo from "@/assets/providers/custom-provider.svg?inline"
+import deepseekLogo from "@/assets/providers/deepseek-color.svg?inline"
+import geminiLogo from "@/assets/providers/gemini-color.svg?inline"
+import ollamaLogoDark from "@/assets/providers/ollama-dark.svg?inline"
+import ollamaLogoLight from "@/assets/providers/ollama-light.svg?inline"
+import openaiLogoDark from "@/assets/providers/openai-dark.svg?inline"
+import openaiLogoLight from "@/assets/providers/openai-light.svg?inline"
 import {
   API_PROVIDER_TYPES,
   DEDICATED_LLM_PROVIDER_TYPES,
@@ -67,7 +73,7 @@ export const PROVIDER_ITEMS: Record<
   }
 > = {
   deepseek: {
-    logo: () => customProviderLogo,
+    logo: () => deepseekLogo,
     name: "DeepSeek",
     website: "https://platform.deepseek.com",
   },
@@ -78,19 +84,19 @@ export const PROVIDER_ITEMS: Record<
   },
 
   openai: {
-    logo: () => customProviderLogo,
+    logo: (theme) => (theme === "dark" ? openaiLogoDark : openaiLogoLight),
     name: "OpenAI",
     website: "https://platform.openai.com",
   },
 
   google: {
-    logo: () => customProviderLogo,
+    logo: () => geminiLogo,
     name: "Gemini",
     website: "https://aistudio.google.com",
   },
 
   ollama: {
-    logo: () => customProviderLogo,
+    logo: (theme) => (theme === "dark" ? ollamaLogoDark : ollamaLogoLight),
     name: "Ollama",
     website: "https://ollama.ai",
   },

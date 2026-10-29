@@ -2,4 +2,4 @@
 "@read-frog/extension": patch
 ---
 
-fix(providers): restore the dedicated DeepSeek adapter and inline page and subtitle logos
+fix(providers): restore built-in DeepSeek, distinct offline provider icons and inline page and subtitle logos

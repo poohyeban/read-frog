@@ -6,7 +6,7 @@
 
 [直接下载 v0.2.2 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.2/read-frog-lite-0.2.2-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
 
-0.2.2 接入专用 DeepSeek 适配器，修复词典 / 长难句的 JSON 请求协议，并内嵌网页和字幕按钮的青蛙 Logo。0.2.1 的 DevTools 脱敏诊断继续保留。详见[本版说明](docs/restore/RELEASE-0.2.2.md)。
+0.2.2 在「内置 LLM 提供商」中加入 DeepSeek，接入专用适配器，修复词典 / 长难句的 JSON 请求协议。OpenAI、DeepSeek、Gemini、Ollama 恢复各自的本地品牌图标；网页和字幕按钮的青蛙 Logo 也内嵌打包。0.2.1 的 DevTools 脱敏诊断继续保留。详见[本版说明](docs/restore/RELEASE-0.2.2.md)。
 
 ## 目录
 
@@ -279,7 +279,7 @@ node scripts/generate-icons.mjs
 pnpm licenses list --prod --json | node scripts/generate-notices.mjs
 ```
 
-语言表来源为 GPL 本地化、MIT ISO 数据和 Node ICU/CLDR；生成时尽量使用与 CI 相同的 Node 版本。离线图标来自 Tabler，不能恢复运行时 CDN 下载。修改依赖时同步 `package.json`、`pnpm-lock.yaml` 与第三方通知；不要仅因名称包含 `read-frog` 就删除有实际用途的源码归属，也不要重新引入许可未确认的独立包。
+语言表来源为 GPL 本地化、MIT ISO 数据和 Node ICU/CLDR；生成时尽量使用与 CI 相同的 Node 版本。操作图标来自 Tabler，Provider 品牌图标来自 LobeHub Icons（MIT，来源与固定版本见 [许可证记录](LICENSES/lobe-icons.txt)）。Provider SVG 在 `src/assets/providers/`，用 `?inline` 导入并在 `PROVIDER_ITEMS` 按类型映射；OpenAI / Ollama 提供黑白版本，确保深浅主题可见。所有图标离线打包，不能恢复运行时 CDN 下载。修改依赖时同步 `package.json`、`pnpm-lock.yaml` 与第三方通知；不要仅因名称包含 `read-frog` 就删除有实际用途的源码归属，也不要重新引入许可未确认的独立包。
 
 ## CI、构建产物与版本更新
 
