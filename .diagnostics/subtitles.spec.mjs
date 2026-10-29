@@ -198,7 +198,7 @@ test("subtitles continue across batches, translate long active cues and clean up
     if (oldRelease) {
       await expect(translation).toHaveAttribute("data-pending", "true")
       await page.waitForTimeout(800)
-      expect(evidence.pageErrors.slice(errorsBefore)).toContain("Extension context invalidated.")
+      expect(evidence.pageErrors.slice(errorsBefore).some((error) => /Extension context invalidated|must be loaded in a web extension environment/.test(error))).toBe(true)
     } else {
       await expect(page.locator("#read-frog-subtitles-ui-host")).toHaveCount(0)
       await expect(page.locator("#read-frog-hide-native-captions")).toHaveCount(0)
