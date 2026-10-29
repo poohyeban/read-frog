@@ -84,6 +84,17 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: Record production UI navigation timings
         run: PERF_BROWSER=true xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
+      - name: Rebuild the pinned 0.2.5 baseline in isolation
+        run: |
+          git fetch --no-tags origin 18f2c8cbfddc3df5e4b7552a48b1731c28ac4cfd
+          git worktree add --detach "$RUNNER_TEMP/read-frog-025" 18f2c8cbfddc3df5e4b7552a48b1731c28ac4cfd
+          cd "$RUNNER_TEMP/read-frog-025"
+          pnpm install --frozen-lockfile
+          pnpm build
+          node "$GITHUB_WORKSPACE/scripts/build-fingerprint.mjs"
+          cp scripts/output/performance/build.json "$GITHUB_WORKSPACE/scripts/output/performance/baseline-build.json"
+      - name: Record the same production UI script against the baseline
+        run: PERF_BROWSER=true PERF_LABEL=baseline PERF_EXTENSION_PATH="$RUNNER_TEMP/read-frog-025/.output/chrome-mv3" xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
       - name: Upload performance observations (no timing thresholds)
         if: always()
         uses: actions/upload-artifact@v4
