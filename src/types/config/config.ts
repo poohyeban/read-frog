@@ -11,6 +11,7 @@ import {
   MAX_SELECTION_OVERLAY_OPACITY,
   MIN_SELECTION_OVERLAY_OPACITY,
 } from "@/utils/constants/selection"
+import { DEFAULT_TRANSLATION_HUB_SHORTCUT_KEY } from "@/utils/constants/translation-hub"
 import {
   doesProviderSupportsCapability,
   getProviderIdsForCapability,
@@ -25,6 +26,7 @@ import { shortcutSchema } from "./shortcut"
 import { siteRulesConfigSchema } from "./site-rules"
 import { videoSubtitlesSchema } from "./subtitles"
 import { translateConfigSchema } from "./translate"
+import { ttsConfigSchema, transcriptionConfigSchema } from "./tts"
 
 // Language schema
 const languageSchema = z.object({
@@ -46,6 +48,9 @@ const selectionToolbarSchema = z
     disabledSelectionToolbarPatterns: z.array(z.string()),
     opacity: z.number().min(MIN_SELECTION_OVERLAY_OPACITY).max(MAX_SELECTION_OVERLAY_OPACITY),
     features: z.object({
+      speak: z
+        .object({ enabled: z.boolean(), shortcut: shortcutSchema.optional() })
+        .default({ enabled: true }),
       translate: selectionToolbarFeatureSchema,
     }),
     builtInActions: selectionToolbarBuiltInActionsSchema,
@@ -107,6 +112,24 @@ const uiLanguageSchema = z
   .default("auto")
 export type UiLanguage = z.infer<typeof uiLanguageSchema>
 
+const translationHubSchema = z
+  .object({
+    shortcut: shortcutSchema,
+    selectedProviderIds: z.array(z.string().min(1)).nullable().default(null),
+    sourceCode: langCodeISO6393Schema.or(z.literal("auto")).nullable().default(null),
+    targetCode: langCodeISO6393Schema.nullable().default(null),
+    // A missing ID in a pre-migration config must stay unset until v102 copies
+    // the page prompt; another UI context may write this config first.
+    promptId: z.string().min(1).nullable().default(null),
+  })
+  .default({
+    shortcut: DEFAULT_TRANSLATION_HUB_SHORTCUT_KEY,
+    selectedProviderIds: null,
+    sourceCode: null,
+    targetCode: null,
+    promptId: null,
+  })
+
 // Complete config schema
 export const configSchema = z
   .object({
@@ -117,6 +140,9 @@ export const configSchema = z
     selectionToolbar: selectionToolbarSchema,
 
     contextMenu: contextMenuSchema,
+    tts: ttsConfigSchema,
+    transcription: transcriptionConfigSchema,
+    translationHub: translationHubSchema,
     inputTranslation: inputTranslationSchema.optional(),
     floatingButton: floatingButtonSchema.default(DEFAULT_FLOATING_BUTTON_CONFIG),
     glossary: glossaryConfigSchema,

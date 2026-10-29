@@ -22,9 +22,12 @@ import { RiTranslate } from "@remixicon/react"
 import {
   IconDotsVertical,
   IconGripVertical,
+  IconLoader2,
   IconPin,
   IconPinnedFilled,
+  IconPlayerStopFilled,
   IconPlus,
+  IconVolume,
 } from "@tabler/icons-react"
 import { useAtom } from "jotai"
 import { useRef, useState } from "react"
@@ -45,7 +48,10 @@ import { cn } from "@/utils/styles/utils"
 import { shadowWrapper } from "../main"
 import { DropEvent } from "./close-button"
 import { useSelectionCustomActionPopover } from "./custom-action-button/provider"
+import { useSelectionSpeech } from "./speak-button"
 import { useSelectionTranslationPopover } from "./translate-button/provider"
+
+type SelectionSpeech = ReturnType<typeof useSelectionSpeech>
 
 // The toolbar's "more" menu: every enabled item, pinned or not, in the
 // toolbar's order. A row runs its item; its pin puts the item's button on the
@@ -62,7 +68,7 @@ export function SelectionToolbarMoreMenu() {
   const triggerRef = useRef<HTMLButtonElement>(null)
   const { openToolbarTranslation } = useSelectionTranslationPopover()
   const { openToolbarCustomAction } = useSelectionCustomActionPopover()
-
+  const speech = useSelectionSpeech()
   const items = getSelectionToolbarItems(selectionToolbar).filter((item) => item.enabled)
   const label = i18n.t("action.moreActions")
 
@@ -82,6 +88,8 @@ export function SelectionToolbarMoreMenu() {
       openToolbarCustomAction(item.id, anchor)
     } else if (item.id === "translate") {
       openToolbarTranslation(anchor)
+    } else {
+      speech.toggle()
     }
   }
 
@@ -129,7 +137,7 @@ export function SelectionToolbarMoreMenu() {
       >
         <MoreMenuItems
           items={items}
-
+          speech={speech}
           onRun={runItem}
           onPinChange={(item, pinned) => {
             void setSelectionToolbar((current) =>
@@ -158,12 +166,13 @@ export function SelectionToolbarMoreMenu() {
 
 function MoreMenuItems({
   items,
-
+  speech,
   onRun,
   onPinChange,
   onReorder,
 }: {
   items: SelectionToolbarItem[]
+  speech: SelectionSpeech
   onRun: (item: SelectionToolbarItem) => void
   onPinChange: (item: SelectionToolbarItem, pinned: boolean) => void
   onReorder: (orderedIds: string[]) => void
@@ -197,7 +206,7 @@ function MoreMenuItems({
             <MoreMenuRow
               key={item.id}
               item={item}
-
+              speech={speech}
               onRun={onRun}
               onPinChange={onPinChange}
             />
@@ -210,11 +219,12 @@ function MoreMenuItems({
 
 function MoreMenuRow({
   item,
-
+  speech,
   onRun,
   onPinChange,
 }: {
   item: SelectionToolbarItem
+  speech: SelectionSpeech
   onRun: (item: SelectionToolbarItem) => void
   onPinChange: (item: SelectionToolbarItem, pinned: boolean) => void
 }) {
@@ -254,8 +264,8 @@ function MoreMenuRow({
         className="flex h-full min-w-0 flex-1 cursor-pointer items-center gap-2 pr-1 text-left"
         onClick={() => onRun(item)}
       >
-        <MoreMenuItemIcon item={item} />
-        <span className="truncate">{getItemName(item)}</span>
+        <MoreMenuItemIcon item={item} speech={speech} />
+        <span className="truncate">{getItemName(item, speech)}</span>
       </button>
       <SelectionToolbarTooltip
         content={pinLabel}
@@ -279,15 +289,30 @@ function MoreMenuRow({
   )
 }
 
-function getItemName(item: SelectionToolbarItem) {
+function getItemName(item: SelectionToolbarItem, speech: SelectionSpeech) {
   if (item.kind === "action") return item.action.name
-  return i18n.t("action.translation")
+  return item.id === "translate" ? i18n.t("action.translation") : speech.label
 }
 
-function MoreMenuItemIcon({ item }: { item: SelectionToolbarItem }) {
+function MoreMenuItemIcon({
+  item,
+  speech,
+}: {
+  item: SelectionToolbarItem
+  speech: SelectionSpeech
+}) {
   const className = "size-4 shrink-0"
   if (item.kind === "action") {
     return <Icon icon={item.action.icon} strokeWidth={0.8} className={className} />
   }
-  return <RiTranslate className={className} />
+  if (item.id === "translate") {
+    return <RiTranslate className={className} />
+  }
+  if (speech.isFetching) {
+    return <IconLoader2 className={cn(className, "animate-spin")} strokeWidth={1.6} />
+  }
+  if (speech.isPlaying) {
+    return <IconPlayerStopFilled className={className} strokeWidth={1.6} />
+  }
+  return <IconVolume className={className} strokeWidth={1.6} />
 }

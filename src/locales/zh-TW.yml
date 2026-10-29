@@ -31,6 +31,8 @@ popup:
         action: 點選切換為雙語對照
   aiSmartContext: AI 智慧上下文
   aiSmartContextDescription: 結合網頁前後文提升翻譯品質。需要設定 LLM 翻譯服務提供者。
+  hub:
+    tooltip: 一次使用多個翻譯模型翻譯文字
 errorRecovery:
   title: 應用程式發生異常
   description: 已進入復原模式。可先匯出目前設定作為備份，重設設定後再重試。
@@ -69,7 +71,8 @@ options:
   apiProviders:
     title: API 提供者
     pageDescription: 接入 Read Frog Lite 呼叫的 AI 服務，並為每項功能指定使用哪一個。
-    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using
+      your own endpoint, model, and credentials.
     configTitle: 提供者設定
     addProvider: 新增提供者
     setApiKeyWarning:
@@ -84,7 +87,8 @@ options:
           description: 內建的大型語言模型提供者，大多數設定不需要填寫，例如 Base URL
         compatibleProviders:
           title: 相容 API 提供者
-          description: 相容 Chat Completions 的 API 使用自訂 Chat Complete，Open Responses API 使用自訂 Responses。
+          description: 相容 Chat Completions 的 API 使用自訂 Chat Complete，Open Responses API
+            使用自訂 Responses。
         pureTranslationProviders:
           title: 純翻譯提供者
           description: 專注於翻譯功能的提供者，沒有大型語言模型能力
@@ -254,6 +258,12 @@ options:
     subtitlesToggle:
       title: 字幕翻譯
       description: 開啟或關閉影片的翻譯字幕。
+    selectionSpeak:
+      title: 選取文字朗讀
+      description: 朗讀選取的文字，再按一次停止。
+    translationHub:
+      title: 翻譯中心
+      description: 在新分頁中開啟翻譯中心。
   selectionToolbar:
     title: 選取工具列
     pageDescription: 設定選取文字時出現哪些操作，以及工具列在哪些網站顯示。
@@ -266,6 +276,9 @@ options:
       translate:
         title: 翻譯
         description: 在工具列中顯示翻譯按鈕
+      speak:
+        title: 朗讀
+        description: 在工具列中顯示朗讀按鈕，用於朗讀選取的文字
     display:
       title: 顯示
       opacity:
@@ -317,7 +330,8 @@ options:
         aiConfigHelper:
           trigger: 讓 AI 幫我設定
           title: 讓 AI 幫我設定
-          description: 複製下方的提示詞，貼給你常用的 AI 助理（ChatGPT、Claude、DeepSeek、Kimi 等）。它會先問你想做什麼，再告訴你每一項怎麼填。提示詞包含這個動作目前的設定，但不含 API 金鑰。
+          description: 複製下方的提示詞，貼給你常用的 AI 助理（ChatGPT、Claude、DeepSeek、Kimi
+            等）。它會先問你想做什麼，再告訴你每一項怎麼填。提示詞包含這個動作目前的設定，但不含 API 金鑰。
           copy: 複製提示詞
           copyFailed: 複製失敗，請再試一次
         icon: 圖示
@@ -560,7 +574,9 @@ options:
           fieldSentence: 句子
           fieldSentenceDescription: 提取上方段落中包含所選字詞的完整句子，不要包含前後句。
           fieldSentenceTerm: 句中詞形
-          fieldSentenceTermDescription: '所選字詞在「句子」中的位置：序列化為字串的 JSON 陣列，字詞的每個部分一項 {"text": 字串}，逐字引用「句子」原文（例如 [{"text":"blossoms"}]）。'
+          fieldSentenceTermDescription:
+            '所選字詞在「句子」中的位置：序列化為字串的 JSON 陣列，字詞的每個部分一項 {"text":
+            字串}，逐字引用「句子」原文（例如 [{"text":"blossoms"}]）。'
           fieldDefinition: 定義
           fieldDefinitionDescription: 針對脈絡語意提供一則精簡定義。
           fieldSentenceTranslation: 句子翻譯
@@ -978,7 +994,8 @@ options:
           description: 停用的術語庫會保留其中的術語，但一條都不會傳送。
         sites:
           title: 網站
-          description: 限定這個術語庫只在特定網站生效。example.com 僅比對這一個網址；*.example.com 還包含子網域；example.com/docs/* 則只涵蓋網站的某一部分。
+          description: 限定這個術語庫只在特定網站生效。example.com 僅比對這一個網址；*.example.com
+            還包含子網域；example.com/docs/* 則只涵蓋網站的某一部分。
           allSites: 留空則這個術語庫在所有網站都生效。
           header: 網站
         delete:
@@ -1176,9 +1193,14 @@ options:
           cancel: 取消
           description: 這將刪除所有已快取的 AI 斷句結果。下次播放啟用 AI 斷句的影片時，將重新處理字幕。
 translateService:
+  title: 翻譯服務
+  description: 僅用於翻譯網頁內容
   builtInModels: 內建模型
   llmModels: 大語言模型
   normalTranslator: 一般翻譯
+  selectServices: 選擇服務
+  translationProviders: 翻譯服務
+  configureAPI: 設定 API
 translatePrompt:
   title: AI 翻譯風格
   description: 選擇在翻譯時使用的提示詞。可在選項頁面新增或修改自訂提示詞
@@ -1200,6 +1222,8 @@ action:
   unpinFromToolbar: 從工具列取消釘選
   pinToToolbar: 釘選到工具列
   dragToReorder: 拖曳以排序
+  speak: 朗讀
+  playing: 播放中
 thinking:
   label: 思考中
   complete: 思考完成
@@ -1396,11 +1420,28 @@ languages:
   hif: 斐濟印地語
 side:
   targetLang: 目標語言
+  sourceLang: 來源語言
 translationHub:
   searchLanguages: 搜尋語言…
   noLanguagesFound: 找不到語言
+  exchangeLanguages: 交換語言
+  title: 多 API 文字翻譯
+  noServicesSelected: 未選擇翻譯服務
+  noServicesDescription: 請在上方選擇翻譯服務以檢視翻譯結果。
+  inputPlaceholder: 輸入要翻譯的文字…
+  translate: 翻譯
+  copiedToClipboard: 翻譯已複製到剪貼簿！
+  copyTranslation: 複製翻譯
+  speakSourceText: 朗讀原文
+  speakTranslation: 朗讀譯文
+  expandCard: 展開卡片
+  collapseCard: 摺疊卡片
+  expandAllCards: 全部展開
+  collapseAllCards: 全部摺疊
+  deleteCard: 刪除卡片
   translationFailed: 翻譯失敗
   translationFailedFallback: 翻譯失敗
+  retryTranslation: 重試翻譯
 dataTypes:
   string: 文字
   number: 數字
@@ -1470,3 +1511,12 @@ subtitles:
     translatedExportFailed: 產生翻譯字幕失敗
     translatedExportIncomplete: 未能翻譯所有字幕行
     translatedExportSameLanguage: 來源語言和目標語言相同
+speak:
+  languageDetectionFallback: 已改用本機語言偵測
+  languageDetectionSettingsHint: 可在設定中更換可用的大型語言模型，或選擇本機偵測。
+  fetchingAudio: 正在取得音訊…
+  playingAudio: 正在播放音訊…
+  failedToGenerateSpeech: 語音產生失敗
+  noTextSelected: 未選取文字
+  openaiNotConfigured: 尚未設定或啟用 OpenAI 提供者
+  openaiApiKeyNotConfigured: 尚未設定 OpenAI API 金鑰

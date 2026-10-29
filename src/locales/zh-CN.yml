@@ -31,6 +31,8 @@ popup:
         action: 点击切换为双语对照
   aiSmartContext: AI 智能上下文
   aiSmartContextDescription: 结合网页上下文提升翻译效果。需要配置 LLM 翻译服务商。
+  hub:
+    tooltip: 一次性调用多个翻译模型翻译文本
 errorRecovery:
   title: 应用发生异常
   description: 已进入恢复模式。你可以先导出当前设置作为备份，再重置设置后重试。
@@ -69,7 +71,8 @@ options:
   apiProviders:
     title: API 提供商
     pageDescription: 接入 Read Frog Lite 调用的 AI 服务，并为每项功能指定使用哪一个。
-    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using
+      your own endpoint, model, and credentials.
     configTitle: 提供商配置
     addProvider: 添加提供商
     setApiKeyWarning:
@@ -84,7 +87,8 @@ options:
           description: 内置的大语言模型提供商，无需填写大部分配置比如 Base URL
         compatibleProviders:
           title: 兼容 API 提供商
-          description: 兼容 Chat Completions 的 API 使用自定义 Chat Complete，Open Responses API 使用自定义 Responses。
+          description: 兼容 Chat Completions 的 API 使用自定义 Chat Complete，Open Responses API
+            使用自定义 Responses。
         pureTranslationProviders:
           title: 纯翻译提供商
           description: 专注于翻译功能的提供商，没有大语言模型能力
@@ -254,6 +258,12 @@ options:
     subtitlesToggle:
       title: 字幕翻译
       description: 打开或关闭视频的翻译字幕。
+    selectionSpeak:
+      title: 划词朗读
+      description: 朗读选中的文本，再按一次停止。
+    translationHub:
+      title: 翻译中心
+      description: 在新标签页中打开翻译中心。
   selectionToolbar:
     title: 选择工具栏
     pageDescription: 设置选中文本时出现哪些操作，以及工具栏在哪些网站显示。
@@ -266,6 +276,9 @@ options:
       translate:
         title: 翻译
         description: 在工具栏中显示翻译按钮
+      speak:
+        title: 朗读
+        description: 在工具栏中显示朗读按钮，用于朗读选中的文本
     display:
       title: 显示
       opacity:
@@ -317,7 +330,8 @@ options:
         aiConfigHelper:
           trigger: 让 AI 帮我配置
           title: 让 AI 帮我配置
-          description: 复制下面的提示词，发给你常用的 AI 助手（ChatGPT、Claude、DeepSeek、Kimi 等）。它会先问你想做什么，再告诉你每一项怎么填。提示词里带有这个动作当前的配置，但不含 API Key。
+          description: 复制下面的提示词，发给你常用的 AI 助手（ChatGPT、Claude、DeepSeek、Kimi
+            等）。它会先问你想做什么，再告诉你每一项怎么填。提示词里带有这个动作当前的配置，但不含 API Key。
           copy: 复制提示词
           copyFailed: 复制失败，请重试
         icon: 图标
@@ -560,7 +574,9 @@ options:
           fieldSentence: 句子
           fieldSentenceDescription: 提取上方段落中包含选中词语的完整句子，不要包含前后句。
           fieldSentenceTerm: 句中词形
-          fieldSentenceTermDescription: '选中词语在“句子”中的位置：序列化为字符串的 JSON 数组，词语的每个部分一项 {"text": 字符串}，逐字引用“句子”原文（如 [{"text":"blossoms"}]）。'
+          fieldSentenceTermDescription:
+            '选中词语在“句子”中的位置：序列化为字符串的 JSON 数组，词语的每个部分一项 {"text":
+            字符串}，逐字引用“句子”原文（如 [{"text":"blossoms"}]）。'
           fieldDefinition: 释义
           fieldDefinitionDescription: 针对语境含义的一条简洁释义。
           fieldSentenceTranslation: 句子翻译
@@ -978,7 +994,8 @@ options:
           description: 停用后术语仍会保留，但一条都不会发送。
         sites:
           title: 网站
-          description: 限定这份术语库只在特定网站生效。example.com 仅匹配这一个地址；*.example.com 还包含子域名；example.com/docs/* 则只覆盖站点的某一部分。
+          description: 限定这份术语库只在特定网站生效。example.com 仅匹配这一个地址；*.example.com
+            还包含子域名；example.com/docs/* 则只覆盖站点的某一部分。
           allSites: 留空则这份术语库在所有网站生效。
           header: 网站
         delete:
@@ -998,7 +1015,8 @@ options:
         description: 只有出现在段落中的术语，才会随该段落一起发送。
       importExport:
         title: 导入与导出
-        description: 术语是一个 CSV 文件，包含 source、target、targetLanguage、caseSensitive 四列，即导出所生成的格式。
+        description: 术语是一个 CSV 文件，包含 source、target、targetLanguage、caseSensitive
+          四列，即导出所生成的格式。
       sourcePlaceholder: 术语
       targetPlaceholder: 译文（留空则保持原文）
       caseSensitive: 区分大小写
@@ -1176,9 +1194,14 @@ options:
           cancel: 取消
           description: 这将删除所有已缓存的 AI 断句结果。下次播放启用 AI 断句的视频时，将重新处理字幕。
 translateService:
+  title: 翻译服务
+  description: 仅用于翻译网页内容
   builtInModels: 内建模型
   llmModels: 大语言模型
   normalTranslator: 普通翻译
+  selectServices: 选择服务
+  translationProviders: 翻译服务
+  configureAPI: 配置 API
 translatePrompt:
   title: AI 翻译风格
   description: 选择在翻译时使用的 Prompt，可在选项页新增或修改自定义 Prompt
@@ -1200,6 +1223,8 @@ action:
   unpinFromToolbar: 从工具栏取消固定
   pinToToolbar: 固定到工具栏
   dragToReorder: 拖动以排序
+  speak: 朗读
+  playing: 播放中
 thinking:
   label: 思考中
   complete: 思考完成
@@ -1396,11 +1421,28 @@ languages:
   hif: 斐济印地语
 side:
   targetLang: 目标语言
+  sourceLang: 来源语言
 translationHub:
   searchLanguages: 搜索语言...
   noLanguagesFound: 未找到语言
+  exchangeLanguages: 交换语言
+  title: 多接口文本翻译
+  noServicesSelected: 未选择翻译服务
+  noServicesDescription: 请在上方选择翻译服务以查看翻译结果。
+  inputPlaceholder: 输入要翻译的文本...
+  translate: 翻译
+  copiedToClipboard: 翻译已复制到剪贴板！
+  copyTranslation: 复制翻译
+  speakSourceText: 朗读原文
+  speakTranslation: 朗读译文
+  expandCard: 展开卡片
+  collapseCard: 折叠卡片
+  expandAllCards: 全部展开
+  collapseAllCards: 全部折叠
+  deleteCard: 删除卡片
   translationFailed: 翻译失败
   translationFailedFallback: 翻译失败
+  retryTranslation: 重试翻译
 dataTypes:
   string: 文本
   number: 数字
@@ -1470,3 +1512,12 @@ subtitles:
     translatedExportFailed: 生成翻译字幕失败
     translatedExportIncomplete: 未能翻译所有字幕行
     translatedExportSameLanguage: 源语言和目标语言相同
+speak:
+  languageDetectionFallback: 已改用本地语言检测
+  languageDetectionSettingsHint: 可在设置中更换可用的大模型，或选择本地检测。
+  fetchingAudio: 正在获取音频...
+  playingAudio: 正在播放音频...
+  failedToGenerateSpeech: 语音生成失败
+  noTextSelected: 未选择文本
+  openaiNotConfigured: OpenAI 提供商未配置或未启用
+  openaiApiKeyNotConfigured: OpenAI API Key 未配置

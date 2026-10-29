@@ -10,6 +10,7 @@ import { logger } from "@/utils/logger"
 import { onMessage, sendMessage } from "@/utils/message"
 import { clearEffectiveSiteControlUrl } from "@/utils/site-control"
 import { areSamePageTranslationOrigin } from "@/utils/url"
+import { bindTranslationHubShortcutKey } from "./bind-translation-hub-shortcut"
 import { setupUrlChangeListener } from "./listen"
 import { bindTranslationModeShortcutKey } from "./translation-control/bind-translation-mode-shortcut"
 import { bindTranslationShortcutKey } from "./translation-control/bind-translation-shortcut"
@@ -57,6 +58,7 @@ export async function bootstrapHostContent(
         })
       : () => {}
 
+  const cleanupHubShortcut = await bindTranslationHubShortcutKey()
   const cleanupTranslationShortcut = await bindTranslationShortcutKey(manager)
 
   const cleanupTranslationModeShortcut = await bindTranslationModeShortcutKey()
@@ -153,6 +155,7 @@ export async function bootstrapHostContent(
     teardownNodeTranslation()
     cleanupPageTranslationTriggers()
     cleanupTitleTranslationWatch()
+    cleanupHubShortcut()
     cleanupTranslationShortcut()
     cleanupTranslationModeShortcut()
     cleanupTranslationStateListener()

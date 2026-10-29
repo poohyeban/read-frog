@@ -10,6 +10,7 @@ import ProvidersField from "./components/providers-field"
 import { SiteControlToggle } from "./components/site-control-toggle"
 import TranslateButton from "./components/translate-button"
 import TranslatePromptSelector from "./components/translate-prompt-selector"
+import { TranslationHubButton } from "./components/translation-hub-button"
 import TranslationModeSelector from "./components/translation-mode-selector"
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
               <></>
             </div>
           </div>
+          <TranslationHubButton />
           <LanguageOptionsSelector />
           <ProvidersField />
           <TranslatePromptSelector />

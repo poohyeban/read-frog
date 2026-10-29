@@ -1,4 +1,5 @@
 import type { Config } from "@/types/config/config"
+import { getSpeakShortcut } from "@/utils/constants/selection"
 import { getSelectionToolbarActions } from "@/utils/custom-actions"
 import { i18n } from "@/utils/i18n"
 import { isSameShortcut } from "@/utils/shortcut"
@@ -23,6 +24,21 @@ export function getShortcutBindings(config: Config): ShortcutBinding[] {
   const { features } = config.selectionToolbar
   const { node } = config.pageTranslation
   return [
+    {
+      id: "selection-speak-shortcut",
+      title: i18n.t("options.shortcuts.selectionSpeak.title"),
+      shortcut: getSpeakShortcut(features.speak),
+    },
+    {
+      id: "translation-hub-shortcut",
+      title: i18n.t("options.shortcuts.translationHub.title"),
+      shortcut: config.translationHub.shortcut,
+    },
+    {
+      id: "subtitles-toggle-shortcut",
+      title: i18n.t("options.shortcuts.subtitlesToggle.title"),
+      shortcut: config.videoSubtitles.toggleShortcut,
+    },
     {
       id: "page-translation-shortcut",
       title: i18n.t("options.shortcuts.pageTranslation.title"),

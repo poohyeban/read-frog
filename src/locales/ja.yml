@@ -31,6 +31,8 @@ popup:
         action: クリックしてバイリンガルへ切り替え
   aiSmartContext: AI スマートコンテキスト
   aiSmartContextDescription: ウェブページのコンテキストを使用して翻訳品質を向上させます。LLM翻訳プロバイダーが必要です。
+  hub:
+    tooltip: 複数の翻訳モデルで同時にテキストを翻訳
 errorRecovery:
   title: 問題が発生しました
   description: 復旧モードが有効です。現在の設定をバックアップとしてエクスポートし、設定をリセットして再試行してください。
@@ -69,7 +71,8 @@ options:
   apiProviders:
     title: APIプロバイダー
     pageDescription: Read Frog Lite が呼び出す AI サービスを接続し、各機能で使うものを選びます。
-    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using
+      your own endpoint, model, and credentials.
     configTitle: プロバイダー設定
     addProvider: プロバイダーを追加
     setApiKeyWarning:
@@ -84,7 +87,8 @@ options:
           description: 組み込みの大規模言語モデルプロバイダー、Base URLなどの設定が不要
         compatibleProviders:
           title: 互換 API プロバイダー
-          description: Chat Completions 互換 API にはカスタム Chat Complete、Open Responses API にはカスタム Responses を使用します。
+          description: Chat Completions 互換 API にはカスタム Chat Complete、Open Responses API
+            にはカスタム Responses を使用します。
         pureTranslationProviders:
           title: 純粋翻訳プロバイダー
           description: 大規模言語モデル機能を持たない翻訳専門のプロバイダー
@@ -123,9 +127,13 @@ options:
       reasoning:
         title: Reasoning
       headers: ヘッダー
-      headersHint: AIプロバイダークライアント作成時に送信するカスタムHTTPヘッダー。空欄の場合はプロバイダーのデフォルトを使用し、{} でデフォルトを無効化します。
+      headersHint:
+        AIプロバイダークライアント作成時に送信するカスタムHTTPヘッダー。空欄の場合はプロバイダーのデフォルトを使用し、{}
+        でデフォルトを無効化します。
       providerOptions: プロバイダーオプション
-      providerOptionsHint: 思考/推論モードなどの非標準API機能のためのプロバイダー固有オプション。詳細はVercel AI SDKドキュメントまたはプロバイダーの公式ドキュメントをご覧ください。
+      providerOptionsHint:
+        思考/推論モードなどの非標準API機能のためのプロバイダー固有オプション。詳細はVercel AI
+        SDKドキュメントまたはプロバイダーの公式ドキュメントをご覧ください。
       providerOptionsDocsLink: プロバイダードキュメントを見る
       providerOptionsRecommendationTrigger: 推奨プロバイダーオプションを表示
       providerOptionsRecommendationTitle: 推奨プロバイダーオプションが見つかりました
@@ -168,7 +176,8 @@ options:
       title: AI スマートコンテキスト翻訳
       description: ページや動画の文脈を AI に渡して、翻訳の精度を上げます
       enable: 有効にする
-      enableDescription: AI は翻訳の前にページや動画の要約を読み、文脈に合った訳語を選びます。LLM プロバイダーで動作するすべての翻訳機能に適用されます。最初のリクエストに遅延が生じ、API 費用も増えます。
+      enableDescription: AI は翻訳の前にページや動画の要約を読み、文脈に合った訳語を選びます。LLM
+        プロバイダーで動作するすべての翻訳機能に適用されます。最初のリクエストに遅延が生じ、API 費用も増えます。
       llmProviderConfigured: $1の LLM プロバイダー選択済み
       llmProviderNotConfigured: $1の LLM プロバイダー未選択
   patterns:
@@ -253,6 +262,12 @@ options:
     subtitlesToggle:
       title: 字幕翻訳
       description: 動画の翻訳字幕をオンまたはオフにします。
+    selectionSpeak:
+      title: 選択範囲の読み上げ
+      description: 選択したテキストを読み上げます。もう一度押すと停止します。
+    translationHub:
+      title: 翻訳ハブ
+      description: 翻訳ハブを新しいタブで開きます。
   selectionToolbar:
     title: 選択ツールバー
     pageDescription: テキストを選択したときに表示するアクションと、ツールバーを表示するサイトを設定します。
@@ -265,6 +280,9 @@ options:
       translate:
         title: 翻訳
         description: ツールバーに翻訳ボタンを表示します
+      speak:
+        title: 読み上げ
+        description: 選択したテキストを読み上げる読み上げボタンをツールバーに表示します
     display:
       title: 表示
       opacity:
@@ -311,7 +329,10 @@ options:
         aiConfigHelper:
           trigger: AI に設定を手伝ってもらう
           title: AI に設定を手伝ってもらう
-          description: 下のプロンプトをコピーして、普段使っている AI アシスタント（ChatGPT、Claude、DeepSeek、Kimi など）に貼り付けてください。まずやりたいことを質問し、その後で各項目に何を入力すればよいかを教えてくれます。プロンプトにはこのアクションの現在の設定が含まれますが、API キーは含まれません。
+          description:
+            下のプロンプトをコピーして、普段使っている AI アシスタント（ChatGPT、Claude、DeepSeek、Kimi
+            など）に貼り付けてください。まずやりたいことを質問し、その後で各項目に何を入力すればよいかを教えてくれます。プロンプトにはこのアクションの現在の設定が含まれますが、API
+            キーは含まれません。
           copy: プロンプトをコピー
           copyFailed: プロンプトをコピーできませんでした。もう一度お試しください。
         icon: アイコン
@@ -396,7 +417,8 @@ options:
             condition: フィールドに値があるときだけ中身を表示します。
             loop: すべてのフィールドについて順に繰り返します。f.name、f.value、f.type が使えます。
             speak: data-speak を付けた要素は、回答の完了後にその値（空なら要素自身のテキスト）を読み上げます。
-            speakLang: data-speak-lang で読み上げる言語（es、en-US など）を指定すると、その言語の音声で読み上げます。指定しない場合は言語を自動判定しますが、単語だけだとよく外れます。
+            speakLang: data-speak-lang で読み上げる言語（es、en-US
+              など）を指定すると、その言語の音声で読み上げます。指定しない場合は言語を自動判定しますが、単語だけだとよく外れます。
             speakAutoplay: data-speak-autoplay を付けた要素は、回答の完了後に自動で読み上げます。再生されるのは最初の 1 つだけです。
             status: 状態ごとにスタイルを設定します。ホストの data-status は streaming、done、error のいずれかです。
             filters: newline_to_br は改行を保持します（最後に置いてください）。lines はテキストを行のリストに分けます。
@@ -421,7 +443,9 @@ options:
           description: このアクションの構造化された結果をリモート Notebase に保存します。
           loginRequiredTitle: Notebase を設定するにはログインが必要です
           loginRequiredDescription: notebase を選択したりマッピングを編集したりする前に、readfrog.app にログインしてください。
-          loginRequiredConnectedDescription: この接続は下のアカウントで作成されました。同じアカウントでログインするとフィールドマッピングが復元されます。別のアカウントでログインした場合、Notebase を作成または接続すると以前のマッピングは消去されます。
+          loginRequiredConnectedDescription:
+            この接続は下のアカウントで作成されました。同じアカウントでログインするとフィールドマッピングが復元されます。別のアカウントでログインした場合、Notebase
+            を作成または接続すると以前のマッピングは消去されます。
           loginAction: ログイン
           connectedAccountLabel: 接続済みアカウント
           currentAccountLabel: 現在のアカウント
@@ -552,13 +576,16 @@ options:
           fieldSentence: 例文
           fieldSentenceDescription: 上の段落のうち、選択された語句を含む完全な一文。前後の文は含めないでください。
           fieldSentenceTerm: 例文中の語形
-          fieldSentenceTermDescription: '選択された語句の例文中の位置：文字列として直列化された JSON 配列で、語句の部分ごとに {"text": 文字列} を 1 要素とし、それぞれ例文をそのまま引用します（例：[{"text":"blossoms"}]）。'
+          fieldSentenceTermDescription:
+            '選択された語句の例文中の位置：文字列として直列化された JSON 配列で、語句の部分ごとに
+            {"text": 文字列} を 1 要素とし、それぞれ例文をそのまま引用します（例：[{"text":"blossoms"}]）。'
           fieldDefinition: 意味
           fieldDefinitionDescription: 文脈に合った意味の簡潔な定義を 1 つ。
           fieldSentenceTranslation: 例文の翻訳
           fieldSentenceTranslationDescription: 例文だけの翻訳。
           fieldMemoryTips: 覚え方のコツ
-          fieldMemoryTipsDescription: 語を覚えるためのコツ：最大 3 個、1 行に 1 つずつ、それぞれ技法名とコロンで始める（例：語の構成：…）。本当に役立つものがなければ空文字列。
+          fieldMemoryTipsDescription: 語を覚えるためのコツ：最大 3 個、1 行に 1
+            つずつ、それぞれ技法名とコロンで始める（例：語の構成：…）。本当に役立つものがなければ空文字列。
           fieldDifficulty: 難易度
           fieldDifficultyDescription: 推定 CEFR 難易度：A1、A2、B1、B2、C1、C2。
         sentenceAnalysis:
@@ -811,7 +838,9 @@ options:
         selectLanguages: 言語を選択
       smallParagraphFilter:
         title: 短いテキストフィルター
-        description: これらのグローバル既定値を使用して、指定した文字数または単語数より少ないテキストノードの翻訳をスキップします。一致するサイトルールで上書きできます（0 = 無効）
+        description:
+          これらのグローバル既定値を使用して、指定した文字数または単語数より少ないテキストノードの翻訳をスキップします。一致するサイトルールで上書きできます（0
+          = 無効）
         minCharacters:
           description: 最小文字数：これより短いテキストは翻訳しません。0 にするとすべて翻訳します
         minWords:
@@ -942,7 +971,9 @@ options:
       noGlossaries: 用語集がまだありません。
       enable:
         title: 有効にする
-        description: 一致した用語を LLM に渡し、指定どおりの訳語で出力させます。用語集はプロンプトに含めて送られるため、LLM プロバイダーで動作する機能にのみ適用されます。
+        description:
+          一致した用語を LLM に渡し、指定どおりの訳語で出力させます。用語集はプロンプトに含めて送られるため、LLM
+          プロバイダーで動作する機能にのみ適用されます。
       library:
         title: 登録した用語集
         description: 用語集ごとに用語とウェブサイトの一覧を個別に持てるため、仕事用の用語がほかのすべてのページにまで付いて回ることはありません。
@@ -968,7 +999,9 @@ options:
           description: 無効にした用語集は用語を保持しますが、いずれも送信されません。
         sites:
           title: ウェブサイト
-          description: この用語集を適用するウェブサイトを限定します。example.com はそのアドレスのみ、*.example.com はサブドメインも含み、example.com/docs/* はサイトの一部分だけに絞ります。
+          description:
+            この用語集を適用するウェブサイトを限定します。example.com はそのアドレスのみ、*.example.com
+            はサブドメインも含み、example.com/docs/* はサイトの一部分だけに絞ります。
           allSites: 空のままにすると、この用語集はすべてのウェブサイトに適用されます。
           header: ウェブサイト
         delete:
@@ -988,7 +1021,8 @@ options:
         description: 段落に出現した用語だけが、その段落と一緒に送信されます。
       importExport:
         title: インポートとエクスポート
-        description: 用語は source, target, targetLanguage, caseSensitive の 4 列からなる CSV です。エクスポートが書き出す形式と同じです。
+        description: 用語は source, target, targetLanguage, caseSensitive の 4 列からなる CSV
+          です。エクスポートが書き出す形式と同じです。
       sourcePlaceholder: 用語
       targetPlaceholder: 訳語（空欄なら原文のまま）
       caseSensitive: 大文字と小文字を区別
@@ -1028,7 +1062,8 @@ options:
       importNoValidRows: いずれの行もインポートできませんでした。変更はありません。
       importReplaceConfirm:
         title: リスト全体を置き換えますか？
-        description: この用語集の $1 件すべてが削除され（選択中の言語だけでなく、すべての対象言語が対象です）、このファイルの内容に置き換えられます。この操作は元に戻せません。
+        description: この用語集の $1
+          件すべてが削除され（選択中の言語だけでなく、すべての対象言語が対象です）、このファイルの内容に置き換えられます。この操作は元に戻せません。
         confirm: 置き換える
         cancel: キャンセル
       deleteAll:
@@ -1054,7 +1089,8 @@ options:
         description: 動画の読み込みが終わり次第、ボタンを押さなくても字幕の翻訳を始めます。
       aiSegmentation:
         title: AI スマート区切り
-        description: AI が字幕を文単位に切り直します。翻訳の応答が遅くなります。高性能な LLM が必要です。性能の低いモデルでは字幕の欠落やずれが起きることがあります。
+        description: AI が字幕を文単位に切り直します。翻訳の応答が遅くなります。高性能な LLM
+          が必要です。性能の低いモデルでは字幕の欠落やずれが起きることがあります。
       wordLookupAction:
         title: 単語クリック時のアクション
         description: 字幕の単語をクリックしたときに実行する AI アクション。既定は辞書で、自分のアクションにも変更できます。
@@ -1166,9 +1202,14 @@ options:
           cancel: キャンセル
           description: すべてのキャッシュされたAI区切り結果が削除されます。次回AI区切りを有効にして動画を再生すると、字幕が再処理されます。
 translateService:
+  title: 翻訳サービス
+  description: ウェブページの翻訳にのみ使用
   builtInModels: Built-in Models
   llmModels: LLM Models
   normalTranslator: 通常翻訳
+  selectServices: サービスを選択
+  translationProviders: 翻訳サービス
+  configureAPI: API設定
 translatePrompt:
   title: AI翻訳スタイル
   description: 翻訳時に使用するプロンプトを選択できます。オプションページでカスタムプロンプトを追加または変更できます
@@ -1190,6 +1231,8 @@ action:
   unpinFromToolbar: ツールバーから固定解除
   pinToToolbar: ツールバーに固定
   dragToReorder: ドラッグして並べ替え
+  speak: 読み上げ
+  playing: 再生中
 thinking:
   label: 思考中
   complete: 思考完了
@@ -1386,11 +1429,28 @@ languages:
   hif: フィジー・ヒンディー語
 side:
   targetLang: 翻訳言語
+  sourceLang: ソース言語
 translationHub:
   searchLanguages: 言語を検索...
   noLanguagesFound: 言語が見つかりません
+  exchangeLanguages: 言語を入れ替える
+  title: マルチAPI テキスト翻訳
+  noServicesSelected: 翻訳サービスが選択されていません
+  noServicesDescription: 上から翻訳サービスを選択して、翻訳カードを表示してください。
+  inputPlaceholder: 翻訳するテキストを入力...
+  translate: 翻訳
+  copiedToClipboard: 翻訳をクリップボードにコピーしました！
+  copyTranslation: 翻訳をコピー
+  speakSourceText: 原文を読み上げる
+  speakTranslation: 翻訳文を読み上げる
+  expandCard: カードを展開
+  collapseCard: カードを折りたたむ
+  expandAllCards: すべて展開
+  collapseAllCards: すべて折りたたむ
+  deleteCard: カードを削除
   translationFailed: 翻訳に失敗しました
   translationFailedFallback: 翻訳に失敗しました
+  retryTranslation: 翻訳を再試行
 dataTypes:
   string: テキスト
   number: 数値
@@ -1460,3 +1520,12 @@ subtitles:
     translatedExportFailed: 翻訳字幕の生成に失敗しました
     translatedExportIncomplete: すべての字幕行を翻訳できませんでした
     translatedExportSameLanguage: 元の言語と翻訳先の言語が同じです
+speak:
+  languageDetectionFallback: ローカルの言語検出に切り替えました
+  languageDetectionSettingsHint: 設定で利用可能なLLMに変更するか、ローカル検出を選んでください。
+  fetchingAudio: 音声を生成しています...
+  playingAudio: 音声を再生しています...
+  failedToGenerateSpeech: 音声生成に失敗しました
+  noTextSelected: テキストが選択されていません
+  openaiNotConfigured: OpenAIプロバイダーが設定されていないか有効になっていません
+  openaiApiKeyNotConfigured: OpenAI APIキーが設定されていません

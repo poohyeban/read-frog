@@ -1,6 +1,7 @@
 import type { Config } from "@/types/config/config"
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
 import type { PageTranslateRange } from "@/types/config/translate"
+import { ttsConfigSchema, transcriptionConfigSchema } from "@/types/config/tts"
 import { BUILT_IN_IMPROVE_WRITING_ACTION_ID } from "./custom-action"
 import {
   BUILT_IN_ACTION_DEFAULT_SHORTCUTS,
@@ -42,7 +43,7 @@ export { CONFIG_STORAGE_KEY } from "./config-storage-key"
 
 export const THEME_STORAGE_KEY = "theme"
 export const DEFAULT_DETECTED_CODE = "eng" as const
-export const CONFIG_SCHEMA_VERSION = 2
+export const CONFIG_SCHEMA_VERSION = 3
 
 // A built-in action's card, rebuilt only when its fields' ids change: it is
 // resolved on every read of the action. Cards place fields by id and hold no
@@ -81,6 +82,15 @@ export function createDefaultSentenceAnalysisAction(): SelectionToolbarCustomAct
 }
 
 export const DEFAULT_CONFIG: Config = {
+  tts: ttsConfigSchema.parse(undefined),
+  transcription: transcriptionConfigSchema.parse(undefined),
+  translationHub: {
+    shortcut: "Alt+Shift+H",
+    selectedProviderIds: null,
+    sourceCode: null,
+    targetCode: null,
+    promptId: null,
+  },
   language: {
     sourceCode: "auto",
     targetCode: "cmn",
@@ -138,6 +148,7 @@ export const DEFAULT_CONFIG: Config = {
     disabledSelectionToolbarPatterns: [],
     opacity: DEFAULT_SELECTION_OVERLAY_OPACITY,
     features: {
+      speak: { enabled: true },
       translate: {
         enabled: true,
         providerId: DEFAULT_TRANSLATE_PROVIDER_ID,

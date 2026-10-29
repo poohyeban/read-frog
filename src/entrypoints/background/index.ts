@@ -22,8 +22,10 @@ import { setupGlossaryMessageHandlers } from "./glossary"
 import { setupIframeInjection } from "./iframe-injection"
 import { setupLLMGenerateTextMessageHandlers } from "./llm-generate-text"
 import { setupPageTranslationHandlers } from "./page-translation"
+import { setupSpeechHandlers } from "./speech"
 import { setupSubtitlesTranslationHandlers } from "./subtitles-translation"
 import { translationMessage } from "./translation-signal"
+import { setupTTSPlaybackMessageHandlers } from "./tts-playback"
 import { setupVideoSummaryHandlers } from "./video-summary"
 
 export default defineBackground({
@@ -73,6 +75,8 @@ export default defineBackground({
     setupGlossaryMessageHandlers()
     setupSubtitlesTranslationHandlers()
     setupVideoSummaryHandlers()
+    setupTTSPlaybackMessageHandlers()
+    setupSpeechHandlers()
     onMessage("aiSegmentSubtitles", (message) => runAiSegmentSubtitles(message.data))
 
     void setUpDatabaseCleanup()

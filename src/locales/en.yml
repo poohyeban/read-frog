@@ -30,10 +30,14 @@ popup:
         current: Currently translation only
         action: Click to switch to bilingual
   aiSmartContext: AI Smart Context
-  aiSmartContextDescription: Uses webpage context to improve translation quality. Requires LLM translation provider.
+  aiSmartContextDescription: Uses webpage context to improve translation quality.
+    Requires LLM translation provider.
+  hub:
+    tooltip: Translate text with multiple models simultaneously
 errorRecovery:
   title: Something went wrong
-  description: Recovery mode is active. You can export your current settings as a backup, then reset settings and try again.
+  description: Recovery mode is active. You can export your current settings as a
+    backup, then reset settings and try again.
   backupTitle: Backup current settings first (recommended)
   exportWithApiKeys: Export with API Keys
   exportWithoutApiKeys: Export without API Keys
@@ -55,7 +59,8 @@ options:
     deleted: This item was deleted elsewhere. Your unsaved edits have been kept.
     retry: Retry
     leaveTitle: Changes have not been saved
-    leaveDescription: Continue editing to fix the problem, or discard the changes that have not been saved.
+    leaveDescription: Continue editing to fix the problem, or discard the changes
+      that have not been saved.
     keepEditing: Continue editing
     discard: Discard unsaved changes
   commandPalette:
@@ -68,8 +73,10 @@ options:
     features: Features
   apiProviders:
     title: API Providers
-    pageDescription: Connect the AI services Read Frog Lite calls, then choose which one runs each feature.
-    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
+    pageDescription: Connect the AI services Read Frog Lite calls, then choose which
+      one runs each feature.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using
+      your own endpoint, model, and credentials.
     configTitle: Provider config
     addProvider: Add provider
     setApiKeyWarning:
@@ -81,13 +88,16 @@ options:
       groups:
         builtInProviders:
           title: Built-in LLM providers
-          description: Built-in large language model providers, no need to fill in most configurations like Base URL
+          description: Built-in large language model providers, no need to fill in most
+            configurations like Base URL
         compatibleProviders:
           title: Compatible API providers
-          description: Use Custom Chat Complete for Chat Completions-compatible APIs, or Custom Responses for Open Responses APIs.
+          description: Use Custom Chat Complete for Chat Completions-compatible APIs, or
+            Custom Responses for Open Responses APIs.
         pureTranslationProviders:
           title: Pure translation providers
-          description: Providers focused on translation features without large language model capabilities
+          description: Providers focused on translation features without large language
+            model capabilities
     form:
       fields:
         name: Name
@@ -98,7 +108,8 @@ options:
       delete: Delete
       deleteDialog:
         title: Delete provider?
-        description: This action cannot be undone. Features using this provider will be automatically reassigned to another available provider.
+        description: This action cannot be undone. Features using this provider will be
+          automatically reassigned to another available provider.
         confirm: Delete
         cancel: Cancel
       atLeastOneLLMProvider: At least one LLM translation provider is required.
@@ -120,13 +131,18 @@ options:
         enterCustomModel: Enter the name of the custom model
       advancedOptions: Advanced options
       temperature: Temperature
-      temperatureHint: Controls randomness in responses. Lower values (0) are more deterministic, higher values are more creative. Range varies by provider. Leave empty to use provider default.
+      temperatureHint: Controls randomness in responses. Lower values (0) are more
+        deterministic, higher values are more creative. Range varies by
+        provider. Leave empty to use provider default.
       reasoning:
         title: Reasoning
       headers: Headers
-      headersHint: Custom HTTP headers sent when creating the AI provider client. Leave empty to use provider defaults; use {} to disable defaults.
+      headersHint: Custom HTTP headers sent when creating the AI provider client.
+        Leave empty to use provider defaults; use {} to disable defaults.
       providerOptions: Provider options
-      providerOptionsHint: Provider-specific options for non-standard API features like thinking/reasoning mode. See the Vercel AI SDK docs or your provider's official documentation for configuration details.
+      providerOptionsHint: Provider-specific options for non-standard API features
+        like thinking/reasoning mode. See the Vercel AI SDK docs or your
+        provider's official documentation for configuration details.
       providerOptionsDocsLink: View provider docs
       providerOptionsRecommendationTrigger: View recommended provider options
       providerOptionsRecommendationTitle: Recommended provider options detected
@@ -141,7 +157,8 @@ options:
         openai: Provides models like GPT-4o
         ollama: Run large language models locally on your machine for complete privacy
         google: Google's flagship AI models with advanced reasoning capabilities
-        openaiCompatible: Connect to a custom endpoint compatible with the OpenAI Chat Completions API
+        openaiCompatible: Connect to a custom endpoint compatible with the OpenAI Chat
+          Completions API
     apiKey:
       showAPIKey: Show API key
       getAPIKey: Get API key
@@ -167,15 +184,21 @@ options:
         videoSubtitles: Translates subtitles as they appear in a video player.
     aiContentAware:
       title: AI smart context translation
-      description: Give the AI context from the page or video so it translates more accurately
+      description: Give the AI context from the page or video so it translates more
+        accurately
       enable: Enable
-      enableDescription: The AI reads a summary of the page or video before translating, so wording fits the context. Applies to every translation feature running on an LLM provider. Adds latency on the first request and increases API costs.
+      enableDescription: The AI reads a summary of the page or video before
+        translating, so wording fits the context. Applies to every translation
+        feature running on an LLM provider. Adds latency on the first request
+        and increases API costs.
       llmProviderConfigured: LLM provider selected for $1
       llmProviderNotConfigured: No LLM provider selected for $1
   patterns:
     duplicate: This pattern is already in the list
-    gluedWildcard: A "*" has to stand for a whole part of the address, like *.example.com or example.*
-    unsupported: Read Frog Lite cannot match this address. Ports and schemes other than http and https are not supported.
+    gluedWildcard: A "*" has to stand for a whole part of the address, like
+      *.example.com or example.*
+    unsupported: Read Frog Lite cannot match this address. Ports and schemes other
+      than http and https are not supported.
   preference:
     title: Preferences
     pageDescription: Configure appearance, languages, site access, and local backups.
@@ -189,24 +212,28 @@ options:
         dark: Dark
       interfaceLanguage:
         title: Interface language
-        description: Choose the language for the extension's interface, independent of your browser language.
+        description: Choose the language for the extension's interface, independent of
+          your browser language.
         auto: Auto (follow browser)
     translationLanguage:
       title: Translation languages
       sourceCode:
         title: Source language
-        description: The language pages are translated from. Auto-detect reads it from the page itself.
+        description: The language pages are translated from. Auto-detect reads it from
+          the page itself.
         auto: Auto-detect
       targetCode:
         title: Target language
         description: The language pages are translated into.
     extensionActivation:
       title: Extension activation
-      description: Whether Read Frog Lite runs everywhere except the sites you list, or only on the sites you list
+      description: Whether Read Frog Lite runs everywhere except the sites you list,
+        or only on the sites you list
       manageSites: Manage sites
       mode:
         title: Activation mode
-        description: Use blacklist mode to disable the extension on specific sites, or whitelist mode to limit it to specific sites only.
+        description: Use blacklist mode to disable the extension on specific sites, or
+          whitelist mode to limit it to specific sites only.
         blacklist: Only disable on listed sites
         whitelist: Only run on listed sites
       patterns:
@@ -246,7 +273,8 @@ options:
       customDescription: Press these keys while hovering over a paragraph to translate it.
     actions:
       title: "AI actions"
-      description: "Run an AI action on the text you selected. Custom actions have no key until you set one here."
+      description: "Run an AI action on the text you selected. Custom actions have no
+        key until you set one here."
     turnedOff: "Turned off, so this key does nothing until you turn it back on."
     turnOn: "Turn on"
     clash: "Same key as “$1”. Change one of them."
@@ -254,23 +282,35 @@ options:
     subtitlesToggle:
       title: Subtitle translation
       description: Turn translated video subtitles on or off.
+    selectionSpeak:
+      title: Read aloud
+      description: Read the text you selected aloud. Press again to stop.
+    translationHub:
+      title: Translation Hub
+      description: Open the Translation Hub in a new tab.
   selectionToolbar:
     title: Selection Toolbar
-    pageDescription: Set which actions appear when you select text, and where the toolbar shows up.
+    pageDescription: Set which actions appear when you select text, and where the
+      toolbar shows up.
     demoImageAlt: Selection toolbar demo
     enable:
       title: Enable selection toolbar
-      description: Display the toolbar when selecting text on web pages for quick translation, speech, and AI actions
+      description: Display the toolbar when selecting text on web pages for quick
+        translation, speech, and AI actions
     actions:
       title: Actions
       translate:
         title: Translate
         description: Show the translate button in the toolbar
+      speak:
+        title: Speak
+        description: Show the speak button, which reads the selected text aloud
     display:
       title: Display
       opacity:
         title: Opacity
-        description: Adjust the opacity of the selection toolbar and the expanded window opened from it
+        description: Adjust the opacity of the selection toolbar and the expanded window
+          opened from it
       disabledSites:
         title: Disabled sites
         description: Configure websites where the selection toolbar should be disabled
@@ -288,7 +328,9 @@ options:
       providerUnavailable: Selected provider is unavailable
     customActions:
       title: Custom AI Actions
-      pageDescription: Write your own prompts and run them on selected text from the selection toolbar. The data, style and interactions of each result are all yours to customize.
+      pageDescription: Write your own prompts and run them on selected text from the
+        selection toolbar. The data, style and interactions of each result are
+        all yours to customize.
       description: Add your own structured AI actions for selected text
       configTitle: Action config
       introVideo:
@@ -313,11 +355,15 @@ options:
       form:
         name: Name
         customize: Customize
-        customizeTooltip: Built-in instructions do not allow prompt changes. Click here to create an editable copy and modify the prompts.
+        customizeTooltip: Built-in instructions do not allow prompt changes. Click here
+          to create an editable copy and modify the prompts.
         aiConfigHelper:
           trigger: Configure with AI
           title: Configure with AI
-          description: Copy the prompt below and paste it into your AI chat assistant (ChatGPT, Claude, DeepSeek, Kimi…). It asks what you want first, then tells you what to put in each setting. The prompt includes this action's current settings, but no API keys.
+          description: Copy the prompt below and paste it into your AI chat assistant
+            (ChatGPT, Claude, DeepSeek, Kimi…). It asks what you want first,
+            then tells you what to put in each setting. The prompt includes this
+            action's current settings, but no API keys.
           copy: Copy prompt
           copyFailed: Couldn't copy the prompt. Try again.
         icon: Icon
@@ -361,14 +407,16 @@ options:
           cancel: Cancel
         layout:
           title: Layout
-          description: How the result shows in the popup. HTML with Liquid; fields fill in as the answer streams.
+          description: How the result shows in the popup. HTML with Liquid; fields fill in
+            as the answer streams.
           reset: Restore default
           resetFieldList: Field list
           resetDictionary: Dictionary card
           resetSentenceAnalysis: Sentence analysis card
           resetImproveWriting: Improve Writing card
           resetConfirmTitle: Replace this layout?
-          resetConfirmDescription: The editor's contents will be replaced. You can still undo it in the editor afterwards.
+          resetConfirmDescription: The editor's contents will be replaced. You can still
+            undo it in the editor afterwards.
           resetConfirm: Replace
           edit: Edit
           preview: Preview
@@ -388,7 +436,8 @@ options:
           insertContext: Context
           insertLoop: Every field
           syntaxHelp: Syntax
-          builtInHint: A built-in action's layout can't be edited. Customize it to edit a copy.
+          builtInHint: A built-in action's layout can't be edited. Customize it to edit a
+            copy.
           viewSource: View source
           emptyNotice: This layout is empty, so the popup shows the default field list.
           fallbackBanner: This layout can't be shown, so the default layout is used instead. $1
@@ -400,18 +449,26 @@ options:
           help:
             output: Shows a field's value. HTML in the value is escaped.
             condition: Shows the content only when the field has a value.
-            loop: Repeats for every field, in order. f.name, f.value and f.type are available.
-            speak: Any element with data-speak reads the value aloud (or its own text if the value is empty) once the answer is done.
-            speakLang: data-speak-lang names the language to read in (a code such as es or en-US), so it gets that language's voice. Without it the language is detected, which often fails for a single word.
-            speakAutoplay: An element with data-speak-autoplay is read aloud on its own once the answer is done. Only the first such element plays.
+            loop: Repeats for every field, in order. f.name, f.value and f.type are
+              available.
+            speak: Any element with data-speak reads the value aloud (or its own text if the
+              value is empty) once the answer is done.
+            speakLang: data-speak-lang names the language to read in (a code such as es or
+              en-US), so it gets that language's voice. Without it the language
+              is detected, which often fails for a single word.
+            speakAutoplay: An element with data-speak-autoplay is read aloud on its own once
+              the answer is done. Only the first such element plays.
             status: Styles by state. The host's data-status is streaming, done or error.
-            filters: newline_to_br keeps line breaks (use it last); lines splits text into a list of lines.
-            styles: CSS in a <style> block only applies inside this result. The --rf-* colors follow the light and dark themes.
+            filters: newline_to_br keeps line breaks (use it last); lines splits text into a
+              list of lines.
+            styles: CSS in a <style> block only applies inside this result. The --rf-*
+              colors follow the light and dark themes.
           lint:
             parseError: "Liquid syntax error: $1"
             unknownField: There's no field named “$1”.
             unknownContextKey: "ctx has no “$1”. Available: $2."
-            fieldShadowedByLocal: “$1” is assigned in this layout, which hides the field with that name.
+            fieldShadowedByLocal: “$1” is assigned in this layout, which hides the field
+              with that name.
             liquidInStyle: Liquid doesn't run inside <style>. This is kept as plain text.
             styleInConditional: A <style> block always applies, even inside a “$1” tag.
             cssImport: "@import is removed. Layouts can't load outside styles."
@@ -426,8 +483,12 @@ options:
           title: Notebase connection
           description: Save this action's structured results to a remote notebase.
           loginRequiredTitle: Log in to configure Notebase
-          loginRequiredDescription: Sign in on readfrog.app before choosing a notebase or editing mappings.
-          loginRequiredConnectedDescription: This connection was created by the account below. If you log in as the same account, field mappings will be restored. If you log in as another account, the previous mappings will be cleared when you create or connect a Notebase.
+          loginRequiredDescription: Sign in on readfrog.app before choosing a notebase or
+            editing mappings.
+          loginRequiredConnectedDescription: This connection was created by the account
+            below. If you log in as the same account, field mappings will be
+            restored. If you log in as another account, the previous mappings
+            will be cleared when you create or connect a Notebase.
           loginAction: Log in
           connectedAccountLabel: Connected account
           currentAccountLabel: Current account
@@ -445,9 +506,12 @@ options:
           listErrorTitle: Failed to load notebases
           listErrorDescription: Try refreshing the Notebase list again in a moment.
           accountMismatchTitle: Notebase connection belongs to another account
-          accountMismatchDescription: This connection is tied to the connected account below. Clear it, or choose a Notebase available to the current account.
+          accountMismatchDescription: This connection is tied to the connected account
+            below. Clear it, or choose a Notebase available to the current
+            account.
           tableUnavailableTitle: Selected notebase is no longer available
-          tableUnavailableDescription: This Notebase no longer exists or cannot be opened. Clear the connection or choose another Notebase.
+          tableUnavailableDescription: This Notebase no longer exists or cannot be opened.
+            Clear the connection or choose another Notebase.
           tableUnavailableOption: unavailable
           schemaErrorTitle: Failed to load notebase schema
           schemaErrorDescription: Try refreshing the schema again in a moment.
@@ -469,11 +533,13 @@ options:
           mappingIncompatible: The field types no longer match.
         tokens:
           selection: Selected text content
-          paragraphs: Intersecting paragraph text joined with blank lines, truncated to the first 2000 characters when sent to custom AI actions
+          paragraphs: Intersecting paragraph text joined with blank lines, truncated to
+            the first 2000 characters when sent to custom AI actions
           targetLanguage: User's target language
           webTitle: Webpage title
           webUrl: Full URL of the current page
-          webContent: Webpage content extracted from the current page, truncated to the first 2000 characters
+          webContent: Webpage content extracted from the current page, truncated to the
+            first 2000 characters
         delete: Delete
         deleteDialog:
           title: Delete custom action?
@@ -482,7 +548,8 @@ options:
           cancel: Cancel
       templates:
         dialogTitle: Choose a template
-        dialogDescription: Select a template to quickly create a new AI action, or start from scratch.
+        dialogDescription: Select a template to quickly create a new AI action, or start
+          from scratch.
         dictionary:
           name: Dictionary
           description: Look up words with definitions, phonetics, and paragraph translations
@@ -554,24 +621,33 @@ options:
           fieldTerm: Term
           fieldTermDescription: Base/canonical lemma of the selected term.
           fieldPhonetic: Phonetic
-          fieldPhoneticDescription: Standard phonetic transcription for the term's language (e.g., IPA for English, pinyin for Mandarin, romaji for Japanese).
+          fieldPhoneticDescription: Standard phonetic transcription for the term's
+            language (e.g., IPA for English, pinyin for Mandarin, romaji for
+            Japanese).
           fieldPartOfSpeech: Part of Speech
           fieldPartOfSpeechDescription: Grammatical category (e.g., noun, verb, adjective).
           fieldSentence: Sentence
-          fieldSentenceDescription: The complete sentence from the paragraphs above that contains the selected term. Do not include surrounding sentences.
+          fieldSentenceDescription: The complete sentence from the paragraphs above that
+            contains the selected term. Do not include surrounding sentences.
           fieldSentenceTerm: Term in Sentence
-          fieldSentenceTermDescription: 'Where the selected term stands in Sentence: a JSON array serialized as a string, one {"text": string} item per part of the term, each quoting Sentence exactly (e.g. [{"text":"blossoms"}]).'
+          fieldSentenceTermDescription: 'Where the selected term stands in Sentence: a
+            JSON array serialized as a string, one {"text": string} item per
+            part of the term, each quoting Sentence exactly (e.g.
+            [{"text":"blossoms"}]).'
           fieldDefinition: Definition
           fieldDefinitionDescription: One concise definition for the contextual sense.
           fieldSentenceTranslation: Sentence Translation
           fieldSentenceTranslationDescription: The translation of Sentence only.
           fieldMemoryTips: Memory Tips
-          fieldMemoryTipsDescription: "Ways to remember the term: up to 3 tips, one per line, each beginning with its technique and a colon (e.g. Word parts: …); an empty string when nothing really helps."
+          fieldMemoryTipsDescription: "Ways to remember the term: up to 3 tips, one per
+            line, each beginning with its technique and a colon (e.g. Word
+            parts: …); an empty string when nothing really helps."
           fieldDifficulty: Difficulty
           fieldDifficultyDescription: Estimated CEFR difficulty level A1, A2, B1, B2, C1, or C2.
         sentenceAnalysis:
           name: Sentence Analysis
-          description: "Mark up a long sentence like a teacher: its core, every clause, and what makes it hard"
+          description: "Mark up a long sentence like a teacher: its core, every clause,
+            and what makes it hard"
           systemPrompt: |-
             You are a grammar tutor. Mark up the Selection (a sentence in any language) so a learner sees its structure at a glance: the core of the main clause, every clause and longer phrase, and whatever makes the sentence hard to read.
 
@@ -627,7 +703,10 @@ options:
             Target language: {{targetLanguage}}
           fieldSentence: Sentence
           fieldAnnotations: Annotations
-          fieldAnnotationsDescription: A compact JSON array serialized as a string. Each item has "text" and "type", plus only the optional keys that apply ("form", "sense", "head", "obstacle", "restore", "note", "occurrence").
+          fieldAnnotationsDescription: A compact JSON array serialized as a string. Each
+            item has "text" and "type", plus only the optional keys that apply
+            ("form", "sense", "head", "obstacle", "restore", "note",
+            "occurrence").
           fieldTranslation: Translation
           fieldTranslationDescription: A natural translation of the whole Selection in {{targetLanguage}}.
           roles:
@@ -692,7 +771,8 @@ options:
           slashesLabel: Breaks
         improveWriting:
           name: Improve Writing
-          description: Mark mistakes and awkward phrasing like a teacher, and fix them for the setting
+          description: Mark mistakes and awkward phrasing like a teacher, and fix them for
+            the setting
           systemPrompt: |-
             You are a writing teacher. Judge the setting of the Selection first, then mark what a native writer would change for that setting, and give the Selection back corrected.
 
@@ -773,13 +853,19 @@ options:
             Target language: {{targetLanguage}}
           fieldOriginal: Original
           fieldSetting: Setting
-          fieldSettingDescription: 'How formal the setting is and what the text is, in {{targetLanguage}}: "<formality> · <what it is>", at most 16 characters.'
+          fieldSettingDescription: 'How formal the setting is and what the text is, in
+            {{targetLanguage}}: "<formality> · <what it is>", at most 16
+            characters.'
           fieldAnnotations: Annotations
-          fieldAnnotationsDescription: A compact JSON array serialized as a string. Each item has "text", "type" and "note", "fix" unless the type is "good", and only the optional keys that apply ("tag", "occurrence").
+          fieldAnnotationsDescription: A compact JSON array serialized as a string. Each
+            item has "text", "type" and "note", "fix" unless the type is "good",
+            and only the optional keys that apply ("tag", "occurrence").
           fieldImproved: Improved
-          fieldImprovedDescription: The whole Selection as a native writer would write it in this setting, in the Selection's language.
+          fieldImprovedDescription: The whole Selection as a native writer would write it
+            in this setting, in the Selection's language.
           fieldSummary: Summary
-          fieldSummaryDescription: "One sentence in {{targetLanguage}}: what works, and the one thing to work on."
+          fieldSummaryDescription: "One sentence in {{targetLanguage}}: what works, and
+            the one thing to work on."
           types:
             spelling: Spelling
             grammar: Grammar
@@ -823,28 +909,33 @@ options:
     demoImageAlt: Context menu demo
     enable:
       title: Enable context menu translate
-      description: Add translate options to the browser right-click menu for quick page and selection translation
+      description: Add translate options to the browser right-click menu for quick
+        page and selection translation
   translation:
     title: Page Translation
-    pageDescription: Control how pages get translated — mode, range, prompts, and request limits.
+    pageDescription: Control how pages get translated — mode, range, prompts, and
+      request limits.
     preference:
       title: Basics
       translationMode:
         title: Translation mode
-        description: "Choose how the translated text is displayed: bilingual or translation only."
+        description: "Choose how the translated text is displayed: bilingual or
+          translation only."
         mode:
           bilingual: Bilingual
           translationOnly: Translation only
         switched: "Translation mode: $1"
       translateRange:
         title: Translation range
-        description: Select whether to translate only the main content or all content on the page.
+        description: Select whether to translate only the main content or all content on
+          the page.
         range:
           main: Main content
           all: All content
       translateTitle:
         title: Translate tab title
-        description: Also translate the page title shown in the browser tab. Turn it off to keep the original title.
+        description: Also translate the page title shown in the browser tab. Turn it off
+          to keep the original title.
     hoverTranslation:
       title: Hover translation
       enable:
@@ -852,12 +943,15 @@ options:
         description: Hover or long-press a paragraph to translate just that one.
       forceRetranslation:
         title: Always request a fresh translation
-        description: Hover translation skips the cache — it re-translates even if the text is already cached, and overwrites the cached result.
+        description: Hover translation skips the cache — it re-translates even if the
+          text is already cached, and overwrites the cached result.
     translationStyle:
       title: Translation display style
-      description: Set any style you want to distinguish translation results from original text
+      description: Set any style you want to distinguish translation results from
+        original text
       useCustomStyle: Use custom CSS style
-      useCustomStyleDescription: Supports any CSS, including fonts, animations, and language-specific styles
+      useCustomStyleDescription: Supports any CSS, including fonts, animations, and
+        language-specific styles
       presetStyle: Preset style
       cssEditor: CSS editor
       cssEditorDescription: Write your own CSS and preview how translated text looks.
@@ -894,7 +988,9 @@ options:
             saved: All changes saved
     personalizedPrompts:
       title: Customize page prompts
-      description: Customizing different types of Prompts allows you to adjust the Prompt type yourself during translation. A Prompt represents the text that the user sends to the LLM.
+      description: Customizing different types of Prompts allows you to adjust the
+        Prompt type yourself during translation. A Prompt represents the text
+        that the user sends to the LLM.
       managePrompts: Manage prompts
       addPrompt: Add prompt
       default: Default
@@ -935,7 +1031,8 @@ options:
         cancel: Cancel
     translationControl:
       title: Translation control
-      description: What starts translating on its own, what never does, and what gets skipped
+      description: What starts translating on its own, what never does, and what gets
+        skipped
       manageControls: Manage controls
       autoTranslateWebsite:
         title: Auto translate based on website
@@ -944,50 +1041,64 @@ options:
         enterUrlPattern: Enter URL pattern
       neverAutoTranslateWebsite:
         title: Never auto translate based on website
-        description: Sites that never translate on their own, even when a language rule matches
+        description: Sites that never translate on their own, even when a language rule
+          matches
         urlPattern: URL pattern
         enterUrlPattern: Enter URL pattern
       autoTranslateLanguages:
         title: Auto translate based on language
-        description: Automatically translate page content when specific languages are detected
+        description: Automatically translate page content when specific languages are
+          detected
         selectLanguages: Select languages
       skipLanguages:
         title: Auto skip based on language
-        description: Automatically skip paragraph translation when specific languages are detected
-        targetLanguageSkipDescription: Skip paragraphs already in the target language, without sending a request
+        description: Automatically skip paragraph translation when specific languages
+          are detected
+        targetLanguageSkipDescription: Skip paragraphs already in the target language,
+          without sending a request
         selectLanguages: Select languages
       smallParagraphFilter:
         title: Small paragraph filter
-        description: These global defaults skip translating text nodes with fewer characters or words than the thresholds. Matching site rules can override them (0 = disabled)
+        description: These global defaults skip translating text nodes with fewer
+          characters or words than the thresholds. Matching site rules can
+          override them (0 = disabled)
         minCharacters:
-          description: "Minimum characters: shorter text stays untranslated. Use 0 to translate everything"
+          description: "Minimum characters: shorter text stays untranslated. Use 0 to
+            translate everything"
         minWords:
           description: "Minimum words: text with fewer words stays untranslated"
         error: Value must be between $1 and $2
     translationQueue:
       title: Translation queue
-      description: How fast requests go out, how much text each carries, and how far ahead of the reader they run
+      description: How fast requests go out, how much text each carries, and how far
+        ahead of the reader they run
       manageQueue: Manage queue
       requestQueueConfig:
         title: Translation rate
         capacity:
           description: "Maximum burst requests: how many can go out at once"
         rate:
-          description: "Requests per second: the steady pace after a burst. Decimals work, so 0.25 sends one request every 4 seconds"
+          description: "Requests per second: the steady pace after a burst. Decimals work,
+            so 0.25 sends one request every 4 seconds"
       batchQueueConfig:
         title: Batch translation
-        description: Configure character limits and maximum paragraph count for batch translation (only effective for LLM translation)
+        description: Configure character limits and maximum paragraph count for batch
+          translation (only effective for LLM translation)
         maxCharactersPerBatch:
           description: "Maximum characters: how much text one AI request carries"
         maxItemsPerBatch:
-          description: "Maximum paragraphs: how many paragraphs share one request. Providers that are not AI ignore both"
+          description: "Maximum paragraphs: how many paragraphs share one request.
+            Providers that are not AI ignore both"
       preloadConfig:
         title: Pre-translate range
-        description: Control how much content below the viewport gets pre-translated to save API costs
+        description: Control how much content below the viewport gets pre-translated to
+          save API costs
         margin:
-          description: "Preload distance: how far below the screen to translate ahead, in pixels. Less saves API cost"
+          description: "Preload distance: how far below the screen to translate ahead, in
+            pixels. Less saves API cost"
         threshold:
-          description: "Visibility threshold: how much of a paragraph must be on screen before it is translated, from 0 to 1"
+          description: "Visibility threshold: how much of a paragraph must be on screen
+            before it is translated, from 0 to 1"
     cache:
       title: Cache
       clearCache:
@@ -999,13 +1110,16 @@ options:
           trigger: Clear cache
           confirm: Confirm
           cancel: Cancel
-          description: This operation will clear all translation cache. This action cannot be undone.
+          description: This operation will clear all translation cache. This action cannot
+            be undone.
   siteRules:
     title: Site rules
     description: Per-site rules that adjust how specific websites are translated.
     userRules:
       title: User Rules
-      description: Define your own site rules as a JSON array. Rules apply to pages whose URL matches their patterns; user rules take precedence over built-in rules.
+      description: Define your own site rules as a JSON array. Rules apply to pages
+        whose URL matches their patterns; user rules take precedence over
+        built-in rules.
       saveButton: Save
       savedButton: Saved
       validation:
@@ -1021,7 +1135,8 @@ options:
         saved: All changes saved
     builtIn:
       title: Built-in Rules
-      description: Site rules shipped with the extension. Disable a rule with its switch if it causes problems on a site.
+      description: Site rules shipped with the extension. Disable a rule with its
+        switch if it causes problems on a site.
       searchPlaceholder: Search by id, description, or URL pattern
       showMore: Show more
       count: Showing $1 of $2 rules
@@ -1032,28 +1147,36 @@ options:
       title: Trigger
       enable:
         title: Enable
-        description: Press the space bar three times quickly in any input box to translate what you typed there.
+        description: Press the space bar three times quickly in any input box to
+          translate what you typed there.
       threshold:
         title: Trigger threshold
-        description: How long the presses may be apart, in milliseconds. Raise it if the trigger keeps missing, lower it if it fires while you are still typing.
+        description: How long the presses may be apart, in milliseconds. Raise it if the
+          trigger keeps missing, lower it if it fires while you are still
+          typing.
         error: Enter a value between $1 and $2
     languages:
       title: Translation languages
       pair:
         title: Language pair
-        description: What the typed text is read as, and what it is translated into. Either side can follow the source and target languages you translate pages with.
+        description: What the typed text is read as, and what it is translated into.
+          Either side can follow the source and target languages you translate
+          pages with.
       sourceCode: Page source language
       targetCode: Translation target language
       cycle:
         title: Swap direction each time
-        description: Every trigger swaps the two languages, so triggering again brings the text back to the language you typed in.
+        description: Every trigger swaps the two languages, so triggering again brings
+          the text back to the language you typed in.
   floatingButton:
     title: Floating Button
-    pageDescription: Set which side the floating button sits on, what a click does, and where it stays hidden.
+    pageDescription: Set which side the floating button sits on, what a click does,
+      and where it stays hidden.
     demoImageAlt: Floating button demo
     enable:
       title: Enable floating button
-      description: Display the floating button on web pages for quick access to Read Frog features
+      description: Display the floating button on web pages for quick access to Read
+        Frog features
     display:
       title: Display
       side:
@@ -1084,15 +1207,19 @@ options:
   advanced:
     glossary:
       title: Glossary
-      pageDescription: Give the words that matter to you a fixed translation, and choose where each list applies.
+      pageDescription: Give the words that matter to you a fixed translation, and
+        choose where each list applies.
       untitled: Untitled glossary
       noGlossaries: No glossaries yet.
       enable:
         title: Enable
-        description: Send matching terms to the LLM so it renders them your way. The glossary travels in the prompt, so it only applies to features running on an LLM provider.
+        description: Send matching terms to the LLM so it renders them your way. The
+          glossary travels in the prompt, so it only applies to features running
+          on an LLM provider.
       library:
         title: Your glossaries
-        description: Each glossary has its own terms and its own list of websites, so a set of terms for work does not follow you onto everything else.
+        description: Each glossary has its own terms and its own list of websites, so a
+          set of terms for work does not follow you onto everything else.
         button: Add a glossary
         capReached: You can have at most $1 glossaries.
         termUsage: $1 of $2 terms used across all glossaries
@@ -1115,27 +1242,33 @@ options:
           description: A disabled glossary keeps its terms but sends none of them.
         sites:
           title: Websites
-          description: Restrict this glossary to certain websites. example.com is that address alone; *.example.com adds subdomains; example.com/docs/* narrows to one part of a site.
+          description: Restrict this glossary to certain websites. example.com is that
+            address alone; *.example.com adds subdomains; example.com/docs/*
+            narrows to one part of a site.
           allSites: Leave this empty and the glossary applies everywhere.
           header: Website
         delete:
           title: Delete this glossary
-          description: Removes the glossary and every term in it. Export first if you might want the terms back — this cannot be undone.
+          description: Removes the glossary and every term in it. Export first if you
+            might want the terms back — this cannot be undone.
           dialog:
             trigger: Delete
             title: Delete this glossary?
-            description: The glossary and all $1 terms in it will be permanently deleted. This action cannot be undone.
+            description: The glossary and all $1 terms in it will be permanently deleted.
+              This action cannot be undone.
             confirm: Delete
             cancel: Cancel
       addTerm:
         title: Add a term
-        description: Give a term the wording you want, or leave the translation empty to keep it unchanged.
+        description: Give a term the wording you want, or leave the translation empty to
+          keep it unchanged.
       list:
         title: Your terms
         description: Only the terms that appear in a paragraph are sent with it.
       importExport:
         title: Import and export
-        description: Terms are a CSV of source, target, targetLanguage and caseSensitive columns — the file Export writes.
+        description: Terms are a CSV of source, target, targetLanguage and caseSensitive
+          columns — the file Export writes.
       sourcePlaceholder: Term
       targetPlaceholder: Translation (leave empty to keep the original)
       caseSensitive: Match case
@@ -1175,36 +1308,45 @@ options:
       importNoValidRows: None of those rows could be imported. Nothing was changed.
       importReplaceConfirm:
         title: Replace the whole list?
-        description: All $1 terms in this glossary will be deleted — every target language, not just the one selected — and replaced with the contents of this file. This cannot be undone.
+        description: All $1 terms in this glossary will be deleted — every target
+          language, not just the one selected — and replaced with the contents
+          of this file. This cannot be undone.
         confirm: Replace
         cancel: Cancel
       deleteAll:
         title: Delete all terms
-        description: Empty your glossary. Export first if you might want the terms back — deleting them cannot be undone.
+        description: Empty your glossary. Export first if you might want the terms back
+          — deleting them cannot be undone.
         deleting: Deleting...
         dialog:
           title: Delete all terms
           trigger: Delete all
           confirm: Confirm
           cancel: Cancel
-          description: All $1 terms will be permanently deleted. This action cannot be undone.
+          description: All $1 terms will be permanently deleted. This action cannot be
+            undone.
   videoSubtitles:
     title: Video Subtitles
-    pageDescription: Translate subtitles as you watch, with their own provider, style, and request settings.
+    pageDescription: Translate subtitles as you watch, with their own provider,
+      style, and request settings.
     preference:
       title: Basics
       enable:
         title: Enable video subtitles
-        description: Puts a translate button in the video player's controls on YouTube, X and Netflix.
+        description: Puts a translate button in the video player's controls on YouTube,
+          X and Netflix.
       autoStart:
         title: Translate on open
-        description: Start translating as soon as a video loads, without pressing the button.
+        description: Start translating as soon as a video loads, without pressing the
+          button.
       aiSegmentation:
         title: AI smart segmentation
-        description: Lets AI re-cut the subtitles into sentences. Translations take longer. Needs a strong LLM; weaker models may drop or misalign lines.
+        description: Lets AI re-cut the subtitles into sentences. Translations take
+          longer. Needs a strong LLM; weaker models may drop or misalign lines.
       wordLookupAction:
         title: Word lookup action
-        description: The AI action that answers a click on a word in the subtitles. Dictionary unless you pick one of your own.
+        description: The AI action that answers a click on a word in the subtitles.
+          Dictionary unless you pick one of your own.
     aiQuota:
       title: AI subtitles quota
       description: AI speech recognition gets you accurate subtitles for any video
@@ -1221,7 +1363,8 @@ options:
       used: Used $1 min
     style:
       title: Subtitle style
-      description: Display mode, position, fonts, colors and background, set against a live preview
+      description: Display mode, position, fonts, colors and background, set against a
+        live preview
       customizeStyle: Customize style
       displayMode:
         title: Display mode
@@ -1245,7 +1388,8 @@ options:
         title: Custom CSS
         description: Extra CSS for the subtitle lines, on top of the fonts and colors above
         presetTemplate: Preset template
-        presetTemplateDescription: Apply a ready-made template — such as blurring the translation to cover it while you train your listening
+        presetTemplateDescription: Apply a ready-made template — such as blurring the
+          translation to cover it while you train your listening
         presetPlaceholder: Choose a template
         presets:
           blurTranslation: Blur translation
@@ -1274,7 +1418,8 @@ options:
             saved: All changes saved
     customPrompts:
       title: Custom subtitle prompts
-      description: Prompt templates for subtitle translation, kept apart from the webpage translation ones
+      description: Prompt templates for subtitle translation, kept apart from the
+        webpage translation ones
       managePrompts: Manage prompts
       editPrompt:
         promptCellInput:
@@ -1292,33 +1437,45 @@ options:
         capacity:
           description: "Maximum burst requests: how many can go out at once"
         rate:
-          description: "Requests per second: the steady pace after a burst. Decimals work, so 0.25 sends one request every 4 seconds"
+          description: "Requests per second: the steady pace after a burst. Decimals work,
+            so 0.25 sends one request every 4 seconds"
       batchQueueConfig:
         title: Batch translation
-        description: Configure character limits and maximum subtitle line count for batch translation (only effective for LLM translation)
+        description: Configure character limits and maximum subtitle line count for
+          batch translation (only effective for LLM translation)
         maxCharactersPerBatch:
           description: "Maximum characters: how much text one AI request carries"
         maxItemsPerBatch:
-          description: "Maximum subtitle lines: how many lines share one request. Providers that are not AI ignore both"
+          description: "Maximum subtitle lines: how many lines share one request.
+            Providers that are not AI ignore both"
     cache:
       title: Cache
       clearCache:
         title: Clear AI segmentation cache
-        description: Segmentation results kept so a video you have already watched is not cut again
+        description: Segmentation results kept so a video you have already watched is
+          not cut again
         clearing: Clearing...
         dialog:
           title: Clear AI segmentation cache
           trigger: Clear cache
           confirm: Confirm
           cancel: Cancel
-          description: This will delete all cached AI segmentation results. The next time you play a video with AI segmentation enabled, it will re-process the subtitles.
+          description: This will delete all cached AI segmentation results. The next time
+            you play a video with AI segmentation enabled, it will re-process
+            the subtitles.
 translateService:
+  title: Translation Service
+  description: For translate the webpage only
   builtInModels: Built-in Models
   llmModels: LLM Models
   normalTranslator: Normal Translators
+  selectServices: Select services
+  translationProviders: Translation Providers
+  configureAPI: Configure API
 translatePrompt:
   title: AI Translation Style
-  description: Select a Prompt to use during translation. Add or modify custom Prompts on the options page.
+  description: Select a Prompt to use during translation. Add or modify custom
+    Prompts on the options page.
 noAPIKeyConfig:
   warning: If you want to use AI models, please set API key on the options page first
 translation:
@@ -1337,6 +1494,8 @@ action:
   unpinFromToolbar: Unpin from toolbar
   pinToToolbar: Pin to toolbar
   dragToReorder: Drag to reorder
+  speak: Speak
+  playing: Playing
 thinking:
   label: Thinking
   complete: Thinking complete
@@ -1533,11 +1692,28 @@ languages:
   hif: Fiji Hindi
 side:
   targetLang: Target Language
+  sourceLang: Source Language
 translationHub:
   searchLanguages: Search languages...
   noLanguagesFound: No languages found
+  exchangeLanguages: Exchange languages
+  title: Multi-API Text Translation
+  noServicesSelected: No Translation Services Selected
+  noServicesDescription: Select translation services above to see translation cards here.
+  inputPlaceholder: Enter text to translate...
+  translate: Translate
+  copiedToClipboard: Translation copied to clipboard!
+  copyTranslation: Copy translation
+  speakSourceText: Speak source text
+  speakTranslation: Speak translation
+  expandCard: Expand card
+  collapseCard: Collapse card
+  expandAllCards: Expand all
+  collapseAllCards: Collapse all
+  deleteCard: Delete card
   translationFailed: Translation Failed
   translationFailedFallback: Translation failed
+  retryTranslation: Retry translation
 dataTypes:
   string: Text
   number: Number
@@ -1561,7 +1737,8 @@ subtitles:
       emptyTitle: No subtitles to show
       backToCurrent: Back to current
   loadingAiSubtitles: Loading AI subtitles… (estimated 3 min)
-  aiSubtitlesHint: Accurate subtitles generated by advanced AI speech recognition — available even when no official subtitles exist.
+  aiSubtitlesHint: Accurate subtitles generated by advanced AI speech recognition
+    — available even when no official subtitles exist.
   requestAiSubtitles: Request AI subtitles
   usingAiSubtitles: Using AI subtitles
   toggle:
@@ -1607,3 +1784,12 @@ subtitles:
     translatedExportFailed: Failed to generate translated subtitles
     translatedExportIncomplete: Failed to translate all subtitle lines
     translatedExportSameLanguage: Source and target languages are the same
+speak:
+  languageDetectionFallback: Using local language detection
+  languageDetectionSettingsHint: In Settings, choose an available LLM or switch to local detection.
+  fetchingAudio: Generating audio...
+  playingAudio: Playing audio...
+  failedToGenerateSpeech: Failed to generate speech
+  noTextSelected: No text selected
+  openaiNotConfigured: OpenAI provider is not configured or enabled
+  openaiApiKeyNotConfigured: OpenAI API key is not configured

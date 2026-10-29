@@ -11,7 +11,15 @@ export default defineConfig({
     name: "Read Frog Lite",
     description: "Private page and selection translation with your own API.",
     default_locale: "en",
-    permissions: ["storage", "tabs", "alarms", "contextMenus", "scripting", "webNavigation"],
+    permissions: [
+      "offscreen",
+      "storage",
+      "tabs",
+      "alarms",
+      "contextMenus",
+      "scripting",
+      "webNavigation",
+    ],
     host_permissions: ["*://*/*"],
     web_accessible_resources: [
       {

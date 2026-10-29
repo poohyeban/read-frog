@@ -6,13 +6,32 @@ import type {
 import type { Config } from "@/types/config/config"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { ProviderRequestRouting } from "@/types/provider-request"
+import type {
+  TTSPlaybackStartRequest,
+  TTSPlaybackStartResponse,
+  TTSPlaybackStopRequest,
+} from "@/types/tts-playback"
 import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
 import type { MatchedTerm } from "@/utils/glossary/types"
+import type { SpeechAudio } from "@/utils/providers/audio/types"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
 interface ProtocolMap {
+  synthesizeSpeech: (data: {
+    requestId: string
+    text: string
+    voice: string
+    configHash: string
+  }) => Promise<SpeechAudio>
+  cancelSpeech: (data: { requestId: string }) => Promise<void>
+  ttsPlaybackPrepare: () => Promise<{ ok: true }>
+  ttsPlaybackStart: (data: TTSPlaybackStartRequest) => Promise<TTSPlaybackStartResponse>
+  ttsPlaybackStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
+  ttsOffscreenPlay: (data: TTSPlaybackStartRequest) => Promise<TTSPlaybackStartResponse>
+  ttsOffscreenStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
+
   clearAiSegmentationCache: () => Promise<void>
   enqueueSubtitlesTranslateRequest: (data: {
     text: string

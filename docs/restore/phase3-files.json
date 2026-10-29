@@ -1,0 +1,460 @@
+[
+  {
+    "path": "src/hooks/use-text-to-speech.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/analytics",
+      "@/types/config/tts",
+      "@tanstack/react-query",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/toast",
+      "@/types/analytics",
+      "@/utils/analytics",
+      "@/utils/analytics-failure-reason",
+      "@/utils/analytics-provider",
+      "@/utils/atoms/config",
+      "@/utils/content/language",
+      "@/utils/crypto-polyfill",
+      "@/utils/i18n",
+      "@/utils/logger",
+      "@/utils/message",
+      "@/utils/server/edge-tts/chunk"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/hooks/__tests__/use-text-to-speech-supersede.test.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@/types/config/tts",
+      "@/utils/content/language",
+      "@tanstack/react-query",
+      "@testing-library/react",
+      "jotai",
+      "vitest"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/background/tts-playback.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/tts-playback",
+      "#imports",
+      "@/utils/logger",
+      "@/utils/message",
+      "@/utils/tts-playback/dom-audio-controller"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/background/__tests__/tts-playback.test.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest"],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/offscreen/index.html",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/offscreen/main.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/utils/message", "@/utils/tts-playback/dom-audio-controller"],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/types/tts-playback.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/utils/tts-playback/dom-audio-controller.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/types/tts-playback"],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/utils/tts-playback/__tests__/dom-audio-controller.test.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../dom-audio-controller"],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/utils/server/edge-tts/chunk.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["./constants", "./errors"],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/utils/server/edge-tts/__tests__/chunk.test.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["vitest", "../chunk"],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/components/ui/selection-popover/speak-button.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/button",
+      "@/hooks/use-text-to-speech",
+      "@/types/analytics",
+      "@/utils/atoms/config",
+      "@/utils/i18n",
+      "@/utils/styles/utils",
+      "./selection-tooltip"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/selection-toolbar/speak-button.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "react",
+      "@tabler/icons-react",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/toast",
+      "@/components/ui/selection-popover/selection-tooltip",
+      "@/hooks/use-text-to-speech",
+      "@/types/analytics",
+      "@/utils/atoms/config",
+      "@/utils/constants/selection",
+      "@/utils/i18n",
+      "./atoms",
+      "./shortcut-hint",
+      "./use-selection-shortcuts"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/speak-button.test.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "../atoms",
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "wxt/testing/fake-browser",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/atoms/config",
+      "@/utils/constants/config",
+      "@/utils/i18n",
+      "../atoms",
+      "../speak-button"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/content-runtime/host/bind-translation-hub-shortcut.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tanstack/hotkeys",
+      "@tanstack/hotkeys",
+      "#imports",
+      "@/utils/config/storage",
+      "@/utils/constants/translation-hub",
+      "@/utils/message",
+      "@/utils/shortcut"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/popup/components/translation-hub-button.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "jotai",
+      "#imports",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/kbd",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/atoms/config",
+      "@/utils/constants/translation-hub",
+      "@/utils/i18n",
+      "@/utils/os",
+      "@/utils/shortcut"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/options/pages/shortcuts/translation-hub-shortcut.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["jotai", "@/utils/atoms/config", "@/utils/i18n", "./shortcut-config-item"],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/options/pages/shortcuts/selection-speak-shortcut.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/utils/atoms/config",
+      "@/utils/constants/selection",
+      "@/utils/i18n",
+      "../../command-palette/section-scroll",
+      "./shortcut-config-item"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/utils/constants/translation-hub.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/prompt.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": ["@/types/config/config", "@/utils/constants/prompt"],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/main.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/config",
+      "@/types/config/theme",
+      "@tanstack/react-query",
+      "jotai",
+      "jotai/utils",
+      "react",
+      "@/components/help-button",
+      "@/components/providers/theme-provider",
+      "@/components/ui/base-ui/toast",
+      "@/components/ui/base-ui/tooltip",
+      "@/utils/atoms/config",
+      "@/utils/atoms/theme",
+      "@/utils/config/storage",
+      "@/utils/constants/config",
+      "@/utils/i18n",
+      "@/utils/i18n/locale-boundary",
+      "@/utils/react-root",
+      "@/utils/tanstack-query",
+      "@/utils/theme",
+      "./app"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/index.html",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/atoms.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "@/types/config/config",
+      "jotai",
+      "@/utils/atoms/config",
+      "@/utils/config/helpers",
+      "@/utils/providers/provider-registry"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/app.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/components/page-layout",
+      "@/utils/i18n",
+      "./components/language-control-panel",
+      "./components/prompt-selector",
+      "./components/text-input",
+      "./components/translation-panel",
+      "./components/translation-panel-actions",
+      "./components/translation-service-dropdown"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/translation-service-dropdown.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@tabler/icons-react",
+      "jotai",
+      "#imports",
+      "@/components/badges/upgrade-plan-badge",
+      "@/components/llm-providers/use-hosted-ai-provider-options",
+      "@/components/provider-icon",
+      "@/components/providers/theme-provider",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/select",
+      "@/utils/atoms/config",
+      "@/utils/config/helpers",
+      "@/utils/constants/providers",
+      "@/utils/i18n",
+      "@/utils/providers/provider-display",
+      "@/utils/providers/provider-registry",
+      "../atoms"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/translation-panel.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "jotai",
+      "@/components/ui/base-ui/empty",
+      "@/utils/i18n",
+      "../atoms",
+      "./translation-card"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/translation-panel-actions.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "jotai",
+      "@/components/ui/base-ui/button",
+      "@/utils/i18n",
+      "../atoms"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/translation-card.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "@read-frog/definitions",
+      "@tanstack/react-query",
+      "jotai",
+      "react",
+      "@/components/provider-icon",
+      "@/components/providers/theme-provider",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/toast",
+      "@/hooks/use-text-to-speech",
+      "@/types/analytics",
+      "@/types/config/provider",
+      "@/utils/analytics",
+      "@/utils/analytics-provider",
+      "@/utils/atoms/config",
+      "@/utils/constants/providers",
+      "@/utils/content-script/background-stream-client",
+      "@/utils/crypto-polyfill",
+      "@/utils/glossary/active-matcher",
+      "@/utils/host/translate/execute-translate",
+      "@/utils/host/translate/text-preparation",
+      "@/utils/i18n",
+      "@/utils/prompts/translate",
+      "@/utils/providers/provider-registry",
+      "@/utils/styles/utils",
+      "../atoms"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/text-input.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "jotai",
+      "@/components/ui/base-ui/button",
+      "@/components/ui/base-ui/textarea",
+      "@/hooks/use-text-to-speech",
+      "@/types/analytics",
+      "@/utils/atoms/config",
+      "@/utils/constants/prompt",
+      "@/utils/i18n",
+      "@/utils/styles/utils",
+      "../atoms",
+      "../prompt"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/searchable-language-selector.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@read-frog/definitions",
+      "@/components/language-combobox",
+      "@/components/ui/base-ui/field"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/prompt-selector.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "jotai",
+      "@/components/prompt-configurator/built-in-prompts",
+      "@/components/ui/base-ui/select",
+      "@/types/config/provider",
+      "@/utils/atoms/config",
+      "@/utils/constants/prompt",
+      "@/utils/i18n",
+      "../atoms",
+      "../prompt"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/language-control-panel.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@iconify/react",
+      "debounce",
+      "jotai",
+      "react",
+      "@/components/ui/base-ui/button",
+      "@/utils/atoms/config",
+      "@/utils/content/language",
+      "@/utils/i18n",
+      "../atoms",
+      "./searchable-language-selector"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/__tests__/preferences.test.ts",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@/types/config/config",
+      "jotai",
+      "vitest",
+      "@/utils/atoms/config",
+      "@/utils/atoms/storage-adapter",
+      "@/utils/constants/config",
+      "../atoms"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/__tests__/translation-card.test.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@testing-library/react",
+      "vitest",
+      "@/entrypoints/translation-hub/components/translation-card"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  },
+  {
+    "path": "src/entrypoints/translation-hub/components/__tests__/text-input.test.tsx",
+    "commit": "aa6d54d1b9fde901fa7dbc00540a196fd28cd388",
+    "imports": [
+      "@testing-library/react",
+      "jotai",
+      "vitest",
+      "@/entrypoints/translation-hub/atoms",
+      "@/entrypoints/translation-hub/components/text-input",
+      "@/utils/constants/config"
+    ],
+    "reuse": "GPL source; remove analytics / hosted branches; speech transport replaced"
+  }
+]

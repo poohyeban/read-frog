@@ -11,7 +11,7 @@ export function ActionsSection() {
   const [selectionToolbar, setSelectionToolbar] = useAtom(configFieldsAtomMap.selectionToolbar)
   const { features } = selectionToolbar
 
-  const setFeatureEnabled = (key: "translate", enabled: boolean) => {
+  const setFeatureEnabled = (key: "translate" | "speak", enabled: boolean) => {
     void setSelectionToolbar({
       ...selectionToolbar,
       features: {
@@ -39,6 +39,16 @@ export function ActionsSection() {
         <Switch
           checked={features.translate.enabled}
           onCheckedChange={(checked) => setFeatureEnabled("translate", checked)}
+        />
+      </ConfigItem>
+      <ConfigItem
+        id="selection-toolbar-speak"
+        title={i18n.t("options.selectionToolbar.actions.speak.title")}
+        description={i18n.t("options.selectionToolbar.actions.speak.description")}
+      >
+        <Switch
+          checked={features.speak.enabled}
+          onCheckedChange={(checked) => setFeatureEnabled("speak", checked)}
         />
       </ConfigItem>
     </ConfigSection>

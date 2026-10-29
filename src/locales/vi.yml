@@ -30,10 +30,14 @@ popup:
         current: Hiện tại chỉ bản dịch
         action: Nhấp để chuyển sang song ngữ
   aiSmartContext: Ngữ cảnh thông minh AI
-  aiSmartContextDescription: Sử dụng ngữ cảnh trang web để cải thiện chất lượng dịch. Yêu cầu nhà cung cấp dịch LLM.
+  aiSmartContextDescription: Sử dụng ngữ cảnh trang web để cải thiện chất lượng
+    dịch. Yêu cầu nhà cung cấp dịch LLM.
+  hub:
+    tooltip: Dịch văn bản với nhiều mô hình đồng thời
 errorRecovery:
   title: Đã xảy ra sự cố
-  description: Chế độ khôi phục đang hoạt động. Bạn có thể xuất cài đặt hiện tại để sao lưu, sau đó đặt lại cài đặt và thử lại.
+  description: Chế độ khôi phục đang hoạt động. Bạn có thể xuất cài đặt hiện tại
+    để sao lưu, sau đó đặt lại cài đặt và thử lại.
   backupTitle: Sao lưu cài đặt hiện tại trước (khuyến nghị)
   exportWithApiKeys: Xuất kèm API Key
   exportWithoutApiKeys: Xuất không kèm API Key
@@ -68,8 +72,10 @@ options:
     features: Tính năng
   apiProviders:
     title: Nhà cung cấp API
-    pageDescription: Kết nối các dịch vụ AI mà Read Frog Lite sử dụng và chọn dịch vụ cho từng tính năng.
-    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using your own endpoint, model, and credentials.
+    pageDescription: Kết nối các dịch vụ AI mà Read Frog Lite sử dụng và chọn dịch
+      vụ cho từng tính năng.
+    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using
+      your own endpoint, model, and credentials.
     configTitle: Cấu hình nhà cung cấp
     addProvider: Thêm nhà cung cấp
     setApiKeyWarning:
@@ -81,13 +87,16 @@ options:
       groups:
         builtInProviders:
           title: Nhà cung cấp LLM tích hợp sẵn
-          description: Các nhà cung cấp mô hình ngôn ngữ lớn tích hợp sẵn, không cần điền hầu hết các cấu hình như Base URL
+          description: Các nhà cung cấp mô hình ngôn ngữ lớn tích hợp sẵn, không cần điền
+            hầu hết các cấu hình như Base URL
         compatibleProviders:
           title: Nhà cung cấp API tương thích
-          description: Dùng Tùy chỉnh Chat Complete cho API tương thích Chat Completions hoặc Tùy chỉnh Responses cho API Open Responses.
+          description: Dùng Tùy chỉnh Chat Complete cho API tương thích Chat Completions
+            hoặc Tùy chỉnh Responses cho API Open Responses.
         pureTranslationProviders:
           title: Nhà cung cấp dịch thuật thuần túy
-          description: Các nhà cung cấp tập trung vào tính năng dịch thuật mà không có khả năng mô hình ngôn ngữ lớn
+          description: Các nhà cung cấp tập trung vào tính năng dịch thuật mà không có khả
+            năng mô hình ngôn ngữ lớn
     form:
       fields:
         name: Tên
@@ -98,7 +107,8 @@ options:
       delete: Xóa
       deleteDialog:
         title: Xóa nhà cung cấp?
-        description: Hành động này không thể hoàn tác. Các tính năng sử dụng nhà cung cấp này sẽ được tự động chuyển sang nhà cung cấp khả dụng khác.
+        description: Hành động này không thể hoàn tác. Các tính năng sử dụng nhà cung
+          cấp này sẽ được tự động chuyển sang nhà cung cấp khả dụng khác.
         confirm: Xóa
         cancel: Hủy
       atLeastOneLLMProvider: Cần ít nhất một nhà cung cấp dịch LLM.
@@ -119,13 +129,19 @@ options:
         enterCustomModel: Nhập tên mô hình tùy chỉnh
       advancedOptions: Tùy chọn nâng cao
       temperature: Nhiệt độ
-      temperatureHint: Kiểm soát tính ngẫu nhiên trong phản hồi. Giá trị thấp (0) mang tính xác định hơn, giá trị cao mang tính sáng tạo hơn. Phạm vi thay đổi theo nhà cung cấp. Để trống để sử dụng giá trị mặc định của nhà cung cấp.
+      temperatureHint: Kiểm soát tính ngẫu nhiên trong phản hồi. Giá trị thấp (0) mang
+        tính xác định hơn, giá trị cao mang tính sáng tạo hơn. Phạm vi thay đổi
+        theo nhà cung cấp. Để trống để sử dụng giá trị mặc định của nhà cung
+        cấp.
       reasoning:
         title: Reasoning
       headers: Header
-      headersHint: Header HTTP tùy chỉnh được gửi khi tạo client nhà cung cấp AI. Để trống để dùng mặc định của nhà cung cấp; dùng {} để tắt mặc định.
+      headersHint: Header HTTP tùy chỉnh được gửi khi tạo client nhà cung cấp AI. Để
+        trống để dùng mặc định của nhà cung cấp; dùng {} để tắt mặc định.
       providerOptions: Tùy chọn nhà cung cấp
-      providerOptionsHint: Các tùy chọn dành riêng cho nhà cung cấp cho các tính năng API không chuẩn như chế độ suy nghĩ/lập luận. Xem tài liệu Vercel AI SDK hoặc tài liệu chính thức của nhà cung cấp để biết chi tiết cấu hình.
+      providerOptionsHint: Các tùy chọn dành riêng cho nhà cung cấp cho các tính năng
+        API không chuẩn như chế độ suy nghĩ/lập luận. Xem tài liệu Vercel AI SDK
+        hoặc tài liệu chính thức của nhà cung cấp để biết chi tiết cấu hình.
       providerOptionsDocsLink: Xem tài liệu nhà cung cấp
       providerOptionsRecommendationTrigger: Xem tùy chọn nhà cung cấp được đề xuất
       providerOptionsRecommendationTitle: Đã phát hiện tùy chọn nhà cung cấp được đề xuất
@@ -138,9 +154,11 @@ options:
         customChatComplete: Tùy chỉnh Chat Complete
       description:
         openai: Cung cấp các mô hình như GPT-4o
-        ollama: Chạy các mô hình ngôn ngữ lớn cục bộ trên máy của bạn để bảo mật hoàn toàn
+        ollama: Chạy các mô hình ngôn ngữ lớn cục bộ trên máy của bạn để bảo mật hoàn
+          toàn
         google: Các mô hình AI hàng đầu của Google với khả năng suy luận tiên tiến
-        openaiCompatible: Kết nối với endpoint tùy chỉnh tương thích với OpenAI Chat Completions API
+        openaiCompatible: Kết nối với endpoint tùy chỉnh tương thích với OpenAI Chat
+          Completions API
     apiKey:
       showAPIKey: Hiển thị API Key
       getAPIKey: Lấy API Key
@@ -168,13 +186,17 @@ options:
       title: Dịch ngữ cảnh thông minh AI
       description: Cung cấp cho AI ngữ cảnh của trang hoặc video để dịch chính xác hơn
       enable: Bật
-      enableDescription: AI đọc bản tóm tắt của trang hoặc video trước khi dịch, để cách dùng từ hợp ngữ cảnh. Áp dụng cho mọi tính năng dịch chạy trên nhà cung cấp LLM. Yêu cầu đầu tiên sẽ chậm hơn và làm tăng chi phí API.
+      enableDescription: AI đọc bản tóm tắt của trang hoặc video trước khi dịch, để
+        cách dùng từ hợp ngữ cảnh. Áp dụng cho mọi tính năng dịch chạy trên nhà
+        cung cấp LLM. Yêu cầu đầu tiên sẽ chậm hơn và làm tăng chi phí API.
       llmProviderConfigured: Đã chọn nhà cung cấp LLM cho $1
       llmProviderNotConfigured: Chưa chọn nhà cung cấp LLM cho $1
   patterns:
     duplicate: Mẫu này đã có trong danh sách
-    gluedWildcard: Dấu "*" phải thay cho trọn một phần của địa chỉ, ví dụ *.example.com hoặc example.*
-    unsupported: Read Frog Lite không khớp được địa chỉ này. Cổng và các giao thức ngoài http, https đều không được hỗ trợ.
+    gluedWildcard: Dấu "*" phải thay cho trọn một phần của địa chỉ, ví dụ
+      *.example.com hoặc example.*
+    unsupported: Read Frog Lite không khớp được địa chỉ này. Cổng và các giao thức
+      ngoài http, https đều không được hỗ trợ.
   preference:
     title: Tùy chọn
     pageDescription: Configure appearance, languages, site access, and local backups.
@@ -194,18 +216,21 @@ options:
       title: Ngôn ngữ dịch
       sourceCode:
         title: Ngôn ngữ nguồn
-        description: Ngôn ngữ gốc của trang web. Tự động phát hiện sẽ nhận diện từ chính trang đó.
+        description: Ngôn ngữ gốc của trang web. Tự động phát hiện sẽ nhận diện từ chính
+          trang đó.
         auto: Tự động phát hiện
       targetCode:
         title: Ngôn ngữ đích
         description: Ngôn ngữ mà trang web được dịch sang.
     extensionActivation:
       title: Kích hoạt tiện ích mở rộng
-      description: Chạy ở mọi nơi trừ các trang bạn liệt kê, hoặc chỉ chạy trên các trang bạn liệt kê
+      description: Chạy ở mọi nơi trừ các trang bạn liệt kê, hoặc chỉ chạy trên các
+        trang bạn liệt kê
       manageSites: Quản lý trang web
       mode:
         title: Chế độ kích hoạt
-        description: Sử dụng chế độ danh sách đen để tắt tiện ích trên các trang web cụ thể, hoặc chế độ danh sách trắng để giới hạn chỉ các trang web cụ thể.
+        description: Sử dụng chế độ danh sách đen để tắt tiện ích trên các trang web cụ
+          thể, hoặc chế độ danh sách trắng để giới hạn chỉ các trang web cụ thể.
         blacklist: Chỉ tắt trên các trang web được liệt kê
         whitelist: Chỉ chạy trên các trang web được liệt kê
       patterns:
@@ -245,31 +270,45 @@ options:
       customDescription: Nhấn các phím này khi di chuột lên một đoạn văn để dịch đoạn đó.
     actions:
       title: "Hành động AI"
-      description: "Chạy một hành động AI trên văn bản đã chọn. Hành động tùy chỉnh chưa có phím tắt cho đến khi bạn đặt ở đây."
-    turnedOff: "Tính năng đang tắt nên phím tắt này không có tác dụng cho đến khi bạn bật lại."
+      description: "Chạy một hành động AI trên văn bản đã chọn. Hành động tùy chỉnh
+        chưa có phím tắt cho đến khi bạn đặt ở đây."
+    turnedOff: "Tính năng đang tắt nên phím tắt này không có tác dụng cho đến khi
+      bạn bật lại."
     turnOn: "Bật"
     clash: "Trùng phím tắt với “$1”. Hãy đổi một trong hai."
     taken: "$1 đã được dùng cho “$2”."
     subtitlesToggle:
       title: Dịch phụ đề
       description: Bật hoặc tắt phụ đề đã dịch của video.
+    selectionSpeak:
+      title: Đọc vùng chọn
+      description: Đọc to văn bản đã chọn. Nhấn lần nữa để dừng.
+    translationHub:
+      title: Trung tâm Dịch thuật
+      description: Mở Trung tâm Dịch thuật trong tab mới.
   selectionToolbar:
     title: Thanh công cụ chọn
-    pageDescription: Đặt các thao tác xuất hiện khi bạn chọn văn bản và nơi hiển thị thanh công cụ.
+    pageDescription: Đặt các thao tác xuất hiện khi bạn chọn văn bản và nơi hiển thị
+      thanh công cụ.
     demoImageAlt: Demo thanh công cụ chọn văn bản
     enable:
       title: Bật thanh công cụ chọn văn bản
-      description: Hiển thị thanh công cụ khi chọn văn bản trên trang web để dịch nhanh, đọc to và dùng các hành động AI
+      description: Hiển thị thanh công cụ khi chọn văn bản trên trang web để dịch
+        nhanh, đọc to và dùng các hành động AI
     actions:
       title: Hành động
       translate:
         title: Dịch
         description: Hiển thị nút dịch trên thanh công cụ
+      speak:
+        title: Đọc
+        description: Hiển thị nút đọc, dùng để đọc to văn bản đã chọn
     display:
       title: Hiển thị
       opacity:
         title: Độ mờ
-        description: Điều chỉnh độ mờ của thanh công cụ chọn văn bản và cửa sổ mở rộng mở từ đó
+        description: Điều chỉnh độ mờ của thanh công cụ chọn văn bản và cửa sổ mở rộng
+          mở từ đó
       disabledSites:
         title: Trang web đã tắt
         description: Cấu hình các trang web mà thanh công cụ chọn văn bản nên bị tắt
@@ -287,7 +326,9 @@ options:
       providerUnavailable: Nhà cung cấp đã chọn không khả dụng
     customActions:
       title: Hành động AI tùy chỉnh
-      pageDescription: Viết prompt của riêng bạn và chạy trên văn bản đã chọn từ thanh công cụ chọn văn bản. Dữ liệu, kiểu dáng và cách tương tác của kết quả đều có thể tùy chỉnh.
+      pageDescription: Viết prompt của riêng bạn và chạy trên văn bản đã chọn từ thanh
+        công cụ chọn văn bản. Dữ liệu, kiểu dáng và cách tương tác của kết quả
+        đều có thể tùy chỉnh.
       description: Thêm các hành động AI có cấu trúc của riêng bạn cho văn bản được chọn
       configTitle: Cấu hình hành động
       introVideo:
@@ -307,11 +348,15 @@ options:
       form:
         name: Tên
         customize: Tùy chỉnh
-        customizeTooltip: Không thể thay đổi prompt của tác vụ tích hợp. Nhấp vào nút này để tạo bản sao có thể chỉnh sửa và thay đổi prompt.
+        customizeTooltip: Không thể thay đổi prompt của tác vụ tích hợp. Nhấp vào nút
+          này để tạo bản sao có thể chỉnh sửa và thay đổi prompt.
         aiConfigHelper:
           trigger: Cấu hình bằng AI
           title: Cấu hình bằng AI
-          description: Sao chép prompt bên dưới và dán vào trợ lý AI bạn hay dùng (ChatGPT, Claude, DeepSeek, Kimi…). Nó sẽ hỏi bạn muốn gì trước, rồi hướng dẫn bạn điền từng mục. Prompt có kèm cấu hình hiện tại của tác vụ này, nhưng không có khóa API.
+          description: Sao chép prompt bên dưới và dán vào trợ lý AI bạn hay dùng
+            (ChatGPT, Claude, DeepSeek, Kimi…). Nó sẽ hỏi bạn muốn gì trước, rồi
+            hướng dẫn bạn điền từng mục. Prompt có kèm cấu hình hiện tại của tác
+            vụ này, nhưng không có khóa API.
           copy: Sao chép prompt
           copyFailed: Không sao chép được prompt. Hãy thử lại.
         icon: Biểu tượng
@@ -355,14 +400,16 @@ options:
           cancel: Hủy
         layout:
           title: Bố cục
-          description: Cách kết quả hiển thị trong cửa sổ bật lên. HTML kèm Liquid; các trường được điền dần khi câu trả lời được truyền về.
+          description: Cách kết quả hiển thị trong cửa sổ bật lên. HTML kèm Liquid; các
+            trường được điền dần khi câu trả lời được truyền về.
           reset: Khôi phục mặc định
           resetFieldList: Danh sách trường
           resetDictionary: Thẻ từ điển
           resetSentenceAnalysis: Thẻ phân tích câu
           resetImproveWriting: Thẻ cải thiện bài viết
           resetConfirmTitle: Thay thế bố cục này?
-          resetConfirmDescription: Nội dung trong trình soạn thảo sẽ bị thay thế. Sau đó bạn vẫn có thể hoàn tác trong trình soạn thảo.
+          resetConfirmDescription: Nội dung trong trình soạn thảo sẽ bị thay thế. Sau đó
+            bạn vẫn có thể hoàn tác trong trình soạn thảo.
           resetConfirm: Thay thế
           edit: Chỉnh sửa
           preview: Xem trước
@@ -382,35 +429,49 @@ options:
           insertContext: Ngữ cảnh
           insertLoop: Mọi trường
           syntaxHelp: Cú pháp
-          builtInHint: Không thể chỉnh sửa bố cục của tác vụ tích hợp. Hãy tùy chỉnh để chỉnh sửa một bản sao.
+          builtInHint: Không thể chỉnh sửa bố cục của tác vụ tích hợp. Hãy tùy chỉnh để
+            chỉnh sửa một bản sao.
           viewSource: Xem mã nguồn
-          emptyNotice: Bố cục này trống nên cửa sổ bật lên hiển thị danh sách trường mặc định.
-          fallbackBanner: Không thể hiển thị bố cục này nên bố cục mặc định được dùng thay thế. $1
+          emptyNotice: Bố cục này trống nên cửa sổ bật lên hiển thị danh sách trường mặc
+            định.
+          fallbackBanner: Không thể hiển thị bố cục này nên bố cục mặc định được dùng thay
+            thế. $1
           sanitized: "Đã gỡ bỏ vì lý do an toàn: $1"
           unusedFields: "Không có trong bố cục này:"
           tooLong: Bố cục chỉ được dài tối đa $1 ký tự.
           renameSkipped: Bố cục vẫn tham chiếu đến "$1". Hãy cập nhật thủ công.
-          reservedName: '"ctx" và "forloop" là tên dành riêng trong bố cục. Hãy chọn tên khác.'
+          reservedName: '"ctx" và "forloop" là tên dành riêng trong bố cục. Hãy chọn tên
+            khác.'
           help:
             output: Hiển thị giá trị của một trường. HTML trong giá trị sẽ được thoát ký tự.
             condition: Chỉ hiển thị nội dung khi trường có giá trị.
-            loop: Lặp lại cho từng trường theo thứ tự. Có thể dùng f.name, f.value và f.type.
-            speak: Mọi phần tử có data-speak sẽ đọc to giá trị (hoặc văn bản của chính nó nếu giá trị trống) khi câu trả lời hoàn tất.
-            speakLang: data-speak-lang chỉ định ngôn ngữ đọc (mã như es hoặc en-US) để dùng giọng của ngôn ngữ đó. Nếu không có, ngôn ngữ được tự động nhận diện, thường sai với một từ đơn lẻ.
-            speakAutoplay: Phần tử có data-speak-autoplay sẽ tự đọc to khi câu trả lời hoàn tất. Chỉ phần tử đầu tiên như vậy được phát.
-            status: Tạo kiểu theo trạng thái. data-status của phần tử chứa là streaming, done hoặc error.
-            filters: newline_to_br giữ ngắt dòng (đặt ở cuối); lines tách văn bản thành danh sách dòng.
-            styles: CSS trong khối <style> chỉ áp dụng bên trong kết quả này. Các màu --rf-* theo giao diện sáng và tối.
+            loop: Lặp lại cho từng trường theo thứ tự. Có thể dùng f.name, f.value và
+              f.type.
+            speak: Mọi phần tử có data-speak sẽ đọc to giá trị (hoặc văn bản của chính nó
+              nếu giá trị trống) khi câu trả lời hoàn tất.
+            speakLang: data-speak-lang chỉ định ngôn ngữ đọc (mã như es hoặc en-US) để dùng
+              giọng của ngôn ngữ đó. Nếu không có, ngôn ngữ được tự động nhận
+              diện, thường sai với một từ đơn lẻ.
+            speakAutoplay: Phần tử có data-speak-autoplay sẽ tự đọc to khi câu trả lời hoàn
+              tất. Chỉ phần tử đầu tiên như vậy được phát.
+            status: Tạo kiểu theo trạng thái. data-status của phần tử chứa là streaming,
+              done hoặc error.
+            filters: newline_to_br giữ ngắt dòng (đặt ở cuối); lines tách văn bản thành danh
+              sách dòng.
+            styles: CSS trong khối <style> chỉ áp dụng bên trong kết quả này. Các màu --rf-*
+              theo giao diện sáng và tối.
           lint:
             parseError: "Lỗi cú pháp Liquid: $1"
             unknownField: Không có trường nào tên "$1".
             unknownContextKey: 'ctx không có "$1". Có sẵn: $2.'
             fieldShadowedByLocal: Bố cục này gán giá trị cho "$1", làm che mất trường cùng tên.
-            liquidInStyle: Liquid không chạy trong <style>; phần này được giữ nguyên dạng văn bản.
+            liquidInStyle: Liquid không chạy trong <style>; phần này được giữ nguyên dạng
+              văn bản.
             styleInConditional: Khối <style> luôn được áp dụng, kể cả khi nằm trong thẻ "$1".
             cssImport: "@import bị gỡ bỏ. Bố cục không thể tải kiểu từ bên ngoài."
             cssFontFace: "@font-face bị gỡ bỏ. Hãy dùng phông chữ có sẵn trên thiết bị."
-            unquotedAttributeOutput: Hãy đặt giá trị thuộc tính này trong dấu ngoặc kép, nếu không giá trị có thể thoát ra ngoài thuộc tính.
+            unquotedAttributeOutput: Hãy đặt giá trị thuộc tính này trong dấu ngoặc kép, nếu
+              không giá trị có thể thoát ra ngoài thuộc tính.
             filterIgnored: Bộ lọc bị bỏ qua trong thẻ "$1". Hãy gán giá trị đã lọc trước.
             newlineToBrNotLast: newline_to_br chỉ hoạt động khi là bộ lọc cuối cùng của một đầu ra.
             tooLong: Bố cục này dài hơn $1 ký tự và không thể lưu.
@@ -420,8 +481,12 @@ options:
           title: Kết nối Notebase
           description: Lưu kết quả có cấu trúc của hành động này vào Notebase từ xa.
           loginRequiredTitle: Đăng nhập để cấu hình Notebase
-          loginRequiredDescription: Hãy đăng nhập trên readfrog.app trước khi chọn notebase hoặc chỉnh sửa ánh xạ.
-          loginRequiredConnectedDescription: Kết nối này được tạo bởi tài khoản bên dưới. Nếu đăng nhập bằng cùng tài khoản, ánh xạ trường sẽ được khôi phục. Nếu đăng nhập bằng tài khoản khác, các ánh xạ cũ sẽ bị xóa khi bạn tạo hoặc kết nối Notebase.
+          loginRequiredDescription: Hãy đăng nhập trên readfrog.app trước khi chọn
+            notebase hoặc chỉnh sửa ánh xạ.
+          loginRequiredConnectedDescription: Kết nối này được tạo bởi tài khoản bên dưới.
+            Nếu đăng nhập bằng cùng tài khoản, ánh xạ trường sẽ được khôi phục.
+            Nếu đăng nhập bằng tài khoản khác, các ánh xạ cũ sẽ bị xóa khi bạn
+            tạo hoặc kết nối Notebase.
           loginAction: Đăng nhập
           connectedAccountLabel: Tài khoản đã kết nối
           currentAccountLabel: Tài khoản hiện tại
@@ -432,16 +497,19 @@ options:
           clearConnectionAction: Xóa kết nối
           refreshAction: Làm mới
           emptyTitle: Chưa có Notebase nào
-          emptyDescription: Hãy tạo một notebase trên readfrog.app rồi quay lại đây để ánh xạ các trường.
+          emptyDescription: Hãy tạo một notebase trên readfrog.app rồi quay lại đây để ánh
+            xạ các trường.
           openNotebaseAction: Mở Notebase
           accessDeniedTitle: Không thể truy cập Notebase
           accessDeniedDescription: Tài khoản này không có quyền tải dữ liệu Notebase.
           listErrorTitle: Không tải được danh sách Notebase
           listErrorDescription: Hãy thử làm mới danh sách Notebase sau ít phút nữa.
           accountMismatchTitle: Kết nối Notebase thuộc tài khoản khác
-          accountMismatchDescription: Kết nối này gắn với tài khoản bên dưới. Hãy xóa kết nối hoặc chọn một Notebase mà tài khoản hiện tại có thể truy cập.
+          accountMismatchDescription: Kết nối này gắn với tài khoản bên dưới. Hãy xóa kết
+            nối hoặc chọn một Notebase mà tài khoản hiện tại có thể truy cập.
           tableUnavailableTitle: Notebase đã chọn không còn khả dụng
-          tableUnavailableDescription: Notebase này không còn tồn tại hoặc không mở được. Hãy xóa kết nối hoặc chọn một Notebase khác.
+          tableUnavailableDescription: Notebase này không còn tồn tại hoặc không mở được.
+            Hãy xóa kết nối hoặc chọn một Notebase khác.
           tableUnavailableOption: không khả dụng
           schemaErrorTitle: Không tải được schema notebase
           schemaErrorDescription: Hãy thử làm mới lại sau ít phút nữa.
@@ -451,7 +519,8 @@ options:
           remoteFieldLabel: Trường Notebase
           columnUnavailableOption: đã xóa
           invalidMappingsTitle: Một số ánh xạ cần được xử lý
-          invalidMappingsDescription: Các ánh xạ không hợp lệ vẫn được giữ lại. Hãy sửa chúng trước khi lưu vào Notebase.
+          invalidMappingsDescription: Các ánh xạ không hợp lệ vẫn được giữ lại. Hãy sửa
+            chúng trước khi lưu vào Notebase.
           noFieldSavedTitle: Không có trường nào được lưu vào Notebase này
           noFieldSavedDescription: Hãy chọn trường Notebase cho ít nhất một trường để lưu ghi chú.
           mappingSummary: Lưu $1 · Bỏ qua $2 · Chưa quyết định $3
@@ -463,11 +532,13 @@ options:
           mappingIncompatible: Kiểu trường không còn khớp nữa.
         tokens:
           selection: Nội dung văn bản đã chọn
-          paragraphs: Nội dung các đoạn giao với vùng chọn, được nối bằng dòng trống, sẽ bị cắt còn 2000 ký tự đầu khi gửi vào hành động AI tùy chỉnh
+          paragraphs: Nội dung các đoạn giao với vùng chọn, được nối bằng dòng trống, sẽ
+            bị cắt còn 2000 ký tự đầu khi gửi vào hành động AI tùy chỉnh
           targetLanguage: Ngôn ngữ đích của người dùng
           webTitle: Tiêu đề trang web
           webUrl: URL đầy đủ của trang hiện tại
-          webContent: Nội dung trang web được trích xuất từ trang hiện tại (bị cắt còn 2000 ký tự đầu)
+          webContent: Nội dung trang web được trích xuất từ trang hiện tại (bị cắt còn
+            2000 ký tự đầu)
         delete: Xóa
         deleteDialog:
           title: Xóa hành động tùy chỉnh?
@@ -546,19 +617,26 @@ options:
           fieldTerm: Mục từ
           fieldTermDescription: Dạng cơ bản/dạng gốc của từ được chọn.
           fieldPhonetic: Phiên âm
-          fieldPhoneticDescription: Phiên âm chuẩn cho ngôn ngữ của từ (ví dụ IPA cho tiếng Anh, pinyin cho tiếng Trung, romaji cho tiếng Nhật).
+          fieldPhoneticDescription: Phiên âm chuẩn cho ngôn ngữ của từ (ví dụ IPA cho
+            tiếng Anh, pinyin cho tiếng Trung, romaji cho tiếng Nhật).
           fieldPartOfSpeech: Từ loại
           fieldPartOfSpeechDescription: Loại ngữ pháp (ví dụ noun, verb, adjective).
           fieldSentence: Câu
-          fieldSentenceDescription: Câu hoàn chỉnh trong các đoạn văn ở trên có chứa từ được chọn. Không kèm các câu trước và sau.
+          fieldSentenceDescription: Câu hoàn chỉnh trong các đoạn văn ở trên có chứa từ
+            được chọn. Không kèm các câu trước và sau.
           fieldSentenceTerm: Dạng trong câu
-          fieldSentenceTermDescription: 'Vị trí của từ được chọn trong Câu: một mảng JSON được tuần tự hóa thành chuỗi, mỗi phần của từ là một phần tử {"text": chuỗi}, mỗi phần tử trích nguyên văn Câu (ví dụ [{"text":"blossoms"}]).'
+          fieldSentenceTermDescription: 'Vị trí của từ được chọn trong Câu: một mảng JSON
+            được tuần tự hóa thành chuỗi, mỗi phần của từ là một phần tử
+            {"text": chuỗi}, mỗi phần tử trích nguyên văn Câu (ví dụ
+            [{"text":"blossoms"}]).'
           fieldDefinition: Định nghĩa
           fieldDefinitionDescription: Một định nghĩa ngắn gọn cho nghĩa trong ngữ cảnh.
           fieldSentenceTranslation: Bản dịch câu
           fieldSentenceTranslationDescription: Bản dịch chỉ của Câu.
           fieldMemoryTips: Mẹo ghi nhớ
-          fieldMemoryTipsDescription: "Cách ghi nhớ từ: tối đa 3 mẹo, mỗi mẹo một dòng, mỗi dòng bắt đầu bằng tên kỹ thuật và dấu hai chấm (ví dụ: Cấu tạo từ: …); chuỗi rỗng nếu không có gì thật sự hữu ích."
+          fieldMemoryTipsDescription: "Cách ghi nhớ từ: tối đa 3 mẹo, mỗi mẹo một dòng,
+            mỗi dòng bắt đầu bằng tên kỹ thuật và dấu hai chấm (ví dụ: Cấu tạo
+            từ: …); chuỗi rỗng nếu không có gì thật sự hữu ích."
           fieldDifficulty: Độ khó
           fieldDifficultyDescription: "Cấp độ khó CEFR ước tính: A1, A2, B1, B2, C1 hoặc C2."
         sentenceAnalysis:
@@ -629,7 +707,8 @@ options:
           slashesLabel: Ngắt câu
         improveWriting:
           name: Cải thiện bài viết
-          description: "Chấm như giáo viên: đánh dấu lỗi và cách diễn đạt chưa tự nhiên, sửa lại cho hợp hoàn cảnh"
+          description: "Chấm như giáo viên: đánh dấu lỗi và cách diễn đạt chưa tự nhiên,
+            sửa lại cho hợp hoàn cảnh"
           fieldOriginal: Bản gốc
           fieldSetting: Ngữ cảnh
           fieldAnnotations: Chú thích
@@ -676,7 +755,8 @@ options:
     demoImageAlt: Demo menu ngữ cảnh
     enable:
       title: Bật dịch menu ngữ cảnh
-      description: Thêm các tùy chọn dịch vào menu chuột phải của trình duyệt để dịch nhanh trang hoặc văn bản đã chọn
+      description: Thêm các tùy chọn dịch vào menu chuột phải của trình duyệt để dịch
+        nhanh trang hoặc văn bản đã chọn
   translation:
     title: Dịch trang
     pageDescription: Kiểm soát cách dịch trang — chế độ, phạm vi, prompt và giới hạn yêu cầu.
@@ -697,7 +777,8 @@ options:
           all: Tất cả nội dung
       translateTitle:
         title: Dịch tiêu đề tab
-        description: Dịch cả tiêu đề trang hiển thị trên tab trình duyệt. Tắt để giữ nguyên tiêu đề gốc.
+        description: Dịch cả tiêu đề trang hiển thị trên tab trình duyệt. Tắt để giữ
+          nguyên tiêu đề gốc.
     hoverTranslation:
       title: Dịch khi di chuột
       enable:
@@ -705,12 +786,14 @@ options:
         description: Di chuột hoặc nhấn giữ một đoạn để chỉ dịch đoạn đó.
       forceRetranslation:
         title: Luôn yêu cầu bản dịch mới
-        description: Bản dịch khi di chuột bỏ qua bộ nhớ đệm — văn bản đã có trong bộ nhớ đệm vẫn được dịch lại và kết quả mới sẽ ghi đè.
+        description: Bản dịch khi di chuột bỏ qua bộ nhớ đệm — văn bản đã có trong bộ
+          nhớ đệm vẫn được dịch lại và kết quả mới sẽ ghi đè.
     translationStyle:
       title: Kiểu hiển thị bản dịch
       description: Đặt bất kỳ kiểu nào bạn muốn để phân biệt kết quả dịch với văn bản gốc
       useCustomStyle: Sử dụng kiểu CSS tùy chỉnh
-      useCustomStyleDescription: Hỗ trợ bất kỳ CSS nào, bao gồm phông chữ, hoạt ảnh và kiểu dành riêng cho ngôn ngữ
+      useCustomStyleDescription: Hỗ trợ bất kỳ CSS nào, bao gồm phông chữ, hoạt ảnh và
+        kiểu dành riêng cho ngôn ngữ
       presetStyle: Kiểu có sẵn
       cssEditor: Trình chỉnh sửa CSS
       cssEditorDescription: Viết CSS của riêng bạn và xem trước văn bản dịch trông thế nào.
@@ -747,7 +830,9 @@ options:
             saved: Tất cả thay đổi đã được lưu
     personalizedPrompts:
       title: Lời nhắc trang tùy chỉnh
-      description: Tùy chỉnh các loại Prompt khác nhau cho phép bạn tự điều chỉnh loại Prompt trong quá trình dịch. Prompt là văn bản mà người dùng gửi cho LLM.
+      description: Tùy chỉnh các loại Prompt khác nhau cho phép bạn tự điều chỉnh loại
+        Prompt trong quá trình dịch. Prompt là văn bản mà người dùng gửi cho
+        LLM.
       managePrompts: Quản lý prompt
       addPrompt: Thêm Prompt
       default: Mặc định
@@ -811,36 +896,46 @@ options:
         selectLanguages: Chọn ngôn ngữ
       smallParagraphFilter:
         title: Bộ lọc văn bản ngắn
-        description: Các giá trị mặc định toàn cục này bỏ qua việc dịch các nút văn bản có ít ký tự hoặc từ hơn ngưỡng. Quy tắc trang web phù hợp có thể ghi đè chúng (0 = tắt)
+        description: Các giá trị mặc định toàn cục này bỏ qua việc dịch các nút văn bản
+          có ít ký tự hoặc từ hơn ngưỡng. Quy tắc trang web phù hợp có thể ghi
+          đè chúng (0 = tắt)
         minCharacters:
-          description: "Số ký tự tối thiểu: văn bản ngắn hơn sẽ không được dịch. Đặt 0 để dịch tất cả"
+          description: "Số ký tự tối thiểu: văn bản ngắn hơn sẽ không được dịch. Đặt 0 để
+            dịch tất cả"
         minWords:
           description: "Số từ tối thiểu: văn bản có ít từ hơn sẽ không được dịch"
         error: Giá trị phải từ $1 đến $2
     translationQueue:
       title: Hàng đợi dịch
-      description: Yêu cầu gửi đi nhanh đến mức nào, mỗi yêu cầu mang bao nhiêu văn bản và dịch trước người đọc bao xa
+      description: Yêu cầu gửi đi nhanh đến mức nào, mỗi yêu cầu mang bao nhiêu văn
+        bản và dịch trước người đọc bao xa
       manageQueue: Quản lý hàng đợi
       requestQueueConfig:
         title: Tốc độ dịch
         capacity:
           description: "Số yêu cầu tối đa cùng lúc: bao nhiêu yêu cầu được gửi đi một lượt"
         rate:
-          description: "Số yêu cầu mỗi giây: tốc độ đều sau đợt gửi dồn. Dùng được số thập phân, 0.25 là 4 giây một yêu cầu"
+          description: "Số yêu cầu mỗi giây: tốc độ đều sau đợt gửi dồn. Dùng được số thập
+            phân, 0.25 là 4 giây một yêu cầu"
       batchQueueConfig:
         title: Dịch theo lô
-        description: Cấu hình giới hạn ký tự và số đoạn văn tối đa cho dịch theo lô (chỉ có hiệu lực với dịch LLM)
+        description: Cấu hình giới hạn ký tự và số đoạn văn tối đa cho dịch theo lô (chỉ
+          có hiệu lực với dịch LLM)
         maxCharactersPerBatch:
           description: "Số ký tự tối đa: mỗi yêu cầu tới AI mang bao nhiêu văn bản"
         maxItemsPerBatch:
-          description: "Số đoạn tối đa: bao nhiêu đoạn gộp chung một yêu cầu. Nhà cung cấp không dùng AI bỏ qua cả hai"
+          description: "Số đoạn tối đa: bao nhiêu đoạn gộp chung một yêu cầu. Nhà cung cấp
+            không dùng AI bỏ qua cả hai"
       preloadConfig:
         title: Phạm vi dịch trước
-        description: Kiểm soát lượng nội dung bên dưới vùng nhìn được dịch trước để tiết kiệm chi phí API
+        description: Kiểm soát lượng nội dung bên dưới vùng nhìn được dịch trước để tiết
+          kiệm chi phí API
         margin:
-          description: "Khoảng dịch trước: dịch trước nội dung cách dưới màn hình bao nhiêu pixel. Giảm để tiết kiệm chi phí API"
+          description: "Khoảng dịch trước: dịch trước nội dung cách dưới màn hình bao
+            nhiêu pixel. Giảm để tiết kiệm chi phí API"
         threshold:
-          description: "Ngưỡng hiển thị: đoạn văn phải lộ ra bao nhiêu mới được dịch, từ 0 đến 1"
+          description: "Ngưỡng hiển thị: đoạn văn phải lộ ra bao nhiêu mới được dịch, từ 0
+            đến 1"
     cache:
       title: Bộ nhớ đệm
       clearCache:
@@ -852,13 +947,16 @@ options:
           trigger: Xóa bộ nhớ đệm
           confirm: Xác nhận
           cancel: Hủy
-          description: Thao tác này sẽ xóa tất cả bộ nhớ đệm dịch. Hành động này không thể hoàn tác.
+          description: Thao tác này sẽ xóa tất cả bộ nhớ đệm dịch. Hành động này không thể
+            hoàn tác.
   siteRules:
     title: Quy tắc trang web
     description: Quy tắc theo từng trang web để điều chỉnh cách dịch các trang web cụ thể.
     userRules:
       title: Quy tắc của người dùng
-      description: Định nghĩa quy tắc trang web của riêng bạn dưới dạng mảng JSON. Quy tắc áp dụng cho các trang có URL khớp với mẫu; quy tắc của người dùng được ưu tiên hơn quy tắc tích hợp.
+      description: Định nghĩa quy tắc trang web của riêng bạn dưới dạng mảng JSON. Quy
+        tắc áp dụng cho các trang có URL khớp với mẫu; quy tắc của người dùng
+        được ưu tiên hơn quy tắc tích hợp.
       saveButton: Lưu
       savedButton: Đã lưu
       validation:
@@ -874,7 +972,8 @@ options:
         saved: Tất cả thay đổi đã được lưu
     builtIn:
       title: Quy tắc tích hợp
-      description: Quy tắc trang web đi kèm với tiện ích mở rộng. Nếu một quy tắc gây ra sự cố trên trang web, hãy tắt nó bằng công tắc.
+      description: Quy tắc trang web đi kèm với tiện ích mở rộng. Nếu một quy tắc gây
+        ra sự cố trên trang web, hãy tắt nó bằng công tắc.
       searchPlaceholder: Tìm theo id, mô tả hoặc mẫu URL
       showMore: Hiển thị thêm
       count: Đang hiển thị $1 / $2 quy tắc
@@ -885,28 +984,34 @@ options:
       title: Kích hoạt
       enable:
         title: Bật
-        description: Nhấn phím cách nhanh ba lần trong bất kỳ ô nhập nào để dịch nội dung bạn vừa gõ.
+        description: Nhấn phím cách nhanh ba lần trong bất kỳ ô nhập nào để dịch nội
+          dung bạn vừa gõ.
       threshold:
         title: Ngưỡng kích hoạt
-        description: Khoảng cách tối đa giữa các lần nhấn, tính bằng mili giây. Tăng lên nếu không kích hoạt được, giảm xuống nếu bị kích hoạt khi đang gõ.
+        description: Khoảng cách tối đa giữa các lần nhấn, tính bằng mili giây. Tăng lên
+          nếu không kích hoạt được, giảm xuống nếu bị kích hoạt khi đang gõ.
         error: Nhập giá trị từ $1 đến $2
     languages:
       title: Ngôn ngữ dịch
       pair:
         title: Cặp ngôn ngữ
-        description: Văn bản bạn gõ được đọc theo ngôn ngữ nào và dịch sang ngôn ngữ nào. Cả hai bên đều có thể theo ngôn ngữ nguồn và đích bạn dùng khi dịch trang.
+        description: Văn bản bạn gõ được đọc theo ngôn ngữ nào và dịch sang ngôn ngữ
+          nào. Cả hai bên đều có thể theo ngôn ngữ nguồn và đích bạn dùng khi
+          dịch trang.
       sourceCode: Ngôn ngữ nguồn trang
       targetCode: Ngôn ngữ đích của bản dịch
       cycle:
         title: Đổi hướng mỗi lần
-        description: Mỗi lần kích hoạt sẽ hoán đổi hai ngôn ngữ, nên lần kích hoạt sau sẽ đưa văn bản về ngôn ngữ bạn đã gõ.
+        description: Mỗi lần kích hoạt sẽ hoán đổi hai ngôn ngữ, nên lần kích hoạt sau
+          sẽ đưa văn bản về ngôn ngữ bạn đã gõ.
   floatingButton:
     title: Nút nổi
     pageDescription: Đặt vị trí nút nổi, hành động khi nhấp và những trang web cần ẩn nút.
     demoImageAlt: Demo nút nổi
     enable:
       title: Bật nút nổi
-      description: Hiển thị nút nổi trên các trang web để truy cập nhanh các tính năng Read Frog
+      description: Hiển thị nút nổi trên các trang web để truy cập nhanh các tính năng
+        Read Frog
     display:
       title: Hiển thị
       side:
@@ -937,15 +1042,20 @@ options:
   advanced:
     glossary:
       title: Bảng thuật ngữ
-      pageDescription: Đặt bản dịch cố định cho những từ quan trọng với bạn, và chọn nơi áp dụng cho từng danh sách.
+      pageDescription: Đặt bản dịch cố định cho những từ quan trọng với bạn, và chọn
+        nơi áp dụng cho từng danh sách.
       untitled: Bảng thuật ngữ chưa đặt tên
       noGlossaries: Chưa có bảng thuật ngữ nào.
       enable:
         title: Bật
-        description: Gửi các thuật ngữ khớp cho LLM để dịch đúng theo cách bạn muốn. Bảng thuật ngữ được gửi kèm trong câu lệnh, nên nó chỉ áp dụng cho các tính năng chạy trên nhà cung cấp LLM.
+        description: Gửi các thuật ngữ khớp cho LLM để dịch đúng theo cách bạn muốn.
+          Bảng thuật ngữ được gửi kèm trong câu lệnh, nên nó chỉ áp dụng cho các
+          tính năng chạy trên nhà cung cấp LLM.
       library:
         title: Bảng thuật ngữ của bạn
-        description: Mỗi bảng thuật ngữ có thuật ngữ riêng và danh sách trang web riêng, nên bộ thuật ngữ dùng cho công việc sẽ không đi theo bạn sang mọi nơi khác.
+        description: Mỗi bảng thuật ngữ có thuật ngữ riêng và danh sách trang web riêng,
+          nên bộ thuật ngữ dùng cho công việc sẽ không đi theo bạn sang mọi nơi
+          khác.
         button: Thêm bảng thuật ngữ
         capReached: Bạn chỉ có thể có tối đa $1 bảng thuật ngữ.
         termUsage: Đã dùng $1/$2 thuật ngữ, tính chung cho tất cả bảng thuật ngữ
@@ -965,30 +1075,37 @@ options:
           descriptionPlaceholder: Mô tả (tùy chọn)
         enable:
           title: Bật
-          description: Bảng thuật ngữ đã tắt vẫn giữ các thuật ngữ nhưng không gửi thuật ngữ nào.
+          description: Bảng thuật ngữ đã tắt vẫn giữ các thuật ngữ nhưng không gửi thuật
+            ngữ nào.
         sites:
           title: Trang web
-          description: Giới hạn bảng thuật ngữ này cho một số trang web nhất định. example.com chỉ là địa chỉ đó; *.example.com thêm tên miền phụ; example.com/docs/* thu hẹp vào một phần của trang.
+          description: Giới hạn bảng thuật ngữ này cho một số trang web nhất định.
+            example.com chỉ là địa chỉ đó; *.example.com thêm tên miền phụ;
+            example.com/docs/* thu hẹp vào một phần của trang.
           allSites: Để trống thì bảng thuật ngữ sẽ áp dụng ở mọi nơi.
           header: Trang web
         delete:
           title: Xóa bảng thuật ngữ này
-          description: Xóa bảng thuật ngữ này cùng toàn bộ thuật ngữ trong đó. Hãy xuất trước nếu bạn có thể cần dùng lại — việc xóa không thể hoàn tác.
+          description: Xóa bảng thuật ngữ này cùng toàn bộ thuật ngữ trong đó. Hãy xuất
+            trước nếu bạn có thể cần dùng lại — việc xóa không thể hoàn tác.
           dialog:
             trigger: Xóa
             title: Xóa bảng thuật ngữ này?
-            description: Bảng thuật ngữ và toàn bộ $1 thuật ngữ trong đó sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.
+            description: Bảng thuật ngữ và toàn bộ $1 thuật ngữ trong đó sẽ bị xóa vĩnh
+              viễn. Hành động này không thể hoàn tác.
             confirm: Xóa
             cancel: Hủy
       addTerm:
         title: Thêm thuật ngữ
-        description: Đặt bản dịch bạn muốn cho một thuật ngữ, hoặc để trống bản dịch để giữ nguyên bản gốc.
+        description: Đặt bản dịch bạn muốn cho một thuật ngữ, hoặc để trống bản dịch để
+          giữ nguyên bản gốc.
       list:
         title: Thuật ngữ của bạn
         description: Chỉ những thuật ngữ xuất hiện trong đoạn văn mới được gửi kèm đoạn đó.
       importExport:
         title: Nhập và xuất
-        description: Thuật ngữ là tệp CSV gồm các cột source, target, targetLanguage và caseSensitive — đúng tệp mà Xuất tạo ra.
+        description: Thuật ngữ là tệp CSV gồm các cột source, target, targetLanguage và
+          caseSensitive — đúng tệp mà Xuất tạo ra.
       sourcePlaceholder: Thuật ngữ
       targetPlaceholder: Bản dịch (để trống để giữ nguyên bản gốc)
       caseSensitive: Phân biệt chữ hoa/thường
@@ -1021,46 +1138,56 @@ options:
       importModeMerge: Thêm vào danh sách
       importModeReplace: Thay thế danh sách
       importEmpty: Không tìm thấy thuật ngữ nào trong tệp đó.
-      importMissingHeader: "Tệp đó không phải là tệp xuất bộ thuật ngữ của Read Frog. Nó cần các cột sau:"
+      importMissingHeader: "Tệp đó không phải là tệp xuất bộ thuật ngữ của Read Frog.
+        Nó cần các cột sau:"
       importOverflow: Lần nhập này sẽ vượt giới hạn $1 thuật ngữ. Không có gì thay đổi.
       importSuccess: Đã nhập $1 thuật ngữ mới và cập nhật $2 thuật ngữ.
       importSkipped: Đã bỏ qua $1 dòng không hợp lệ và $2 mục trùng lặp.
       importNoValidRows: Không thể nhập bất kỳ dòng nào trong số đó. Không có gì thay đổi.
       importReplaceConfirm:
         title: Thay thế toàn bộ danh sách?
-        description: Toàn bộ $1 thuật ngữ trong bảng thuật ngữ này sẽ bị xóa — ở mọi ngôn ngữ đích, không chỉ ngôn ngữ đang chọn — và được thay bằng nội dung của tệp này. Không thể hoàn tác.
+        description: Toàn bộ $1 thuật ngữ trong bảng thuật ngữ này sẽ bị xóa — ở mọi
+          ngôn ngữ đích, không chỉ ngôn ngữ đang chọn — và được thay bằng nội
+          dung của tệp này. Không thể hoàn tác.
         confirm: Thay thế
         cancel: Hủy
       deleteAll:
         title: Xóa tất cả thuật ngữ
-        description: Làm trống bảng thuật ngữ của bạn. Hãy xuất trước nếu bạn có thể cần dùng lại — việc xóa không thể hoàn tác.
+        description: Làm trống bảng thuật ngữ của bạn. Hãy xuất trước nếu bạn có thể cần
+          dùng lại — việc xóa không thể hoàn tác.
         deleting: Đang xóa...
         dialog:
           title: Xóa tất cả thuật ngữ
           trigger: Xóa tất cả
           confirm: Xác nhận
           cancel: Hủy
-          description: Toàn bộ $1 thuật ngữ sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.
+          description: Toàn bộ $1 thuật ngữ sẽ bị xóa vĩnh viễn. Hành động này không thể
+            hoàn tác.
   videoSubtitles:
     title: Phụ đề video
-    pageDescription: Dịch phụ đề khi đang xem, với nhà cung cấp, kiểu hiển thị và thiết lập yêu cầu riêng.
+    pageDescription: Dịch phụ đề khi đang xem, với nhà cung cấp, kiểu hiển thị và
+      thiết lập yêu cầu riêng.
     preference:
       title: Cơ bản
       enable:
         title: Bật phụ đề video
-        description: Thêm nút dịch vào thanh điều khiển của trình phát trên YouTube, X và Netflix.
+        description: Thêm nút dịch vào thanh điều khiển của trình phát trên YouTube, X
+          và Netflix.
       autoStart:
         title: Mở video là dịch
         description: Bắt đầu dịch ngay khi video tải xong, không cần bấm nút.
       aiSegmentation:
         title: AI phân đoạn thông minh
-        description: AI cắt lại phụ đề thành từng câu. Bản dịch sẽ phản hồi chậm hơn. Cần LLM mạnh; mô hình yếu có thể bỏ sót hoặc lệch dòng.
+        description: AI cắt lại phụ đề thành từng câu. Bản dịch sẽ phản hồi chậm hơn.
+          Cần LLM mạnh; mô hình yếu có thể bỏ sót hoặc lệch dòng.
       wordLookupAction:
         title: Hành động tra từ
-        description: Hành động AI chạy khi bạn nhấp vào một từ trong phụ đề. Mặc định là từ điển, bạn có thể chọn hành động của riêng mình.
+        description: Hành động AI chạy khi bạn nhấp vào một từ trong phụ đề. Mặc định là
+          từ điển, bạn có thể chọn hành động của riêng mình.
     aiQuota:
       title: Hạn mức phụ đề AI
-      description: AI dùng công nghệ nhận dạng giọng nói để tạo phụ đề chính xác cho mọi video
+      description: AI dùng công nghệ nhận dạng giọng nói để tạo phụ đề chính xác cho
+        mọi video
       launchBonusPromo: Đăng ký trước $1 để nhận thêm 300 phút chuyển lời nói thành văn bản
       loginRequired: Đăng nhập để xem hạn mức phụ đề AI của bạn
       upgradeRequired: Phụ đề AI cần gói Pro hoặc Ultra
@@ -1074,7 +1201,8 @@ options:
       used: Đã dùng $1 phút
     style:
       title: Kiểu phụ đề
-      description: Chế độ hiển thị, vị trí, phông chữ, màu sắc và nền, chỉnh ngay trên bản xem trước
+      description: Chế độ hiển thị, vị trí, phông chữ, màu sắc và nền, chỉnh ngay trên
+        bản xem trước
       customizeStyle: Tùy chỉnh kiểu
       displayMode:
         title: Chế độ hiển thị
@@ -1098,7 +1226,8 @@ options:
         title: CSS tùy chỉnh
         description: CSS bổ sung cho các dòng phụ đề, ngoài phông chữ và màu sắc ở trên
         presetTemplate: Mẫu dựng sẵn
-        presetTemplateDescription: Áp dụng nhanh một mẫu dựng sẵn — ví dụ làm mờ bản dịch để che đi khi luyện nghe
+        presetTemplateDescription: Áp dụng nhanh một mẫu dựng sẵn — ví dụ làm mờ bản
+          dịch để che đi khi luyện nghe
         presetPlaceholder: Chọn mẫu
         presets:
           blurTranslation: Làm mờ bản dịch
@@ -1127,7 +1256,8 @@ options:
             saved: Tất cả thay đổi đã được lưu
     customPrompts:
       title: Lời nhắc phụ đề tùy chỉnh
-      description: Mẫu lời nhắc chỉ dùng cho dịch phụ đề, tách biệt với lời nhắc dịch trang web
+      description: Mẫu lời nhắc chỉ dùng cho dịch phụ đề, tách biệt với lời nhắc dịch
+        trang web
       managePrompts: Quản lý prompt
       editPrompt:
         promptCellInput:
@@ -1138,21 +1268,25 @@ options:
           videoSummary: Tóm tắt video (yêu cầu ngữ cảnh thông minh AI)
     subtitlesQueue:
       title: Hàng đợi phụ đề
-      description: Yêu cầu phụ đề gửi đi nhanh đến mức nào và mỗi yêu cầu mang bao nhiêu dòng
+      description: Yêu cầu phụ đề gửi đi nhanh đến mức nào và mỗi yêu cầu mang bao
+        nhiêu dòng
       manageQueue: Quản lý hàng đợi
       requestQueueConfig:
         title: Tốc độ dịch
         capacity:
           description: "Số yêu cầu tối đa cùng lúc: bao nhiêu yêu cầu được gửi đi một lượt"
         rate:
-          description: "Số yêu cầu mỗi giây: tốc độ đều sau đợt gửi dồn. Dùng được số thập phân, 0.25 là 4 giây một yêu cầu"
+          description: "Số yêu cầu mỗi giây: tốc độ đều sau đợt gửi dồn. Dùng được số thập
+            phân, 0.25 là 4 giây một yêu cầu"
       batchQueueConfig:
         title: Dịch theo lô
-        description: Cấu hình giới hạn ký tự và số dòng phụ đề tối đa cho dịch theo lô (chỉ có hiệu lực với dịch LLM)
+        description: Cấu hình giới hạn ký tự và số dòng phụ đề tối đa cho dịch theo lô
+          (chỉ có hiệu lực với dịch LLM)
         maxCharactersPerBatch:
           description: "Số ký tự tối đa: mỗi yêu cầu tới AI mang bao nhiêu văn bản"
         maxItemsPerBatch:
-          description: "Số dòng tối đa: bao nhiêu dòng phụ đề gộp chung một yêu cầu. Nhà cung cấp không dùng AI bỏ qua cả hai"
+          description: "Số dòng tối đa: bao nhiêu dòng phụ đề gộp chung một yêu cầu. Nhà
+            cung cấp không dùng AI bỏ qua cả hai"
     cache:
       title: Bộ nhớ đệm
       clearCache:
@@ -1164,16 +1298,24 @@ options:
           trigger: Xóa bộ nhớ đệm
           confirm: Xác nhận
           cancel: Hủy
-          description: Tất cả kết quả AI phân đoạn đã lưu trong bộ nhớ đệm sẽ bị xóa. Lần tới khi phát video có bật AI phân đoạn, phụ đề sẽ được xử lý lại.
+          description: Tất cả kết quả AI phân đoạn đã lưu trong bộ nhớ đệm sẽ bị xóa. Lần
+            tới khi phát video có bật AI phân đoạn, phụ đề sẽ được xử lý lại.
 translateService:
+  title: Dịch vụ dịch thuật
+  description: Chỉ để dịch trang web
   builtInModels: Built-in Models
   llmModels: LLM Models
   normalTranslator: Trình dịch thông thường
+  selectServices: Chọn dịch vụ
+  translationProviders: Dịch vụ dịch thuật
+  configureAPI: Cấu hình API
 translatePrompt:
   title: Kiểu dịch AI
-  description: Chọn một Prompt để sử dụng trong quá trình dịch. Thêm hoặc sửa đổi Prompt tùy chỉnh trên trang tùy chọn.
+  description: Chọn một Prompt để sử dụng trong quá trình dịch. Thêm hoặc sửa đổi
+    Prompt tùy chỉnh trên trang tùy chọn.
 noAPIKeyConfig:
-  warning: Nếu bạn muốn sử dụng mô hình AI, vui lòng đặt API key trên trang tùy chọn trước
+  warning: Nếu bạn muốn sử dụng mô hình AI, vui lòng đặt API key trên trang tùy
+    chọn trước
 translation:
   sameLanguage: Ngôn ngữ nguồn và đích phải khác nhau
   extensionContextInvalidated: Tiện ích đã được cập nhật. Hãy tải lại trang này rồi thử lại.
@@ -1190,6 +1332,8 @@ action:
   unpinFromToolbar: Bỏ ghim khỏi thanh công cụ
   pinToToolbar: Ghim vào thanh công cụ
   dragToReorder: Kéo để sắp xếp lại
+  speak: Đọc
+  playing: Đang phát
 thinking:
   label: Đang suy luận
   complete: Suy luận hoàn tất
@@ -1386,11 +1530,28 @@ languages:
   hif: Tiếng Hindi Fiji
 side:
   targetLang: Ngôn ngữ đích
+  sourceLang: Ngôn ngữ nguồn
 translationHub:
   searchLanguages: Tìm kiếm ngôn ngữ...
   noLanguagesFound: Không tìm thấy ngôn ngữ
+  exchangeLanguages: Đổi ngôn ngữ
+  title: Dịch Văn Bản Đa API
+  noServicesSelected: Chưa Chọn Dịch Vụ Dịch Thuật
+  noServicesDescription: Chọn dịch vụ dịch thuật ở trên để xem thẻ dịch thuật tại đây.
+  inputPlaceholder: Nhập văn bản cần dịch...
+  translate: Dịch
+  copiedToClipboard: Đã sao chép bản dịch vào bộ nhớ tạm!
+  copyTranslation: Sao chép bản dịch
+  speakSourceText: Đọc văn bản gốc
+  speakTranslation: Đọc bản dịch
+  expandCard: Mở rộng thẻ
+  collapseCard: Thu gọn thẻ
+  expandAllCards: Mở rộng tất cả
+  collapseAllCards: Thu gọn tất cả
+  deleteCard: Xóa thẻ
   translationFailed: Dịch Thất Bại
   translationFailedFallback: Dịch thất bại
+  retryTranslation: Thử lại dịch
 dataTypes:
   string: Văn bản
   number: Số
@@ -1414,7 +1575,8 @@ subtitles:
       emptyTitle: Không có phụ đề để hiển thị
       backToCurrent: Về vị trí hiện tại
   loadingAiSubtitles: Đang tải phụ đề AI… (dự kiến 3 phút)
-  aiSubtitlesHint: Phụ đề chính xác được tạo bằng công nghệ nhận dạng giọng nói AI tiên tiến, dùng được ngay cả khi không có phụ đề chính thức.
+  aiSubtitlesHint: Phụ đề chính xác được tạo bằng công nghệ nhận dạng giọng nói AI
+    tiên tiến, dùng được ngay cả khi không có phụ đề chính thức.
   requestAiSubtitles: Yêu cầu phụ đề AI
   usingAiSubtitles: Đang dùng phụ đề AI
   toggle:
@@ -1460,3 +1622,12 @@ subtitles:
     translatedExportFailed: Không thể tạo phụ đề đã dịch
     translatedExportIncomplete: Không thể dịch tất cả các dòng phụ đề
     translatedExportSameLanguage: Ngôn ngữ nguồn và ngôn ngữ đích giống nhau
+speak:
+  languageDetectionFallback: Đã chuyển sang phát hiện ngôn ngữ cục bộ
+  languageDetectionSettingsHint: Trong Cài đặt, chọn LLM khả dụng hoặc phát hiện cục bộ.
+  fetchingAudio: Đang tạo âm thanh...
+  playingAudio: Đang phát âm thanh...
+  failedToGenerateSpeech: Không thể tạo giọng nói
+  noTextSelected: Không có văn bản nào được chọn
+  openaiNotConfigured: Nhà cung cấp OpenAI chưa được cấu hình hoặc chưa được bật
+  openaiApiKeyNotConfigured: API key OpenAI chưa được cấu hình
