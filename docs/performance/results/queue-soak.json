@@ -1,0 +1,382 @@
+{
+  "source": "9e1b6946d0940190a64de246dbcbfb4e29652f56",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "lockSHA256": "b53917020d4111b757627f9d4cf6def3e0b3ec32ee8e370525eeccbdf1d6e091",
+  "timestamp": "2026-10-29T15:31:10.230Z",
+  "data": {
+    "requestedDurationMs": 1800000,
+    "complete": true,
+    "caveat": "Node queue lifecycle only; does not establish browser DOM/listener or TTS/offscreen heap stability",
+    "samples": [
+      {
+        "elapsedMs": 16.99979699999676,
+        "cycles": 1,
+        "heapUsed": 21049656,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap", "Timeout"]
+      },
+      {
+        "elapsedMs": 30325.094332,
+        "cycles": 31,
+        "heapUsed": 21070824,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 60624.127453999994,
+        "cycles": 61,
+        "heapUsed": 21082032,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 90934.18662299999,
+        "cycles": 91,
+        "heapUsed": 21083624,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 120222.88128999999,
+        "cycles": 120,
+        "heapUsed": 21090936,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 150532.209707,
+        "cycles": 150,
+        "heapUsed": 21103592,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 180826.797696,
+        "cycles": 180,
+        "heapUsed": 21102392,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 210117.29359499997,
+        "cycles": 209,
+        "heapUsed": 21108400,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 240412.07999099998,
+        "cycles": 239,
+        "heapUsed": 21153304,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 270709.553529,
+        "cycles": 269,
+        "heapUsed": 21153488,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 301031.165945,
+        "cycles": 299,
+        "heapUsed": 21179448,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 330323.64393200004,
+        "cycles": 328,
+        "heapUsed": 21180816,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 360629.292916,
+        "cycles": 358,
+        "heapUsed": 21196904,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 390932.616384,
+        "cycles": 388,
+        "heapUsed": 21197416,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 420225.855884,
+        "cycles": 417,
+        "heapUsed": 21197520,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 450523.31997,
+        "cycles": 447,
+        "heapUsed": 21182352,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 480829.091832,
+        "cycles": 477,
+        "heapUsed": 21182584,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 510120.30773000006,
+        "cycles": 506,
+        "heapUsed": 21182816,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 540436.8361849999,
+        "cycles": 536,
+        "heapUsed": 21183256,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 570737.34482,
+        "cycles": 566,
+        "heapUsed": 21183488,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 600028.413154,
+        "cycles": 595,
+        "heapUsed": 21183720,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 630331.538156,
+        "cycles": 625,
+        "heapUsed": 21183952,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 660631.320294,
+        "cycles": 655,
+        "heapUsed": 21184280,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 690936.093476,
+        "cycles": 685,
+        "heapUsed": 21200856,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 720240.7109869999,
+        "cycles": 714,
+        "heapUsed": 21201088,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 750543.725615,
+        "cycles": 744,
+        "heapUsed": 21201192,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 780876.666738,
+        "cycles": 774,
+        "heapUsed": 21186024,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 810190.2978729999,
+        "cycles": 803,
+        "heapUsed": 21185960,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 840495.5435919999,
+        "cycles": 833,
+        "heapUsed": 21186192,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 870794.706591,
+        "cycles": 863,
+        "heapUsed": 21186424,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 900106.1076529999,
+        "cycles": 892,
+        "heapUsed": 21186656,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 930401.270956,
+        "cycles": 922,
+        "heapUsed": 21186888,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 960695.3782609999,
+        "cycles": 952,
+        "heapUsed": 21187120,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 990988.2986309999,
+        "cycles": 982,
+        "heapUsed": 21187520,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1020279.547368,
+        "cycles": 1011,
+        "heapUsed": 21204272,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1050580.14708,
+        "cycles": 1041,
+        "heapUsed": 21204504,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1080895.153996,
+        "cycles": 1071,
+        "heapUsed": 21204608,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1110188.7764329999,
+        "cycles": 1100,
+        "heapUsed": 21189440,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1140483.5048729999,
+        "cycles": 1130,
+        "heapUsed": 21195824,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1170779.895706,
+        "cycles": 1160,
+        "heapUsed": 21196056,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1200067.378232,
+        "cycles": 1189,
+        "heapUsed": 21196288,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1230372.254154,
+        "cycles": 1219,
+        "heapUsed": 21196520,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1260665.106052,
+        "cycles": 1249,
+        "heapUsed": 21196752,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1290958.8496359999,
+        "cycles": 1279,
+        "heapUsed": 21197152,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1320238.154116,
+        "cycles": 1308,
+        "heapUsed": 21222688,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1350533.1310659999,
+        "cycles": 1338,
+        "heapUsed": 21238688,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1380836.632219,
+        "cycles": 1368,
+        "heapUsed": 21238920,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1410120.617563,
+        "cycles": 1397,
+        "heapUsed": 21239024,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1440457.086647,
+        "cycles": 1427,
+        "heapUsed": 21223856,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1470764.349946,
+        "cycles": 1457,
+        "heapUsed": 21224088,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1500052.3936949999,
+        "cycles": 1486,
+        "heapUsed": 21233880,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1530368.9102669999,
+        "cycles": 1516,
+        "heapUsed": 21234112,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1560721.812469,
+        "cycles": 1546,
+        "heapUsed": 21234344,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1591016.94667,
+        "cycles": 1576,
+        "heapUsed": 21234576,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1620315.531919,
+        "cycles": 1605,
+        "heapUsed": 21236240,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1650619.636476,
+        "cycles": 1635,
+        "heapUsed": 21236472,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1680918.3421439999,
+        "cycles": 1665,
+        "heapUsed": 21253104,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1710226.30364,
+        "cycles": 1694,
+        "heapUsed": 21252632,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1740533.4392269999,
+        "cycles": 1724,
+        "heapUsed": 21253456,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1770840.590989,
+        "cycles": 1754,
+        "heapUsed": 21238288,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      },
+      {
+        "elapsedMs": 1800123.994281,
+        "cycles": 1782,
+        "heapUsed": 21238200,
+        "resources": ["PipeWrap", "PipeWrap", "PipeWrap"]
+      }
+    ]
+  }
+}

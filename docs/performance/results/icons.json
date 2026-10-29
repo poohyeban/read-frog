@@ -1,0 +1,16 @@
+{
+  "names": 77,
+  "missing": [],
+  "current": {
+    "name": "offline registry + Iconify renderer",
+    "bytes": 36317,
+    "gzipBytes": 7559
+  },
+  "candidate": {
+    "name": "Tabler name-map prototype",
+    "bytes": 23920,
+    "gzipBytes": 5855
+  },
+  "caveat": "Isolated production-minified icon entry, React external. Prototype covers names, not full Iconify prop/ref/flip/accessibility or brand-resource compatibility; not a production application bundle or initialization benchmark.",
+  "decision": "Retain current offline renderer and persisted names. Prefer static Tabler imports for new UI. A whole-app migration requires production browser visual/accessibility/initialization evidence that is unavailable in this managed environment."
+}

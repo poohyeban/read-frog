@@ -1,0 +1,340 @@
+{
+  "source": "2075ab318a730ba330ea9e0cfe3d127b0a028118",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "lockSHA256": "b53917020d4111b757627f9d4cf6def3e0b3ec32ee8e370525eeccbdf1d6e091",
+  "timestamp": "2026-10-29T15:23:23.179Z",
+  "data": {
+    "caveat": "React development Profiler in jsdom. Relative commits/reconfiguration work only; these durations are not production browser latency.",
+    "warmups": 3,
+    "measuredInteractions": 30,
+    "results": {
+      "popup-language-unrelated-config-updates": {
+        "commits": [],
+        "count": 0,
+        "actualDuration": {}
+      },
+      "provider-json-error-decoration-updates": {
+        "commits": [
+          {
+            "phase": "update",
+            "actualDuration": 0.2284350000008999,
+            "baseDuration": 0.22519000000011147
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.14672099999961574,
+            "baseDuration": 0.143938000000162
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.316037999999935,
+            "baseDuration": 0.3129429999999047
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.23379499999919062,
+            "baseDuration": 0.22942799999964336
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.09356200000001991,
+            "baseDuration": 0.09097800000063216
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.13578600000028018,
+            "baseDuration": 0.13198999999985972
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.08516799999961222,
+            "baseDuration": 0.08212499999990541
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07335099999954764,
+            "baseDuration": 0.07075699999995777
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07464299999946888,
+            "baseDuration": 0.07194900000013149
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.06858399999919129,
+            "baseDuration": 0.06635999999934938
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07147000000031767,
+            "baseDuration": 0.06914600000027349
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.06885499999998501,
+            "baseDuration": 0.06613999999990483
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.10296499999958542,
+            "baseDuration": 0.1003509999995913
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07676599999967948,
+            "baseDuration": 0.07391099999995276
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.0748650000005,
+            "baseDuration": 0.0721800000001167
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.06603000000086467,
+            "baseDuration": 0.06368600000041624
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.066721000000598,
+            "baseDuration": 0.06435700000020006
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07277099999964776,
+            "baseDuration": 0.07017699999960314
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07017400000086127,
+            "baseDuration": 0.06775100000004386
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.06899499999963155,
+            "baseDuration": 0.06657999999970343
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.06776200000103927,
+            "baseDuration": 0.06291400000054637
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.08337400000027628,
+            "baseDuration": 0.08067200000004959
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07327999999961321,
+            "baseDuration": 0.07048600000007355
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.06837199999972654,
+            "baseDuration": 0.06384499999967375
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.06655200000022887,
+            "baseDuration": 0.0638280000002851
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07014799999979004,
+            "baseDuration": 0.06754299999965951
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07147900000018126,
+            "baseDuration": 0.0689660000002732
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07140900000058537,
+            "baseDuration": 0.06313500000032946
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.07409199999983684,
+            "baseDuration": 0.07106699999985722
+          },
+          {
+            "phase": "update",
+            "actualDuration": 0.3862520000002405,
+            "baseDuration": 0.3832480000005489
+          }
+        ],
+        "count": 30,
+        "actualDuration": {
+          "p50": 0.07327999999961321,
+          "p95": 0.316037999999935
+        }
+      },
+      "provider-json-reconfiguration-count": 0,
+      "transcript-single-cue-translation-500-rows": {
+        "commits": [
+          {
+            "phase": "update",
+            "actualDuration": 9.436560000004192,
+            "baseDuration": 33.83118999999533
+          },
+          {
+            "phase": "update",
+            "actualDuration": 10.3525180000006,
+            "baseDuration": 34.76674299999604
+          },
+          {
+            "phase": "update",
+            "actualDuration": 10.21665400000893,
+            "baseDuration": 34.62924299999486
+          },
+          {
+            "phase": "update",
+            "actualDuration": 10.46557999999095,
+            "baseDuration": 34.87123799999654
+          },
+          {
+            "phase": "update",
+            "actualDuration": 4.323744000002989,
+            "baseDuration": 28.745972999995956
+          },
+          {
+            "phase": "update",
+            "actualDuration": 3.11977299999171,
+            "baseDuration": 27.53897899999538
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.529888999999457,
+            "baseDuration": 26.95814999999493
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.5456119999917064,
+            "baseDuration": 26.984331999994993
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.511224000000311,
+            "baseDuration": 26.90880599999582
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.4181600000010803,
+            "baseDuration": 26.87170999999489
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.3946400000008907,
+            "baseDuration": 26.855456999996022
+          },
+          {
+            "phase": "update",
+            "actualDuration": 3.235506999998506,
+            "baseDuration": 27.606109999996534
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.755233999992015,
+            "baseDuration": 27.212132999994992
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.650212000007741,
+            "baseDuration": 27.10999899999524
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.9226400000025023,
+            "baseDuration": 27.386056999995162
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.5558809999974983,
+            "baseDuration": 26.983939999995528
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.747537999997803,
+            "baseDuration": 27.2130859999952
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.377793000002839,
+            "baseDuration": 26.83380399999578
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.8099450000036086,
+            "baseDuration": 27.265814999994745
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.6261330000079397,
+            "baseDuration": 27.079333999995924
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.5182280000012724,
+            "baseDuration": 26.964869999995244
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.4645950000017365,
+            "baseDuration": 26.92622299999448
+          },
+          {
+            "phase": "update",
+            "actualDuration": 3.184707000002618,
+            "baseDuration": 27.616356999996242
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.865033000000949,
+            "baseDuration": 27.292107999995096
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.637772999993558,
+            "baseDuration": 27.069027999994432
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.3323280000017803,
+            "baseDuration": 26.77780899999516
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.7075019999956567,
+            "baseDuration": 27.165363999995407
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.794284999997217,
+            "baseDuration": 27.242820999995274
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.5896779999998216,
+            "baseDuration": 27.01150999999618
+          },
+          {
+            "phase": "update",
+            "actualDuration": 2.7865259999939553,
+            "baseDuration": 27.243541999995614
+          }
+        ],
+        "count": 30,
+        "actualDuration": {
+          "p50": 2.7075019999956567,
+          "p95": 10.3525180000006
+        }
+      }
+    }
+  }
+}

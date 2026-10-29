@@ -1,0 +1,148 @@
+{
+  "source": "c3ef96d86e8511cdc7bf82f58e202ffad4fd5b93",
+  "trackedChanges": true,
+  "trackedDiffSHA256": "abac185d06608684050a8a3c86a3d00ff87d8b84c3d7ddc78f1993dc57a64507",
+  "node": "v24.19.0",
+  "platform": "linux",
+  "arch": "x64",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "lockSHA256": "b53917020d4111b757627f9d4cf6def3e0b3ec32ee8e370525eeccbdf1d6e091",
+  "startedAt": "2026-10-29T15:44:36.603Z",
+  "timestamp": "2026-10-29T15:44:37.442Z",
+  "data": {
+    "workload": "5,000 paragraphs; section insert plus repeated child mutation roots",
+    "caveat": "JSDOM traversal only; excludes style/layout, observer delivery, translation and browser long tasks",
+    "beforeVisits": 20250,
+    "afterVisits": 5250,
+    "originalMs": {
+      "p50": 17.163301000000047,
+      "p95": 22.454754999999977
+    },
+    "coalescedMs": {
+      "p50": 4.62878099999989,
+      "p95": 5.837599000000182
+    },
+    "samples": [
+      {
+        "originalMs": 17.603836999999885,
+        "coalescedMs": 5.106644999999844
+      },
+      {
+        "originalMs": 18.509126999999808,
+        "coalescedMs": 5.256570999999894
+      },
+      {
+        "originalMs": 24.127424999999903,
+        "coalescedMs": 4.564484999999877
+      },
+      {
+        "originalMs": 16.413377000000082,
+        "coalescedMs": 4.858249000000114
+      },
+      {
+        "originalMs": 15.179991999999856,
+        "coalescedMs": 5.411884999999984
+      },
+      {
+        "originalMs": 17.163301000000047,
+        "coalescedMs": 4.359063000000106
+      },
+      {
+        "originalMs": 17.702316999999994,
+        "coalescedMs": 3.8141900000000533
+      },
+      {
+        "originalMs": 19.94049199999995,
+        "coalescedMs": 5.837599000000182
+      },
+      {
+        "originalMs": 19.7171350000001,
+        "coalescedMs": 4.878598999999895
+      },
+      {
+        "originalMs": 18.917695000000094,
+        "coalescedMs": 4.903007000000116
+      },
+      {
+        "originalMs": 17.44321500000001,
+        "coalescedMs": 4.354926999999861
+      },
+      {
+        "originalMs": 22.454754999999977,
+        "coalescedMs": 5.677437999999938
+      },
+      {
+        "originalMs": 16.001713999999993,
+        "coalescedMs": 4.126891999999998
+      },
+      {
+        "originalMs": 15.938808999999992,
+        "coalescedMs": 4.641421000000037
+      },
+      {
+        "originalMs": 14.776090000000067,
+        "coalescedMs": 3.0133280000000013
+      },
+      {
+        "originalMs": 15.788442000000032,
+        "coalescedMs": 4.6470090000000255
+      },
+      {
+        "originalMs": 16.191467000000102,
+        "coalescedMs": 3.59021000000007
+      },
+      {
+        "originalMs": 17.150106999999934,
+        "coalescedMs": 5.218033000000105
+      },
+      {
+        "originalMs": 16.54569700000002,
+        "coalescedMs": 4.62878099999989
+      },
+      {
+        "originalMs": 18.126848999999993,
+        "coalescedMs": 4.106311000000005
+      },
+      {
+        "originalMs": 16.40300100000013,
+        "coalescedMs": 3.546194000000014
+      },
+      {
+        "originalMs": 19.308495999999877,
+        "coalescedMs": 7.992439000000104
+      },
+      {
+        "originalMs": 16.37190499999997,
+        "coalescedMs": 3.6711720000000696
+      },
+      {
+        "originalMs": 18.030412999999953,
+        "coalescedMs": 5.095788000000084
+      },
+      {
+        "originalMs": 16.64151300000003,
+        "coalescedMs": 4.003666000000067
+      },
+      {
+        "originalMs": 19.503310000000056,
+        "coalescedMs": 5.525898999999981
+      },
+      {
+        "originalMs": 18.010883999999805,
+        "coalescedMs": 3.7972540000000663
+      },
+      {
+        "originalMs": 16.21241299999997,
+        "coalescedMs": 4.2942860000000564
+      },
+      {
+        "originalMs": 16.16609299999982,
+        "coalescedMs": 3.6736369999998715
+      },
+      {
+        "originalMs": 19.436939999999822,
+        "coalescedMs": 4.737236000000166
+      }
+    ]
+  }
+}

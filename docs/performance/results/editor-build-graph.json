@@ -1,0 +1,12 @@
+{
+  "baseline": {
+    "apiRouteChunks": ["chunks/api-providers-_emHP-0I.js"],
+    "staticCodeMirrorViewChunks": ["chunks/esm-Cshe8mZq.js"],
+    "staticChunkCount": 49
+  },
+  "candidate": {
+    "apiRouteChunks": ["chunks/api-providers-d0TGMvOH.js"],
+    "staticCodeMirrorViewChunks": [],
+    "staticChunkCount": 52
+  }
+}
