@@ -120,9 +120,9 @@ configAtom.onMount = (setAtom) => {
 type Keys = keyof Config
 
 export function getConfigFieldAtom<K extends Keys>(key: K) {
-  // If you don't mind "re-rendering when other fields are changed"
-  // you can directly get(configAtom)[key] instead of using selectAtom.
-  const sliceAtom = selectAtom(configAtom, (c) => c[key])
+  // Storage parsing creates fresh objects for unchanged fields. Compare the
+  // mounted slice once, so unrelated writes do not redraw every subscriber.
+  const sliceAtom = selectAtom(configAtom, (c) => c[key], dequal)
 
   return atom(
     (get) => get(sliceAtom),
