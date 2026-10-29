@@ -149,6 +149,19 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
     )
     await expect(page.locator("#article")).toContainText(original)
     await page.keyboard.press("Alt+Shift+m")
+    await expect
+      .poll(() =>
+        worker.evaluate(async () => {
+          const api = (globalThis as unknown as { chrome: ExtensionAPI }).chrome
+          return (await api.storage.local.get("readFrogLiteConfig")).readFrogLiteConfig
+            ?.pageTranslation.mode
+        }),
+      )
+      .toBe("translationOnly")
+    // Upstream applies a changed mode to the next translation session.
+    await page.keyboard.press("Alt+e")
+    await expect(page.locator("#article")).toHaveText(original)
+    await page.keyboard.press("Alt+e")
     await expect(page.locator("#article")).toContainText(translated)
     await expect(page.locator("#article")).not.toContainText(original)
     await page.keyboard.press("Alt+e")
