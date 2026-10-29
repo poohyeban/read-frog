@@ -162,6 +162,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@webext-core/messaging@4.0.0': 511879e0353ff0744b8a01a10669507150c4c6b2888a6d6e8f531bc01a1a2d75
+
 importers:
 
   .:
@@ -240,7 +243,7 @@ importers:
         version: 2.0.0
       '@webext-core/messaging':
         specifier: ^4.0.0
-        version: 4.0.0
+        version: 4.0.0(patch_hash=511879e0353ff0744b8a01a10669507150c4c6b2888a6d6e8f531bc01a1a2d75)
       '@wxt-dev/i18n':
         specifier: ^0.2.8
         version: 0.2.8(wxt@0.21.4(eslint@9.39.4(jiti@2.7.0)(supports-color@7.2.0))(rollup@4.53.2)(typescript@7.0.2)(vite@8.3.4(@types/node@26.1.1)(esbuild@0.27.7)(jiti@2.7.0)(yaml@2.9.1))(web-ext@10.7.0(express@5.2.1(supports-color@7.2.0))(jiti@2.7.0)(supports-color@7.2.0)))
@@ -7865,7 +7868,7 @@ snapshots:
 
   '@webext-core/match-patterns@2.0.0': {}
 
-  '@webext-core/messaging@4.0.0':
+  '@webext-core/messaging@4.0.0(patch_hash=511879e0353ff0744b8a01a10669507150c4c6b2888a6d6e8f531bc01a1a2d75)':
     dependencies:
       '@aklinker1/zero-serialize-error': 1.0.2
 

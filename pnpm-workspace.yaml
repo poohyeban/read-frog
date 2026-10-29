@@ -16,3 +16,6 @@ allowBuilds:
   msw: true
   nx: true
   spawn-sync: true
+
+patchedDependencies:
+  "@webext-core/messaging@4.0.0": patches/@webext-core__messaging@4.0.0.patch

@@ -20,8 +20,13 @@ export async function runHostContent(ctx: ContentScriptContext) {
   // Prevent double injection (manifest-based + programmatic injection)
   if (window.__READ_FROG_HOST_INJECTED__) return
   window.__READ_FROG_HOST_INJECTED__ = true
+  ctx.onInvalidated(() => {
+    window.__READ_FROG_HOST_INJECTED__ = false
+    clearEffectiveSiteControlUrl()
+  })
 
   const initialConfig = await getLocalConfig()
+  if (ctx.isInvalid) return
   const siteControlUrl = getEffectiveSiteControlUrl(window.location.href)
 
   if (!isSiteEnabled(siteControlUrl, initialConfig)) {
@@ -32,5 +37,5 @@ export async function runHostContent(ctx: ContentScriptContext) {
 
   await initI18n(initialConfig?.uiLanguage)
 
-  await bootstrapHostContent(ctx, initialConfig)
+  if (!ctx.isInvalid) await bootstrapHostContent(ctx, initialConfig)
 }
