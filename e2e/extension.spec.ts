@@ -18,7 +18,7 @@ const original =
 const translated = "这是本地测试服务返回的译文。"
 const credential = "e2e-local-test-key"
 
-test("unpacked MV3: local API, bilingual/only/restore, selection, input and persistence", async () => {
+test("unpacked MV3: translation, persistence, action diagnostics and credential isolation", async () => {
   const apiRequests: { authorization: string | undefined; body: string }[] = []
   const server = createServer(async (request, response) => {
     response.setHeader("Access-Control-Allow-Origin", "*")
@@ -38,7 +38,20 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
       let body = ""
       for await (const chunk of request) body += chunk.toString()
       apiRequests.push({ authorization: request.headers.authorization, body })
-      const payload: { stream?: boolean } = JSON.parse(body)
+      const payload: { stream?: boolean; response_format?: { type: string } } = JSON.parse(body)
+      if (payload.response_format?.type === "json_schema") {
+        response.writeHead(400, { "Content-Type": "application/json" })
+        response.end(
+          JSON.stringify({
+            error: {
+              message: `Unsupported response_format json_schema. Reflected credential: ${credential}`,
+              type: "invalid_request_error",
+              param: "response_format",
+            },
+          }),
+        )
+        return
+      }
       if (payload.stream) {
         response.setHeader("Content-Type", "text/event-stream")
         for (const choices of [
@@ -136,11 +149,15 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
         config.pageTranslation.batchQueueConfig.maxItemsPerBatch = 1
         config.inputTranslation.fromLang = "eng"
         config.inputTranslation.toLang = "cmn"
+        config.selectionToolbar.builtInActions.dictionary.providerId = id
+        config.selectionToolbar.builtInActions.sentenceAnalysis.providerId = id
         await api.storage.local.set({ readFrogLiteConfig: config })
       },
       { endpoint: origin, key: credential },
     )
     const page = await context.newPage()
+    const consoleMessages: string[] = []
+    page.on("console", (message) => consoleMessages.push(message.text()))
     await page.goto(`${origin}/article`)
     await expect(page.locator("read-frog-lite button").first()).toBeVisible()
     await page.keyboard.press("Alt+e")
@@ -195,6 +212,40 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
     await page.keyboard.press("Space")
     await page.keyboard.press("Space")
     await expect(page.getByRole("textbox", { name: "Editor" })).toHaveValue(translated)
+    for (const [index, shortcut] of ["Alt+Shift+d", "Alt+Shift+g"].entries()) {
+      await page.locator("#article").evaluate((element) => {
+        const range = document.createRange()
+        range.selectNodeContents(element)
+        const selection = window.getSelection()
+        selection?.removeAllRanges()
+        selection?.addRange(range)
+        if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+      })
+      await page.keyboard.press(shortcut)
+      await expect
+        .poll(
+          () =>
+            consoleMessages.filter((message) => message.startsWith("[Read Frog Lite][stream]"))
+              .length,
+        )
+        .toBe(index + 1)
+      const message = consoleMessages.filter((entry) =>
+        entry.startsWith("[Read Frog Lite][stream]"),
+      )[index]!
+      const diagnostic = JSON.parse(message.slice("[Read Frog Lite][stream] ".length))
+      expect(diagnostic).toMatchObject({
+        scope: "content",
+        phase: "request",
+        port: "stream-structured-object",
+        httpStatus: 400,
+        responseFormat: "json_schema",
+        reason: "response_format_rejected",
+      })
+      await expect(page.getByRole("alert")).toHaveCount(0)
+      await expect(page.getByText("Unsupported response_format", { exact: false })).toHaveCount(0)
+      await page.keyboard.press("Escape")
+    }
+    expect(consoleMessages.join("\n")).not.toContain(credential)
     const renderedMarkup = await page.evaluate(() => {
       function markup(root: Document | ShadowRoot): string {
         return [...root.querySelectorAll("*")]

@@ -482,6 +482,7 @@ describe("background-stream", () => {
       error: {
         message: "Unexpected error occurred",
         action: undefined,
+        diagnostic: expect.objectContaining({ phase: "request", errorType: "ProviderSetupError" }),
       },
     })
     expect(mockPort.disconnect).toHaveBeenCalledTimes(1)
@@ -558,7 +559,10 @@ describe("background-stream", () => {
     expect(mockPort.postMessage).toHaveBeenCalledWith({
       type: "error",
       streamRequestId: "req-text-invalid",
-      error: { message: "Invalid stream start payload" },
+      error: {
+        message: "Invalid stream start payload",
+        diagnostic: expect.objectContaining({ phase: "start", reason: "invalid_request" }),
+      },
     })
     expect(mockPort.disconnect).toHaveBeenCalledTimes(1)
     expect(getModelByIdMock).not.toHaveBeenCalled()
@@ -581,7 +585,10 @@ describe("background-stream", () => {
     expect(emptySchemaPort.postMessage).toHaveBeenCalledWith({
       type: "error",
       streamRequestId: "req-structured-empty",
-      error: { message: "Invalid stream start payload" },
+      error: {
+        message: "Invalid stream start payload",
+        diagnostic: expect.objectContaining({ phase: "start", reason: "invalid_request" }),
+      },
     })
     expect(emptySchemaPort.disconnect).toHaveBeenCalledTimes(1)
 
@@ -602,7 +609,10 @@ describe("background-stream", () => {
     expect(duplicateKeyPort.postMessage).toHaveBeenCalledWith({
       type: "error",
       streamRequestId: "req-structured-duplicate",
-      error: { message: "Invalid stream start payload" },
+      error: {
+        message: "Invalid stream start payload",
+        diagnostic: expect.objectContaining({ phase: "start", reason: "invalid_request" }),
+      },
     })
     expect(duplicateKeyPort.disconnect).toHaveBeenCalledTimes(1)
   })

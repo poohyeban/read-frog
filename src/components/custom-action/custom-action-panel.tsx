@@ -116,7 +116,8 @@ export function CustomActionPanel() {
           value={result}
           thinking={executionContext ? execution.thinking : null}
         />
-        <SelectionToolbarErrorAlert error={error} />
+        {/* Runtime failures are diagnosed in DevTools; configuration still needs user action. */}
+        <SelectionToolbarErrorAlert error={precheckError} />
       </SelectionPopover.Body>
 
       <CustomActionFooterContent
