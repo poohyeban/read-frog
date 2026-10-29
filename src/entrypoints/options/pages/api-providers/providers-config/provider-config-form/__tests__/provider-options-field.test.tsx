@@ -115,7 +115,9 @@ describe("providerOptionsField", () => {
   })
 
   it("preserves local formatting when a successful editor save echoes back through the form", async () => {
-    render(<ProviderOptionsFieldHarness initialConfig={baseProviderConfig} />)
+    await act(async () => {
+      render(<ProviderOptionsFieldHarness initialConfig={baseProviderConfig} />)
+    })
 
     const editor = screen.getByLabelText("provider-options-editor")
     fireEvent.focus(editor)
@@ -132,7 +134,9 @@ describe("providerOptionsField", () => {
   })
 
   it("keeps focused draft edits when a delayed autosave echo arrives", async () => {
-    render(<ProviderOptionsFieldHarness initialConfig={baseProviderConfig} submitDelayMs={100} />)
+    await act(async () => {
+      render(<ProviderOptionsFieldHarness initialConfig={baseProviderConfig} submitDelayMs={100} />)
+    })
 
     const editor = screen.getByLabelText("provider-options-editor")
     fireEvent.focus(editor)
@@ -156,8 +160,10 @@ describe("providerOptionsField", () => {
     )
   })
 
-  it("shows the matched recommended provider options as the placeholder when the value is empty", () => {
-    render(<ProviderOptionsFieldHarness initialConfig={baseProviderConfig} />)
+  it("shows the matched recommended provider options as the placeholder when the value is empty", async () => {
+    await act(async () => {
+      render(<ProviderOptionsFieldHarness initialConfig={baseProviderConfig} />)
+    })
 
     expect(screen.getByLabelText("provider-options-editor")).toHaveAttribute(
       "placeholder",
@@ -206,7 +212,9 @@ describe("providerOptionsField", () => {
   })
 
   it("keeps an explicit empty object instead of falling back to the placeholder value", async () => {
-    render(<ProviderOptionsFieldHarness initialConfig={baseProviderConfig} />)
+    await act(async () => {
+      render(<ProviderOptionsFieldHarness initialConfig={baseProviderConfig} />)
+    })
 
     const editor = screen.getByLabelText("provider-options-editor")
     fireEvent.change(editor, { target: { value: "{}" } })

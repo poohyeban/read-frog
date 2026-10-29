@@ -108,7 +108,9 @@ describe("providerHeadersField", () => {
   })
 
   it("saves valid header JSON", async () => {
-    render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    await act(async () => {
+      render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    })
 
     fireEvent.change(screen.getByLabelText("provider-headers-editor"), {
       target: {
@@ -133,7 +135,9 @@ describe("providerHeadersField", () => {
   })
 
   it("keeps an explicit empty object as a saved override", async () => {
-    render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    await act(async () => {
+      render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    })
 
     fireEvent.change(screen.getByLabelText("provider-headers-editor"), {
       target: { value: "{}" },
@@ -148,7 +152,9 @@ describe("providerHeadersField", () => {
   })
 
   it("shows a validation error and does not save malformed JSON", async () => {
-    render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    await act(async () => {
+      render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    })
 
     fireEvent.change(screen.getByLabelText("provider-headers-editor"), {
       target: { value: "{" },
@@ -164,7 +170,9 @@ describe("providerHeadersField", () => {
   })
 
   it("rejects non-object header JSON", async () => {
-    render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    await act(async () => {
+      render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    })
 
     fireEvent.change(screen.getByLabelText("provider-headers-editor"), {
       target: { value: "[]" },
@@ -180,7 +188,9 @@ describe("providerHeadersField", () => {
   })
 
   it("rejects header JSON with non-string values", async () => {
-    render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    await act(async () => {
+      render(<ProviderHeadersFieldHarness initialConfig={baseProviderConfig} />)
+    })
 
     fireEvent.change(screen.getByLabelText("provider-headers-editor"), {
       target: { value: JSON.stringify({ "X-Count": 1 }) },
@@ -196,7 +206,9 @@ describe("providerHeadersField", () => {
   })
 
   it("does not submit stale debounced headers when switching providers", async () => {
-    render(<ProviderHeadersFieldSwitchHarness />)
+    await act(async () => {
+      render(<ProviderHeadersFieldSwitchHarness />)
+    })
 
     fireEvent.change(screen.getByLabelText("provider-headers-editor"), {
       target: { value: JSON.stringify({ "X-Title": "Read Frog" }) },

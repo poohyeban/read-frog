@@ -16,9 +16,16 @@ interface AdvancedOptionsSectionProps {
 
 export function AdvancedOptionsSection({ children }: AdvancedOptionsSectionProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [hasOpened, setHasOpened] = useState(false)
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Collapsible
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open)
+        if (open) setHasOpened(true)
+      }}
+    >
       <CollapsibleTrigger className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
         <Icon
           icon="tabler:chevron-right"
@@ -27,7 +34,7 @@ export function AdvancedOptionsSection({ children }: AdvancedOptionsSectionProps
         <span>{i18n.t("options.apiProviders.form.advancedOptions")}</span>
       </CollapsibleTrigger>
       <CollapsibleContent keepMounted>
-        <FieldGroup className="pt-4">{children}</FieldGroup>
+        <FieldGroup className="pt-4">{hasOpened ? children : null}</FieldGroup>
       </CollapsibleContent>
     </Collapsible>
   )
