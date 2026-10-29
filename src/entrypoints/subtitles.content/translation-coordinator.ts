@@ -7,6 +7,7 @@ import { TRANSLATE_LOOK_AHEAD_MS, TRANSLATION_BATCH_SIZE } from "@/utils/constan
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { effectiveLookAheadMs } from "@/utils/subtitles/lookahead"
 import { translateSubtitles } from "@/utils/subtitles/processor/translator"
+import { CueTimeIndex } from "@/utils/subtitles/time-index"
 import { adPlayingAtom, subtitlesStore } from "./atoms"
 
 export interface TranslationCoordinatorOptions {
@@ -36,6 +37,8 @@ export class TranslationCoordinator {
   private lastEmittedState: SubtitlesState = "idle"
   private videoContext: SubtitlesVideoContext = { videoTitle: "", subtitlesTextContent: "" }
   private listenersAttached = false
+  private indexedFragments?: SubtitlesFragment[]
+  private timeIndex = new CueTimeIndex([])
 
   private getFragments: () => SubtitlesFragment[]
   private getVideoElement: () => HTMLVideoElement | null
@@ -61,6 +64,7 @@ export class TranslationCoordinator {
     const video = this.getVideoElement()
     if (!video) return
 
+    this.indexedFragments = undefined
     this.active = true
     this.attachVideoListeners(video)
 
@@ -96,6 +100,8 @@ export class TranslationCoordinator {
     this.translatedStarts.clear()
     this.failedStarts.clear()
     this.knownIdentities.clear()
+    this.indexedFragments = undefined
+    this.timeIndex = new CueTimeIndex([])
     this.isTranslating = false
     this.lastEmittedState = "idle"
     this.videoContext = { videoTitle: "", subtitlesTextContent: "" }
@@ -131,6 +137,7 @@ export class TranslationCoordinator {
    * (end+text) changed after AI re-segmentation — same start can be a recut line.
    */
   noteFragmentListChanged() {
+    this.indexedFragments = undefined
     if (!this.active) return
 
     const byStart = new Map(this.getFragments().map((fragment) => [fragment.start, fragment]))
@@ -320,7 +327,11 @@ export class TranslationCoordinator {
   }
 
   private findActiveCue(timeMs: number, fragments: SubtitlesFragment[]): SubtitlesFragment | null {
-    return fragments.find((f) => f.start <= timeMs && f.end > timeMs) ?? null
+    if (this.indexedFragments !== fragments) {
+      this.indexedFragments = fragments
+      this.timeIndex = new CueTimeIndex(fragments)
+    }
+    return fragments[this.timeIndex.findActive(timeMs)] ?? null
   }
 
   private isCueResolved(startMs: number): boolean {

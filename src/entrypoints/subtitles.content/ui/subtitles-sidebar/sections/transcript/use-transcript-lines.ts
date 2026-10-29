@@ -3,7 +3,8 @@ import type { TranscriptLine } from "@/utils/subtitles/transcript"
 import { useQuery } from "@tanstack/react-query"
 import { atom, useAtomValue } from "jotai"
 import { useMemo } from "react"
-import { buildTranscript, findActiveLine } from "@/utils/subtitles/transcript"
+import { CueTimeIndex } from "@/utils/subtitles/time-index"
+import { buildTranscript } from "@/utils/subtitles/transcript"
 import {
   currentTimeMsAtom,
   currentVideoIdAtom,
@@ -26,10 +27,10 @@ export function useTranscriptLines(): TranscriptLines {
   const videoId = useAtomValue(currentVideoIdAtom)
 
   const lines = useMemo(() => buildTranscript(source, translated), [source, translated])
-  const activeIndexAtom = useMemo(
-    () => atom((get) => findActiveLine(lines, get(currentTimeMsAtom))),
-    [lines],
-  )
+  const activeIndexAtom = useMemo(() => {
+    const index = new CueTimeIndex(lines)
+    return atom((get) => index.findActive(get(currentTimeMsAtom)))
+  }, [lines])
   const activeIndex = useAtomValue(activeIndexAtom)
 
   const query = useQuery({

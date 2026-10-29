@@ -1,4 +1,5 @@
 import type { StateData, SubtitlesFragment, SubtitlesState } from "@/utils/subtitles/types"
+import { CueTimeIndex } from "@/utils/subtitles/time-index"
 import {
   adPlayingAtom,
   currentSubtitleAtom,
@@ -21,6 +22,7 @@ function cueIdentityKey(fragment: Pick<SubtitlesFragment, "start" | "end" | "tex
 export class SubtitlesScheduler {
   private videoElement: HTMLVideoElement
   private subtitles: SubtitlesFragment[] = []
+  private timeIndex = new CueTimeIndex([])
   private currentIndex = -1
   private active = false
   private currentState: StateData = {
@@ -237,8 +239,7 @@ export class SubtitlesScheduler {
       return
     }
 
-    const subtitle = this.subtitles.find((sub) => sub.start <= timeMs && sub.end > timeMs)
-    const newIndex = subtitle ? this.subtitles.indexOf(subtitle) : -1
+    const newIndex = this.timeIndex.findActive(timeMs)
 
     if (newIndex !== this.currentIndex) {
       this.currentIndex = newIndex
@@ -247,6 +248,7 @@ export class SubtitlesScheduler {
   }
 
   private publishTranslatedTrack() {
+    this.timeIndex = new CueTimeIndex(this.subtitles)
     subtitlesStore.set(translatedTrackAtom, [...this.subtitles])
   }
 
