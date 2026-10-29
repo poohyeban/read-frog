@@ -155,6 +155,37 @@ test("diagnose published 0.2.3 loader and subtitle startup without modifying the
     await page.goBack()
     await page.waitForTimeout(600)
     await capture("back navigation", page)
+
+    // Compare the controlled fixture with YouTube's actual document/CSP. No
+    // account or model key is configured, and automatic translation stays off.
+    await clearErrors()
+    await context.unroute("https://www.youtube.com/**")
+    try {
+      const response = await page.goto("https://www.youtube.com/watch?v=7ARBJQn6QkM", {
+        waitUntil: "domcontentloaded",
+        timeout: 30000,
+      })
+      await page.waitForTimeout(4000)
+      await capture("live YouTube document", page, {
+        httpStatus: response?.status(),
+        pageTitle: await page.title(),
+        playerCount: await page.locator("#movie_player").count(),
+        contentSecurityPolicy: response?.headers()["content-security-policy"],
+      })
+      await page.screenshot({ path: `${output}/live-youtube.png` })
+      await manager.bringToFront()
+      await page.waitForTimeout(300)
+      await page.bringToFront()
+      await capture("live YouTube tab switch", page)
+    } catch (error) {
+      evidence.cases.push({ label: "live YouTube document unavailable", error: error.message })
+    } finally {
+      await context.route("https://www.youtube.com/**", (route) =>
+        route.fulfill({ contentType: "text/html", body: fixture }),
+      )
+      await page.goto(watchURL)
+      await page.waitForTimeout(750)
+    }
     await clearErrors()
     await manager.bringToFront()
     const discardedURL = page.url()
