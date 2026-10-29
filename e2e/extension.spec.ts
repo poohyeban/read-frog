@@ -87,6 +87,7 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
       headless: !process.env.CI,
       args: [`--disable-extensions-except=${extensionPath}`, `--load-extension=${extensionPath}`],
     })
+    await context.tracing.start({ screenshots: true, snapshots: true })
     context.on("request", (request) => {
       const url = new URL(request.url())
       if (["http:", "https:"].includes(url.protocol) && url.hostname !== "127.0.0.1")
@@ -141,7 +142,7 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
     )
     const page = await context.newPage()
     await page.goto(`${origin}/article`)
-    await expect(page.locator(".read-frog-react-shadow-host").first()).toBeAttached()
+    await expect(page.locator("read-frog-lite button").first()).toBeVisible()
     await page.keyboard.press("Alt+e")
     await expect(page.locator("#article .read-frog-translated-content-wrapper")).toContainText(
       translated,
@@ -196,6 +197,7 @@ test("unpacked MV3: local API, bilingual/only/restore, selection, input and pers
     expect(externalRequests).toEqual([])
     expect(errors).toEqual([])
   } finally {
+    await context?.tracing.stop({ path: test.info().outputPath("trace.zip") })
     await context?.close()
     server.closeAllConnections()
     await new Promise<void>((done) => server.close(() => done()))
