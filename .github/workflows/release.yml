@@ -2,7 +2,7 @@ name: Publish verified extension
 
 on:
   push:
-    tags: ["v*"]
+    branches: ["codex/publish-v0.2.3"]
   workflow_dispatch:
     inputs:
       tag:
@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: release-${{ inputs.tag || github.ref_name }}
+  group: release-v0.2.3
   cancel-in-progress: false
 
 jobs:
@@ -28,11 +28,11 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_REPO: ${{ github.repository }}
-      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+      RELEASE_TAG: v0.2.3
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag || github.ref }}
+          ref: v0.2.3
           fetch-depth: 0
           persist-credentials: false
       - name: Select a successful CI artifact for the same production code
