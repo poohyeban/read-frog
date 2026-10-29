@@ -12,6 +12,7 @@ interface OpenAIGPT5ReasoningEffortPolicy {
 // Reviewed against provider catalogs and AI SDK docs on 2026-09-26.
 // Keep existing IDs: persisted provider configs validate against these enums.
 export const LLM_PROVIDER_MODELS = {
+  deepseek: ["deepseek-flash", "deepseek-v4-pro"],
   openai: [
     "gpt-6-luna",
     "gpt-6-sol",

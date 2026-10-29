@@ -9,5 +9,7 @@ export function getProviderConnectionURL(
 ): string
 export function getProviderConnectionURL(providerConfig: APIProviderConfig): string | undefined
 export function getProviderConnectionURL(providerConfig: APIProviderConfig): string | undefined {
+  if (providerConfig.provider === "deepseek")
+    return providerConfig.baseURL || "https://api.deepseek.com"
   return providerConfig.baseURL
 }

@@ -1,5 +1,6 @@
 import type { Config } from "@/types/config/config"
 import type { DedicatedLLMProviderTypes, LLMProviderConfig } from "@/types/config/provider"
+import { createDeepSeek } from "@ai-sdk/deepseek"
 import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { createOpenAI } from "@ai-sdk/openai"
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
@@ -17,6 +18,7 @@ import { resolveModelId } from "./model-id"
 import { ProviderSetupError } from "./provider-setup-error"
 
 const DEDICATED_PROVIDER_FACTORY_BY_TYPE = {
+  deepseek: createDeepSeek,
   openai: createOpenAI,
 
   google: createGoogleGenerativeAI,

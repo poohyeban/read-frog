@@ -54,7 +54,8 @@ export const TranslateModelSelector = withForm({
                 labelExtra={
                   <div className="flex items-center gap-2">
                     {recommendationTrigger}
-                    {isProtocolCompatibleLLMProviderConfig(providerConfig) && (
+                    {(isProtocolCompatibleLLMProviderConfig(providerConfig) ||
+                      providerConfig.provider === "deepseek") && (
                       <ModelSuggestionButton
                         providerConfig={providerConfig}
                         onSelect={(selectedModel) => {

@@ -1,12 +1,12 @@
 # Read Frog Lite
 
-**Read Frog Lite 0.2.1 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
+**Read Frog Lite 0.2.2 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
 
 普通使用者可以直接下载扩展安装包，**不需要下载源码或在个人电脑编译**。翻译、语音合成和语音转录服务均由用户选择；扩展不提供内置免费额度，也不通过 Read Frog 官方服务器中转请求。
 
-[直接下载 v0.2.1 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.1/read-frog-lite-0.2.1-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
+[直接下载 v0.2.2 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.2/read-frog-lite-0.2.2-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
 
-0.2.1 修复划词图标与 Provider 图片，并增加 DevTools 诊断；DeepSeek 的词典 / 长难句兼容性仍在定位，尚未修改请求格式。详见[本版说明](docs/restore/RELEASE-0.2.1.md)。
+0.2.2 在「内置 LLM 提供商」中加入 DeepSeek，接入专用适配器，修复词典 / 长难句的 JSON 请求协议。OpenAI、DeepSeek、Gemini、Ollama 恢复各自的本地品牌图标；网页和字幕按钮的青蛙 Logo 也内嵌打包。0.2.1 的 DevTools 脱敏诊断继续保留。详见[本版说明](docs/restore/RELEASE-0.2.2.md)。
 
 ## 目录
 
@@ -48,7 +48,7 @@
 ### 首次安装：无需编译
 
 1. 打开本 Fork 的 [Releases](https://github.com/poohyeban/read-frog/releases)，选择所需版本，或使用上方的直接下载链接。
-2. 下载 Assets 中的 **`read-frog-lite-0.2.1-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
+2. 下载 Assets 中的 **`read-frog-lite-0.2.2-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
 3. 解压扩展 ZIP，将扩展目录保存在固定位置。Release 下载不受 Actions Artifact 的 30 天保留期限制。
 4. Chrome 打开 `chrome://extensions`，Edge 打开 `edge://extensions`，开启开发者模式，选择“加载已解压的扩展程序”。
 5. 选择**直接包含 `manifest.json` 的目录**，确认名称为 Read Frog Lite。打开扩展设置配置服务，再刷新要翻译的网页。
@@ -79,12 +79,13 @@ Lite 0.1 的本地配置会补齐新增字段，音频服务初始为空。卸�
 
 ### 文本翻译
 
-| Provider 类型                                            | 适用服务 / 地址说明                                                                          |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| OpenAI                                                   | 使用已有 OpenAI SDK；保留原 Responses 路径。仅支持 Chat Completions 的第三方服务应选兼容类型 |
-| OpenAI-compatible（界面也可能显示 Custom Chat Complete） | 使用 Chat Completions；例如 `http://127.0.0.1:8000/v1`，最终请求为 `/v1/chat/completions`    |
-| Google Gemini                                            | 使用原 Gemini SDK 和该协议的 Base URL，不使用 OpenAI 的路径格式                              |
-| Ollama                                                   | 使用原 Ollama SDK；填写目标 Ollama 服务地址和已经安装的模型名称                              |
+| Provider 类型                                            | 适用服务 / 地址说明                                                                                               |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| OpenAI                                                   | 使用已有 OpenAI SDK；保留原 Responses 路径。仅支持 Chat Completions 的第三方服务应选兼容类型                      |
+| DeepSeek                                                 | 使用专用 DeepSeek SDK，默认地址 `https://api.deepseek.com`，支持自定义地址 / Key / 模型；结构化操作使用 JSON mode |
+| OpenAI-compatible（界面也可能显示 Custom Chat Complete） | 使用 Chat Completions；例如 `http://127.0.0.1:8000/v1`，最终请求为 `/v1/chat/completions`                         |
+| Google Gemini                                            | 使用原 Gemini SDK 和该协议的 Base URL，不使用 OpenAI 的路径格式                                                   |
+| Ollama                                                   | 使用原 Ollama SDK；填写目标 Ollama 服务地址和已经安装的模型名称                                                   |
 
 配置步骤：
 
@@ -94,6 +95,18 @@ Lite 0.1 的本地配置会补齐新增字段，音频服务初始为空。卸�
 4. 需要时主动使用模型发现 / 连接测试；服务可能不支持模型列表，仍可手工填写模型。
 
 对于 OpenAI-style 服务，Base URL 通常包含 `/v1`，**不要填写完整的 `/chat/completions`、`/audio/speech` 或 `/audio/transcriptions` 地址**。`localhost` 指运行浏览器的电脑，不是构建扩展的云端机器；模型在另一台电脑时应填写其局域网地址。
+
+### DeepSeek 配置、升级与费用
+
+新配置选择 **DeepSeek**，填入自己的 Key，模型可选 `deepseek-flash`；开启“自定义模型”后也可使用“获取可用模型”或手动填写。专用 SDK 用 `json_object` 并在提示词中加入结构要求，扩展仍校验模型返回字段，不能把任意 JSON 当作有效结果。
+
+从旧版升级时，配置版本 5 会一次性转换使用 `https://api.deepseek.com` 标准根路径或 `/v1` 的 Custom Chat Complete 配置。已有 ID、名称、Key、headers、实际模型、请求选项和功能绑定保留。带账号密码、查询参数、fragment、自定义端口或其他路径的地址，以及第三方代理不会自动转换；这些配置需由使用者按真实协议选择 Provider。升级后重新加载扩展并刷新网页。新建配置或导入旧备份时，应明确选择 DeepSeek，勿继续用通用类型承载不支持 JSON Schema 的服务。
+
+`@ai-sdk/deepseek` 3.0.63 是 Vercel AI SDK 的 Apache-2.0 开源包，SDK 本身免费。[包许可证](https://cdn.jsdelivr.net/npm/@ai-sdk/deepseek@3.0.63/LICENSE)、[完整许可文本](LICENSES/Apache-2.0.txt)与第三方版权声明随扩展分发。DeepSeek API 调用仍由 DeepSeek 按其服务规则计费；SDK 不包含免费模型额度，也不增加 Read Frog / Vercel 中转服务。请求直接发送到你配置的地址。
+
+### GPT 是否需要另一套适配器
+
+选择 OpenAI 已使用 `@ai-sdk/openai`；本项目走 Responses API，结构化操作由 SDK 生成 `text.format.type = json_schema`。受支持的 OpenAI 模型原生支持 Structured Outputs，无需再加适配器。它能约束字段结构，而 `json_object` 只保证 JSON 格式；旧模型或第三方“GPT”兼容端点不能仅凭名称推断支持情况。参见 [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)。
 
 ### TTS：文本 → 音频播放
 
@@ -249,7 +262,7 @@ flowchart TD
 
 ### 修改配置、数据库或 Provider
 
-- 配置 schema 在 `src/types/config/`，默认值及 `CONFIG_SCHEMA_VERSION` 在 `src/utils/constants/config.ts`；初始化在 `src/utils/config/init.ts`。当前靠 schema 默认值补齐兼容字段，不存在通用历史迁移框架。
+- 配置 schema 在 `src/types/config/`，默认值及 `CONFIG_SCHEMA_VERSION` 在 `src/utils/constants/config.ts`；初始化在 `src/utils/config/init.ts`。兼容字段由 schema 默认值补齐；版本 5 在旧配置通过校验后执行 DeepSeek 类型迁移，不存在通用历史迁移框架。不要删除旧版本仍需执行的迁移条件。
 - 新字段优先提供兼容默认值；重命名、删除或改变字段类型时，在 schema 校验前明确迁移旧数据，并测试旧配置、空配置、未知 / 禁用 / 被删除 Provider。只增加版本号并不能完成数据迁移；校验失败当前会回退默认配置。
 - Dexie 升级在 `src/utils/db/dexie/app-db.ts`，应追加版本，不改写已发布的旧版本定义；保留术语数据和唯一索引语义。
 - Provider 能力在 `src/utils/providers/provider-registry.ts`；类型在 `src/types/config/provider/`，模型创建在 `src/utils/providers/model.ts`。新服务先复用现有 SDK，确有协议差异再加小型 Adapter。
@@ -266,7 +279,7 @@ node scripts/generate-icons.mjs
 pnpm licenses list --prod --json | node scripts/generate-notices.mjs
 ```
 
-语言表来源为 GPL 本地化、MIT ISO 数据和 Node ICU/CLDR；生成时尽量使用与 CI 相同的 Node 版本。离线图标来自 Tabler，不能恢复运行时 CDN 下载。修改依赖时同步 `package.json`、`pnpm-lock.yaml` 与第三方通知；不要仅因名称包含 `read-frog` 就删除有实际用途的源码归属，也不要重新引入许可未确认的独立包。
+语言表来源为 GPL 本地化、MIT ISO 数据和 Node ICU/CLDR；生成时尽量使用与 CI 相同的 Node 版本。操作图标来自 Tabler，Provider 品牌图标来自 LobeHub Icons（MIT，来源与固定版本见 [许可证记录](LICENSES/lobe-icons.txt)）。Provider SVG 在 `src/assets/providers/`，用 `?inline` 导入并在 `PROVIDER_ITEMS` 按类型映射；OpenAI / Ollama 提供黑白版本，确保深浅主题可见。所有图标离线打包，不能恢复运行时 CDN 下载。修改依赖时同步 `package.json`、`pnpm-lock.yaml` 与第三方通知；不要仅因名称包含 `read-frog` 就删除有实际用途的源码归属，也不要重新引入许可未确认的独立包。
 
 ## CI、构建产物与版本更新
 
@@ -333,7 +346,7 @@ git push origin v0.2.0
 
 从 0.2.1 起，Action 的运行错误只在开发者控制台记录，不在面板显示红色错误框；缺少 Provider 等配置提示仍会显示。失败后可以切换服务或点击重试。
 
-1. 更新已加载的扩展目录，在 `chrome://extensions` 点击重新加载，确认版本为 0.2.1，然后刷新 YouTube 或普通网页。
+1. 更新已加载的扩展目录，在 `chrome://extensions` 点击重新加载，确认版本为 0.2.2，然后刷新 YouTube 或普通网页。
 2. 在出问题的网页按 F12，打开 **Console**，开启 **Preserve log**。确认没有启用会隐藏扩展消息的 **Selected context only**，过滤 `[Read Frog Lite][stream]`。
 3. 重新选词，打开词典或长难句分析。复制该前缀后的 JSON，附上触发操作及浏览器版本即可。
 4. 如果页面没有该日志，在 `chrome://extensions` 打开 Read Frog Lite 的 **Service worker → Inspect**，保持窗口打开再复现，复制同一前缀日志。

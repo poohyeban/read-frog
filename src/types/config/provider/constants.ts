@@ -9,6 +9,7 @@ export { LLM_PROVIDER_MODELS }
 
 // translate provider names
 export const TRANSLATE_PROVIDER_TYPES = [
+  "deepseek",
   "openai",
 
   "google",
@@ -23,6 +24,7 @@ export function isTranslateProvider(provider: string): provider is TranslateProv
 }
 
 export const LLM_PROVIDER_TYPES = [
+  "deepseek",
   "openai",
 
   "google",
@@ -70,6 +72,7 @@ export function isCustomModelOnlyProvider(
 }
 
 export const DEDICATED_LLM_PROVIDER_TYPES = [
+  "deepseek",
   "openai",
 
   "google",
@@ -82,6 +85,7 @@ export function isDedicatedLLMProvider(provider: string): provider is DedicatedL
 }
 
 export const API_PROVIDER_TYPES = [
+  "deepseek",
   "openai-compatible",
 
   "openai",
@@ -97,6 +101,7 @@ export function isAPIProvider(provider: string): provider is APIProviderTypes {
 
 // all provider names
 export const ALL_PROVIDER_TYPES = [
+  "deepseek",
   "openai-compatible",
 
   "openai",

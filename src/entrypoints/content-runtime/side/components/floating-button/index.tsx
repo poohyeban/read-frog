@@ -2,8 +2,7 @@ import type { FloatingButtonSide } from "@/types/config/floating-button"
 import { IconLock, IconLockOpen, IconSettings, IconX } from "@tabler/icons-react"
 import { useAtom, useAtomValue } from "jotai"
 import { useEffect, useRef, useState } from "react"
-import { browser } from "#imports"
-import readFrogLogo from "@/assets/icons/read-frog.png?url&no-inline"
+import readFrogLogoUrl from "@/assets/icons/read-frog.png?inline"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +21,6 @@ import { shadowWrapper } from "../../main"
 import HiddenButton from "./components/hidden-button"
 import TranslateButton from "./translate-button"
 
-const readFrogLogoUrl = new URL(readFrogLogo, browser.runtime.getURL("/")).href
 const LONG_PRESS_DELAY_MS = 350
 const DRAG_START_DISTANCE_PX = 6
 const MIN_FLOATING_CONTAINER_TOP_PX = 30

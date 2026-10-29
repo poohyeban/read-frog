@@ -71,8 +71,7 @@ options:
   apiProviders:
     title: API 提供商
     pageDescription: 接入 Read Frog Lite 调用的 AI 服务，并为每项功能指定使用哪一个。
-    description: Configure OpenAI, OpenAI-compatible APIs, Gemini, or Ollama using
-      your own endpoint, model, and credentials.
+    description: 使用自己的服务地址、模型和凭据配置 OpenAI、DeepSeek、OpenAI 兼容 API、Gemini 或 Ollama。
     configTitle: 提供商配置
     addProvider: 添加提供商
     setApiKeyWarning:
@@ -142,6 +141,7 @@ options:
       name:
         customChatComplete: 自定义 Chat Complete
       description:
+        deepseek: 使用自己的 API Key 直连 DeepSeek
         openai: 提供 GPT-4o 等模型
         ollama: 在本地机器上运行大语言模型，确保完全隐私
         google: 具有先进推理能力的谷歌旗舰 AI 模型

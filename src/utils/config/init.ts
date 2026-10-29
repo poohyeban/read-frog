@@ -2,6 +2,7 @@ import type { Config } from "@/types/config/config"
 import type { ConfigMeta } from "@/types/config/meta"
 import { storage } from "#imports"
 import { configSchema } from "@/types/config/config"
+import { DEFAULT_LLM_PROVIDER_MODELS } from "@/utils/constants/providers"
 import { initI18n } from "@/utils/i18n"
 import {
   buildFreshDefaultConfig,
@@ -52,6 +53,32 @@ export async function initializeConfig(): Promise<InitializeConfigResult> {
     // Stored as every reader gets it: defaults filled in, the selection
     // toolbar's order and pins in step with its actions.
     config = parsedConfig.data
+    if (currentVersion < 5) {
+      // Keep IDs, credentials, model IDs and feature bindings. Only standard
+      // DeepSeek endpoints have a known protocol; never infer a proxy's protocol.
+      config.providersConfig = config.providersConfig.map((provider) => {
+        if (provider.provider !== "openai-compatible") return provider
+        try {
+          const url = new URL(provider.baseURL)
+          if (
+            url.origin !== "https://api.deepseek.com" ||
+            !["/", "/v1", "/v1/"].includes(url.pathname) ||
+            url.username ||
+            url.password ||
+            url.search ||
+            url.hash
+          )
+            return provider
+        } catch {
+          return provider
+        }
+        return {
+          ...provider,
+          provider: "deepseek",
+          model: { ...provider.model, model: DEFAULT_LLM_PROVIDER_MODELS.deepseek.model },
+        }
+      })
+    }
     if (currentVersion < CONFIG_SCHEMA_VERSION) {
       currentVersion = CONFIG_SCHEMA_VERSION
       didConfigChange = true

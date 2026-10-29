@@ -53,6 +53,10 @@ const topLevelReasoningConfigSchema = {
 }
 
 const llmProviderConfigSchemaList = [
+  baseAPIProviderConfigSchema.extend({
+    provider: z.literal("deepseek"),
+    model: createProviderModelSchema("deepseek"),
+  }),
   baseOpenAICompatibleLLMProviderConfigSchema.extend({
     provider: z.literal("openai-compatible"),
     model: createProviderModelSchema<"openai-compatible">("openai-compatible"),

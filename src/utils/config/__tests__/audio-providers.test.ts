@@ -49,7 +49,7 @@ describe("independent capability assignments", () => {
     expect(
       getSelectableProvidersForCapability("transcription", providers).map((p) => p.provider),
     ).toEqual(["openai", "openai-compatible"])
-    expect(getSelectableProvidersForCapability("pageTranslation", providers)).toHaveLength(4)
+    expect(getSelectableProvidersForCapability("pageTranslation", providers)).toHaveLength(5)
   })
   it("keeps audio models and provider choices independent of page translation", () => {
     const config = structuredClone(DEFAULT_CONFIG)
