@@ -41,6 +41,7 @@ import {
   translateNodesBilingualMode,
   translateWalkedElement,
 } from "@/utils/host/translate/node-manipulation"
+import { cancelTranslationScope } from "@/utils/host/translate/request-cancellation"
 import { primePageTranslationContext } from "@/utils/host/translate/translate-variants"
 import {
   beginPageTranslationSession,
@@ -387,9 +388,10 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
       this.requestSessionUrl !== url &&
       !isInPageAnchorChange(this.requestSessionUrl, url)
     ) {
+      const oldSignal = this.session?.signal
       const oldSession = replacePageTranslationSession(config)
       if (oldSession)
-        void sendMessage("cancelPageTranslationRequests", { sessionId: oldSession }).catch(() =>
+        void cancelTranslationScope(oldSession, oldSignal).catch(() =>
           logger.warn("Failed to cancel navigation requests"),
         )
       this.session = getPageTranslationSession()
@@ -439,9 +441,10 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
     // Drain this session's queued/in-flight requests after cancellation.
     // Fire-and-forget: the synchronous DOM
     // cleanup below finishes long before any rejection lands.
+    const endedSignal = this.session?.signal
     const endedSessionId = endPageTranslationSession()
     if (endedSessionId) {
-      void sendMessage("cancelPageTranslationRequests", { sessionId: endedSessionId }).catch(() =>
+      void cancelTranslationScope(endedSessionId, endedSignal).catch(() =>
         logger.warn("Failed to cancel pending translation requests"),
       )
     }

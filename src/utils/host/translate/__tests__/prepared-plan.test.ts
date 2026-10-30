@@ -117,3 +117,24 @@ describe("prepared plan execution contract", () => {
     expect(getInMemoryTranslation(plan.request.hash)).toBeUndefined()
   })
 })
+
+it("coalesces a page stop into one backend cancellation while rejecting every consumer", async () => {
+  const owner = new AbortController()
+  messaging.sendMessage.mockImplementation((name) =>
+    name === "enqueueTranslateRequest" ? new Promise(() => {}) : Promise.resolve(),
+  )
+  const tasks = Array.from({ length: 30 }, (_, index) => {
+    const request = input()
+    request.text += index
+    return executeTranslationPlan(createTranslationPlan(request), {
+      signal: owner.signal,
+      isCurrent: () => true,
+    }).catch((error) => error)
+  })
+  owner.abort()
+  expect(
+    messaging.sendMessage.mock.calls.filter(([name]) => name === "cancelPageTranslationRequests"),
+  ).toHaveLength(1)
+  for (const result of await Promise.all(tasks))
+    expect(result).toMatchObject({ name: "TranslationCancelledError" })
+})

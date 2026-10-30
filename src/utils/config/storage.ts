@@ -4,14 +4,15 @@ import { storage } from "#imports"
 import { configSchema } from "@/types/config/config"
 import { CONFIG_STORAGE_KEY, DEFAULT_CONFIG } from "../constants/config"
 import { logger } from "../logger"
-import { copyConfigSnapshot } from "./snapshot-revision"
+import { copyConfigSnapshot, noteCurrentConfigSnapshot } from "./snapshot-revision"
 
 let configRevision = 0
 let validatedConfig: Config | null | undefined
 let pendingRead: { revision: number; promise: Promise<Config | null> } | undefined
 let watching = false
 
-function invalidateConfig(): void {
+function invalidateConfig(config?: Config | null): void {
+  noteCurrentConfigSnapshot(config)
   configRevision++
   validatedConfig = undefined
   pendingRead = undefined
@@ -36,7 +37,10 @@ export async function getLocalConfig(): Promise<Config | null> {
           if (!parsed.success) logger.error("Config is invalid, using default config")
           result = parsed.success ? parsed.data : DEFAULT_CONFIG
         }
-        if (revision === configRevision) validatedConfig = result
+        if (revision === configRevision) {
+          validatedConfig = result
+          noteCurrentConfigSnapshot(result)
+        }
         return result
       })
       .finally(() => {
@@ -55,7 +59,7 @@ export async function setLocalConfig(config: Config) {
   if (!parsedConfig.success) {
     throw new Error("Config is invalid")
   }
-  invalidateConfig()
+  invalidateConfig(parsedConfig.data)
   await storage.setItem<Config>(`local:${CONFIG_STORAGE_KEY}`, parsedConfig.data)
   await storage.setMeta<Partial<ConfigMeta>>(`local:${CONFIG_STORAGE_KEY}`, {
     lastModifiedAt: Date.now(),

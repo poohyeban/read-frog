@@ -3,6 +3,7 @@ export interface DOMCommitOptions {
   signal?: AbortSignal
   current?: () => boolean
   onDiscard?: () => void
+  onError?: (error: unknown) => void
 }
 type DOMOperation = () => void
 type PendingWrite = { operation: DOMOperation; options: DOMCommitOptions; detach: () => void }
@@ -56,6 +57,7 @@ export class DOMBatcher {
             write.options.onDiscard?.()
           else write.operation()
         } catch (error) {
+          write.options.onError?.(error)
           console.error("Error executing batched DOM operation:", error)
         }
         if (!immediate && performance.now() >= deadline) break

@@ -1,0 +1,768 @@
+{
+  "browser": "154.0.8037.57",
+  "source": "phase1",
+  "provider": "local mock, 80ms",
+  "samples": [
+    {
+      "smart": false,
+      "trial": 0,
+      "cache": "cold",
+      "firstVisibleMs": 177.2000000011176,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 95.59999999962747,
+        "translationReadyAt": 175.7000000011176
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.30000000000001,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1672,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 12342640,
+      "interaction": {
+        "keyToFrameMs": 5.400000000372529,
+        "scrollFrameGapMs": 16.800000000000068,
+        "scrollY": 630
+      },
+      "heapUsed": 12310704,
+      "heapAfterStop": 7757396,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 0,
+      "cache": "warm",
+      "firstVisibleMs": 34.90000000037253,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 49.899999999999864,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1350,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 10962192,
+      "interaction": {
+        "keyToFrameMs": 10,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 8583852,
+      "heapAfterStop": 8014464,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 1,
+      "cache": "cold",
+      "firstVisibleMs": 163.09999999962747,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 81.29999999888241,
+        "translationReadyAt": 161.59999999962747
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.4,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1672,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 12842584,
+      "interaction": {
+        "keyToFrameMs": 15.900000000372529,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 12817600,
+      "heapAfterStop": 7759460,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 1,
+      "cache": "warm",
+      "firstVisibleMs": 32.90000000037253,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 33.30000000000007,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1350,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 10925100,
+      "interaction": {
+        "keyToFrameMs": 6.599999999627471,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 8583844,
+      "heapAfterStop": 8013604,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 2,
+      "cache": "cold",
+      "firstVisibleMs": 166.90000000037253,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 85.5,
+        "translationReadyAt": 165.69999999925494
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.39999999999998,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1672,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 11885852,
+      "interaction": {
+        "keyToFrameMs": 13.900000000372529,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 11860940,
+      "heapAfterStop": 7758728,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 2,
+      "cache": "warm",
+      "firstVisibleMs": 43.5,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 50,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1350,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 10951228,
+      "interaction": {
+        "keyToFrameMs": 5.900000000372529,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 8585204,
+      "heapAfterStop": 8014072,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 3,
+      "cache": "cold",
+      "firstVisibleMs": 170.5,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 88.40000000037253,
+        "translationReadyAt": 168.69999999925494
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 100.10000000000002,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1672,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 12322872,
+      "interaction": {
+        "keyToFrameMs": 16.40000000037253,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 12297936,
+      "heapAfterStop": 7745792,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 3,
+      "cache": "warm",
+      "firstVisibleMs": 33.19999999925494,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 33.299999999999955,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1350,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 10930100,
+      "interaction": {
+        "keyToFrameMs": 7.700000001117587,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 8567984,
+      "heapAfterStop": 7995588,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 4,
+      "cache": "cold",
+      "firstVisibleMs": 164.09999999962747,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 82.30000000074506,
+        "translationReadyAt": 162.5
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.19999999999999,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1672,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 12456948,
+      "interaction": {
+        "keyToFrameMs": 2.099999999627471,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 12432024,
+      "heapAfterStop": 7759360,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 4,
+      "cache": "warm",
+      "firstVisibleMs": 34.79999999888241,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 49.90000000000009,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1350,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 10975980,
+      "interaction": {
+        "keyToFrameMs": 4,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 8583656,
+      "heapAfterStop": 8011656,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 0,
+      "cache": "cold",
+      "firstVisibleMs": 381,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 42.5
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 172.59999999962747
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 215.59999999962747,
+        "summaryReadyAt": 295.90000000037253,
+        "translationRequestedAt": 298.5,
+        "translationReadyAt": 378.80000000074506
+      },
+      "longTasks": [73],
+      "maxFrameGapMs": 66.69999999999999,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9530,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 1,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 17573112,
+      "interaction": {
+        "keyToFrameMs": 6.099999999627471,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 17548272,
+      "heapAfterStop": 9420140,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 0,
+      "cache": "warm",
+      "firstVisibleMs": 92.79999999888241,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 26.59999999962747
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 71.90000000037253
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 86,
+        "summaryReadyAt": 86.09999999962747
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 66.70000000000005,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9530,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 12949356,
+      "interaction": {
+        "keyToFrameMs": 5.599999999627471,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 11388224,
+      "heapAfterStop": 9672760,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 1,
+      "cache": "cold",
+      "firstVisibleMs": 387.09999999962747,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 44.90000000037253
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 182.19999999925494
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 221.90000000037253,
+        "summaryReadyAt": 302.30000000074506,
+        "translationRequestedAt": 305.09999999962747,
+        "translationReadyAt": 385.30000000074506
+      },
+      "longTasks": [80],
+      "maxFrameGapMs": 83.40000000000003,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9530,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 1,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 17749168,
+      "interaction": {
+        "keyToFrameMs": 12.900000000372529,
+        "scrollFrameGapMs": 16.800000000000182,
+        "scrollY": 630
+      },
+      "heapUsed": 17717204,
+      "heapAfterStop": 9426208,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 1,
+      "cache": "warm",
+      "firstVisibleMs": 65.90000000037253,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 24.399999998509884
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 50
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 59.30000000074506,
+        "summaryReadyAt": 59.30000000074506
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.40000000000009,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9208,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 14027692,
+      "interaction": {
+        "keyToFrameMs": 0.6999999992549419,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 12538052,
+      "heapAfterStop": 9669580,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 2,
+      "cache": "cold",
+      "firstVisibleMs": 391.80000000074506,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 44.19999999925494
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 183.90000000037253
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 227.5,
+        "summaryReadyAt": 307.80000000074506,
+        "translationRequestedAt": 310,
+        "translationReadyAt": 390.2000000011176
+      },
+      "longTasks": [74],
+      "maxFrameGapMs": 83.39999999999998,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9530,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 1,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 16142752,
+      "interaction": {
+        "keyToFrameMs": 4.700000001117587,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 16110732,
+      "heapAfterStop": 9427628,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 2,
+      "cache": "warm",
+      "firstVisibleMs": 94.70000000111759,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 29.600000001490116
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 71.09999999962747
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 86.5,
+        "summaryReadyAt": 86.5
+      },
+      "longTasks": [51],
+      "maxFrameGapMs": 66.59999999999991,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9530,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 13075120,
+      "interaction": {
+        "keyToFrameMs": 16.800000000745058,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 11412652,
+      "heapAfterStop": 9672808,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 3,
+      "cache": "cold",
+      "firstVisibleMs": 388.69999999925494,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 41.29999999888241
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 180.30000000074506
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 223.7999999988824,
+        "summaryReadyAt": 304.09999999962747,
+        "translationRequestedAt": 306.69999999925494,
+        "translationReadyAt": 386.7999999988824
+      },
+      "longTasks": [72],
+      "maxFrameGapMs": 66.69999999999999,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9530,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 1,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 17773556,
+      "interaction": {
+        "keyToFrameMs": 11.900000000372529,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 17748656,
+      "heapAfterStop": 9419904,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 3,
+      "cache": "warm",
+      "firstVisibleMs": 64,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 23.40000000037253
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 49.29999999888241
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 57.80000000074506,
+        "summaryReadyAt": 57.80000000074506
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.39999999999986,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9208,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 14602232,
+      "interaction": {
+        "keyToFrameMs": 15.400000000372529,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 12637824,
+      "heapAfterStop": 9674168,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 4,
+      "cache": "cold",
+      "firstVisibleMs": 381.2999999988824,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 39.29999999888241
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 176.60000000149012
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 215.5,
+        "summaryReadyAt": 295.69999999925494,
+        "translationRequestedAt": 298.19999999925494,
+        "translationReadyAt": 378.40000000037253
+      },
+      "longTasks": [71],
+      "maxFrameGapMs": 83.30000000000001,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9530,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 1,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 17284664,
+      "interaction": {
+        "keyToFrameMs": 2.900000000372529,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 17259728,
+      "heapAfterStop": 9418548,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 4,
+      "cache": "warm",
+      "firstVisibleMs": 79.69999999925494,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 29.40000000037253
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 61.399999998509884
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 72.09999999962747,
+        "summaryReadyAt": 72.19999999925494
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.29999999999995,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9208,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 14202832,
+      "interaction": {
+        "keyToFrameMs": 11.199999999254942,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 12571120,
+      "heapAfterStop": 9665192,
+      "errors": []
+    }
+  ],
+  "transport": "browser harness; simulated extension storage and messages",
+  "compatibility": [
+    {
+      "fixture": "float",
+      "passed": true
+    },
+    {
+      "fixture": "markdown",
+      "passed": true
+    },
+    {
+      "fixture": "shadow",
+      "passed": true
+    },
+    {
+      "fixture": "giant",
+      "passed": true
+    },
+    {
+      "fixture": "spa",
+      "passed": true
+    },
+    {
+      "fixture": "virtual",
+      "passed": true
+    },
+    {
+      "fixture": "mutation",
+      "passed": true,
+      "mutationMs": 107.00152099999832
+    },
+    {
+      "fixture": "pending-mutation",
+      "passed": true
+    }
+  ]
+}

@@ -177,6 +177,8 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
           await page.evaluate(() => {
             Object.assign(window.__perf, {
               longTasks: [],
+              costs: [],
+              chain: {},
               frames: [],
               first: null,
               start: performance.now(),
@@ -222,6 +224,8 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
             trial,
             cache,
             firstVisibleMs: stats.first,
+            phaseCosts: stats.costs,
+            firstResultChain: stats.chain,
             longTasks: stats.longTasks,
             maxFrameGapMs: Math.max(...stats.frames),
             walks: stats.walks,
@@ -326,7 +330,9 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
           page.locator("#replacement .read-frog-translated-content-wrapper"),
         ).toContainText("本地模拟译文")
       }
+      let mutationMs
       if (fixture === "mutation") {
+        const mutationStart = performance.now()
         await page.locator("#p0").evaluate((element) => {
           for (let i = 0; i < 30; i++) element.firstChild.data += ` Updated detail ${i}.`
         })
@@ -334,6 +340,7 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
         await expect(page.locator("#p0 .read-frog-translated-content-wrapper")).toContainText(
           "本地模拟译文",
         )
+        mutationMs = performance.now() - mutationStart
       }
       await page.evaluate(() => window.harness.manager.stop())
       await expect(page.locator(".read-frog-translated-content-wrapper")).toHaveCount(0)
@@ -359,7 +366,7 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
         .poll(async () => (await page.locator("main").textContent()) === original)
         .toBe(true)
       expect(errors).toEqual([])
-      results.compatibility.push({ fixture, passed: true })
+      results.compatibility.push({ fixture, passed: true, mutationMs })
       await page.close()
     }
   } finally {

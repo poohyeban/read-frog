@@ -142,18 +142,18 @@ export async function insertTranslatedNodeIntoWrapper(
   config: Config,
   forceBlock = false,
 ): Promise<void> {
-  const gate = captureCommitGate(context.isCurrent)
+  const gate = captureCommitGate(context.isCurrent, config)
   const commit = gate.beginCommit()
   try {
-    await pageLocalScheduler.schedule(
+    const inserted = await pageLocalScheduler.schedule(
       () => insertContent(wrapper, context, text, style, config, forceBlock),
       context.isCurrent,
       context.signal,
     )
-    if (gate.isCurrent()) commit.complete()
+    if (inserted && gate.isCurrent()) commit.complete()
     else commit.discard()
   } catch (error) {
-    commit.discard()
+    commit.fail(error)
     throw error
   }
 }
@@ -173,8 +173,8 @@ async function insertContent(
   translationNodeStyle: TranslationNodeStyleConfig,
   config: Config,
   forceBlockTranslation: boolean = false,
-): Promise<void> {
-  if (isCurrent && !isCurrent()) return
+): Promise<boolean> {
+  if (isCurrent && !isCurrent()) return false
 
   // Use the wrapper's owner document
   const ownerDoc = getOwnerDocument(translatedWrapperNode)
@@ -218,7 +218,7 @@ async function insertContent(
     addBlockTranslation(ownerDoc, translatedWrapperNode, translatedNode)
   } else {
     // not inline or block, maybe notranslate
-    return
+    return false
   }
 
   if (renderTranslatedContent) {
@@ -231,7 +231,7 @@ async function insertContent(
   onContentInserted?.(translatedWrapperNode)
   await decorateTranslationNode(translatedNode, translationNodeStyle)
 
-  if (isCurrent && !isCurrent()) return
+  if (isCurrent && !isCurrent()) return false
 
   await pageLocalScheduler.schedule(
     () => {
@@ -259,4 +259,5 @@ async function insertContent(
     isCurrent,
     signal,
   )
+  return true
 }

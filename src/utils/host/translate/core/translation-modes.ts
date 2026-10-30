@@ -200,7 +200,7 @@ async function translateVirtualParagraphs(
   forceBlockTranslation: boolean,
   forceRetranslation: boolean = false,
 ): Promise<void> {
-  const gate = captureCommitGate()
+  const gate = captureCommitGate(undefined, config)
   const group: VirtualParagraphGroup = {
     id: `${walkId}:${virtualParagraphGroupSequence++}`,
     walkId,
@@ -470,7 +470,7 @@ export async function translateNodesBilingualMode(
     if (!atomExtraction) return
     const requestText = atomExtraction.requestText
     const sourceSnapshot = snapshotSourceTextNodes(transNodes)
-    const gate = captureCommitGate()
+    const gate = captureCommitGate(undefined, config)
 
     let bilingualState: BilingualTranslationState | undefined
     if (isHTMLElement(layoutSource) && sourceTextBeforeFilter !== null) {
@@ -773,7 +773,7 @@ async function translateNonMaterializableGiant(
   // observer already refused to lose it.
   if (!canSplitGiantWithoutStrandingOwnText(layoutSource)) return false
 
-  const gate = captureCommitGate(() => layoutSource.isConnected)
+  const gate = captureCommitGate(() => layoutSource.isConnected, config)
   const paragraphs = collectTopLevelParagraphDescendants(layoutSource)
   if (paragraphs.length === 0) return false
 
@@ -807,7 +807,7 @@ async function maybeTranslateVirtualUnitRuns(
   toggle: boolean,
   forceRetranslation: boolean,
 ): Promise<boolean> {
-  const gate = captureCommitGate(() => layoutSource.isConnected)
+  const gate = captureCommitGate(() => layoutSource.isConnected, config)
   const previousState = getTranslationOnlyAnchorState(layoutSource)
   const hasPreviousGeneration =
     previousState !== undefined &&
@@ -1072,7 +1072,7 @@ async function translateTranslationOnlyRun(
 
     // Capture before filtering as well as the provider round-trip: both await.
     const sourceSnapshot = snapshotSourceTextNodes(transNodes)
-    const gate = captureCommitGate()
+    const gate = captureCommitGate(undefined, config)
     let disposed = false
     const isRunCurrent = () =>
       !disposed &&
@@ -1170,16 +1170,25 @@ async function translateTranslationOnlyRun(
     const commit = gate.beginCommit()
     const renderOptions = {
       ...commitOptions,
+      onError: (error: unknown) => {
+        commit.fail(error)
+        trackedUnit.dispose()
+      },
       onDiscard: () => {
         commit.discard()
         trackedUnit.dispose()
       },
     }
-    const swapPlan = await pageLocalScheduler.schedule(
-      () => planInPlaceTextSwap(transNodes, translatedText, ownerDoc),
-      isRunCurrent,
-      gate.signal,
-    )
+    const swapPlan = await pageLocalScheduler
+      .schedule(
+        () => planInPlaceTextSwap(transNodes, translatedText, ownerDoc),
+        isRunCurrent,
+        gate.signal,
+      )
+      .catch((error) => {
+        commit.fail(error)
+        throw error
+      })
     if (!isRunCurrent()) {
       commit.discard()
       trackedUnit.dispose()
@@ -1192,6 +1201,7 @@ async function translateTranslationOnlyRun(
         // A superseded run (its generation torn down) is stale for the same
         // reason even when its wrapper survived the round trip.
         if (!translatedWrapperNode.isConnected || !isRunCurrent()) {
+          commit.discard()
           trackedUnit.dispose()
           return
         }
@@ -1243,6 +1253,7 @@ async function translateTranslationOnlyRun(
       // call was in flight, or the host re-rendered the region. The originals
       // are the live content — don't remove them to apply a stale translation.
       if (!translatedWrapperNode.isConnected || !isRunCurrent()) {
+        commit.discard()
         trackedUnit.dispose()
         return
       }

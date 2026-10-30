@@ -2,7 +2,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { sendMessage } from "@/utils/message"
-import { translateTextForInput, translateTextForPage } from "../translate-variants"
+import {
+  translateTextForInput,
+  translateTextForPage,
+  translateTextForPageTitle,
+} from "../translate-variants"
 import {
   beginPageTranslationSession,
   endPageTranslationSession,
@@ -107,4 +111,32 @@ describe("cross-feature context ownership", () => {
     expect(await page).toMatchObject({ name: "TranslationCancelledError" })
     expect(await input).toMatchObject({ name: "TranslationCancelledError" })
   })
+})
+
+it("cancels a title request without draining the page's body scope", async () => {
+  const requests = new Map<string, (value: string) => void>()
+  message.mockImplementation((name, data) => {
+    if (name === "getOrGenerateWebPageSummary") return Promise.resolve("Shared summary")
+    if (name === "enqueueTranslateRequest")
+      return new Promise<string>((resolve) => requests.set(data.sessionId, resolve))
+    return Promise.resolve()
+  })
+  const pageId = beginPageTranslationSession()
+  const titleOwner = new AbortController()
+  const title = translateTextForPageTitle("An article title", titleOwner.signal).catch(
+    (error) => error,
+  )
+  const body = translateTextForPage(
+    "This English paragraph continues after title translation is disabled.",
+  )
+  await vi.waitFor(() => expect(requests.size).toBe(2))
+  titleOwner.abort()
+  expect(await title).toMatchObject({ name: "TranslationCancelledError" })
+  const cancellations = message.mock.calls.filter(
+    ([name]) => name === "cancelPageTranslationRequests",
+  )
+  expect(cancellations).toHaveLength(1)
+  expect(cancellations[0]![1].sessionId).toMatch(/^title-/)
+  requests.get(pageId)!("Body translation")
+  expect(await body).toBe("Body translation")
 })

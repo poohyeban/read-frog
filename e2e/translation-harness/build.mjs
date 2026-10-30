@@ -29,6 +29,33 @@ export async function buildHarness(sourceRoot, output) {
               : id
           return replacements.get(absolute)
         },
+        transform(code, id) {
+          if (!id.endsWith("/utils/host/translate/webpage-context.ts")) return undefined
+          // Same diagnostic wrapper on both source revisions, outside production.
+          if (!code.includes("async function extractWebpageContent(signal: AbortSignal)"))
+            throw new Error("Extraction instrumentation no longer matches")
+          code = code.replace(
+            "async function extractWebpageContent(",
+            "async function rawExtractWebpageContent(",
+          )
+          code = code.replace(
+            "    const result = new Defuddle(",
+            "    const parseStart = performance.now()\n    const result = new Defuddle(",
+          )
+          code = code.replace(
+            "    }).parse()",
+            "    }).parse()\n    window.__perf?.costs?.push({ phase: 'defuddle-sync', ms: performance.now() - parseStart })",
+          )
+          return (
+            code +
+            `
+          async function extractWebpageContent(signal: AbortSignal): Promise<string> {
+            const start = performance.now()
+            try { return await rawExtractWebpageContent(signal) }
+            finally { window.__perf?.costs?.push({ phase: 'extraction-total', ms: performance.now() - start }) }
+          }`
+          )
+        },
         load(id) {
           if (id !== "\0translation-entry") return undefined
           return `

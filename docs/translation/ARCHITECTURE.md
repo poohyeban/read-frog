@@ -1,3 +1,5 @@
+> 第二阶段已继续完成生命周期、请求执行、提交屏障与 Headless UI 接口。当前实现请先看 [第二阶段验收](./phase-2/REPORT.md) 和 [同机性能对照](./phase-2/PERFORMANCE.md)。下文保留第一阶段设计记录。
+
 # 页面翻译架构与维护契约
 
 本轮从 `18f2c8cb`（干净工作区）渐进升级。WXT/MV3、AI SDK 完整 `generateText()`、Provider 协议与自定义参数、RequestQueue/BinaryHeapPQ/令牌桶、BatchQueue、Dexie、Defuddle、术语表以及 DOM 恢复机制继续使用。未增加框架、后台队列或持久存储迁移。

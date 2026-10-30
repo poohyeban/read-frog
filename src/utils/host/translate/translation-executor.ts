@@ -13,6 +13,7 @@ import {
   storeInMemoryTranslation,
 } from "./in-memory-translation-cache"
 import { auditInlineAtomTokens } from "./inline-atom-tokens"
+import { cancelTranslationScope } from "./request-cancellation"
 
 export interface ValidatedTranslationResult {
   readonly text: string
@@ -74,9 +75,7 @@ export async function executeTranslationPlan(
     })
     const cancel = () => {
       rejectCancelled(new TranslationCancelledError(plan.scope.id))
-      void sendMessage("cancelPageTranslationRequests", { sessionId: plan.scope.id }).catch(
-        () => {},
-      )
+      void cancelTranslationScope(plan.scope.id, lifetime.signal).catch(() => {})
     }
     lifetime.signal?.addEventListener("abort", cancel, { once: true })
     try {
