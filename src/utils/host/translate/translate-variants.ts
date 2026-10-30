@@ -30,6 +30,9 @@ import { getPageTranslationSession } from "./translation-session"
 import {
   getOrCreateWebPageContext,
   getWebPageContentRevision,
+  waitForStableWebPageContext,
+  ContextUnstableError,
+  getDocumentContextSignal,
   isInPageAnchorChange,
   isWebPageContextCurrent,
 } from "./webpage-context"
@@ -49,7 +52,8 @@ async function getWebPagePromptContext(
   const session = args[4] === undefined ? (getPageTranslationSession() ?? null) : args[4]
   args[4] = session
   const url = window.location.href
-  for (;;) {
+  const signal = session?.signal ?? getDocumentContextSignal()
+  for (let attempt = 0; attempt < 3; attempt++) {
     const revision = getWebPageContentRevision()
     try {
       return await prepareWebPagePromptContext(...args)
@@ -64,8 +68,10 @@ async function getWebPagePromptContext(
         (url !== window.location.href && !isInPageAnchorChange(url, window.location.href))
       )
         throw error
+      await waitForStableWebPageContext(signal)
     }
   }
+  throw new ContextUnstableError()
 }
 
 async function prepareWebPagePromptContext(

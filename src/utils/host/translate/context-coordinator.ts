@@ -2,7 +2,8 @@ import { TranslationCancelledError } from "@/utils/request/cancellation"
 
 type Entry<T> =
   | { status: "pending"; promise: Promise<T>; controller: AbortController; consumers: Set<symbol> }
-  | { status: "ready"; value: T }
+  | { status: "ready"; value: T; until: number }
+  | { status: "cancelled"; until: number }
   | { status: "cooldown"; error: unknown; until: number }
 
 /** Bounded singleflight results; active work is reference-counted, not evicted. */
@@ -11,11 +12,20 @@ export class ContextCoordinator<T> {
   constructor(
     private readonly capacity = 16,
     private readonly cooldownMs = 30_000,
+    private readonly readyTtlMs = 5 * 60_000,
   ) {}
 
   get(key: string, load: (signal: AbortSignal) => Promise<T>, signal?: AbortSignal): Promise<T> {
     if (signal?.aborted) return Promise.reject(new TranslationCancelledError())
     let entry = this.entries.get(key)
+    if (
+      entry &&
+      entry.status !== "pending" &&
+      (entry.status === "cancelled" || entry.until <= Date.now())
+    ) {
+      this.entries.delete(key)
+      entry = undefined
+    }
     if (entry?.status === "ready") {
       this.entries.delete(key)
       this.entries.set(key, entry)
@@ -43,7 +53,8 @@ export class ContextCoordinator<T> {
         .then(
           (value) => {
             controller.signal.throwIfAborted()
-            if (this.entries.get(key) === pending) this.entries.set(key, { status: "ready", value })
+            if (this.entries.get(key) === pending)
+              this.entries.set(key, { status: "ready", value, until: Date.now() + this.readyTtlMs })
             this.prune()
             return value
           },
@@ -76,8 +87,9 @@ export class ContextCoordinator<T> {
         release()
         reject(new TranslationCancelledError())
         if (pending.consumers.size === 0 && this.entries.get(key) === pending) {
-          this.entries.delete(key)
+          this.entries.set(key, { status: "cancelled", until: Date.now() + this.cooldownMs })
           pending.controller.abort(new TranslationCancelledError())
+          this.prune()
         }
       }
       signal?.addEventListener("abort", abort, { once: true })
@@ -111,7 +123,7 @@ export class ContextCoordinator<T> {
 
   private prune(): void {
     for (const [key, entry] of this.entries) {
-      if (entry.status === "cooldown" && entry.until <= Date.now()) this.entries.delete(key)
+      if (entry.status !== "pending" && entry.until <= Date.now()) this.entries.delete(key)
       else if (this.entries.size > this.capacity && entry.status !== "pending")
         this.entries.delete(key)
     }

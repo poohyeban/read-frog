@@ -54,6 +54,10 @@ import {
 } from "@/utils/host/translate/translate-variants"
 import {
   beginPageTranslationSession,
+  getPageTranslationSession,
+  getPageTranslationSessionVersion,
+  replacePageTranslationSession,
+  type PageSession,
   endPageTranslationSession,
 } from "@/utils/host/translate/translation-session"
 import { cleanupNodeSiteRuleCSSIfUnused } from "@/utils/host/translate/ui/node-site-rule-css"
@@ -61,11 +65,10 @@ import { cancelSpinnerAnimation } from "@/utils/host/translate/ui/spinner"
 import { ensureSiteRuleCSS, removeSiteRuleCSS } from "@/utils/host/translate/ui/style-injector"
 import {
   getOrCreateWebPageContext,
+  getWebPageContentRevision,
   isInPageAnchorChange,
-  notePageContentMutations,
   releaseWebPageContext,
 } from "@/utils/host/translate/webpage-context"
-import { releaseWebPageSummaries } from "@/utils/host/translate/webpage-summary"
 import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
 import {
@@ -271,7 +274,10 @@ export class PageTranslationManager implements IPageTranslationManager {
     threshold: 0.1,
   }
 
-  private isPageTranslating: boolean = false
+  private session: PageSession | undefined
+  private get isPageTranslating(): boolean {
+    return !!this.session && !this.session.lifetimeSignal.aborted
+  }
   /** Non-null while a start() is between its guard and activation; see start(). */
   private pendingStart: symbol | null = null
   private intersectionObserver: IntersectionObserver | null = null
@@ -302,7 +308,9 @@ export class PageTranslationManager implements IPageTranslationManager {
   // Strong and enumerable so stop() can cancel in-flight retries; entries are
   // removed when a retry fires, so the set only holds armed timers.
   private pendingRetranslateRetries = new Set<DebouncedRetry>()
-  private translationSessionVersion = 0
+  private get translationSessionVersion(): number {
+    return getPageTranslationSessionVersion()
+  }
   /** Pending initial chunked walk; mutation handling serializes behind it. */
   private initialWalkDone: Promise<void> | null = null
   private titleObserver: MutationObserver | null = null
@@ -401,12 +409,11 @@ export class PageTranslationManager implements IPageTranslationManager {
     // below tears the session down instead of racing a pending start. The
     // session-version checks after each await abort the rest of the setup
     // once such a teardown (or a newer session) has happened.
-    this.isPageTranslating = true
-    this.translationSessionVersion += 1
-    const sessionVersion = this.translationSessionVersion
-
     this.requestSessionUrl = window.location.href
-    beginPageTranslationSession(config)
+    beginPageTranslationSession(config, getWebPageContentRevision)
+    this.session = getPageTranslationSession()!
+    this.session.own(() => this.releaseDomResources())
+    const sessionVersion = this.translationSessionVersion
     window.addEventListener("pagehide", this.onPageHide)
     this.contextPrimed = false
 
@@ -527,12 +534,12 @@ export class PageTranslationManager implements IPageTranslationManager {
       this.requestSessionUrl !== url &&
       !isInPageAnchorChange(this.requestSessionUrl, url)
     ) {
-      const oldSession = endPageTranslationSession()
+      const oldSession = replacePageTranslationSession(config)
       if (oldSession)
         void sendMessage("cancelPageTranslationRequests", { sessionId: oldSession }).catch(() =>
           logger.warn("Failed to cancel navigation requests"),
         )
-      beginPageTranslationSession(config)
+      this.session = getPageTranslationSession()
       releaseWebPageContext()
       this.contextPrimed = false
       this.titleRequestVersion++
@@ -585,14 +592,14 @@ export class PageTranslationManager implements IPageTranslationManager {
         logger.warn("Failed to cancel pending translation requests"),
       )
     }
+  }
 
-    this.isPageTranslating = false
-    this.translationSessionVersion += 1
+  private releaseDomResources(): void {
+    window.removeEventListener("pagehide", this.onPageHide)
+    this.session = undefined
     this.walkId = null
     this.contextPrimed = false
     this.paragraphChildren = new WeakMap()
-    releaseWebPageContext()
-    releaseWebPageSummaries()
     this.walkBlockedElementsCache = new WeakSet()
     this.ancestorsWithWalkBlockedElements = new WeakSet()
     this.refreshingTranslatedSources = new WeakSet()
@@ -1412,7 +1419,6 @@ export class PageTranslationManager implements IPageTranslationManager {
       if (!this.isSelfInflictedRecord(record, checkedWrappers)) hostRecords.push(record)
     }
     if (hostRecords.length === 0) return
-    notePageContentMutations(hostRecords)
 
     // Serialize traversal-driven handling behind the initial chunked walk so
     // a mutation-path sync walk never races the sliced startup walk over the

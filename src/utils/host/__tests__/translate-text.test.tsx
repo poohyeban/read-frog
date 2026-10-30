@@ -137,6 +137,27 @@ describe("translate-text", () => {
         endPageTranslationSession()
       }
     })
+    it("terminates repeated whole-document invalidation after three context attempts", async () => {
+      const context = await import("@/utils/host/translate/webpage-context")
+      const config = structuredClone(DEFAULT_CONFIG)
+      config.pageTranslation.enableAIContentAware = true
+      mockGetConfigFromStorage.mockResolvedValue(config)
+      mockGetOrGenerateWebPageSummary.mockImplementation(async () => {
+        context.invalidateWebPageContext()
+        vi.mocked(context.isWebPageContextCurrent).mockReturnValueOnce(false)
+        return "Superseded summary"
+      })
+      beginPageTranslationSession(config)
+      try {
+        await expect(translateTextForPage("A continually replaced source")).rejects.toMatchObject({
+          code: "CONTEXT_UNSTABLE",
+        })
+        expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(3)
+        expect(mockSendMessage).not.toHaveBeenCalled()
+      } finally {
+        endPageTranslationSession()
+      }
+    })
     it("should send message with correct parameters", async () => {
       mockSendMessage.mockResolvedValue("translated text")
 

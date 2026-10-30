@@ -44,6 +44,9 @@ describe("shared context lifecycle", () => {
     last.abort()
     expect((await b).name).toBe("TranslationCancelledError")
     expect(signal.aborted).toBe(true)
+    expect(coordinator.state("a")).toBe("cancelled")
+    expect(coordinator.size).toBe(1)
+    coordinator.clear()
     expect(coordinator.size).toBe(0)
   })
   it("does not let a superseded pending result overwrite a new result", async () => {

@@ -7,6 +7,7 @@ import { sendMessage } from "@/utils/message"
 import { getProviderCacheIdentity } from "@/utils/providers/provider-ref"
 import { ContextCoordinator } from "./context-coordinator"
 import { getPageTranslationSession } from "./translation-session"
+import { getDocumentContextSignal, getWebPageContextSignal } from "./webpage-context"
 
 const summaries = new ContextCoordinator<string | null>(16)
 export function releaseWebPageSummaries(): void {
@@ -17,7 +18,7 @@ export async function getOrGenerateWebPageSummary(
   webPageContext: CachedWebPageContext | null,
   providerRef: PromptableProviderRef,
   enableAIContentAware: boolean,
-  session: PageSession | null = getPageTranslationSession() ?? null,
+  session: Pick<PageSession, "id" | "signal"> | null = getPageTranslationSession() ?? null,
 ): Promise<string | null> {
   if (!enableAIContentAware || !webPageContext) {
     return null
@@ -33,18 +34,34 @@ export async function getOrGenerateWebPageSummary(
     webTitle,
     webContent,
     getProviderCacheIdentity(providerRef),
-    session?.id ?? "unscoped",
   )
+  const signals = [
+    getDocumentContextSignal(),
+    session?.signal,
+    getWebPageContextSignal(webPageContext),
+  ].filter((signal): signal is AbortSignal => !!signal)
   const summary = await summaries.get(
     key,
-    async () =>
-      await sendMessage("getOrGenerateWebPageSummary", {
-        webTitle,
-        webContent,
-        providerRef,
-        sessionId: session?.id,
-      }),
-    session?.signal,
+    async (signal) => {
+      // The shared network task owns its scope, not any individual feature.
+      const scopeId = `context-${crypto.randomUUID()}`
+      const cancel = () => {
+        void sendMessage("cancelPageTranslationRequests", { sessionId: scopeId }).catch(() => {})
+      }
+      signal.addEventListener("abort", cancel, { once: true })
+      try {
+        signal.throwIfAborted()
+        return await sendMessage("getOrGenerateWebPageSummary", {
+          webTitle,
+          webContent,
+          providerRef,
+          sessionId: scopeId,
+        })
+      } finally {
+        signal.removeEventListener("abort", cancel)
+      }
+    },
+    AbortSignal.any(signals),
   )
 
   return summary || null
