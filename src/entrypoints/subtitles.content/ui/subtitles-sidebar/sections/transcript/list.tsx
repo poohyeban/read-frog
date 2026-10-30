@@ -49,7 +49,7 @@ function VirtualTranscriptList({
   )
   const getItemKey = useCallback((index: number) => cueIdentity(lines[index]!), [lines])
   // The component explicitly opts out of React Compiler; the mutable virtualizer stays local.
-  // oxlint-disable-next-line react(incompatible-library)
+  // oxlint-disable-next-line react/incompatible-library
   const virtualizer = useVirtualizer<HTMLElement, HTMLDivElement>({
     count: lines.length,
     getScrollElement,

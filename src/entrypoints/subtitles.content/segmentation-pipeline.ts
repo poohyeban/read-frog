@@ -83,6 +83,14 @@ export class SegmentationPipeline {
     return this.running
   }
 
+  /** Future cues wait for their recut; currently visible originals can translate immediately. */
+  isAwaitingSegmentation(cue: SubtitlesFragment): boolean {
+    if (this.preSegmented || !this.providerRef) return false
+    const window = this.chunkTimeline.at(cue.start)
+    const chunk = window ? this.chunks[Number(window.text)] : undefined
+    return !!chunk?.[0] && !this.completed.has(cueIdentity(chunk[0]))
+  }
+
   hasUnprocessedChunks(): boolean {
     return this.completed.size < this.chunks.length
   }

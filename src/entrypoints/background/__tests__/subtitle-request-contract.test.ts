@@ -2,6 +2,8 @@ import { beforeEach, afterEach, describe, expect, it, vi } from "vitest"
 import { browser, storage } from "#imports"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
+import { attachRequestErrorMeta } from "@/utils/request/retry-policy"
+import { unwrapSubtitleResult, subtitleFailure } from "@/utils/subtitles/result"
 import { createSubtitleTranslationPlan } from "@/utils/subtitles/translation-plan"
 const mocks = vi.hoisted(() => ({
   handlers: new Map<string, (msg: any) => Promise<any>>(),
@@ -129,6 +131,43 @@ describe("subtitle background contracts using real RequestQueue and BatchQueue",
     await call("cancelSubtitleRequests", { sessionId: "segment" })
     expect(signal?.aborted).toBe(true)
     expect((await result).name).toBe("TranslationCancelledError")
+    expect(mocks.put).not.toHaveBeenCalled()
+  })
+  it("returns validated segmentation cache immediately without a model call", async () => {
+    const cached = "WEBVTT\n\n0 --> 1000\nhello"
+    mocks.get.mockResolvedValue({ result: cached })
+    expect(
+      await call("aiSegmentSubtitles", {
+        jsonContent: JSON.stringify([{ s: 0, e: 1000, t: "hello" }]),
+        providerRef: { kind: "local", config: DEFAULT_PROVIDER_CONFIG.openai },
+        sessionId: "cache",
+      }),
+    ).toBe(cached)
+    expect(mocks.generate).not.toHaveBeenCalled()
+    expect(mocks.put).not.toHaveBeenCalled()
+  })
+  it("preserves permanent failure classification across a serialized message response", async () => {
+    mocks.execute.mockRejectedValue(
+      attachRequestErrorMeta(new Error("refused"), { statusCode: 401, isRetryable: false }),
+    )
+    const request = createSubtitleTranslationPlan({
+      ...plan(),
+      providerRef: { kind: "local", config: DEFAULT_PROVIDER_CONFIG.google },
+      promptConfig: DEFAULT_CONFIG.videoSubtitles,
+      resultFormat: "outcome",
+    }).request
+    const pending = call("enqueueSubtitlesTranslateRequest", request)
+    await vi.advanceTimersByTimeAsync(101)
+    const result = await pending
+    const wire = JSON.parse(JSON.stringify(result))
+    let received: unknown
+    try {
+      unwrapSubtitleResult(wire)
+    } catch (error) {
+      received = error
+    }
+    expect(subtitleFailure(received)).toMatchObject({ status: "permanent", message: "refused" })
+    expect(mocks.execute).toHaveBeenCalledTimes(1)
     expect(mocks.put).not.toHaveBeenCalled()
   })
 })

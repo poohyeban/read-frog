@@ -995,4 +995,26 @@ describe("universalVideoAdapter", () => {
     await expect(pending).resolves.toBe(false)
     expect(subtitlesFetcher.fetch).not.toHaveBeenCalled()
   })
+  it("cancels pagehide work and creates a new playback session on BFCache restore", () => {
+    const { adapter } = createAdapter([])
+    const a = adapter as any
+    attachScheduler(adapter, true)
+    const session = new SubtitleSession(),
+      task = session.begin("playback", "pending")
+    const summary = new AbortController(),
+      disposeExport = vi.fn<() => void>()
+    a.subtitleSession = session
+    a.summaryAbortController = summary
+    a.translatedSubtitlesDownloader = { dispose: disposeExport }
+    const restart = vi.spyOn(a, "startTranslation").mockResolvedValue(true)
+    a.handlePageHide()
+    expect(task.signal.aborted).toBe(true)
+    expect(summary.signal.aborted).toBe(true)
+    expect(disposeExport).toHaveBeenCalledTimes(1)
+    a.handlePageShow({ persisted: false })
+    expect(restart).not.toHaveBeenCalled()
+    a.handlePageShow({ persisted: true })
+    expect(restart).toHaveBeenCalledTimes(1)
+    expect(a.subtitleSession).toBeNull()
+  })
 })

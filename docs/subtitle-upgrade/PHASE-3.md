@@ -1,6 +1,6 @@
 # 时间轴与播放位置调度
 
-CueTimeline使用按start稳定排序的数组、prefix-max-end数组和完整cue身份Map。当前第一条覆盖字幕查询O(log n)，支持相同开始时间、重叠、极长字幕、逆向Seek；窗口查询O(log n + 扫描候选数)，病态重叠最坏O(n)，未声称所有窗口都O(log n)。构建O(n log n)，纯译文更新复用时间索引并只复制值数组，O(n+m)。重分段会创建新轨版本并失效不匹配身份的旧译文。
+CueTimeline使用按start稳定排序的数组、prefix-max-end数组和完整cue身份Map。当前第一条覆盖字幕查询O(log n)，支持相同开始时间、重叠、极长字幕、逆向Seek；窗口查询O(log n + 扫描候选数)，病态重叠最坏O(n)，未声称所有窗口都O(log n)。构建O(n log n)，纯译文更新复用时间索引并只复制值数组，O(n+m)；新增批次排序后线性合并为O(n+m log m)。重分段会创建新轨版本并失效不匹配身份的旧译文。
 
 已接管Scheduler、source fallback atom、Coordinator及Transcript active-index路径。相同cue的显示引用保持稳定；基线已是0次同cue无意义commit，此处不虚报新的React收益。
 

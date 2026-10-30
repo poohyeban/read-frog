@@ -47,4 +47,16 @@ describe("CueTimeline", () => {
       expect(index.at(time)).toBe(cues.find((c) => c.start <= time && c.end > time) ?? null)
     }
   })
+  it("merges out-of-order additions once and keeps the last repeated update", () => {
+    const original = { start: 0, end: 10, text: "original" }
+    const added = { start: 5, end: 20, text: "added" }
+    const next = new CueTimeline<SubtitlesFragment>([original]).upsert([
+      { start: 100, end: 200, text: "late" },
+      { ...added, translation: "first" },
+      { ...added, translation: "last" },
+    ])
+    expect(next.cues.map((c) => c.start)).toEqual([0, 5, 100])
+    expect(next.cues[1]?.translation).toBe("last")
+    expect(next.at(2)).toBe(original)
+  })
 })

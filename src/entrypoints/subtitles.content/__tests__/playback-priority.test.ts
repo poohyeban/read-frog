@@ -33,7 +33,9 @@ function setup(time = 0, overrides?: SubtitlesFragment[]) {
     }))
   const video = new Player()
   video.currentTime = time
+  let coordinator: TranslationCoordinator
   const pipeline = new SegmentationPipeline({
+    onChunkSegmented: () => coordinator?.noteFragmentListChanged(),
     rawFragments: cues,
     baselineFragments: cues,
     getVideoElement: () => video as unknown as HTMLVideoElement,
@@ -41,7 +43,7 @@ function setup(time = 0, overrides?: SubtitlesFragment[]) {
     providerRef: { kind: "local", config: {} as never },
   })
   const published: SubtitlesFragment[] = []
-  const coordinator = new TranslationCoordinator({
+  coordinator = new TranslationCoordinator({
     configSnapshot: structuredClone(DEFAULT_CONFIG),
     getFragments: () => pipeline.processedFragments,
     getVideoElement: () => video as unknown as HTMLVideoElement,
@@ -106,7 +108,7 @@ describe("playback position is the admission invariant", () => {
         segment.starts.some((start) => start <= time * 1000 && start + 1800 > time * 1000),
       ).toBe(true)
       expect(segment.starts[0]).toBeGreaterThanOrEqual(time > 0 ? 1 : 0)
-      expect(model.events.filter((e) => e.type === "translate")).toHaveLength(2)
+      expect(model.events.filter((e) => e.type === "translate")).toHaveLength(1)
     },
   )
   it.each([
@@ -121,7 +123,7 @@ describe("playback position is the admission invariant", () => {
     video.seek(to)
     await flush()
     expect(previous.every((event) => event.signal.aborted)).toBe(true)
-    expect(model.events.filter((e) => e.type === "translate").at(-2)!.starts[0]).toBe(to * 1000)
+    expect(model.events.filter((e) => e.type === "translate").at(-1)!.starts[0]).toBe(to * 1000)
     await vi.advanceTimersByTimeAsync(201)
     expect(published.some((c) => c.start === to * 1000)).toBe(true)
     expect(published.some((c) => c.start === from * 1000)).toBe(false)
@@ -135,7 +137,7 @@ describe("playback position is the admission invariant", () => {
     video.seek(2400)
     await flush()
     const count = model.events.length
-    expect(model.events.filter((e) => e.type === "translate").at(-2)!.starts[0]).toBe(2400000)
+    expect(model.events.filter((e) => e.type === "translate").at(-1)!.starts[0]).toBe(2400000)
     for (let i = 0; i < 100; i++) video.dispatchEvent(new Event("timeupdate"))
     await flush()
     expect(model.events).toHaveLength(count)
@@ -156,12 +158,12 @@ describe("playback position is the admission invariant", () => {
       video.playbackRate = rate
       coordinator.start()
       await flush()
-      expect(model.events.filter((e) => e.type === "translate")).toHaveLength(2)
+      expect(model.events.filter((e) => e.type === "translate")).toHaveLength(1)
       video.dispatchEvent(new Event("playing"))
       video.dispatchEvent(new Event("ratechange"))
       await flush()
-      expect(model.events.filter((e) => e.type === "translate")).toHaveLength(2)
-      await vi.advanceTimersByTimeAsync(1000)
+      expect(model.events.filter((e) => e.type === "translate")).toHaveLength(1)
+      await vi.advanceTimersByTimeAsync(1700)
       const starts = model.events.filter((e) => e.type === "translate").flatMap((e) => e.starts)
       expect(Math.max(...starts)).toBeLessThanOrEqual(2120000 + 30000 * rate)
       expect(Math.max(...starts)).toBeGreaterThan(2120000 + 30000)
@@ -177,5 +179,16 @@ describe("playback position is the admission invariant", () => {
     expect(published.map((c) => c.text)).toEqual(
       expect.arrayContaining(["Speaker A.", "Speaker B."]),
     )
+  })
+  it("translates the visible original immediately and defers speculative translations until their AI recut", async () => {
+    const { coordinator, published } = setup(2120)
+    coordinator.start()
+    await vi.advanceTimersByTimeAsync(599)
+    const requests = model.events.filter((e) => e.type === "translate")
+    expect(requests).toHaveLength(1)
+    expect(requests[0]?.starts).toEqual([2120000])
+    expect(published[0]?.start).toBe(2120000)
+    await vi.advanceTimersByTimeAsync(201)
+    expect(model.events.filter((e) => e.type === "translate").length).toBeGreaterThan(1)
   })
 })

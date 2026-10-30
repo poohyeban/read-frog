@@ -47,14 +47,7 @@ function cleanVttResponse(text: string): string {
   return cleaned
 }
 
-/**
- * Run AI segmentation on JSON subtitle content
- */
-export async function runAiSegmentSubtitles(
-  data: AiSegmentSubtitlesData,
-  options: { signal?: AbortSignal } = {},
-): Promise<string> {
-  options.signal?.throwIfAborted()
+function prepareSegmentation(data: AiSegmentSubtitlesData) {
   const { jsonContent, providerRef } = data
 
   if (!jsonContent) {
@@ -80,8 +73,17 @@ export async function runAiSegmentSubtitles(
     prompt,
     getProviderCacheIdentity(providerRef),
   )
+  return { source, cacheKey, systemPrompt, prompt, providerRef }
+}
+
+async function readSegmentationCache(
+  plan: ReturnType<typeof prepareSegmentation>,
+  signal?: AbortSignal,
+) {
+  signal?.throwIfAborted()
+  const { source, cacheKey } = plan
   const cached = await db.aiSegmentationCache.get(cacheKey)
-  options.signal?.throwIfAborted()
+  signal?.throwIfAborted()
   if (cached) {
     if (isSegmentationAligned(source, parseSimplifiedVttToFragments(cached.result))) {
       logger.info("[Background] AI subtitle segmentation cache hit")
@@ -90,6 +92,26 @@ export async function runAiSegmentSubtitles(
     // Old caches can contain parseable but shifted/missing cues too.
     await db.aiSegmentationCache.delete(cacheKey)
   }
+
+  return null
+}
+
+/** Valid cache hits bypass the network limiter; queued work rechecks for concurrent fills. */
+export async function getCachedAiSegmentation(
+  data: AiSegmentSubtitlesData,
+): Promise<string | null> {
+  return readSegmentationCache(prepareSegmentation(data))
+}
+
+export async function runAiSegmentSubtitles(
+  data: AiSegmentSubtitlesData,
+  options: { signal?: AbortSignal } = {},
+): Promise<string> {
+  options.signal?.throwIfAborted()
+  const plan = prepareSegmentation(data)
+  const cached = await readSegmentationCache(plan, options.signal)
+  if (cached) return cached
+  const { source, cacheKey, systemPrompt, prompt, providerRef } = plan
 
   try {
     const segmentedVtt = await generateTextForProviderRef(

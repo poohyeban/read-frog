@@ -19,7 +19,7 @@ import {
   serializeProviderRef,
 } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
-import { subtitleFailure } from "../result"
+import { subtitleFailure, unwrapSubtitleResult } from "../result"
 import { createSubtitleTranslationPlan } from "../translation-plan"
 
 /**
@@ -91,6 +91,7 @@ async function translateSingleSubtitle(
   task.signal?.throwIfAborted()
   const plan = createSubtitleTranslationPlan({
     text,
+    resultFormat: "outcome",
     langConfig: config.language,
     providerRef,
     promptConfig: { customPromptsConfig: config.videoSubtitles.customPromptsConfig },
@@ -103,7 +104,7 @@ async function translateSingleSubtitle(
     glossaryTerms,
     glossaryRevision,
   })
-  return await sendMessage("enqueueSubtitlesTranslateRequest", plan.request)
+  return unwrapSubtitleResult(await sendMessage("enqueueSubtitlesTranslateRequest", plan.request))
 }
 
 export type SubtitlesProviderResolution<

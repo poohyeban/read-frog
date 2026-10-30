@@ -133,7 +133,9 @@ root.render(
       if (name === "rate4") video.playbackRate = 4
       model.reset()
       let state: any = "idle"
+      let coordinator: TranslationCoordinator | undefined
       const pipeline = new SegmentationPipeline({
+        onChunkSegmented: () => coordinator?.noteFragmentListChanged(),
         baselineFragments: cues,
         rawFragments: cues,
         getVideoElement: () => video,
@@ -141,13 +143,21 @@ root.render(
         providerRef: { kind: "local", config: {} } as any,
       })
       const published: any[] = []
-      const coordinator = new TranslationCoordinator({
+      const readyCues = new Set<string>()
+      const cueKey = (cue: any) => JSON.stringify([cue.start, cue.end, cue.text])
+      coordinator = new TranslationCoordinator({
         getFragments: () => pipeline.processedFragments,
         getVideoElement: () => video,
         getCurrentState: () => state,
         segmentationPipeline: pipeline,
-        onTranslated: (rows) =>
-          published.push({ at: performance.now(), starts: rows.map((f) => f.start) }),
+        onTranslated: (rows) => {
+          for (const cue of rows) readyCues.add(cueKey(cue))
+          published.push({
+            at: performance.now(),
+            starts: rows.map((f) => f.start),
+            ends: rows.map((f) => f.end),
+          })
+        },
         onStateChange: (next) => {
           state = next
         },
@@ -160,6 +170,7 @@ root.render(
         video.dispatchEvent(new Event("seeking"))
         video.dispatchEvent(new Event("seeked"))
       }
+      const changedAt = performance.now()
       if (name === "asyncResume") seek(2120)
       if (name === "seekForward") seek(2400)
       if (name === "seekBackward") seek(300)
@@ -173,11 +184,33 @@ root.render(
         coordinator.start()
       }
       if (name === "pauseResume") video.dispatchEvent(new Event("playing"))
-      await delay(250)
+      const targetTimeMs = video.currentTime * 1000
+      const readiness: boolean[] = []
+      if (name === "rate2" || name === "rate4") {
+        for (let frame = 0; frame < 20; frame++) {
+          await delay(50)
+          video.currentTime += 0.05 * video.playbackRate
+          video.dispatchEvent(new Event("timeupdate"))
+          const current = pipeline.processedFragments.find(
+            (cue) => cue.start <= video.currentTime * 1000 && cue.end > video.currentTime * 1000,
+          )
+          if (current) readiness.push(readyCues.has(cueKey(current)))
+        }
+      } else await delay(250)
       coordinator.stop()
       const stopped = performance.now()
       await delay(80)
-      scenarios.push({ name, sample, started, stopped, events: [...model.events], published })
+      scenarios.push({
+        name,
+        sample,
+        started,
+        changedAt,
+        targetTimeMs,
+        readiness,
+        stopped,
+        events: [...model.events],
+        published,
+      })
     }
   return { scales, scenarios }
 }

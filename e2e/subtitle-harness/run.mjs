@@ -11,6 +11,17 @@ const buildRoot = `${output}/browser-build`
 const harness = resolve("e2e/subtitle-harness")
 await mkdir(output, { recursive: true })
 const substitute = {
+  ...(!existsSync(
+    `${source}/src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/list.tsx`,
+  )
+    ? {
+        "@/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/list":
+          "fallback-list.tsx",
+      }
+    : {}),
+  ...(process.env.BENCHMARK_KIND === "export"
+    ? { "@/utils/subtitles/srt": "export-fixture.ts" }
+    : {}),
   "#imports": "fixture.ts",
   "@/utils/config/storage": "fixture.ts",
   "@/utils/atoms/config": "fixture.ts",
@@ -54,6 +65,7 @@ await build({
         find,
         replacement: resolve(harness, name),
       })),
+      { find: "@benchmark/source-srt", replacement: `${source}/src/utils/subtitles/srt.ts` },
       { find: "@", replacement: `${source}/src` },
     ],
   },
@@ -90,6 +102,20 @@ try {
   await page.goto(`${server.url}/index.html`)
   await page.waitForFunction(() => window.runSubtitleBenchmark)
   const results = await page.evaluate(() => window.runSubtitleBenchmark())
+  const system = await browser.newBrowserCDPSession()
+  const processes = await system.send("SystemInfo.getProcessInfo")
+  const memory = await Promise.all(
+    processes.processInfo
+      .filter((p) => p.type === "renderer")
+      .map(async (p) => {
+        const status = await readFile(`/proc/${p.id}/status`, "utf8").catch(() => "")
+        return {
+          type: p.type,
+          peakRssKiB: Number(status.match(/VmHWM:\s+(\d+)/)?.[1] ?? 0),
+          rssKiB: Number(status.match(/VmRSS:\s+(\d+)/)?.[1] ?? 0),
+        }
+      }),
+  )
   await writeFile(
     `${output}/raw.json`,
     JSON.stringify(
@@ -101,6 +127,7 @@ try {
           kind: "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3",
         },
         errors,
+        rendererMemory: memory,
         ...results,
       },
       null,

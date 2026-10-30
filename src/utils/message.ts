@@ -15,6 +15,7 @@ import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
 import type { LangCodeISO6393 } from "@/utils/languages"
 import type { SpeechAudio } from "@/utils/providers/audio/types"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
+import type { SubtitleWireResult } from "@/utils/subtitles/result"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
 interface ProtocolMap {
@@ -32,7 +33,7 @@ interface ProtocolMap {
   ttsOffscreenStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
 
   clearAiSegmentationCache: () => Promise<void>
-  enqueueSubtitlesTranslateRequest: (data: SubtitleRequestPayload) => Promise<string>
+  enqueueSubtitlesTranslateRequest: (data: SubtitleRequestPayload) => Promise<SubtitleWireResult>
   cancelSubtitleRequests: (data: { sessionId: string }) => void
   getSubtitlesSummary: (data: {
     videoTitle: string

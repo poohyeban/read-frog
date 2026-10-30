@@ -16,4 +16,5 @@ export interface SubtitleRequestPayload {
   promptConfig?: Pick<Config["videoSubtitles"], "customPromptsConfig">
   sessionId?: string
   priority?: number
+  resultFormat?: "outcome"
 }

@@ -49,7 +49,13 @@ export function TranslationSubtitle({ content, className }: SubtitleLineProps) {
   const { style } = useAtomValue(configFieldsAtomMap.videoSubtitles)
   const language = useAtomValue(configFieldsAtomMap.language)
   const pending = content === undefined && isTranslationPending(subtitle)
-  const text = content ?? subtitle?.translation ?? ""
+  const failed =
+    subtitle?.translationOutcome &&
+    !["success", "empty"].includes(subtitle.translationOutcome.status)
+  const text =
+    content ??
+    (subtitle?.translation ||
+      (failed && style.displayMode === "translationOnly" ? subtitle.text : ""))
   const { dir, lang } = getLanguageDirectionAndLang(language.targetCode)
   const textStyleVars = getTextStyleVars(style.translation)
   const lastFrameRef = useRef<{ start?: number; pending: boolean }>({

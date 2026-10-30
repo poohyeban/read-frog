@@ -179,6 +179,10 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
 
   async initialize() {
     this.watchTranslationConfig()
+    if (typeof window !== "undefined") {
+      window.addEventListener("pagehide", this.handlePageHide)
+      window.addEventListener("pageshow", this.handlePageShow)
+    }
     this.publishVideoId()
     this.initializeTranslatedSubtitlesDownloader()
     void this.restorePosition()
@@ -203,6 +207,10 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     if (this.destroyed) return
     this.destroyed = true
     for (const unwatch of this.unwatchConfig.splice(0)) unwatch()
+    if (typeof window !== "undefined") {
+      window.removeEventListener("pagehide", this.handlePageHide)
+      window.removeEventListener("pageshow", this.handlePageShow)
+    }
     this.switchOperationId++
     this.hasPendingNavigationReset = false
 
@@ -875,6 +883,18 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     `
     document.head.appendChild(style)
     this.isNativeSubtitlesHidden = true
+  }
+
+  private handlePageHide = () => {
+    this.switchOperationId++
+    this.subtitleSession?.dispose()
+    this.summaryAbortController?.abort()
+    this.translatedSubtitlesDownloader?.dispose()
+  }
+
+  private handlePageShow = (event: PageTransitionEvent) => {
+    // BFCache restores the adapter object after pagehide disposed its task owner.
+    if (event.persisted) this.invalidateTranslationConfig()
   }
 
   private watchTranslationConfig() {

@@ -148,6 +148,7 @@ export class TranslationCoordinator {
       this.retryTimer = setTimeout(this.requestTick, nextRetry - Date.now())
     const candidates = window.filter(
       (c) =>
+        (c.start <= timeMs || !this.options.segmentationPipeline?.isAwaitingSegmentation?.(c)) &&
         !this.translated.has(cueIdentity(c)) &&
         !this.pendingKeys.has(cueIdentity(c)) &&
         this.failed.get(cueIdentity(c))?.phase !== "permanent" &&

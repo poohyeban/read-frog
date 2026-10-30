@@ -26,13 +26,11 @@ export class CueTimeline<T extends SubtitlesFragment = SubtitlesFragment> {
   private starts: number[]
   private maxEnds: number[]
   private identities: Map<string, number>
-  constructor(cues: readonly T[] = []) {
-    this.items = cues
-      .filter(
-        (c) => Number.isFinite(c.start) && Number.isFinite(c.end) && c.end > c.start && c.end > 0,
-      )
-      .slice()
-      .sort((a, b) => a.start - b.start)
+  constructor(cues: readonly T[] = [], alreadySorted = false) {
+    const valid = cues.filter(
+      (c) => Number.isFinite(c.start) && Number.isFinite(c.end) && c.end > c.start && c.end > 0,
+    )
+    this.items = alreadySorted ? valid : valid.sort((a, b) => a.start - b.start)
     this.starts = this.cues.map((c) => c.start)
     let maxEnd = -Infinity
     this.maxEnds = this.cues.map((c) => (maxEnd = Math.max(maxEnd, c.end)))
@@ -67,18 +65,30 @@ export class CueTimeline<T extends SubtitlesFragment = SubtitlesFragment> {
     }
     return result
   }
-  /** One Map pass + one merge/sort, never a findIndex for each changed cue. */
+  /** O(n + m log m) for insertions, O(n + m) for value-only updates. */
   upsert(updates: readonly T[]): CueTimeline<T> {
     const items = [...this.items]
-    let inserted = false
+    const additions = new Map<string, T>()
     for (const cue of updates) {
-      const index = this.identities.get(cueIdentity(cue))
+      const key = cueIdentity(cue)
+      const index = this.identities.get(key)
       if (index === undefined) {
-        inserted = true
-        items.push(cue)
+        additions.set(key, cue)
       } else items[index] = cue
     }
-    if (inserted) return new CueTimeline(items)
+    if (additions.size) {
+      const incoming = [...additions.values()].sort((a, b) => a.start - b.start)
+      const merged: T[] = []
+      let left = 0,
+        right = 0
+      while (left < items.length && right < incoming.length) {
+        if (items[left]!.start <= incoming[right]!.start) merged.push(items[left++]!)
+        else merged.push(incoming[right++]!)
+      }
+      while (left < items.length) merged.push(items[left++]!)
+      while (right < incoming.length) merged.push(incoming[right++]!)
+      return new CueTimeline(merged, true)
+    }
     const next = new CueTimeline<T>([])
     next.items = items
     next.starts = this.starts

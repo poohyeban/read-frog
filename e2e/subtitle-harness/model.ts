@@ -20,6 +20,7 @@ async function wait(kind: string, fragments: any[], options?: { signal?: AbortSi
     start: fragments[0]?.start,
     count: fragments.length,
   })
+  if (model.delay < 0) return
   await new Promise<void>((resolve, reject) => {
     const abort = () => {
       clearTimeout(timer)
@@ -59,3 +60,7 @@ export async function aiSegmentBlock(
   await wait("segment", fragments, options)
   return fragments.map((f) => ({ ...f }))
 }
+
+export const resolveSubtitlesProviderRef = async () => null
+export const fetchSubtitlesSummary = async () => null
+export const buildSubtitlesSummaryContextHash = () => null
