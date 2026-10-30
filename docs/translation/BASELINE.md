@@ -6,4 +6,4 @@
 - Confirmed defects: summary errors swallowed before queue retry; summary messages unscoped; completed-only context cache races; mutable prompt/model lookups after snapshot; overlapping per-callback pacers; repeated source validation for mutation records.
 - Implementation order: summary error/cancellation contract; context/session and immutable plans; local work and mutation coalescing; browser measurements and final regression validation.
 - Use repository-installed CLI binaries: installed pnpm 11 tries to auto-install the package-manager version in an unavailable home directory. WXT/Vitest need localhost socket permission in the cloud sandbox.
-- No remote pushes, PRs, workflow edits or GitHub Actions operations.
+- Initial scope was local-only. The user later authorized pushing the completed code while still forbidding GitHub Actions. Publication uses a separate branch with `[skip ci]`, no PR/tag/workflow edits, and read-only verification.
