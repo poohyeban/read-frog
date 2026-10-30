@@ -2,13 +2,20 @@ name: Publish verified extension
 on:
   push:
     tags: [v0.2.5-perf.1]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Verified preview tag to publish (fixed for this publisher)
+        required: true
+        default: v0.2.5-perf.1
+        type: string
 permissions: {}
 concurrency:
   group: publish-v0.2.5-perf.1
   cancel-in-progress: false
 jobs:
   publish:
-    if: github.repository == 'poohyeban/read-frog' && github.ref == 'refs/tags/v0.2.5-perf.1'
+    if: github.repository == 'poohyeban/read-frog' && (github.ref == 'refs/tags/v0.2.5-perf.1' || (github.event_name == 'workflow_dispatch' && inputs.tag == 'v0.2.5-perf.1'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -17,6 +24,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       RELEASE_TAG: v0.2.5-perf.1
+      RELEASE_COMMIT: 3d7c3edfc4db0973564245bec38b494177ae8140
       RELEASE_TARGET: 4b5b89e3bced5e014a76645e8873ee453819e6c4
       BUILD_COMMIT: 8789e1abcfc6255b5bf156309766c5340c709598
       BUILD_RUN: "40914031459"
@@ -25,16 +33,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: ${{ env.RELEASE_COMMIT }}
       - name: Verify the successful build and exact source tree
         shell: bash
         run: |
           set -euo pipefail
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')" = "$RELEASE_COMMIT"
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN" > run.json
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN/jobs" > jobs.json
           gh api "repos/$GITHUB_REPOSITORY/git/commits/$RELEASE_TARGET" > source.json
           gh api "repos/$GITHUB_REPOSITORY/git/commits/$BUILD_COMMIT" > build-source.json
           gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID" > artifact.json
-          gh api "repos/$GITHUB_REPOSITORY/compare/$RELEASE_TARGET...$GITHUB_SHA" > release-diff.json
+          gh api "repos/$GITHUB_REPOSITORY/compare/$RELEASE_TARGET...$RELEASE_COMMIT" > release-diff.json
           python3 - <<'PY'
           import json, os
           load = lambda name: json.load(open(name))
@@ -77,7 +87,7 @@ jobs:
               assert manifest['manifest_version'] == 3 and manifest['version'] == '0.2.5'
               actual = {entry.filename: hashlib.sha256(package.read(entry)).hexdigest() for entry in package.infolist() if not entry.is_dir()}
               assert actual == {entry['path']: entry['sha256'] for entry in expected['files']}
-          provenance = {'tag': os.environ['RELEASE_TAG'], 'source': os.environ['RELEASE_TARGET'], 'tagCommit': os.environ['GITHUB_SHA'], 'buildCommit': os.environ['BUILD_COMMIT'], 'buildRun': int(os.environ['BUILD_RUN']), 'artifactId': int(os.environ['ARTIFACT_ID']), 'manifestVersion': manifest['version'], 'rebuild': False, 'zipBytes': len(data), 'zipSHA256': hashlib.sha256(data).hexdigest()}
+          provenance = {'tag': os.environ['RELEASE_TAG'], 'source': os.environ['RELEASE_TARGET'], 'tagCommit': os.environ['RELEASE_COMMIT'], 'buildCommit': os.environ['BUILD_COMMIT'], 'buildRun': int(os.environ['BUILD_RUN']), 'artifactId': int(os.environ['ARTIFACT_ID']), 'manifestVersion': manifest['version'], 'rebuild': False, 'zipBytes': len(data), 'zipSHA256': hashlib.sha256(data).hexdigest()}
           (dist / 'release-provenance.json').write_text(json.dumps(provenance, indent=2) + '\n')
           (dist / 'SHA256SUMS.txt').write_text(''.join(f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n' for p in sorted(dist.iterdir())))
           print(f'Verified {len(actual)} packaged files and retained the exact CI ZIP bytes.')
@@ -94,6 +104,6 @@ jobs:
           gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir verify
           (cd verify && sha256sum --check SHA256SUMS.txt)
           gh release edit "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease --latest=false
-          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')" = "$GITHUB_SHA"
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')" = "$RELEASE_COMMIT"
           gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json url,isDraft,isPrerelease,assets
           echo "Published: https://github.com/$GITHUB_REPOSITORY/releases/tag/$RELEASE_TAG" >> "$GITHUB_STEP_SUMMARY"
