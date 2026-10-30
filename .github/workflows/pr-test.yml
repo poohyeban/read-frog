@@ -2,7 +2,7 @@ name: Publish verified extension
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
     paths:
       - .github/workflows/pr-test.yml
       - docs/performance/releases/v0.2.5-perf.1.md
