@@ -3,6 +3,7 @@
 import type { Config } from "@/types/config/config"
 import { describe, expect, it } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
+import { LocalScheduler } from "@/utils/host/translate/local-scheduler"
 import { isWalkBlockedElement } from "../filter"
 import { deepQueryTopLevelSelector } from "../find"
 import { walkAndLabelElement, walkAndLabelElementChunked } from "../traversal"
@@ -101,9 +102,9 @@ describe("walkAndLabelElementChunked parity", () => {
     buildFixture(chunkedHost)
 
     const syncResult = walkAndLabelElement(syncHost, "sync-walk", config())
-    // budgetMs: 0 forces a yield at every single element — the worst case.
+    // A zero-budget test scheduler forces a yield at every single element — the worst case.
     const chunkedResult = await walkAndLabelElementChunked(chunkedHost, "chunked-walk", config(), {
-      budgetMs: 0,
+      scheduler: new LocalScheduler(0),
     })
 
     expect(chunkedResult).toEqual(syncResult)
@@ -137,7 +138,7 @@ describe("walkAndLabelElementChunked parity", () => {
 
     const reported: HTMLElement[] = []
     await walkAndLabelElementChunked(host, "walk", cfg, {
-      budgetMs: 0,
+      scheduler: new LocalScheduler(0),
       onBlockedElement: (element) => reported.push(element),
     })
 
@@ -152,13 +153,10 @@ describe("walkAndLabelElementChunked parity", () => {
     document.body.append(host)
     buildFixture(host)
 
-    let checks = 0
     const result = await walkAndLabelElementChunked(host, "aborted-walk", config(), {
-      budgetMs: 0,
-      shouldContinue: () => {
-        checks += 1
-        return checks <= 3
-      },
+      scheduler: new LocalScheduler(0),
+      shouldContinue: () =>
+        host.querySelectorAll('[data-read-frog-walked="aborted-walk"]').length < 3,
     })
 
     expect(result).toBeNull()

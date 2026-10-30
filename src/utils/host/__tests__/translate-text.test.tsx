@@ -15,7 +15,8 @@ import {
   beginPageTranslationSession,
   endPageTranslationSession,
 } from "@/utils/host/translate/translation-session"
-import { getTranslatePrompt } from "@/utils/prompts/translate"
+import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
+import { getTranslatePrompt, getTranslatePromptFromConfig } from "@/utils/prompts/translate"
 import { isTranslationCancelledError } from "@/utils/request/cancellation"
 
 // Mock dependencies
@@ -35,7 +36,8 @@ vi.mock("@/utils/host/translate/api/deeplx", () => ({
   deeplxTranslate: vi.fn<(...args: any[]) => any>(),
 }))
 
-vi.mock("@/utils/prompts/translate", () => ({
+vi.mock("@/utils/prompts/translate", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/prompts/translate")>()),
   getTranslatePrompt: vi.fn<(...args: any[]) => any>(),
 }))
 
@@ -43,11 +45,16 @@ vi.mock("@/utils/content/language", () => ({
   detectLanguage: vi.fn<(...args: any[]) => any>(),
 }))
 
-vi.mock("@/utils/host/translate/webpage-context", () => ({
+vi.mock("@/utils/host/translate/webpage-context", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/webpage-context")>()),
+  isWebPageContextCurrent: vi.fn<() => boolean>(() => true),
+  notePageContentMutations: () => {},
+  releaseWebPageContext: () => {},
   getOrCreateWebPageContext: vi.fn<(...args: any[]) => any>(),
 }))
 
-vi.mock("@/utils/host/translate/webpage-summary", () => ({
+vi.mock("@/utils/host/translate/webpage-summary", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/webpage-summary")>()),
   getOrGenerateWebPageSummary: vi.fn<(...args: any[]) => any>(),
 }))
 
@@ -78,6 +85,10 @@ describe("translate-text", () => {
     )
     mockDetectLanguage = vi.mocked(detectLanguage)
 
+    vi.mocked((await import("@/utils/host/translate/webpage-context")).isWebPageContextCurrent)
+      .mockReset()
+      .mockReturnValue(true)
+
     // Mock getOrCreateWebPageContext to return stable webpage metadata
     mockGetOrCreateWebPageContext.mockImplementation(() =>
       Promise.resolve({
@@ -99,6 +110,33 @@ describe("translate-text", () => {
   })
 
   describe("translateTextForPage", () => {
+    it("rejoins the new content revision when an unrelated article mutation invalidates pending context", async () => {
+      const context = await import("@/utils/host/translate/webpage-context")
+      const config = structuredClone(DEFAULT_CONFIG)
+      config.pageTranslation.enableAIContentAware = true
+      mockGetConfigFromStorage.mockResolvedValue(config)
+      mockSendMessage.mockResolvedValue("translated text")
+      mockGetOrGenerateWebPageSummary
+        .mockImplementationOnce(async () => {
+          context.invalidateWebPageContext()
+          vi.mocked(context.isWebPageContextCurrent).mockReturnValueOnce(false)
+          return "Stale summary"
+        })
+        .mockResolvedValue("Fresh summary")
+      beginPageTranslationSession(config)
+      try {
+        await expect(translateTextForPage("Unchanged English source")).resolves.toBe(
+          "translated text",
+        )
+        expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(2)
+        expect(mockSendMessage).toHaveBeenCalledWith(
+          "enqueueTranslateRequest",
+          expect.objectContaining({ webSummary: "Fresh summary" }),
+        )
+      } finally {
+        endPageTranslationSession()
+      }
+    })
     it("should send message with correct parameters", async () => {
       mockSendMessage.mockResolvedValue("translated text")
 
@@ -121,8 +159,16 @@ describe("translate-text", () => {
             JSON.stringify(selectedProvider),
             DEFAULT_CONFIG.language.sourceCode,
             DEFAULT_CONFIG.language.targetCode,
-            "Translate to {{targetLang}}",
-            "{{input}}",
+            ...Object.values(
+              getTranslatePromptFromConfig(
+                DEFAULT_CONFIG.pageTranslation,
+                LANG_CODE_TO_EN_NAME[DEFAULT_CONFIG.language.targetCode],
+                "test text",
+                { isBatch: true, context: { webTitle: document.title } },
+              ),
+            ),
+            "format:plain",
+            "lineBreaks:false",
             "enableAIContentAware=false",
           ),
         }),
@@ -428,5 +474,53 @@ describe("translate-text", () => {
         "",
       )
     })
+  })
+  it("uses a captured prompt/provider while a new request uses an edited configuration", async () => {
+    const firstConfig = structuredClone(DEFAULT_CONFIG)
+    firstConfig.pageTranslation.enableAIContentAware = true
+    firstConfig.pageTranslation.customPromptsConfig = {
+      promptId: "snapshot",
+      patterns: [
+        {
+          id: "snapshot",
+          name: "Snapshot",
+          systemPrompt: "Old rules {{webSummary}}",
+          prompt: "Translate {{input}}",
+        },
+      ],
+    }
+    let finish!: (value: string) => void
+    mockGetConfigFromStorage.mockResolvedValue(firstConfig)
+    mockGetOrGenerateWebPageSummary.mockReturnValueOnce(
+      new Promise<string>((resolve) => {
+        finish = resolve
+      }),
+    )
+    const old = translateTextForPage("Original English sentence for translation")
+    await vi.waitFor(() => expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(1))
+    const nextConfig = structuredClone(firstConfig)
+    nextConfig.pageTranslation.customPromptsConfig.patterns[0]!.systemPrompt =
+      "New rules {{webTitle}}"
+    nextConfig.providersConfig.find(
+      (provider) => provider.id === nextConfig.pageTranslation.providerId,
+    )!.apiKey = "edited-key"
+    mockGetConfigFromStorage.mockResolvedValue(nextConfig)
+    finish("Summary")
+    await old
+    await translateTextForPage("Another English sentence for translation")
+    const requests = mockSendMessage.mock.calls
+      .filter((call: unknown[]) => call[0] === "enqueueTranslateRequest")
+      .map((call: any[]) => call[1])
+    expect(requests[0].promptConfig.customPromptsConfig.patterns[0].systemPrompt).toBe(
+      "Old rules {{webSummary}}",
+    )
+    expect(requests[1].promptConfig.customPromptsConfig.patterns[0].systemPrompt).toBe(
+      "New rules {{webTitle}}",
+    )
+    expect(requests[0].providerRef.config.apiKey).not.toBe("edited-key")
+    expect(requests[1].providerRef.config.apiKey).toBe("edited-key")
+    // The second template uses title only even though smart context is enabled.
+    expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(1)
+    expect(mockGetOrCreateWebPageContext).toHaveBeenLastCalledWith(false, undefined)
   })
 })

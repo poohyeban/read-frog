@@ -60,11 +60,10 @@ export function resolvePromptReplacementValue(
   return typeof value === "string" && value.trim() !== "" ? value : fallback
 }
 
-export function getTranslatePromptFromConfig(
-  translateConfig: Pick<Config["pageTranslation"], "customPromptsConfig">,
-  targetLang: string,
-  input: string,
-  options?: TranslatePromptOptions<WebPagePromptContext>,
+export type TranslationPromptConfig = Pick<Config["pageTranslation"], "customPromptsConfig">
+
+export function selectTranslatePrompt(
+  translateConfig: TranslationPromptConfig,
 ): TranslatePromptResult {
   const customPromptsConfig = translateConfig.customPromptsConfig
   const { patterns, promptId } = customPromptsConfig
@@ -76,8 +75,36 @@ export function getTranslatePromptFromConfig(
       ]
     : undefined
   const customPrompt = patterns.find((pattern) => pattern.id === resolvedPromptId)
-  const selectedPrompt =
+  return (
     builtInPrompt ?? customPrompt ?? BUILT_IN_PAGE_TRANSLATE_PROMPTS[DEFAULT_TRANSLATE_PROMPT_ID]
+  )
+}
+
+export interface ContextRequirements {
+  title: boolean
+  description: boolean
+  content: boolean
+  summary: boolean
+}
+
+export function getContextRequirements(config: TranslationPromptConfig): ContextRequirements {
+  const { systemPrompt, prompt } = selectTranslatePrompt(config)
+  const template = `${systemPrompt}\n${prompt}`
+  return {
+    title: template.includes(getTokenCellText(WEB_TITLE)),
+    description: template.includes(getTokenCellText(WEB_DESCRIPTION)),
+    content: template.includes(getTokenCellText(WEB_CONTENT)),
+    summary: template.includes(getTokenCellText(WEB_SUMMARY)),
+  }
+}
+
+export function getTranslatePromptFromConfig(
+  translateConfig: Pick<Config["pageTranslation"], "customPromptsConfig">,
+  targetLang: string,
+  input: string,
+  options?: TranslatePromptOptions<WebPagePromptContext>,
+): TranslatePromptResult {
+  const selectedPrompt = selectTranslatePrompt(translateConfig)
 
   let { systemPrompt, prompt } = selectedPrompt
 

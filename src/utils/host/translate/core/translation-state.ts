@@ -63,6 +63,12 @@ export function registerTranslationOnlyOriginals(wrapper: HTMLElement, nodes: Ch
   translationOnlyOriginalNodes.set(wrapper, nodes)
 }
 
+export function peekTranslationOnlyOriginals(
+  wrapper: HTMLElement,
+): readonly ChildNode[] | undefined {
+  return translationOnlyOriginalNodes.get(wrapper)
+}
+
 export function takeTranslationOnlyOriginals(wrapper: HTMLElement): ChildNode[] | undefined {
   const nodes = translationOnlyOriginalNodes.get(wrapper)
   if (nodes) translationOnlyOriginalNodes.delete(wrapper)
@@ -168,15 +174,19 @@ export function isTranslationOnlySwapRecordCurrent(record: TranslationOnlySwapRe
  * same budgeted retranslation pipeline so expand/"show more" re-renders get
  * translated instead of staying in the source language.
  */
-export function findStaleTranslationOnlyAnchor(node: Node): HTMLElement | undefined {
+export function findStaleTranslationOnlyAnchor(
+  node: Node,
+  checked?: WeakMap<HTMLElement, boolean>,
+): HTMLElement | undefined {
   let current = node.nodeType === Node.ELEMENT_NODE ? (node as HTMLElement) : node.parentElement
   while (current) {
     const state = translationOnlyAnchorStates.get(current)
-    if (
-      state?.anchor.isConnected &&
-      state.swaps.some((record) => !isTranslationOnlySwapRecordCurrent(record))
-    ) {
-      return current
+    if (state?.anchor.isConnected) {
+      const stale =
+        checked?.get(current) ??
+        state.swaps.some((record) => !isTranslationOnlySwapRecordCurrent(record))
+      checked?.set(current, stale)
+      if (stale) return current
     }
     current = current.parentElement
   }
@@ -507,14 +517,24 @@ export function findEnclosingBilingualLayoutSource(node: Node): HTMLElement | un
   return undefined
 }
 
-export function findStaleBilingualLayoutSource(node: Node): HTMLElement | undefined {
+export function findStaleBilingualLayoutSource(
+  node: Node,
+  checked?: WeakMap<HTMLElement, boolean>,
+): HTMLElement | undefined {
   let current = node.nodeType === Node.ELEMENT_NODE ? (node as HTMLElement) : node.parentElement
   while (current) {
     const virtualGroup = virtualParagraphGroupsBySource.get(current)
-    if (virtualGroup && !isVirtualParagraphGroupCurrent(virtualGroup)) return current
-
     const bilingualState = bilingualTranslationsBySource.get(current)
-    if (bilingualState && !isBilingualTranslationStateCurrent(bilingualState)) return current
+    if (virtualGroup || bilingualState) {
+      const stale =
+        checked?.get(current) ??
+        Boolean(
+          (virtualGroup && !isVirtualParagraphGroupCurrent(virtualGroup)) ||
+          (bilingualState && !isBilingualTranslationStateCurrent(bilingualState)),
+        )
+      checked?.set(current, stale)
+      if (stale) return current
+    }
     current = current.parentElement
   }
   return undefined

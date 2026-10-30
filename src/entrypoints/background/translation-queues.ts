@@ -19,7 +19,7 @@ import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { logger } from "@/utils/logger"
 import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
-import { getTranslatePrompt } from "@/utils/prompts/translate"
+import { getTranslatePrompt, getTranslatePromptFromConfig } from "@/utils/prompts/translate"
 import { BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
 import { RequestQueue } from "@/utils/request/request-queue"
@@ -174,7 +174,7 @@ export async function executeBatchTranslation<TContext>(
   promptResolver: PromptResolver<TContext>,
   signal?: AbortSignal,
 ): Promise<string[]> {
-  const { langConfig, context } = dataList[0]!
+  const { langConfig, context, promptConfig } = dataList[0]!
   const texts = dataList.map((d) => d.text)
 
   const batchText = texts.join(`\n\n${BATCH_SEPARATOR}\n\n`)
@@ -182,7 +182,7 @@ export async function executeBatchTranslation<TContext>(
     batchText,
     langConfig,
     dataList[0]!,
-    promptResolver,
+    snapshotPromptResolver(promptResolver, promptConfig),
     {
       isBatch: true,
       context,
@@ -192,6 +192,21 @@ export async function executeBatchTranslation<TContext>(
     },
   )
   return parseBatchResult(result)
+}
+
+function snapshotPromptResolver<TContext>(
+  resolver: PromptResolver<TContext>,
+  config?: Pick<Config["pageTranslation"], "customPromptsConfig">,
+): PromptResolver<TContext> {
+  return config
+    ? async (language, text, options) =>
+        getTranslatePromptFromConfig(
+          config,
+          language,
+          text,
+          options as import("@/utils/prompts/translate").TranslatePromptOptions<WebPagePromptContext>,
+        )
+    : resolver
 }
 
 export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & {
@@ -208,6 +223,7 @@ export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & 
   glossaryRevision?: number
   // Cancellation scope (`${tabId}:${sessionId}`); absent = uncancellable.
   scope?: string
+  promptConfig?: Pick<Config["pageTranslation"], "customPromptsConfig">
 }
 
 /**
@@ -275,6 +291,8 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       return Sha256Hex(
         `${data.langConfig.sourceCode}-${data.langConfig.targetCode}-${getQueuedProviderId(data.provider)}`,
         data.context ? JSON.stringify(data.context) : "",
+        JSON.stringify(data.provider),
+        JSON.stringify(data.promptConfig ?? null),
 
         // Not the terms — the REVISION. The terms differ per paragraph and
         // keying on them would end batching for glossary users; the revision is
@@ -315,17 +333,24 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       // retries of its RequestQueue thunk reuse the same idempotency key.
 
       const thunk = async (signal?: AbortSignal) => {
-        return executeQueuedTranslation(text, langConfig, data, promptResolver, {
-          context,
-          signal,
+        return executeQueuedTranslation(
+          text,
+          langConfig,
+          data,
+          snapshotPromptResolver(promptResolver, data.promptConfig),
+          {
+            isBatch: data.promptConfig ? true : undefined,
+            context,
+            signal,
 
-          // The sender's own terms, NOT the batch union: this is one item again.
-          // Dropping them here would let a batch that fell back translate
-          // without the glossary and then cache that result under a hash taken
-          // over a prompt that HAD the terms in it — a mismatch that outlives
-          // the failure by a week.
-          glossaryTerms,
-        })
+            // The sender's own terms, NOT the batch union: this is one item again.
+            // Dropping them here would let a batch that fell back translate
+            // without the glossary and then cache that result under a hash taken
+            // over a prompt that HAD the terms in it — a mismatch that outlives
+            // the failure by a week.
+            glossaryTerms,
+          },
+        )
       }
       return requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined)
     },

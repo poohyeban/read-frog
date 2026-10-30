@@ -53,8 +53,20 @@ async function getValidatedCachedTranslation(
 /** Register handlers synchronously while queue initialization runs in the background. */
 export function setupPageTranslationHandlers(): void {
   const { queuesPromise, cancelledScopes } = createWebPageTranslationQueues()
+  const tabScopes = new Map<number, Set<string>>()
+  const trackScope = (sender: { tab?: { id?: number } } | undefined, sessionId?: string) => {
+    const scope = buildTranslationScopeKey(sender, sessionId)
+    const tabId = sender?.tab?.id
+    if (scope && tabId !== undefined) {
+      const scopes = tabScopes.get(tabId) ?? new Set<string>()
+      scopes.add(scope)
+      tabScopes.set(tabId, scopes)
+    }
+    return scope
+  }
 
   onMessage("enqueueTranslateRequest", async (message) => {
+    const scope = trackScope(message.sender, message.data.sessionId)
     const routing = getQueuedTranslationRouting(message.data)
     const { requestQueue, batchQueue } = await queuesPromise
     const {
@@ -70,14 +82,12 @@ export function setupPageTranslationHandlers(): void {
         webDescription,
         webContent,
         webSummary,
-        sessionId,
         forceRetranslation = false,
         glossaryTerms,
         glossaryRevision,
         promptConfig,
       },
     } = message
-    const scope = buildTranslationScopeKey(message.sender, sessionId)
 
     const validateHtmlAttributeMarkers =
       textFormat === "html" && hasHtmlAttributeMarkerProtocol(text)
@@ -175,9 +185,9 @@ export function setupPageTranslationHandlers(): void {
   })
 
   onMessage("getOrGenerateWebPageSummary", async (message) => {
+    const scope = trackScope(message.sender, message.data.sessionId)
     const { requestQueue } = await queuesPromise
-    const { webTitle, webContent, providerRef, sessionId } = message.data
-    const scope = buildTranslationScopeKey(message.sender, sessionId)
+    const { webTitle, webContent, providerRef } = message.data
 
     if (!webTitle || !webContent) {
       return null
@@ -209,6 +219,7 @@ export function setupPageTranslationHandlers(): void {
     // Remember the scope BEFORE any await so enqueue handlers suspended on
     // the cache lookup refuse to enqueue after this drain.
     cancelledScopes.markScope(scope)
+    if (message.sender.tab?.id !== undefined) tabScopes.get(message.sender.tab.id)?.delete(scope)
     const { requestQueue, batchQueue } = await queuesPromise
     // Batch queue first so pending batches cannot flush new request-queue
     // tasks between the two drains.
@@ -221,9 +232,26 @@ export function setupPageTranslationHandlers(): void {
     }
   })
 
+  // Full-document navigation cannot rely on the old content script delivering
+  // pagehide. Snapshot only existing scopes; the new document remains usable.
+  browser.tabs.onUpdated.addListener((tabId, changeInfo) => {
+    if (changeInfo.status !== "loading") return
+    const scopes = tabScopes.get(tabId)
+    if (!scopes) return
+    tabScopes.delete(tabId)
+    scopes.forEach((scope) => cancelledScopes.markScope(scope))
+    void queuesPromise.then(({ requestQueue, batchQueue }) => {
+      for (const scope of scopes) {
+        batchQueue.cancelByScope(scope)
+        requestQueue.cancelByScope(scope)
+      }
+    })
+  })
+
   // A closed tab can never send its cancel message — sweep every scope the
   // tab ever registered (#1881).
   browser.tabs.onRemoved.addListener((tabId) => {
+    tabScopes.delete(tabId)
     const prefix = `${tabId}:`
     cancelledScopes.markPrefix(prefix)
     void queuesPromise.then(({ requestQueue, batchQueue }) => {

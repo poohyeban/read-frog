@@ -4,13 +4,22 @@ import { getDetectedCodeFromStorage, getFinalSourceCode } from "@/utils/config/l
 import { ISO6393_TO_6391 } from "@/utils/languages"
 import { getEffectiveSiteRule } from "@/utils/site-rules/effective"
 
+const segmenters = new Map<string, Intl.Segmenter>()
+
 const PURE_HANDLE_RE = /^@\S+$/u
 
 function countWords(text: string, sourceCode: LangCodeISO6393): number {
   // Convert ISO 639-3 (e.g., 'eng') to ISO 639-1 (e.g., 'en') for Intl.Segmenter
   const locale = ISO6393_TO_6391[sourceCode] ?? "en"
-  const segmenter = new Intl.Segmenter(locale, { granularity: "word" })
-  return [...segmenter.segment(text)].filter((s) => s.isWordLike).length
+  let segmenter = segmenters.get(locale)
+  if (!segmenter) {
+    segmenter = new Intl.Segmenter(locale, { granularity: "word" })
+    segmenters.set(locale, segmenter)
+    if (segmenters.size > 16) segmenters.delete(segmenters.keys().next().value!)
+  }
+  let count = 0
+  for (const segment of segmenter.segment(text)) if (segment.isWordLike) count++
+  return count
 }
 
 async function getSourceCode(configSourceCode: LangCodeISO6393 | "auto"): Promise<LangCodeISO6393> {

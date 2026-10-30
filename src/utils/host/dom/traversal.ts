@@ -6,7 +6,7 @@ import {
   PARAGRAPH_ATTRIBUTE,
   WALKED_ATTRIBUTE,
 } from "@/utils/constants/dom-labels"
-import { DEFAULT_WALK_BUDGET_MS, yieldToMain } from "@/utils/scheduler"
+import { pageLocalScheduler, type LocalScheduler } from "@/utils/host/translate/local-scheduler"
 import {
   getEffectiveTagSet,
   isDontWalkIntoAndDontTranslateAsChildElement,
@@ -100,10 +100,11 @@ export interface WalkResult {
 export interface WalkCallbacks {
   /** Invoked for each element the walk refuses to descend into. */
   onBlockedElement?: (element: HTMLElement) => void
+  onParagraph?: (element: HTMLElement) => void
 }
 
 export interface ChunkedWalkOptions extends WalkCallbacks {
-  budgetMs?: number
+  scheduler?: LocalScheduler
   /** Checked at every slice boundary; returning false aborts the walk. */
   shouldContinue?: () => boolean
 }
@@ -189,6 +190,7 @@ function* walkNode(
     isWithinIncludeScope(element, config)
   ) {
     element.setAttribute(PARAGRAPH_ATTRIBUTE, "")
+    callbacks.onParagraph?.(element)
   }
 
   // force block will force the current and ancestor elements to be block node
@@ -266,7 +268,7 @@ export async function walkAndLabelElementChunked(
   config: Config,
   options: ChunkedWalkOptions = {},
 ): Promise<WalkResult | null> {
-  const { budgetMs = DEFAULT_WALK_BUDGET_MS, shouldContinue = () => true, ...callbacks } = options
+  const { shouldContinue = () => true, scheduler = pageLocalScheduler, ...callbacks } = options
 
   if (!shouldContinue()) return null
   prepareLatexmlTextBoxes(element, config)
@@ -275,18 +277,11 @@ export async function walkAndLabelElementChunked(
     return SKIPPED_WALK_RESULT
   }
 
-  const iterator = walkNode(element, walkId, config, callbacks)
-  let deadline = performance.now() + budgetMs
-  let step = iterator.next()
-  while (!step.done) {
-    if (performance.now() >= deadline) {
-      await yieldToMain()
-      if (!shouldContinue()) return null
-      deadline = performance.now() + budgetMs
-    }
-    step = iterator.next()
-  }
-  return step.value
+  return (
+    (await scheduler.run(walkNode(element, walkId, config, callbacks), {
+      current: shouldContinue,
+    })) ?? null
+  )
 }
 
 /**

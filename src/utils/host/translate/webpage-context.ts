@@ -2,6 +2,9 @@ import type { WebPageContext } from "@/types/content"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { getDocumentDescription } from "@/utils/content/metadata"
 import { logger } from "@/utils/logger"
+import { TranslationCancelledError } from "@/utils/request/cancellation"
+import { ContextCoordinator } from "./context-coordinator"
+import { createSourceDocument } from "./source-document"
 import { truncateWebPageContent, WEB_PAGE_CONTENT_CHAR_LIMIT } from "./webpage-content"
 
 export interface CachedWebPageContext extends WebPageContext {
@@ -10,11 +13,51 @@ export interface CachedWebPageContext extends WebPageContext {
 }
 
 let cachedWebPageContext: CachedWebPageContext | null = null
+const extraction = new ContextCoordinator<string>(2, 1000)
+let contentRevision = 0
+let contextUrl: string | undefined
+const revisions = new WeakMap<CachedWebPageContext, number>()
 
-function createDefuddleSnapshotDocument() {
-  const clonedDoc = document.implementation.createHTMLDocument(document.title)
-  clonedDoc.documentElement.innerHTML = document.documentElement.outerHTML
-  return clonedDoc
+export function getWebPageContentRevision(): number {
+  return contentRevision
+}
+
+export function invalidateWebPageContext(): void {
+  contentRevision++
+  cachedWebPageContext = null
+  extraction.clear()
+}
+
+export function releaseWebPageContext(): void {
+  invalidateWebPageContext()
+  contextUrl = undefined
+}
+
+export function isWebPageContextCurrent(context: CachedWebPageContext): boolean {
+  return (
+    revisions.get(context) === contentRevision &&
+    (context.url === window.location.href ||
+      isInPageAnchorChange(context.url, window.location.href))
+  )
+}
+
+/** Coalesce substantive article replacement separately from paragraph revisions. */
+export function notePageContentMutations(records: readonly MutationRecord[]): void {
+  const roots = new Set<Node>()
+  for (const record of records) {
+    const target = record.target instanceof Element ? record.target : record.target.parentElement
+    if (!target || target.closest("head")) continue
+    if (
+      record.type === "childList" &&
+      (target.matches("body, main, article, [role=main]") ||
+        [...record.addedNodes, ...record.removedNodes].some(
+          (node) => node instanceof Element && node.matches("body, main, article, [role=main]"),
+        ))
+    ) {
+      roots.add(target)
+    }
+  }
+  if (roots.size) invalidateWebPageContext()
 }
 
 function keepLeadingText(node: Node, budget: number) {
@@ -56,10 +99,12 @@ function prepareMarkdownSource(html: string): string {
   return doc.body.innerHTML
 }
 
-async function extractWebpageContent(): Promise<string> {
+async function extractWebpageContent(signal: AbortSignal): Promise<string> {
+  let snapshotDoc: Document | undefined
   try {
     const { default: Defuddle, createMarkdownContent } = await import("defuddle/full")
-    const snapshotDoc = createDefuddleSnapshotDocument()
+    signal.throwIfAborted()
+    snapshotDoc = createSourceDocument()
     const result = new Defuddle(snapshotDoc, {
       url: window.location.href,
       useAsync: false,
@@ -71,7 +116,8 @@ async function extractWebpageContent(): Promise<string> {
   } catch {
     logger.warn("Defuddle parsing failed, falling back to body text:")
   }
-  return document.body?.textContent || ""
+  signal.throwIfAborted()
+  return (snapshotDoc ?? createSourceDocument()).body?.textContent || ""
 }
 
 function splitUrlFragment(url: string): [base: string, fragment: string] {
@@ -111,7 +157,7 @@ function isInPageFragment(fragment: string): boolean {
  * content, and so re-key the summary and every later paragraph's cache entry.
  * Hash routes (`#/settings`, `#inbox/…`) name no element and still rebuild.
  */
-function isInPageAnchorChange(cachedUrl: string, currentUrl: string): boolean {
+export function isInPageAnchorChange(cachedUrl: string, currentUrl: string): boolean {
   const [cachedBase, cachedFragment] = splitUrlFragment(cachedUrl)
   const [currentBase, currentFragment] = splitUrlFragment(currentUrl)
   return (
@@ -121,23 +167,49 @@ function isInPageAnchorChange(cachedUrl: string, currentUrl: string): boolean {
   )
 }
 
-export async function getOrCreateWebPageContext(): Promise<CachedWebPageContext | null> {
+export async function getOrCreateWebPageContext(
+  includeContent = true,
+  signal?: AbortSignal,
+): Promise<CachedWebPageContext | null> {
   if (typeof window === "undefined" || typeof document === "undefined") return null
 
   const currentUrl = window.location.href
+  signal?.throwIfAborted()
+  if (contextUrl && contextUrl !== currentUrl && !isInPageAnchorChange(contextUrl, currentUrl))
+    invalidateWebPageContext()
+  contextUrl = currentUrl
+  const revision = contentRevision
+  if (!includeContent) {
+    const metadata = {
+      url: currentUrl,
+      webTitle: getSourceDocumentTitle(),
+      webDescription: getDocumentDescription(document),
+      webContent: "",
+    }
+    revisions.set(metadata, revision)
+    return metadata
+  }
   if (cachedWebPageContext?.url === currentUrl) {
     return cachedWebPageContext
   }
   if (cachedWebPageContext && isInPageAnchorChange(cachedWebPageContext.url, currentUrl)) {
     cachedWebPageContext = { ...cachedWebPageContext, url: currentUrl }
+    revisions.set(cachedWebPageContext, revision)
     return cachedWebPageContext
   }
 
-  cachedWebPageContext = {
+  const context = {
     url: currentUrl,
     webTitle: getSourceDocumentTitle(),
     webDescription: getDocumentDescription(document),
-    webContent: truncateWebPageContent(await extractWebpageContent()),
+    webContent: await extraction.get(
+      String(revision),
+      async (taskSignal) => truncateWebPageContent(await extractWebpageContent(taskSignal)),
+      signal,
+    ),
   }
-  return cachedWebPageContext
+  if (revision !== contentRevision) throw new TranslationCancelledError()
+  revisions.set(context, revision)
+  cachedWebPageContext = context
+  return context
 }

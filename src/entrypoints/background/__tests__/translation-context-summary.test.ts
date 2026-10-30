@@ -1,7 +1,10 @@
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { generateArticleSummary, ARTICLE_SUMMARY_RULE_VERSION } from "@/utils/content/summary"
+import { Sha256Hex } from "@/utils/hash"
+import { getProviderCacheIdentity } from "@/utils/providers/provider-ref"
 import { RequestQueue } from "@/utils/request/request-queue"
+import { getRequestErrorMeta } from "@/utils/request/retry-policy"
 import { getOrGenerateTranslationContextSummary } from "../translation-context-summary"
 
 const mocks = vi.hoisted(() => ({
@@ -72,6 +75,60 @@ describe("article context queue integration", () => {
     expect(ARTICLE_SUMMARY_RULE_VERSION).toBeTruthy()
     expect(mocks.generate.mock.calls[0]![0]).toMatchObject({ maxRetries: 0, maxOutputTokens: 2048 })
   })
+  it("never reuses a previous summary rule's persistent cache", async () => {
+    const identity = getProviderCacheIdentity(providerRef)
+    const oldKey = Sha256Hex("article-context-v1", "title", "body", identity)
+    mocks.get.mockImplementation(async (key) =>
+      key === oldKey ? { summary: "Old rules" } : undefined,
+    )
+    await expect(setup().run()).resolves.toBe("A complete summary.")
+    expect(mocks.generate).toHaveBeenCalledTimes(1)
+    expect(mocks.put.mock.calls[0]![0].key).toBe(
+      Sha256Hex(ARTICLE_SUMMARY_RULE_VERSION, "title", "body", identity),
+    )
+    expect(mocks.put.mock.calls[0]![0].key).not.toBe(oldKey)
+  })
+  it("surfaces permission errors without retrying or caching success", async () => {
+    const error = Object.assign(new Error("Permission denied"), { statusCode: 403 })
+    mocks.generate.mockRejectedValue(error)
+    await expect(setup().run()).rejects.toBe(error)
+    expect(mocks.generate).toHaveBeenCalledTimes(1)
+    expect(mocks.put).not.toHaveBeenCalled()
+  })
+  it("aborts each timed-out attempt before retry and preserves timeout classification", async () => {
+    const signals: AbortSignal[] = []
+    mocks.generate.mockImplementation((_payload, options) => {
+      signals.push(options.signal)
+      return new Promise(() => {})
+    })
+    const failed = setup()
+      .run()
+      .catch((error) => error)
+    await vi.advanceTimersByTimeAsync(17000)
+    expect(getRequestErrorMeta(await failed).kind).toBe("timeout")
+    expect(signals).toHaveLength(3)
+    expect(signals.every((signal) => signal.aborted)).toBe(true)
+    expect(mocks.put).not.toHaveBeenCalled()
+  })
+  it("does not let an unscoped caller pin a scoped task", async () => {
+    const signals: AbortSignal[] = []
+    const finish: ((value: string) => void)[] = []
+    mocks.generate.mockImplementation((_payload, options) => {
+      signals.push(options.signal)
+      return new Promise((resolve) => finish.push(resolve))
+    })
+    const { run, cancel } = setup()
+    const scoped = run("1:a").catch((error) => error)
+    const unscoped = run("")
+    await vi.advanceTimersByTimeAsync(0)
+    expect(signals).toHaveLength(2)
+    cancel("1:a")
+    expect(signals[0]!.aborted).toBe(true)
+    expect(signals[1]!.aborted).toBe(false)
+    finish[1]!("Unscoped result")
+    await expect(unscoped).resolves.toBe("Unscoped result")
+    expect(await scoped).toMatchObject({ name: "TranslationCancelledError" })
+  })
   it("propagates the original 429 metadata and honors Retry-After through repeated queue retries", async () => {
     const error = Object.assign(new Error("rate limited"), {
       statusCode: 429,
@@ -93,7 +150,7 @@ describe("article context queue integration", () => {
     const error = new TypeError("Failed to fetch")
     mocks.generate.mockRejectedValue(error)
     const { run } = setup()
-    const failed = run().catch((error) => error)
+    const failed = run().catch((caught) => caught)
     await vi.advanceTimersByTimeAsync(1000)
     expect(await failed).toBe(error)
     expect(mocks.generate).toHaveBeenCalledTimes(3)
@@ -109,7 +166,7 @@ describe("article context queue integration", () => {
     mocks.generate.mockRejectedValue(error)
     const failed = setup()
       .run()
-      .catch((error) => error)
+      .catch((caught) => caught)
     await vi.runAllTimersAsync()
     expect(await failed).toBe(error)
     expect(mocks.generate.mock.calls.length).toBeGreaterThan(2)
@@ -123,8 +180,8 @@ describe("article context queue integration", () => {
       return new Promise(() => {})
     })
     const { run, cancel } = setup()
-    const first = run("1:a").catch((error) => error)
-    const second = run("2:b").catch((error) => error)
+    const first = run("1:a").catch((caught) => caught)
+    const second = run("2:b").catch((caught) => caught)
     await vi.advanceTimersByTimeAsync(0)
     cancel("1:a")
     expect(signal.aborted).toBe(false)
@@ -143,7 +200,7 @@ describe("article context queue integration", () => {
         }),
     )
     const { run, cancel } = setup()
-    const first = run("1:a").catch((error) => error)
+    const first = run("1:a").catch((caught) => caught)
     const second = run("2:b")
     await vi.advanceTimersByTimeAsync(0)
     cancel("1:a")
@@ -153,7 +210,7 @@ describe("article context queue integration", () => {
   })
   it("rejects cancelled cache lookups before enqueue", async () => {
     const { run, cancel } = setup()
-    const failed = run().catch((error) => error)
+    const failed = run().catch((caught) => caught)
     cancel("1:a")
     expect(await failed).toMatchObject({ name: "TranslationCancelledError" })
     expect(mocks.generate).not.toHaveBeenCalled()

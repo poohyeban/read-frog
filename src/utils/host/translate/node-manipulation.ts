@@ -47,7 +47,6 @@ export async function removeOrShowNodeTranslation(node: Element, config: Config)
         id,
         config,
         true,
-        undefined,
         lifecycle.isActive,
         config.pageTranslation.node.forceRetranslation,
       )

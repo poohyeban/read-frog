@@ -2,19 +2,19 @@ import type { Config } from "@/types/config/config"
 import type { TranslateProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { WebPagePromptContext } from "@/types/content"
-import type { MatchedTerm } from "@/utils/glossary/types"
 import type { LangCodeISO6393, LangLevel } from "@/utils/languages"
-import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
 import { toastManager } from "@/components/ui/base-ui/toast"
 import { isAPIProviderConfig } from "@/types/config/provider"
+import { getLocalConfig } from "@/utils/config/storage"
+import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { isNoTranslationSentinel } from "@/utils/constants/prompt"
 import { detectLanguage } from "@/utils/content/language"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
 import { i18n } from "@/utils/i18n"
-import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { logger } from "@/utils/logger"
-import { getTranslatePrompt } from "@/utils/prompts/translate"
+import { buildWebPageHashComponents, normalizeWebPagePromptContext } from "./translation-plan"
+export { normalizePromptContextValue } from "./translation-plan"
 import { serializeProviderRef } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
@@ -23,6 +23,7 @@ import { sendMessage } from "../../message"
 import { getInMemoryTranslation, storeInMemoryTranslation } from "./in-memory-translation-cache"
 import { prepareTranslationText } from "./text-preparation"
 import { getPageTranslationSessionId } from "./translation-session"
+import { isInPageAnchorChange } from "./webpage-context"
 
 /**
  * Minimum text length before a skip decision is attempted at all. Deliberately
@@ -53,98 +54,6 @@ export async function shouldSkipByLanguage(
   return skipLanguages.includes(detectedLang)
 }
 
-export function normalizePromptContextValue(
-  value: string | null | undefined,
-): string | null | undefined {
-  if (value === null || value === undefined) {
-    return value
-  }
-  return value.trim() === "" ? null : value
-}
-
-function normalizeWebPagePromptContext(
-  webPageContext?: WebPagePromptContext,
-): WebPagePromptContext | undefined {
-  if (!webPageContext) {
-    return undefined
-  }
-
-  return {
-    webTitle: normalizePromptContextValue(webPageContext.webTitle),
-    webDescription: normalizePromptContextValue(webPageContext.webDescription),
-    webContent: normalizePromptContextValue(webPageContext.webContent),
-    webSummary: normalizePromptContextValue(webPageContext.webSummary),
-  }
-}
-
-async function buildWebPageHashComponents(
-  text: string,
-  providerRef: SerializableProviderRef,
-  partialLangConfig: { sourceCode: LangCodeISO6393 | "auto"; targetCode: LangCodeISO6393 },
-  enableAIContentAware: boolean,
-  textFormat: TranslationTextFormat,
-  preserveLineBreaks: boolean,
-  glossaryTerms: readonly MatchedTerm[],
-  webPageContext?: WebPagePromptContext,
-): Promise<string[]> {
-  const preparedText = prepareTranslationText(text)
-  const normalizedWebPageContext = normalizeWebPagePromptContext(webPageContext)
-
-  const providerHashIdentity = providerRef.config
-  const hashComponents = [
-    preparedText,
-    JSON.stringify(providerHashIdentity),
-    partialLangConfig.sourceCode,
-    partialLangConfig.targetCode,
-  ]
-
-  const targetLangName = LANG_CODE_TO_EN_NAME[partialLangConfig.targetCode]
-  // The terms are passed in rather than resolved here, so the prompt this hash
-  // is taken over is built from exactly the terms the request will carry.
-  const { systemPrompt, prompt } = await getTranslatePrompt(targetLangName, preparedText, {
-    isBatch: true,
-    context: normalizedWebPageContext,
-    glossaryTerms,
-  })
-  hashComponents.push(systemPrompt, prompt)
-  hashComponents.push(
-    enableAIContentAware ? "enableAIContentAware=true" : "enableAIContentAware=false",
-  )
-
-  if (enableAIContentAware && normalizedWebPageContext) {
-    if (normalizedWebPageContext.webTitle) {
-      hashComponents.push(`webTitle:${normalizedWebPageContext.webTitle}`)
-    }
-    if (normalizedWebPageContext.webDescription) {
-      hashComponents.push(`webDescription:${normalizedWebPageContext.webDescription}`)
-    }
-    if (normalizedWebPageContext.webContent) {
-      // Use a substring hash to avoid huge hash inputs while still differentiating contexts.
-      hashComponents.push(`webContent:${normalizedWebPageContext.webContent.slice(0, 1000)}`)
-    }
-    if (normalizedWebPageContext.webSummary) {
-      hashComponents.push(`webSummary:${normalizedWebPageContext.webSummary}`)
-    }
-  }
-
-  return hashComponents
-}
-
-/**
- * Reuse the session's resolved system-provider ref when it matches the
- * requested provider, so every paragraph of a page-translation session runs
- * on one status snapshot: no per-paragraph status fetches, and a mid-session
- * status blip cannot fail in-flight paragraphs.
- */
-
-/**
- * Most recently requested system-provider key. Stale stragglers — paragraphs
- * that captured the previous provider from config before a mid-session switch
- * and resolve late — must not adopt their ref back over the snapshot the
- * newer paragraphs converged on, which would evict it and force refetch
- * ping-pong.
- */
-
 export interface TranslateTextOptions {
   text: string
   langConfig: {
@@ -169,13 +78,23 @@ export interface TranslateTextOptions {
    * arrangement as `enableAIContentAware`.
    */
   glossaryEnabled?: boolean
+  promptConfig?: Pick<Config["pageTranslation"], "customPromptsConfig">
 }
 
 /**
- * Core translation function — pure, zero config fetching.
- * All dependencies must be provided explicitly.
+ * Dispatch an isolated request snapshot. Page callers supply their prompt
+ * configuration; legacy non-page callers resolve it once before planning.
  */
 export async function translateTextCore(options: TranslateTextOptions): Promise<string> {
+  const requestUrl = typeof location === "undefined" ? undefined : location.href
+  const isLocationCurrent = () =>
+    !requestUrl || requestUrl === location.href || isInPageAnchorChange(requestUrl, location.href)
+  const snapshot = structuredClone({
+    providerConfig: options.providerConfig,
+    langConfig: options.langConfig,
+    webPageContext: options.webPageContext,
+    promptConfig: options.promptConfig,
+  })
   const {
     text,
     langConfig,
@@ -188,20 +107,26 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     sessionId,
     forceRetranslation = false,
     glossaryEnabled = false,
-  } = options
+    promptConfig: suppliedPromptConfig,
+  } = { ...options, ...snapshot }
 
   const preparedText = prepareTranslationText(text)
   if (preparedText === "") {
     return ""
   }
 
-  // Early cancellation gate: a session stopped while this paragraph was still
-
-  // throw at the final gate.
-  if (sessionId !== undefined && getPageTranslationSessionId() !== sessionId) {
+  // Abort before planning if the session ended while context was preparing.
+  if (
+    sessionId !== undefined &&
+    (getPageTranslationSessionId() !== sessionId || !isLocationCurrent())
+  ) {
     throw new TranslationCancelledError(sessionId)
   }
 
+  const promptConfig = suppliedPromptConfig ?? {
+    customPromptsConfig: ((await getLocalConfig()) ?? DEFAULT_CONFIG).pageTranslation
+      .customPromptsConfig,
+  }
   const normalizedWebPageContext = normalizeWebPagePromptContext(webPageContext)
   const providerRef = serializeProviderRef(providerConfig)
 
@@ -223,7 +148,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
   // enter here; the two prompt-building selection paths and subtitles resolve
   // their own terms and report at their own resolve sites.
 
-  const hashComponents = await buildWebPageHashComponents(
+  const hashComponents = buildWebPageHashComponents(
     preparedText,
     providerRef,
     { sourceCode: langConfig.sourceCode, targetCode: langConfig.targetCode },
@@ -232,6 +157,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     preserveLineBreaks,
     glossaryTerms,
     normalizedWebPageContext,
+    promptConfig,
   )
 
   // Add extra hash tags for cache differentiation
@@ -246,7 +172,10 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
   // sessionId and skip the gate entirely. The gate must also precede the
   // memory-tier read below: a cancelled session must not keep painting
   // translations out of memory.
-  if (sessionId !== undefined && getPageTranslationSessionId() !== sessionId) {
+  if (
+    sessionId !== undefined &&
+    (getPageTranslationSessionId() !== sessionId || !isLocationCurrent())
+  ) {
     throw new TranslationCancelledError(sessionId)
   }
 
@@ -283,7 +212,13 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     forceRetranslation,
     glossaryTerms,
     glossaryRevision,
+    promptConfig,
   })
+  if (
+    sessionId !== undefined &&
+    (getPageTranslationSessionId() !== sessionId || !isLocationCurrent())
+  )
+    throw new TranslationCancelledError(sessionId)
   if (sessionId !== undefined) {
     // Raw result, sentinel included, so a "no translation needed" verdict is
     // remembered too; the mapping below stays the single mapping point.

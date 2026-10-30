@@ -39,4 +39,19 @@ describe("getOrGenerateWebPageSummary", () => {
 
     expect(sendMessage).not.toHaveBeenCalled()
   })
+  it("sends one summary message for 30 page consumers and reuses completion", async () => {
+    const { sendMessage } = await import("@/utils/message")
+    const { getOrGenerateWebPageSummary, releaseWebPageSummaries } =
+      await import("../webpage-summary")
+    releaseWebPageSummaries()
+    vi.mocked(sendMessage).mockClear().mockResolvedValue("Shared summary")
+    const results = await Promise.all(
+      Array.from({ length: 30 }, () => getOrGenerateWebPageSummary(webPageContext, localRef, true)),
+    )
+    expect(new Set(results)).toEqual(new Set(["Shared summary"]))
+    await expect(getOrGenerateWebPageSummary(webPageContext, localRef, true)).resolves.toBe(
+      "Shared summary",
+    )
+    expect(sendMessage).toHaveBeenCalledTimes(1)
+  })
 })

@@ -43,4 +43,22 @@ describe("Lite local configuration", () => {
     expect(configSchema.safeParse(config).success).toBe(false)
     expect(fetch).not.toHaveBeenCalled()
   })
+  it("shares validation for 30 reads and invalidates new snapshots after a config edit", async () => {
+    await initializeConfig()
+    const parse = vi.spyOn(configSchema, "safeParse")
+    try {
+      const snapshots = await Promise.all(Array.from({ length: 30 }, () => getLocalConfig()))
+      expect(parse).toHaveBeenCalledTimes(1)
+      const old = snapshots[0]!
+      const changed = structuredClone(old)
+      changed.language.targetCode = "jpn"
+      await setLocalConfig(changed)
+      expect((await getLocalConfig())?.language.targetCode).toBe("jpn")
+      expect(old?.language.targetCode).not.toBe("jpn")
+      changed.language.targetCode = "fra"
+      expect((await getLocalConfig())?.language.targetCode).toBe("jpn")
+    } finally {
+      parse.mockRestore()
+    }
+  })
 })

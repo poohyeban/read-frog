@@ -101,11 +101,17 @@ vi.mock("@/utils/host/translate/translate-text", () => ({
   validateTranslationConfigAndToast: mockValidateTranslationConfigAndToast,
 }))
 
-vi.mock("@/utils/host/translate/translate-variants", () => ({
+vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/translate-variants")>()),
+  primePageTranslationContext: () => {},
   translateTextForPageTitle: mockTranslateTextForPageTitle,
 }))
 
-vi.mock("@/utils/host/translate/webpage-context", () => ({
+vi.mock("@/utils/host/translate/webpage-context", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/webpage-context")>()),
+  isWebPageContextCurrent: () => true,
+  notePageContentMutations: () => {},
+  releaseWebPageContext: () => {},
   getOrCreateWebPageContext: mockGetOrCreateWebPageContext,
 }))
 
@@ -309,7 +315,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         walkId: string,
         _config: unknown,
         options?: { onBlockedElement?: (blocked: HTMLElement) => void },
-      ) => walkAndLabelVisibleParagraphs(element, walkId, options?.onBlockedElement),
+      ) => mockWalkAndLabelElement(element, walkId, _config, options),
     )
     mockTranslateTextForPageTitle.mockResolvedValue("")
     mockTranslateNodesBilingualMode.mockReset().mockResolvedValue(undefined)
@@ -344,8 +350,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         "walk-id",
         DEFAULT_CONFIG,
         false,
-        expect.anything(),
-        expect.anything(),
+        expect.any(Function),
       )
     } finally {
       if (manager.isActive) manager.stop()
@@ -395,8 +400,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         "walk-id",
         DEFAULT_CONFIG,
         false,
-        expect.anything(),
-        expect.anything(),
+        expect.any(Function),
       )
     } finally {
       if (manager.isActive) manager.stop()
@@ -799,8 +803,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       "walk-id",
       DEFAULT_CONFIG,
       false,
-      expect.anything(),
-      expect.anything(),
+      expect.any(Function),
     )
 
     manager.stop()
@@ -836,8 +839,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       "walk-id",
       DEFAULT_CONFIG,
       false,
-      expect.anything(),
-      expect.anything(),
+      expect.any(Function),
     )
 
     manager.stop()
@@ -873,8 +875,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       "walk-id",
       DEFAULT_CONFIG,
       false,
-      expect.anything(),
-      expect.anything(),
+      expect.any(Function),
     )
 
     manager.stop()
@@ -1524,8 +1525,7 @@ describe("pageTranslationManager mutation re-walk", () => {
           "walk-id",
           DEFAULT_CONFIG,
           false,
-          expect.anything(),
-          expect.anything(),
+          expect.any(Function),
         )
 
         const shadowWrapper = document.createElement("span")
@@ -1864,8 +1864,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         "walk-id",
         DEFAULT_CONFIG,
         false,
-        expect.anything(),
-        expect.anything(),
+        expect.any(Function),
       )
 
       // Text edits must also reach the stale-source retranslation path.

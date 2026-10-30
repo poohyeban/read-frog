@@ -57,8 +57,10 @@ import {
   insertVirtualParagraphWrappers,
   materializeVirtualParagraphUnitRuns,
 } from "../dom/virtual-paragraph-insertion"
+import { pageLocalScheduler } from "../local-scheduler"
 import { translateTextForPage } from "../translate-variants"
 import { setTranslationDirAndLang } from "../translation-attributes"
+import { getPageTranslationSessionId } from "../translation-session"
 import { createSpinnerInside, getTranslatedTextAndRemoveSpinner } from "../ui/spinner"
 import { getNodeTranslation, trackNodeTranslation } from "./node-translation-lifecycle"
 import {
@@ -119,7 +121,11 @@ async function filterVirtualParagraphUnits(
   config: Config,
 ): Promise<VirtualParagraphUnit[]> {
   const included = await Promise.all(
-    units.map(async (unit) => !(await shouldSkipPageTranslationText(unit.text, config))),
+    units.map((unit) =>
+      pageLocalScheduler.schedule(
+        async () => !(await shouldSkipPageTranslationText(unit.text, config)),
+      ),
+    ),
   )
   return units.filter((_, index) => included[index])
 }
@@ -260,14 +266,18 @@ async function translateVirtualParagraphs(
 
   await Promise.allSettled(
     inserted.map((entry) =>
-      translateVirtualParagraph(
-        entry,
-        spinners.get(entry.wrapper)!,
-        group,
-        nodes,
-        config,
-        forceBlockTranslation,
-        forceRetranslation,
+      pageLocalScheduler.schedule(
+        () =>
+          translateVirtualParagraph(
+            entry,
+            spinners.get(entry.wrapper)!,
+            group,
+            nodes,
+            config,
+            forceBlockTranslation,
+            forceRetranslation,
+          ),
+        () => group.status === "active" && group.layoutSource.isConnected,
       ),
     ),
   )
@@ -756,7 +766,10 @@ async function translateNonMaterializableGiant(
 
   await Promise.allSettled(
     paragraphs.map((paragraph) =>
-      translateTranslationOnlyRun([paragraph], walkId, config, false, forceRetranslation),
+      pageLocalScheduler.schedule(
+        () => translateTranslationOnlyRun([paragraph], walkId, config, false, forceRetranslation),
+        () => layoutSource.isConnected,
+      ),
     ),
   )
   return true
@@ -846,14 +859,18 @@ async function maybeTranslateVirtualUnitRuns(
 
     await Promise.allSettled(
       runs.map((run) =>
-        translateTranslationOnlyRun(
-          run.nodes,
-          walkId,
-          config,
-          false,
-          forceRetranslation,
+        pageLocalScheduler.schedule(
+          () =>
+            translateTranslationOnlyRun(
+              run.nodes,
+              walkId,
+              config,
+              false,
+              forceRetranslation,
+              isCurrent,
+              getNodeTranslation(walkId) ? disposeGeneration : undefined,
+            ),
           isCurrent,
-          getNodeTranslation(walkId) ? disposeGeneration : undefined,
         ),
       ),
     )
@@ -1036,9 +1053,11 @@ async function translateTranslationOnlyRun(
 
     // Capture before filtering as well as the provider round-trip: both await.
     const sourceSnapshot = snapshotSourceTextNodes(transNodes)
+    const pageSessionId = getPageTranslationSessionId()
     let disposed = false
     const isRunCurrent = () =>
       !disposed &&
+      (pageSessionId === null || getPageTranslationSessionId() === pageSessionId) &&
       nodeTranslation?.active !== false &&
       isCurrent() &&
       verifySourceSnapshot(transNodes, sourceSnapshot)

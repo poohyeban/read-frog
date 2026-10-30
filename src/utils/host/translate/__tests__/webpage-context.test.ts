@@ -230,4 +230,56 @@ describe("getOrCreateWebPageContext", () => {
     expect(result?.webContent).toBe("Fallback body text")
     expect(mockWarn).toHaveBeenCalledWith("Defuddle parsing failed, falling back to body text:")
   })
+  it("singleflights 30 concurrent extractions", async () => {
+    const { getOrCreateWebPageContext } = await loadModule()
+    const contexts = await Promise.all(
+      Array.from({ length: 30 }, () => getOrCreateWebPageContext()),
+    )
+    expect(mockDefuddleConstructor).toHaveBeenCalledTimes(1)
+    expect(new Set(contexts.map((context) => context?.webContent))).toEqual(
+      new Set(["# Readable page body"]),
+    )
+  })
+
+  it("does not extract for metadata-only requirements", async () => {
+    const { getOrCreateWebPageContext } = await loadModule()
+    expect((await getOrCreateWebPageContext(false))?.webTitle).toBe("Original Title")
+    expect(mockDefuddleConstructor).not.toHaveBeenCalled()
+  })
+
+  it("invalidates a same-URL article replacement but not a local paragraph edit", async () => {
+    const { getOrCreateWebPageContext, notePageContentMutations, isWebPageContextCurrent } =
+      await loadModule()
+    const first = await getOrCreateWebPageContext()
+    const paragraph = document.createElement("p")
+    paragraph.textContent = "Local edit"
+    document.querySelector("main")!.append(paragraph)
+    notePageContentMutations([
+      { type: "characterData", target: paragraph.firstChild! } as unknown as MutationRecord,
+    ])
+    expect(isWebPageContextCurrent(first!)).toBe(true)
+    notePageContentMutations([
+      {
+        type: "childList",
+        target: document.querySelector("main")!,
+        addedNodes: [paragraph],
+        removedNodes: [],
+      } as unknown as MutationRecord,
+    ])
+    expect(isWebPageContextCurrent(first!)).toBe(false)
+    mockCreateMarkdownContent.mockReturnValueOnce("Updated article")
+    expect((await getOrCreateWebPageContext())?.webContent).toBe("Updated article")
+    expect(mockDefuddleConstructor).toHaveBeenCalledTimes(2)
+  })
+
+  it("rejects page A's late context after page B replaces it", async () => {
+    const { getOrCreateWebPageContext } = await loadModule()
+    const first = getOrCreateWebPageContext().catch((error) => error)
+    window.history.replaceState({}, "", "/page-b")
+    document.title = "Page B"
+    const second = await getOrCreateWebPageContext()
+    expect((await first).name).toBe("TranslationCancelledError")
+    expect(second?.webTitle).toBe("Page B")
+    expect(await getOrCreateWebPageContext()).toBe(second)
+  })
 })
