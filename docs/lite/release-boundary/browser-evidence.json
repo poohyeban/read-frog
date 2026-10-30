@@ -1,0 +1,3118 @@
+{
+  "sourceCommits": ["73529d91", "f08411e9"],
+  "environment": {
+    "source": "/workspace/read-frog",
+    "browser": "154.0.8037.57",
+    "node": "v24.19.0",
+    "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+  },
+  "scope": "Real Chromium with controlled APIs/Providers. NOT native MV3 or live-platform acceptance. Concurrent test timings are not performance comparisons.",
+  "popup": {
+    "passed": [
+      "target language selection persists",
+      "feature provider assignment persists",
+      "translation style persists",
+      "translation mode persists",
+      "site auto-translation add/remove persists",
+      "external site configuration updates derived switch",
+      "site blacklist gates translation",
+      "one-move pointer drag toggles exactly once",
+      "reverse drag, native touch one-move, touch cancellation, keyboard Space",
+      "reduced motion removes thumb transition",
+      "theme storage synchronization",
+      "all actions keep the captured tab; no repeated tabs query",
+      "all visible primary controls have accessible names"
+    ]
+  },
+  "transcriptChecks": {
+    "restore": true,
+    "boundedDOM": true,
+    "manualScrollPreserved": true,
+    "rowClickSeeks": true,
+    "resumeAvailable": true,
+    "resumeCurrent": true,
+    "variableHeight": true,
+    "backwardSeek": true
+  },
+  "subtitleScenarios": [
+    {
+      "scenario": "zero",
+      "sample": 0,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 0,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 0,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 0,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 0,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 0,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 0,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 0,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 0,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 0,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 0,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 0,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 1,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 1,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 1,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 1,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 1,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 1,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 1,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 1,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 1,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 1,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 1,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 1,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 2,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 2,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 2,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 2,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 2,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 2,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 2,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 2,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 2,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 2,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 2,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 2,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 3,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 3,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 3,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 3,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 3,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 3,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 3,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 3,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 3,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 3,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 3,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 3,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 4,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 4,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 4,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 4,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 4,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 4,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 4,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 4,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 4,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 4,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 4,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 4,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 5,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 5,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 5,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 5,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 5,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 5,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 5,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 5,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 5,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 5,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 5,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 5,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 6,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 6,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 6,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 6,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 6,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 6,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 6,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 6,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 6,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 6,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 6,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 6,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 7,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 7,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 7,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 7,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 7,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 7,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 7,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 7,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 7,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 7,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 7,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 7,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 8,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 8,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 8,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 8,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 8,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 8,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 8,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 8,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 8,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 8,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 8,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 8,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 9,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 9,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 9,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 9,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 9,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 9,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 9,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 9,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 9,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 9,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 9,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 9,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 10,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 10,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 10,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 10,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 10,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 10,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 10,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 10,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 10,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 10,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 10,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 10,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 11,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 11,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 11,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 11,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 11,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 11,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 11,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 11,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 11,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 11,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 11,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 11,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 12,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 12,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 12,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 12,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 12,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 12,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 12,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 12,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 12,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 12,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 12,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 12,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 13,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 13,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 13,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 13,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 13,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 13,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 13,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 13,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 13,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 13,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 13,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 13,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 14,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 14,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 14,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 14,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 14,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 14,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 14,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 14,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 14,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 14,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 14,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 14,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 15,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 15,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 15,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 15,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 15,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 15,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 15,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 15,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 15,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 15,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 15,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 15,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 16,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 16,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 16,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 16,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 16,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 16,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 16,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 16,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 16,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 16,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 16,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 16,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 17,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 17,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 17,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 17,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 17,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 17,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 17,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 17,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 17,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 17,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 17,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 17,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 18,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 18,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 18,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 18,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 18,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 18,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 18,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 18,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 18,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 18,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 18,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 18,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 19,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 19,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 19,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 19,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 19,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 19,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 19,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 19,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 19,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 19,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 19,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 19,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 20,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 20,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 20,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 20,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 20,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 20,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 20,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 20,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 20,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 20,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 20,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 20,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 21,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 21,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 21,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 21,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 21,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 21,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 21,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 21,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 21,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 21,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 21,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 21,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 22,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 22,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 22,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 22,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 22,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 22,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 22,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 22,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 22,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 22,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 22,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 22,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 23,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 23,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 23,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 23,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 23,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 23,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 23,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 23,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 23,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 23,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 23,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 23,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 24,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 24,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 24,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 24,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 24,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 24,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 24,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 24,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 24,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 24,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 24,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 24,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 25,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 25,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 25,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 25,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 25,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 25,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 25,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 25,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 25,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 25,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 25,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 25,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 26,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 26,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 26,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 26,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 26,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 26,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 26,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 26,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 26,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 26,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 26,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 26,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 27,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 27,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 27,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 27,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 27,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 27,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 27,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 27,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 27,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 27,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 27,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 27,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 28,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 28,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 28,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 28,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 28,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 28,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 28,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 28,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 28,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 28,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 28,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 28,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "zero",
+      "sample": 29,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "resume2120",
+      "sample": 29,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "asyncResume",
+      "sample": 29,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "link2400",
+      "sample": 29,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "seekForward",
+      "sample": 29,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "seekBackward",
+      "sample": 29,
+      "targetTimeMs": 300000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "longCue",
+      "sample": 29,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "pauseResume",
+      "sample": 29,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate2",
+      "sample": 29,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rate4",
+      "sample": 29,
+      "targetTimeMs": 2120000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 0
+    },
+    {
+      "scenario": "rapidSeek",
+      "sample": 29,
+      "targetTimeMs": 2400000,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    },
+    {
+      "scenario": "stopStart",
+      "sample": 29,
+      "targetTimeMs": 0,
+      "targetCovered": true,
+      "publishedAfterStop": false,
+      "cancelEvents": 2
+    }
+  ],
+  "queueScenarios": {
+    "bounded-export-72": 30,
+    "current-after-auxiliary": 30,
+    "stop-inflight": 30
+  },
+  "queueErrors": [],
+  "exports": [
+    {
+      "size": 100,
+      "samples": [
+        {
+          "duration": 7.0999999940395355,
+          "result": {
+            "count": 100,
+            "unique": 100,
+            "valid": true,
+            "bytes": 4980
+          },
+          "translationCalls": 20,
+          "heap": 3323039
+        },
+        {
+          "duration": 2.5,
+          "result": {
+            "count": 100,
+            "unique": 100,
+            "valid": true,
+            "bytes": 4980
+          },
+          "translationCalls": 20,
+          "heap": 3587471
+        },
+        {
+          "duration": 9.5,
+          "result": {
+            "count": 100,
+            "unique": 100,
+            "valid": true,
+            "bytes": 4980
+          },
+          "translationCalls": 20,
+          "heap": 4277127
+        }
+      ]
+    },
+    {
+      "size": 1000,
+      "samples": [
+        {
+          "duration": 36,
+          "result": {
+            "count": 1000,
+            "unique": 1000,
+            "valid": true,
+            "bytes": 51781
+          },
+          "translationCalls": 200,
+          "heap": 4715575
+        },
+        {
+          "duration": 6.600000001490116,
+          "result": {
+            "count": 1000,
+            "unique": 1000,
+            "valid": true,
+            "bytes": 51781
+          },
+          "translationCalls": 200,
+          "heap": 5178119
+        },
+        {
+          "duration": 11.200000002980232,
+          "result": {
+            "count": 1000,
+            "unique": 1000,
+            "valid": true,
+            "bytes": 51781
+          },
+          "translationCalls": 200,
+          "heap": 5561627
+        }
+      ]
+    },
+    {
+      "size": 10000,
+      "samples": [
+        {
+          "duration": 91.90000000596046,
+          "result": {
+            "count": 10000,
+            "unique": 10000,
+            "valid": true,
+            "bytes": 537782
+          },
+          "translationCalls": 2000,
+          "heap": 13695051
+        },
+        {
+          "duration": 103.89999999850988,
+          "result": {
+            "count": 10000,
+            "unique": 10000,
+            "valid": true,
+            "bytes": 537782
+          },
+          "translationCalls": 2000,
+          "heap": 14816331
+        },
+        {
+          "duration": 72.70000000298023,
+          "result": {
+            "count": 10000,
+            "unique": 10000,
+            "valid": true,
+            "bytes": 537782
+          },
+          "translationCalls": 2000,
+          "heap": 21776687
+        }
+      ]
+    },
+    {
+      "size": 50000,
+      "samples": [
+        {
+          "duration": 510.70000000298023,
+          "result": {
+            "count": 50000,
+            "unique": 50000,
+            "valid": true,
+            "bytes": 2777782
+          },
+          "translationCalls": 10000,
+          "heap": 62406875
+        },
+        {
+          "duration": 372,
+          "result": {
+            "count": 50000,
+            "unique": 50000,
+            "valid": true,
+            "bytes": 2777782
+          },
+          "translationCalls": 10000,
+          "heap": 89657343
+        },
+        {
+          "duration": 177.39999999850988,
+          "result": {
+            "count": 50000,
+            "unique": 50000,
+            "valid": true,
+            "bytes": 2777782
+          },
+          "translationCalls": 10000,
+          "heap": 49436902
+        }
+      ]
+    }
+  ],
+  "webpageRegression": {
+    "samples": 20,
+    "compatibility": [
+      {
+        "fixture": "float",
+        "passed": true
+      },
+      {
+        "fixture": "markdown",
+        "passed": true
+      },
+      {
+        "fixture": "shadow",
+        "passed": true
+      },
+      {
+        "fixture": "giant",
+        "passed": true
+      },
+      {
+        "fixture": "spa",
+        "passed": true
+      },
+      {
+        "fixture": "virtual",
+        "passed": true
+      },
+      {
+        "fixture": "mutation",
+        "passed": true,
+        "mutationMs": 111.04740099999981
+      },
+      {
+        "fixture": "pending-mutation",
+        "passed": true
+      }
+    ]
+  },
+  "pageErrors": []
+}

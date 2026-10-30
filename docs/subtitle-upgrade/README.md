@@ -1,5 +1,7 @@
 # Read Frog Lite：UI收尾与字幕架构升级交付
 
+后续发布前边界修复见[最终边界审查](../lite/RELEASE-BOUNDARY-REVIEW.md)：字幕批量持久缓存已改按实际整批 Prompt 标识，Popup 导航与并发确认已补齐；真实 MV3 验收仍受策略阻断。下文保留上一阶段交付记录。
+
 本轮已实现UI修复、字幕生命周期与请求一致性、时间轴索引、当前位置调度、失败恢复、长列表虚拟化及完整导出校验。代码位于本地分支`codex/subtitle-session-upgrade`。按本轮指令不推送远程、不合并main、不创建Release、不修改或触发GitHub Actions。
 
 ## 1. 基线与范围

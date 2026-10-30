@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-30T12:27:33.692Z",
+  "status": "blocked-by-policy",
+  "policies": [
+    {
+      "file": "/etc/chromium/policies/managed/extensions.json",
+      "blocklist": ["*"]
+    }
+  ],
+  "reason": "Unpacked extension probe not attempted: managed extension installation is blocked."
+}
