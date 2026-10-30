@@ -1,7 +1,8 @@
 name: Publish verified 0.2.5 performance preview
 on:
-  push:
-    branches: [codex/publish-025-perf-1]
+  pull_request:
+    branches: [codex/perf-architecture-025]
+    types: [opened, synchronize]
     paths:
       - .github/workflows/publish-perf-preview.yml
       - docs/performance/releases/v0.2.5-perf.1.md
@@ -11,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
-    if: github.repository == 'poohyeban/read-frog'
+    if: github.repository == 'poohyeban/read-frog' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'codex/publish-025-perf-1'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
