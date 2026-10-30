@@ -1,7 +1,5 @@
 name: Publish verified extension
 on:
-  push:
-    tags: [v0.2.5-perf.1]
   workflow_dispatch:
     inputs:
       tag:
