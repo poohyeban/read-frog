@@ -10,35 +10,29 @@ export function createPageTranslationCommandBridge() {
   }
   async function request(data: { tabId: number; url: string; enabled?: boolean }) {
     const { tabId, url, enabled } = data
-    const revision = Symbol()
+    // Reads share a generation. Only a write or document invalidation may
+    // supersede a request; opening a second Popup must not cancel a valid write.
+    const revision = enabled === undefined ? (revisions.get(tabId) ?? Symbol()) : Symbol()
     revisions.set(tabId, revision)
     const check = async () => {
       const tab = await browser.tabs.get(tabId)
-      if (revisions.get(tabId) !== revision || tab.url !== url)
+      if (revisions.get(tabId) !== revision || tab.url !== url || tab.status === "loading")
         throw new Error("Page changed while confirming translation")
     }
-    try {
-      await check()
-      if (enabled === false) {
-        // Intent must survive a failed delivery so auto-detection cannot undo it.
-        await setPageTranslationEnabled(tabId, false, url, true)
-      }
-      await check()
-      const applied =
-        enabled === undefined
-          ? await sendMessage("getAppliedPageTranslationState", undefined, { tabId, frameId: 0 })
-          : await sendMessage(
-              "applyPageTranslationCommand",
-              { enabled, url },
-              { tabId, frameId: 0 },
-            )
-      await check()
-      if (!applied || applied.url !== url || (enabled !== undefined && applied.enabled !== enabled))
-        throw new Error("Page manager did not confirm translation state")
-      return applied
-    } finally {
-      if (revisions.get(tabId) === revision) revisions.delete(tabId)
+    await check()
+    if (enabled === false) {
+      // Intent must survive a failed delivery so auto-detection cannot undo it.
+      await setPageTranslationEnabled(tabId, false, url, true)
     }
+    await check()
+    const applied =
+      enabled === undefined
+        ? await sendMessage("getAppliedPageTranslationState", undefined, { tabId, frameId: 0 })
+        : await sendMessage("applyPageTranslationCommand", { enabled, url }, { tabId, frameId: 0 })
+    await check()
+    if (!applied || applied.url !== url || (enabled !== undefined && applied.enabled !== enabled))
+      throw new Error("Page manager did not confirm translation state")
+    return applied
   }
   return { request, invalidate }
 }

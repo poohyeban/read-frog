@@ -121,6 +121,7 @@ export function installBrowserAPI({
       reload: async () => {},
       create: async () => {},
       onUpdated: event(),
+      onRemoved: event(),
       onActivated: event(),
       sendMessage: (...args) => runtime.sendMessage(...args),
     },

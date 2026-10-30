@@ -3,6 +3,11 @@ import { beforeEach, afterEach, describe, expect, it, vi } from "vitest"
 import { browser, storage } from "#imports"
 const api = vi.hoisted(() => ({
   query: vi.fn<() => Promise<{ id: number; url: string }[]>>(),
+  addUpdated: vi.fn<(...args: any[]) => any>(),
+  removeUpdated: vi.fn<(...args: any[]) => any>(),
+  addRemoved: vi.fn<(...args: any[]) => any>(),
+  removeRemoved: vi.fn<(...args: any[]) => any>(),
+  get: vi.fn<() => Promise<{ id: number; url: string; status?: string }>>(),
   message: vi.fn<(type: string, data?: unknown) => Promise<{ enabled: boolean; url: string }>>(),
   watch: vi.fn<(key: string, callback: () => void) => () => void>(),
   unwatch: vi.fn<() => void>(),
@@ -22,8 +27,14 @@ describe("popup session", () => {
     vi.useFakeTimers()
     vi.resetAllMocks()
     browser.tabs.query = api.query as unknown as typeof browser.tabs.query
+    browser.tabs.get = api.get as unknown as typeof browser.tabs.get
+    browser.tabs.onUpdated.addListener = api.addUpdated
+    browser.tabs.onUpdated.removeListener = api.removeUpdated
+    browser.tabs.onRemoved.addListener = api.addRemoved
+    browser.tabs.onRemoved.removeListener = api.removeRemoved
     storage.watch = api.watch
     api.query.mockResolvedValue([{ id: 7, url: "https://example.com/a" }])
+    api.get.mockResolvedValue({ id: 7, url: "https://example.com/a" })
     api.message.mockResolvedValue({ enabled: true, url: "https://example.com/a" })
     api.watch.mockReturnValue(api.unwatch)
   })
@@ -116,5 +127,75 @@ describe("popup session", () => {
     expect(store.get(pageStatusAtom).phase).toBe("error")
     session.dispose()
     expect(store.get(popupTabAtom)).toBeNull()
+  })
+
+  it("retry refreshes the bound tab URL after navigation without switching to another active tab", async () => {
+    const store = createStore()
+    const session = createPopupSession(store)
+    await session.start()
+    api.query.mockResolvedValue([{ id: 99, url: "https://unrelated.example/" }])
+    api.get.mockResolvedValue({ id: 7, url: "https://example.com/b" })
+    api.message.mockResolvedValue({ enabled: false, url: "https://example.com/b" })
+    store.get(retryPageStatusAtom).run()
+    await flush()
+    expect(store.get(popupTabAtom)).toEqual({ id: 7, url: "https://example.com/b" })
+    expect(api.message).toHaveBeenLastCalledWith("getAppliedPageTranslationStateByTabId", {
+      tabId: 7,
+      url: "https://example.com/b",
+    })
+    expect(store.get(pageStatusAtom)).toEqual({ phase: "ready", enabled: false })
+    expect(api.query).toHaveBeenCalledOnce()
+    session.dispose()
+  })
+
+  it.each(["https://example.com/a", "https://example.com/b"])(
+    "invalidates an old receipt and synchronizes after navigation/reload to %s",
+    async (url) => {
+      const store = createStore()
+      const session = createPopupSession(store)
+      await session.start()
+      let finish!: (state: { enabled: boolean; url: string }) => void
+      api.message.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            finish = resolve
+          }),
+      )
+      store.get(togglePageTranslationAtom).run()
+      await flush()
+      const updated = api.addUpdated.mock.calls[0]![0]
+      api.get.mockResolvedValue({ id: 7, url, status: "loading" })
+      updated(7, { status: "loading" }, { id: 7, url } as any)
+      await flush()
+      expect(store.get(pageStatusAtom).phase).toBe("loading")
+      api.get.mockResolvedValue({ id: 7, url, status: "complete" })
+      api.message.mockResolvedValue({ enabled: true, url })
+      updated(7, { status: "complete" }, { id: 7, url } as any)
+      await flush()
+      finish({ enabled: false, url: "https://example.com/a" })
+      await flush()
+      expect(store.get(popupTabAtom)).toEqual({ id: 7, url })
+      expect(store.get(pageStatusAtom)).toEqual({ phase: "ready", enabled: true })
+      session.dispose()
+      expect(api.removeUpdated).toHaveBeenCalledWith(updated)
+    },
+  )
+
+  it("never retargets a closed tab and never writes using a stale URL", async () => {
+    const store = createStore()
+    const session = createPopupSession(store)
+    await session.start()
+    api.get.mockResolvedValue({ id: 7, url: "https://example.com/b" })
+    store.get(togglePageTranslationAtom).run()
+    await flush()
+    expect(
+      api.message.mock.calls.some(([type]) => type === "applyPageTranslationCommandByTabId"),
+    ).toBe(false)
+    api.get.mockRejectedValue(new Error("No tab"))
+    store.get(retryPageStatusAtom).run()
+    await flush()
+    expect(store.get(pageStatusAtom).phase).toBe("error")
+    expect(api.query).toHaveBeenCalledOnce()
+    session.dispose()
   })
 })

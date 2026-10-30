@@ -40,10 +40,12 @@ export function createPopupSession(store: ReturnType<typeof createStore>) {
     )
 
   async function refresh() {
+    if (!active) return
     const request = ++revision
     store.set(pageStatusAtom, { phase: "loading" })
     try {
       let tab = store.get(popupTabAtom)
+      let loading = false
       if (!tab) {
         const [found] = await withDeadline(
           browser.tabs.query({ active: true, currentWindow: true }),
@@ -51,13 +53,26 @@ export function createPopupSession(store: ReturnType<typeof createStore>) {
         if (!current(request)) return
         if (typeof found?.id !== "number" || !found.url) throw new Error("No active page")
         tab = { id: found.id, url: found.url }
+        loading = found.status === "loading"
         store.set(popupTabAtom, tab)
         unwatch = storage.watch(getTranslationStateKey(tab.id), () => {
           if (active && store.get(pageStatusAtom).phase !== "pending") void refresh()
         })
+      } else {
+        // Stay bound to the original tab even if another tab becomes active.
+        // The URL is a document snapshot and must be renewed on every retry.
+        const found = await withDeadline(browser.tabs.get(tab.id))
+        if (!current(request)) return
+        if (!found.url) throw new Error("No current page")
+        tab = { id: tab.id, url: found.url }
+        loading = found.status === "loading"
+        store.set(popupTabAtom, tab)
       }
+      if (loading) return // tabs.onUpdated resumes when this document is ready.
       const applied = await read(tab)
-      if (current(request)) store.set(pageStatusAtom, { phase: "ready", enabled: applied.enabled })
+      if (!current(request)) return
+      if (applied.url !== tab.url) throw new Error("Page changed while reading translation")
+      store.set(pageStatusAtom, { phase: "ready", enabled: applied.enabled })
     } catch {
       if (current(request)) store.set(pageStatusAtom, { phase: "error" })
     }
@@ -71,6 +86,12 @@ export function createPopupSession(store: ReturnType<typeof createStore>) {
     const enabled = !state.enabled
     store.set(pageStatusAtom, { phase: "pending", enabled: state.enabled })
     try {
+      const found = await withDeadline(browser.tabs.get(tab.id))
+      if (!current(request)) return
+      if (found.url !== tab.url || found.status === "loading") {
+        await refresh()
+        return
+      }
       const applied = await withDeadline(
         sendMessage("applyPageTranslationCommandByTabId", { tabId: tab.id, url: tab.url, enabled }),
       )
@@ -83,9 +104,26 @@ export function createPopupSession(store: ReturnType<typeof createStore>) {
     }
   }
 
+  const onUpdated: Parameters<typeof browser.tabs.onUpdated.addListener>[0] = (tabId, change) => {
+    if (!active || store.get(popupTabAtom)?.id !== tabId) return
+    if (change.status === "loading" || change.url !== undefined) {
+      revision++
+      store.set(pageStatusAtom, { phase: "loading" })
+    }
+    if (change.status === "complete" || (change.url !== undefined && change.status !== "loading"))
+      void refresh()
+  }
+  const onRemoved: Parameters<typeof browser.tabs.onRemoved.addListener>[0] = (tabId) => {
+    if (!active || store.get(popupTabAtom)?.id !== tabId) return
+    revision++
+    store.set(pageStatusAtom, { phase: "error" })
+  }
+  browser.tabs.onUpdated.addListener(onUpdated)
+  browser.tabs.onRemoved.addListener(onRemoved)
+
   store.set(retryPageStatusAtom, {
     run: () => {
-      void refresh()
+      if (store.get(pageStatusAtom).phase !== "pending") void refresh()
     },
   })
   store.set(togglePageTranslationAtom, {
@@ -99,6 +137,8 @@ export function createPopupSession(store: ReturnType<typeof createStore>) {
       active = false
       revision++
       unwatch?.()
+      browser.tabs.onUpdated.removeListener(onUpdated)
+      browser.tabs.onRemoved.removeListener(onRemoved)
     },
   }
 }
