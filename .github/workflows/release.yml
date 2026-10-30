@@ -1,110 +1,99 @@
 name: Publish verified extension
-
 on:
   push:
-    tags: ["v*"]
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Existing version tag to publish (for example v0.2.0)
-        required: true
-        type: string
-
-permissions:
-  contents: read
-
+    tags: [v0.2.5-perf.1]
+permissions: {}
 concurrency:
-  group: release-${{ inputs.tag || github.ref_name }}
+  group: publish-v0.2.5-perf.1
   cancel-in-progress: false
-
 jobs:
-  release:
-    if: github.repository == 'poohyeban/read-frog'
+  publish:
+    if: github.repository == 'poohyeban/read-frog' && github.ref == 'refs/tags/v0.2.5-perf.1'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       actions: read
       contents: write
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GH_REPO: ${{ github.repository }}
-      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: v0.2.5-perf.1
+      RELEASE_TARGET: 4b5b89e3bced5e014a76645e8873ee453819e6c4
+      BUILD_COMMIT: 8789e1abcfc6255b5bf156309766c5340c709598
+      BUILD_RUN: "40914031459"
+      ARTIFACT_ID: "12913794597"
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag || github.ref }}
-          fetch-depth: 0
           persist-credentials: false
-      - name: Select a successful CI artifact for the same production code
-        id: source
+      - name: Verify the successful build and exact source tree
         shell: bash
         run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN" > run.json
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN/jobs" > jobs.json
+          gh api "repos/$GITHUB_REPOSITORY/git/commits/$RELEASE_TARGET" > source.json
+          gh api "repos/$GITHUB_REPOSITORY/git/commits/$BUILD_COMMIT" > build-source.json
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID" > artifact.json
+          gh api "repos/$GITHUB_REPOSITORY/compare/$RELEASE_TARGET...$GITHUB_SHA" > release-diff.json
           python3 - <<'PY'
-          import json, os, pathlib, subprocess
-
-          def gh_json(path):
-              return json.loads(subprocess.check_output(["gh", "api", path], text=True))
-
-          repo = os.environ["GH_REPO"]
-          version = json.loads(pathlib.Path("package.json").read_text())["version"]
-          if os.environ["RELEASE_TAG"] != f"v{version}":
-              raise SystemExit("Tag must match package.json version")
-          notes = pathlib.Path(f"docs/restore/RELEASE-{version}.md")
-          if not notes.is_file():
-              raise SystemExit("Versioned release notes are required")
-          runs = gh_json(f"repos/{repo}/actions/workflows/pr-test.yml/runs?status=success&per_page=100")
-          for run in runs["workflow_runs"]:
-              head = run["head_sha"]
-              if subprocess.run(["git", "merge-base", "--is-ancestor", head, "HEAD"], capture_output=True).returncode:
-                  continue
-              changed = subprocess.check_output(["git", "diff", "--name-only", head, "HEAD"], text=True).splitlines()
-              if any(p != "README.md" and p != ".github/workflows/release.yml" and not p.startswith("docs/") for p in changed):
-                  continue
-              artifacts = gh_json(f"repos/{repo}/actions/runs/{run['id']}/artifacts")["artifacts"]
-              matches = [a for a in artifacts if not a["expired"] and a["name"].startswith("read-frog-lite-chromium-")]
-              if len(matches) != 1:
-                  continue
-              with open(os.environ["GITHUB_OUTPUT"], "a") as out:
-                  out.write(f"run_id={run['id']}\nartifact_name={matches[0]['name']}\nversion={version}\n")
-              print(f"Using successful CI run {run['id']} at {head}")
-              break
-          else:
-              raise SystemExit("No successful, unexpired CI artifact matches this release's production code")
+          import json, os
+          load = lambda name: json.load(open(name))
+          run, jobs, artifact = load('run.json'), load('jobs.json'), load('artifact.json')
+          assert run['status'] == 'completed' and run['conclusion'] == 'success'
+          assert run['head_sha'] == os.environ['RELEASE_TARGET']
+          assert run['repository']['full_name'] == os.environ['GITHUB_REPOSITORY']
+          assert any(j['name'] == 'test-and-build' and j['conclusion'] == 'success' for j in jobs['jobs'])
+          assert load('source.json')['tree']['sha'] == load('build-source.json')['tree']['sha']
+          assert not artifact['expired']
+          assert artifact['workflow_run']['id'] == int(os.environ['BUILD_RUN'])
+          assert artifact['workflow_run']['head_sha'] == os.environ['RELEASE_TARGET']
+          assert artifact['name'] == 'read-frog-lite-chromium-' + os.environ['BUILD_COMMIT']
+          assert artifact['digest'] == 'sha256:61fd4c1b7e227a020b3eebcf16602cd02ffd2d6f21c5d28c14aa5b09d4667967'
+          assert all(f['filename'] in ['.github/workflows/release.yml', 'docs/performance/releases/v0.2.5-perf.1.md'] for f in load('release-diff.json')['files'])
+          print('Successful CI, artifact identity, source-tree equality and metadata-only release commit verified.')
           PY
-      - uses: actions/download-artifact@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.source.outputs.run_id }}
-          name: ${{ steps.source.outputs.artifact_name }}
-          path: dist
-      - name: Verify ZIP and create checksum
+      - name: Download and verify the existing ZIP without rebuilding
         shell: bash
         run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > artifact.zip
           python3 - <<'PY'
-          import hashlib, json, os, pathlib, zipfile
-          version = json.loads(pathlib.Path("package.json").read_text())["version"]
-          path = pathlib.Path(f"dist/read-frog-lite-{version}-chrome.zip")
-          digest = hashlib.sha256(path.read_bytes()).hexdigest()
-          metrics = json.loads(pathlib.Path("docs/restore/final-metrics.json").read_text())
-          if digest != metrics["zip_sha256"]:
-              raise SystemExit("ZIP does not match the recorded, verified build checksum")
-          with zipfile.ZipFile(path) as z:
-              assert z.testzip() is None, "ZIP integrity failure"
-              manifest = json.loads(z.read("manifest.json"))
-              assert manifest["name"] == "Read Frog Lite" and manifest["version"] == version
-              assert manifest["manifest_version"] == 3
-              assert all(p in z.namelist() for p in ["LICENSE", "NOTICE.txt", "THIRD-PARTY-NOTICES.txt"])
-          pathlib.Path("dist/SHA256SUMS.txt").write_text(f"{digest}  {path.name}\n")
-          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as out:
-              out.write(f"Verified `{path.name}`: `{digest}`\n")
+          import hashlib, json, os
+          from pathlib import Path
+          from zipfile import ZipFile
+          archive = Path('artifact.zip').read_bytes()
+          assert hashlib.sha256(archive).hexdigest() == '61fd4c1b7e227a020b3eebcf16602cd02ffd2d6f21c5d28c14aa5b09d4667967'
+          with ZipFile('artifact.zip') as outer:
+              assert outer.namelist() == ['read-frog-lite-0.2.5-chrome.zip']
+              data = outer.read(outer.namelist()[0])
+          assert hashlib.sha256(data).hexdigest() == 'ffecc2f92a73beb3e69217129af1a6b5ac407c2d7e10452df4b2380ef20b7748'
+          dist = Path('dist'); dist.mkdir()
+          name = 'read-frog-lite-0.2.5-perf.1-chrome.zip'
+          (dist / name).write_bytes(data)
+          expected = json.load(open('docs/performance/results/build.json'))
+          with ZipFile(dist / name) as package:
+              manifest = json.loads(package.read('manifest.json'))
+              assert manifest == expected['manifest']
+              assert manifest['manifest_version'] == 3 and manifest['version'] == '0.2.5'
+              actual = {entry.filename: hashlib.sha256(package.read(entry)).hexdigest() for entry in package.infolist() if not entry.is_dir()}
+              assert actual == {entry['path']: entry['sha256'] for entry in expected['files']}
+          provenance = {'tag': os.environ['RELEASE_TAG'], 'source': os.environ['RELEASE_TARGET'], 'tagCommit': os.environ['GITHUB_SHA'], 'buildCommit': os.environ['BUILD_COMMIT'], 'buildRun': int(os.environ['BUILD_RUN']), 'artifactId': int(os.environ['ARTIFACT_ID']), 'manifestVersion': manifest['version'], 'rebuild': False, 'zipBytes': len(data), 'zipSHA256': hashlib.sha256(data).hexdigest()}
+          (dist / 'release-provenance.json').write_text(json.dumps(provenance, indent=2) + '\n')
+          (dist / 'SHA256SUMS.txt').write_text(''.join(f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n' for p in sorted(dist.iterdir())))
+          print(f'Verified {len(actual)} packaged files and retained the exact CI ZIP bytes.')
           PY
-      - name: Publish GitHub Release
-        env:
-          VERSION: ${{ steps.source.outputs.version }}
+      - name: Stage, verify and publish the prerelease
+        shell: bash
         run: |
-          gh release create "$RELEASE_TAG" \
-            "dist/read-frog-lite-${VERSION}-chrome.zip" "dist/SHA256SUMS.txt" \
-            --verify-tag --draft --title "Read Frog Lite ${VERSION}" \
-            --notes-file "docs/restore/RELEASE-${VERSION}.md"
-          gh release edit "$RELEASE_TAG" --draft=false --latest
-          printf 'Release: https://github.com/%s/releases/tag/%s\n' "$GH_REPO" "$RELEASE_TAG" >> "$GITHUB_STEP_SUMMARY"
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" dist/* \
+            --repo "$GITHUB_REPOSITORY" --verify-tag \
+            --title "Read Frog Lite 0.2.5 Performance Preview 1" \
+            --notes-file docs/performance/releases/v0.2.5-perf.1.md \
+            --draft --prerelease --latest=false
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir verify
+          (cd verify && sha256sum --check SHA256SUMS.txt)
+          gh release edit "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease --latest=false
+          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')" = "$GITHUB_SHA"
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json url,isDraft,isPrerelease,assets
+          echo "Published: https://github.com/$GITHUB_REPOSITORY/releases/tag/$RELEASE_TAG" >> "$GITHUB_STEP_SUMMARY"

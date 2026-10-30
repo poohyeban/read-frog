@@ -1,101 +1,112 @@
-name: Publish verified extension
+name: Read Frog Lite - Test and ZIP
 on:
+  push:
+    branches: [codex/read-frog-independent]
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened]
-    paths:
-      - .github/workflows/pr-test.yml
-      - docs/performance/releases/v0.2.5-perf.1.md
-permissions: {}
+  workflow_dispatch:
+permissions:
+  contents: read
 concurrency:
-  group: publish-v0.2.5-perf.1
-  cancel-in-progress: false
+  group: lite-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  SKIP_FREE_API: "true"
 jobs:
-  publish:
-    if: github.repository == 'poohyeban/read-frog' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'codex/publish-025-perf-1'
+  test-and-build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      actions: read
-      contents: write
-    env:
-      GH_TOKEN: ${{ github.token }}
-      RELEASE_TAG: v0.2.5-perf.1
-      RELEASE_TARGET: 4b5b89e3bced5e014a76645e8873ee453819e6c4
-      BUILD_COMMIT: 8789e1abcfc6255b5bf156309766c5340c709598
-      BUILD_RUN: "40914031459"
-      ARTIFACT_ID: "12913794597"
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          persist-credentials: false
-      - name: Verify the successful build and exact source tree
-        shell: bash
+          node-version: 24
+      - run: git fetch --no-tags origin 18f2c8cbfddc3df5e4b7552a48b1731c28ac4cfd
+      - run: npm install --global pnpm@12.10.1
+      - run: pnpm install --frozen-lockfile
+      - name: Lint and TypeScript
+        run: pnpm lint
+      - name: Architecture boundaries
+        run: pnpm check:architecture
+      - name: Unit and local protocol tests
+        run: pnpm test --maxWorkers=4
+      - name: Chromium production ZIP
+        id: build
+        run: pnpm zip
+      - name: Production content-script boundaries
+        run: pnpm check:architecture --build
+      - name: Upload unpackable MV3 extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: read-frog-lite-chromium-${{ github.sha }}
+          path: .output/*-chrome.zip
+          if-no-files-found: error
+          retention-days: 30
+          include-hidden-files: true
+      - name: Install Chromium for real extension tests
+        id: browser-install
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Extension browser regression
+        if: ${{ !cancelled() && steps.browser-install.outcome == 'success' }}
+        run: xvfb-run --auto-servernum pnpm test:e2e
+      - name: Upload browser test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-report-${{ github.sha }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  performance-report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install --global pnpm@12.10.1
+      - run: pnpm install --frozen-lockfile
+      - name: Record raw synthetic and React Profiler samples
+        run: pnpm perf:report
+      - name: Compare isolated icon entry sizes
+        run: pnpm perf:icons
+      - name: Record production build graph and sizes
         run: |
-          set -euo pipefail
-          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN" > run.json
-          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN/jobs" > jobs.json
-          gh api "repos/$GITHUB_REPOSITORY/git/commits/$RELEASE_TARGET" > source.json
-          gh api "repos/$GITHUB_REPOSITORY/git/commits/$BUILD_COMMIT" > build-source.json
-          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID" > artifact.json
-          python3 - <<'PY'
-          import json, os
-          load = lambda name: json.load(open(name))
-          run, jobs, artifact = load('run.json'), load('jobs.json'), load('artifact.json')
-          assert run['status'] == 'completed' and run['conclusion'] == 'success'
-          assert run['head_sha'] == os.environ['RELEASE_TARGET']
-          assert run['repository']['full_name'] == os.environ['GITHUB_REPOSITORY']
-          assert any(j['name'] == 'test-and-build' and j['conclusion'] == 'success' for j in jobs['jobs'])
-          assert load('source.json')['tree']['sha'] == load('build-source.json')['tree']['sha']
-          assert not artifact['expired']
-          assert artifact['workflow_run']['id'] == int(os.environ['BUILD_RUN'])
-          assert artifact['workflow_run']['head_sha'] == os.environ['RELEASE_TARGET']
-          assert artifact['name'] == 'read-frog-lite-chromium-' + os.environ['BUILD_COMMIT']
-          assert artifact['digest'] == 'sha256:61fd4c1b7e227a020b3eebcf16602cd02ffd2d6f21c5d28c14aa5b09d4667967'
-          print('Successful CI, artifact identity and source-tree equality verified.')
-          PY
-      - name: Download and verify the existing ZIP without rebuilding
-        shell: bash
+          pnpm build:analyze
+          node scripts/build-fingerprint.mjs
+      - name: Install browser for production UI observations
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Record production UI navigation timings
+        run: PERF_BROWSER=true xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
+      - name: Rebuild the pinned 0.2.5 baseline in isolation
         run: |
-          set -euo pipefail
-          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > artifact.zip
-          python3 - <<'PY'
-          import hashlib, json, os
-          from pathlib import Path
-          from zipfile import ZipFile
-          archive = Path('artifact.zip').read_bytes()
-          assert hashlib.sha256(archive).hexdigest() == '61fd4c1b7e227a020b3eebcf16602cd02ffd2d6f21c5d28c14aa5b09d4667967'
-          with ZipFile('artifact.zip') as outer:
-              assert outer.namelist() == ['read-frog-lite-0.2.5-chrome.zip']
-              data = outer.read(outer.namelist()[0])
-          assert hashlib.sha256(data).hexdigest() == 'ffecc2f92a73beb3e69217129af1a6b5ac407c2d7e10452df4b2380ef20b7748'
-          dist = Path('dist'); dist.mkdir()
-          name = 'read-frog-lite-0.2.5-perf.1-chrome.zip'
-          (dist / name).write_bytes(data)
-          expected = json.load(open('docs/performance/results/build.json'))
-          with ZipFile(dist / name) as package:
-              manifest = json.loads(package.read('manifest.json'))
-              assert manifest == expected['manifest']
-              assert manifest['manifest_version'] == 3 and manifest['version'] == '0.2.5'
-              actual = {entry.filename: hashlib.sha256(package.read(entry)).hexdigest() for entry in package.infolist() if not entry.is_dir()}
-              assert actual == {entry['path']: entry['sha256'] for entry in expected['files']}
-          provenance = {'tag': os.environ['RELEASE_TAG'], 'source': os.environ['RELEASE_TARGET'], 'buildCommit': os.environ['BUILD_COMMIT'], 'buildRun': int(os.environ['BUILD_RUN']), 'artifactId': int(os.environ['ARTIFACT_ID']), 'manifestVersion': manifest['version'], 'rebuild': False, 'zipBytes': len(data), 'zipSHA256': hashlib.sha256(data).hexdigest()}
-          (dist / 'release-provenance.json').write_text(json.dumps(provenance, indent=2) + '\n')
-          (dist / 'SHA256SUMS.txt').write_text(''.join(f'{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n' for p in sorted(dist.iterdir())))
-          print(f'Verified {len(actual)} packaged files and retained the exact CI ZIP bytes.')
-          PY
-      - name: Stage, verify and publish the prerelease
-        shell: bash
+          git fetch --no-tags origin 18f2c8cbfddc3df5e4b7552a48b1731c28ac4cfd
+          git worktree add --detach "$RUNNER_TEMP/read-frog-025" 18f2c8cbfddc3df5e4b7552a48b1731c28ac4cfd
+          cd "$RUNNER_TEMP/read-frog-025"
+          pnpm install --frozen-lockfile
+          pnpm build
+          node "$GITHUB_WORKSPACE/scripts/build-fingerprint.mjs"
+          cp scripts/output/performance/build.json "$GITHUB_WORKSPACE/scripts/output/performance/baseline-build.json"
+      - name: Record the same production UI script against the baseline
+        run: PERF_BROWSER=true PERF_LABEL=baseline PERF_EXTENSION_PATH="$RUNNER_TEMP/read-frog-025/.output/chrome-mv3" xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
+      - name: Repeat production observations in reverse order
         run: |
-          set -euo pipefail
-          gh release create "$RELEASE_TAG" dist/* \
-            --repo "$GITHUB_REPOSITORY" --target "$RELEASE_TARGET" \
-            --title "Read Frog Lite 0.2.5 Performance Preview 1" \
-            --notes-file docs/performance/releases/v0.2.5-perf.1.md \
-            --draft --prerelease --latest=false
-          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir verify
-          (cd verify && sha256sum --check SHA256SUMS.txt)
-          gh release edit "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease --latest=false
-          test "$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')" = "$RELEASE_TARGET"
-          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json url,isDraft,isPrerelease,assets
-          echo "Published: https://github.com/$GITHUB_REPOSITORY/releases/tag/$RELEASE_TAG" >> "$GITHUB_STEP_SUMMARY"
+          PERF_BROWSER=true PERF_LABEL=baseline-repeat PERF_EXTENSION_PATH="$RUNNER_TEMP/read-frog-025/.output/chrome-mv3" xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
+          PERF_BROWSER=true PERF_LABEL=current-repeat xvfb-run --auto-servernum pnpm test:e2e e2e/ui-performance.spec.ts
+      - name: Upload performance observations (no timing thresholds)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-observations-${{ github.sha }}
+          path: |
+            scripts/output/performance/
+            stats.html
+          if-no-files-found: warn
+          retention-days: 30
+          include-hidden-files: true
