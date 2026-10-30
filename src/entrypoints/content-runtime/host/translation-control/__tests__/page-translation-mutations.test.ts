@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { GIANT_SPLIT_STRANDED_TEXT_MAX_UNITS } from "@/utils/constants/translate"
 import {
@@ -16,6 +16,7 @@ import {
   type BilingualTranslationState,
   type VirtualParagraphGroup,
 } from "@/utils/host/translate/core/translation-state"
+import { pageLocalScheduler } from "@/utils/host/translate/local-scheduler"
 import { PageTranslationManager } from "../page-translation"
 
 const {
@@ -167,6 +168,9 @@ class MockIntersectionObserver {
 async function flushDomUpdates(): Promise<void> {
   await Promise.resolve()
   await new Promise((resolve) => setTimeout(resolve, 0))
+  // Mutation discovery may yield across several frame budgets. One timer tick
+  // does not mean every shadow paragraph has been registered on a busy runner.
+  await vi.waitFor(() => expect(pageLocalScheduler.pending).toBe(0), { interval: 1 })
   await Promise.resolve()
 }
 
@@ -277,6 +281,7 @@ function walkAndLabelVisibleParagraphs(
 }
 
 describe("pageTranslationManager mutation re-walk", () => {
+  afterEach(() => vi.restoreAllMocks())
   beforeEach(() => {
     vi.clearAllMocks()
     intersectionObservers.length = 0
@@ -1436,6 +1441,9 @@ describe("pageTranslationManager mutation re-walk", () => {
   ] as const)(
     "handles %s after sibling CSS reveals a depth-%i shadow tree",
     async (mutationType, depth) => {
+      // Force the production scheduler across frame budgets on every runner.
+      let schedulerClock = 0
+      vi.spyOn(performance, "now").mockImplementation(() => (schedulerClock += 10))
       document.head.innerHTML = `<style>.collapsed + [data-shadow-host] { display: none; }</style>`
       document.body.innerHTML = `<p id="summary">Original summary</p>`
       mockIsDontWalkIntoAndDontTranslateAsChildElement.mockImplementation(
@@ -1640,6 +1648,8 @@ describe("pageTranslationManager mutation re-walk", () => {
   it.each(["current source", "new source", "unblocked source"])(
     "walks nested shadow content once under a %s (#2185)",
     async (sourceKind) => {
+      let schedulerClock = 0
+      vi.spyOn(performance, "now").mockImplementation(() => (schedulerClock += 10))
       document.body.innerHTML = `<p id="summary">Original summary</p>`
 
       const manager = new PageTranslationManager()
