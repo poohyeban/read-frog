@@ -74,6 +74,7 @@ export function setupPageTranslationHandlers(): void {
         forceRetranslation = false,
         glossaryTerms,
         glossaryRevision,
+        promptConfig,
       },
     } = message
     const scope = buildTranslationScopeKey(message.sender, sessionId)
@@ -124,6 +125,7 @@ export function setupPageTranslationHandlers(): void {
         glossaryTerms,
         glossaryRevision,
         scope,
+        promptConfig,
       }
       result = await batchQueue.enqueue(data)
     } else {
@@ -174,7 +176,8 @@ export function setupPageTranslationHandlers(): void {
 
   onMessage("getOrGenerateWebPageSummary", async (message) => {
     const { requestQueue } = await queuesPromise
-    const { webTitle, webContent, providerRef } = message.data
+    const { webTitle, webContent, providerRef, sessionId } = message.data
+    const scope = buildTranslationScopeKey(message.sender, sessionId)
 
     if (!webTitle || !webContent) {
       return null
@@ -195,6 +198,8 @@ export function setupPageTranslationHandlers(): void {
       textContent: webContent,
       cacheKeyParts: [webTitle, Sha256Hex(cleanText(webContent))],
       requestQueue,
+      scope,
+      isScopeCancelled: (key) => cancelledScopes.has(key),
     })
   })
 

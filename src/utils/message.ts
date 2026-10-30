@@ -122,6 +122,7 @@ interface ProtocolMap {
       // for cancelPageTranslationRequests. Absent for non-page requests
       // (input/selection translation), which are never cancellable.
       sessionId?: string
+      promptConfig?: Pick<Config["pageTranslation"], "customPromptsConfig">
       forceRetranslation?: boolean
 
       // scoped elsewhere does not — the background serves every tab and cannot
@@ -137,6 +138,7 @@ interface ProtocolMap {
     data: ProviderRequestRouting<PromptableProviderRef> & {
       webTitle: string
       webContent: string
+      sessionId?: string
     },
   ) => Promise<string | null>
 

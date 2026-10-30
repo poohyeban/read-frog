@@ -30,7 +30,8 @@ vi.mock("@/utils/host/translate/execute-translate", () => ({
   executeTranslate: executeTranslateMock,
 }))
 
-vi.mock("@/utils/content/summary", () => ({
+vi.mock("@/utils/content/summary", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/content/summary")>()),
   generateArticleSummary: generateArticleSummaryMock,
 }))
 

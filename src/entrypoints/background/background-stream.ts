@@ -554,7 +554,7 @@ export async function generateTextForProviderRef(
   payload: BackgroundGenerateTextPayload,
   options: { signal?: AbortSignal } = {},
 ): Promise<string> {
-  const { providerRef, instructions, prompt, maxRetries } = payload
+  const { providerRef, instructions, prompt, maxRetries, maxOutputTokens } = payload
   const { signal } = options
 
   if (signal?.aborted) {
@@ -577,7 +577,7 @@ export async function generateTextForProviderRef(
   // for a row deleted from another tab while the config was already in hand.
   const model = getLanguageModelForConfig(providerRef.config)
   try {
-    const { text } = await generateText({
+    const { text, finishReason } = await generateText({
       model,
       instructions,
       prompt,
@@ -585,13 +585,20 @@ export async function generateTextForProviderRef(
       // against the token bucket; ai-sdk's hidden default (2) would issue extra
       // HTTP attempts invisible to the rate limiter.
       maxRetries: maxRetries ?? 0,
+      maxOutputTokens,
       abortSignal: signal,
       ...buildLocalGenerateTextParams(providerRef.config),
     })
+    signal?.throwIfAborted()
+    if (maxOutputTokens !== undefined && finishReason === "length") {
+      throw new Error("Article summary output budget exhausted")
+    }
     return text.trim()
   } catch (error) {
+    if (signal?.aborted) throw signal.reason
+    if (isAbortLikeError(error)) throw error
     throw attachRequestErrorMeta(
-      new Error(extractAISDKErrorMessage(error)),
+      new Error(extractAISDKErrorMessage(error), { cause: error }),
       getRequestErrorMeta(error),
     )
   }
