@@ -24,6 +24,7 @@ function sanitizeFilenamePart(value: string): string {
 }
 
 export function formatSrtTimestamp(timeMs: number): string {
+  if (!Number.isFinite(timeMs)) throw new Error("Invalid subtitle timestamp")
   const safeTimeMs = Math.max(0, Math.floor(timeMs))
   const hours = Math.floor(safeTimeMs / 3_600_000)
   const minutes = Math.floor((safeTimeMs % 3_600_000) / 60_000)
@@ -47,6 +48,8 @@ function normalizeSubtitleFragment(fragment: SubtitlesFragment): SubtitlesFragme
     return null
   }
 
+  if (!Number.isFinite(fragment.start) || !Number.isFinite(fragment.end))
+    throw new Error("Invalid subtitle timestamp")
   const start = Math.max(0, Math.floor(fragment.start))
   const end = Math.max(start + 1, Math.floor(fragment.end))
 
@@ -62,6 +65,7 @@ export function buildSubtitlesSrtContent(subtitles: SubtitlesFragment[]): string
   return subtitles
     .map(normalizeSubtitleFragment)
     .filter((fragment): fragment is SubtitlesFragment => fragment !== null)
+    .sort((a, b) => a.start - b.start || a.end - b.end)
     .map((fragment, index) => {
       return [
         String(index + 1),

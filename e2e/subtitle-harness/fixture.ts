@@ -11,3 +11,5 @@ export const DEFAULT_SECTION_ID = "transcript"
 
 export const browser = { runtime: { id: "subtitle-benchmark" } }
 export const storage = { watch: () => () => {} }
+
+export const ensureInitializedConfig = getLocalConfig

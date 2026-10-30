@@ -15,6 +15,7 @@ import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { resolveLanguageCodeFromLocale } from "@/utils/content/page-language"
 import { i18n } from "@/utils/i18n"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
+import { cueIdentity } from "@/utils/subtitles/cue-timeline"
 import { aiSegmentBlock } from "@/utils/subtitles/processor/ai-segmentation"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
 import {
@@ -72,13 +73,18 @@ export class TranslatedSubtitlesDownloader {
     this.setStatus(TranslatedDownloadPhase.Checking, null)
 
     try {
-      const configSnapshot = await getLocalConfig()
+      const loadedConfig = await getLocalConfig()
+      const configSnapshot = loadedConfig ? structuredClone(loadedConfig) : null
       this.assertActive(operationId)
       if (!configSnapshot) {
         throw new Error(i18n.t("subtitles.errors.translatedExportFailed"))
       }
 
-      const sourceSubtitles = await this.fetcher.fetch()
+      const sourceSubtitles = [...(await this.fetcher.fetch())].sort(
+        (a, b) => a.start - b.start || a.end - b.end,
+      )
+      if (sourceSubtitles.some((c) => !Number.isFinite(c.start) || !Number.isFinite(c.end)))
+        throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
       this.assertActive(operationId)
       if (sourceSubtitles.length === 0) {
         throw new Error(i18n.t("subtitles.errors.noSubtitlesFound"))
@@ -230,7 +236,7 @@ export class TranslatedSubtitlesDownloader {
           )
           this.assertActive(operationId)
           if (
-            translatedBatch.length !== batch.length ||
+            !this.matchesRequestedCues(batch, translatedBatch) ||
             this.hasIncompleteTranslatedFragments(translatedBatch)
           ) {
             throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
@@ -257,11 +263,34 @@ export class TranslatedSubtitlesDownloader {
       throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
     }
 
-    return translatedFragments
+    return translatedFragments.sort((a, b) => a.start - b.start || a.end - b.end)
+  }
+
+  private matchesRequestedCues(
+    requested: SubtitlesFragment[],
+    result: SubtitlesFragment[],
+  ): boolean {
+    if (requested.length !== result.length) return false
+    const remaining = new Map<string, number>()
+    for (const cue of requested) {
+      const key = cueIdentity(cue)
+      remaining.set(key, (remaining.get(key) ?? 0) + 1)
+    }
+    for (const cue of result) {
+      const key = cueIdentity(cue),
+        count = remaining.get(key) ?? 0
+      if (!count) return false
+      remaining.set(key, count - 1)
+    }
+    return true
   }
 
   private hasIncompleteTranslatedFragments(fragments: SubtitlesFragment[]): boolean {
-    return fragments.some((fragment) => !fragment.translation?.trim())
+    return fragments.some(
+      (fragment) =>
+        !fragment.translation?.trim() ||
+        (fragment.translationOutcome && fragment.translationOutcome.status !== "success"),
+    )
   }
 
   private buildTranslationBatches(fragments: SubtitlesFragment[]): SubtitlesFragment[][] {

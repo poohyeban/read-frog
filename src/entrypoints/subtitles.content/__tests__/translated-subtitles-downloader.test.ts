@@ -527,4 +527,33 @@ describe("translatedSubtitlesDownloader", () => {
 
     expect(status()).toEqual({ phase: TranslatedDownloadPhase.Idle, progress: null })
   })
+  it("rejects duplicate/mismatched results even when their count and nonempty translations match", async () => {
+    const fragments = lines(3)
+    mocks.translateSubtitles.mockResolvedValue([
+      translated(fragments)[0],
+      translated(fragments)[0],
+      translated(fragments)[2],
+    ])
+    const { downloader } = createDownloader(fragments)
+    await downloader.download()
+    expect(mocks.downloadSubtitlesAsSrt).not.toHaveBeenCalled()
+    expect(mocks.toastAdd).toHaveBeenCalledWith(expect.objectContaining({ type: "error" }))
+    downloader.dispose()
+  })
+  it("exports a shuffled source exactly once in timeline order", async () => {
+    const fragments = lines(12)
+    const { downloader } = createDownloader([...fragments].reverse())
+    await downloader.download()
+    const result = mocks.downloadSubtitlesAsSrt.mock.calls[0]![0].subtitles as SubtitlesFragment[]
+    expect(result.map((c) => c.start)).toEqual(fragments.map((c) => c.start))
+    expect(new Set(result.map((c) => c.text)).size).toBe(12)
+    downloader.dispose()
+  })
+  it("fails before model work for nonfinite source timestamps", async () => {
+    const { downloader } = createDownloader([{ text: "invalid", start: NaN, end: Infinity }])
+    await downloader.download()
+    expect(mocks.translateSubtitles).not.toHaveBeenCalled()
+    expect(mocks.downloadSubtitlesAsSrt).not.toHaveBeenCalled()
+    downloader.dispose()
+  })
 })

@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs"
 import { readFile, writeFile, mkdir } from "node:fs/promises"
 import { resolve } from "node:path"
 import { chromium } from "@playwright/test"
@@ -15,6 +16,8 @@ const substitute = {
   "@/utils/atoms/config": "fixture.ts",
   "@/utils/message": "fixture.ts",
   "@/utils/i18n": "fixture.ts",
+  "@/entrypoints/background/config": "fixture.ts",
+  "@/utils/host/translate/execute-translate": "queue-model.ts",
   "@/utils/subtitles/processor/translator": "model.ts",
   "@/utils/subtitles/processor/ai-segmentation": "model.ts",
 }
@@ -24,7 +27,16 @@ await build({
     {
       name: "controlled-subtitle-provider",
       enforce: "pre",
-      resolveId(id) {
+      resolveId(id, importer) {
+        if (id === "./config" && importer?.endsWith("background/translation-queues.ts"))
+          return resolve(harness, "fixture.ts")
+        if (
+          id === "@/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/list" &&
+          !existsSync(
+            `${source}/src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/list.tsx`,
+          )
+        )
+          return resolve(harness, "fallback-list.tsx")
         if (
           id.endsWith("ui/subtitles-sidebar/sections") ||
           id.endsWith("ui/subtitles-settings-panel/views")
@@ -48,7 +60,11 @@ await build({
   build: {
     outDir: buildRoot,
     emptyOutDir: true,
-    lib: { entry: `${harness}/entry.tsx`, formats: ["es"], fileName: () => "benchmark.js" },
+    lib: {
+      entry: `${harness}/${process.env.BENCHMARK_KIND ? `${process.env.BENCHMARK_KIND}-entry` : "entry"}.tsx`,
+      formats: ["es"],
+      fileName: () => "benchmark.js",
+    },
     minify: true,
   },
   define: { "process.env.NODE_ENV": '"production"' },

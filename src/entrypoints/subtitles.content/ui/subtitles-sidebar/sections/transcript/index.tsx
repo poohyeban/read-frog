@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/base-ui/skeleton"
 import { i18n } from "@/utils/i18n"
 import { useSubtitlesUI } from "../../../subtitles-ui-context"
 import { StatusCard } from "../status-card"
-import { TranscriptRow } from "./row"
+import { TranscriptList, TRANSCRIPT_VIRTUALIZATION_THRESHOLD } from "./list"
 import { useActiveRowVisibility } from "./use-active-row-visibility"
 import { useFollowIntent } from "./use-follow-intent"
 import { useTranscriptLines } from "./use-transcript-lines"
@@ -51,7 +51,10 @@ export function TranscriptSection() {
   const rootRef = useRef<HTMLDivElement>(null)
   const [activeRow, setActiveRow] = useState<HTMLButtonElement | null>(null)
   const { following, resume, intentProps } = useFollowIntent(rootRef, videoId, lines.length > 0)
-  const activeAbove = useActiveRowVisibility(rootRef, activeRow, following)
+  const [virtualActiveAbove, setVirtualActiveAbove] = useState(false)
+  const virtual = lines.length > TRANSCRIPT_VIRTUALIZATION_THRESHOLD
+  const nativeActiveAbove = useActiveRowVisibility(rootRef, virtual ? null : activeRow, following)
+  const activeAbove = virtual ? virtualActiveAbove : nativeActiveAbove
 
   if (lines.length === 0) {
     return match(query)
@@ -95,17 +98,14 @@ export function TranscriptSection() {
           {backToCurrent}
         </div>
       )}
-      <div className="space-y-1 p-2">
-        {lines.map((line, index) => (
-          <TranscriptRow
-            key={line.start}
-            line={line}
-            isActive={index === activeIndex}
-            activeRowRef={index === activeIndex ? setActiveRow : undefined}
-            onSeek={seekTo}
-          />
-        ))}
-      </div>
+      <TranscriptList
+        lines={lines}
+        activeIndex={activeIndex}
+        following={following}
+        onSeek={seekTo}
+        activeRowRef={setActiveRow}
+        onActiveAboveChange={setVirtualActiveAbove}
+      />
 
       {!following && !activeAbove && (
         <div className="pointer-events-none sticky bottom-3 z-10 flex h-0 items-end justify-center">
