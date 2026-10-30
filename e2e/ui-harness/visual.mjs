@@ -162,15 +162,17 @@ try {
     await ai.press("Space")
     await expect(ai).toHaveAttribute("aria-checked", before === "true" ? "false" : "true")
     timings.switchFeedback = performance.now() - start
-    await page.waitForFunction(() => window.__uiTrace.calls.some((c) => c.name === "storage.set"))
+    await page.waitForFunction(
+      () => window.__uiTrace.calls.filter((c) => c.name === "storage.set" && c.end).length >= 2,
+    )
   }
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
     const config = structuredClone(window.__uiFixture.values.readFrogLiteConfig)
     config.uiLanguage = "zh-CN"
-    window.__uiFixture.values.readFrogLiteConfig = config
-    window.__uiFixture.changed.emit({ readFrogLiteConfig: { newValue: config } }, "local")
+    await window.browser.storage.local.set({ readFrogLiteConfig: config })
   })
-  await expect(page.getByLabel("源语言", { exact: true })).toBeVisible()
+  await expect(page.getByLabel("来源语言", { exact: true })).toBeVisible()
+  await page.locator("#root").screenshot({ path: `${output}/runtime-language-switch.png` })
   expect(errors).toEqual([])
   results.push({ name: "interactions", timings, errors })
   await context.close()

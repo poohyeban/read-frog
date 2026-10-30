@@ -1,0 +1,537 @@
+{
+  "root": "/workspace/read-frog/.output/chrome-mv3",
+  "method": "Transitive static import/export graph plus HTML modulepreload/CSS; gzip informational, extension resources are local",
+  "entries": {
+    "popup": {
+      "js": 987241,
+      "css": 206833,
+      "gzip": 359363,
+      "assets": [
+        {
+          "file": "chunks/theme-ZJCxwwz0.js",
+          "bytes": 351667,
+          "gzip": 106911
+        },
+        {
+          "file": "chunks/storage-DzPcpBxV.js",
+          "bytes": 328453,
+          "gzip": 105270
+        },
+        {
+          "file": "assets/theme-BrFsAg62.css",
+          "bytes": 206749,
+          "gzip": 31934
+        },
+        {
+          "file": "chunks/useRegisterFieldControl-DzZ-VZHg.js",
+          "bytes": 54538,
+          "gzip": 21703
+        },
+        {
+          "file": "chunks/popup-DDipg4lv.js",
+          "bytes": 47889,
+          "gzip": 15967
+        },
+        {
+          "file": "chunks/createReactComponent-P7Hg_wH_.js",
+          "bytes": 47081,
+          "gzip": 17619
+        },
+        {
+          "file": "chunks/combobox-BSpHXXEf.js",
+          "bytes": 39141,
+          "gzip": 13678
+        },
+        {
+          "file": "chunks/select-DOrT82yD.js",
+          "bytes": 30362,
+          "gzip": 10558
+        },
+        {
+          "file": "chunks/os-D-OZWBUF.js",
+          "bytes": 20671,
+          "gzip": 7297
+        },
+        {
+          "file": "chunks/ItemIndicator-B40wrh96.js",
+          "bytes": 11171,
+          "gzip": 4702
+        },
+        {
+          "file": "chunks/mutation-BQW3M-t8.js",
+          "bytes": 10941,
+          "gzip": 3862
+        },
+        {
+          "file": "chunks/query-DTTq9YlU.js",
+          "bytes": 7616,
+          "gzip": 2635
+        },
+        {
+          "file": "chunks/useOpenChangeComplete-B514d-qT.js",
+          "bytes": 6980,
+          "gzip": 2636
+        },
+        {
+          "file": "chunks/switch-D_cXkFFF.js",
+          "bytes": 5481,
+          "gzip": 2584
+        },
+        {
+          "file": "chunks/button-BRBk2TEc.js",
+          "bytes": 4377,
+          "gzip": 1376
+        },
+        {
+          "file": "chunks/url-pattern-CS9CpmBL.js",
+          "bytes": 4286,
+          "gzip": 1698
+        },
+        {
+          "file": "chunks/useCompositeListItem-BD_BzULU.js",
+          "bytes": 3326,
+          "gzip": 1475
+        },
+        {
+          "file": "chunks/message-BoP1aqTW.js",
+          "bytes": 3052,
+          "gzip": 1237
+        },
+        {
+          "file": "chunks/node-hotkey-icon-DPrOsgj3.js",
+          "bytes": 1170,
+          "gzip": 597
+        },
+        {
+          "file": "chunks/navigation-_BWeSWSH.js",
+          "bytes": 1134,
+          "gzip": 593
+        },
+        {
+          "file": "chunks/provider-B5oLVCZJ.js",
+          "bytes": 990,
+          "gzip": 548
+        },
+        {
+          "file": "chunks/dist-QJDFOEJg.js",
+          "bytes": 960,
+          "gzip": 515
+        },
+        {
+          "file": "chunks/built-in-prompts-D1U7_aRj.js",
+          "bytes": 795,
+          "gzip": 351
+        },
+        {
+          "file": "chunks/IconSettings-CWsNNMg9.js",
+          "bytes": 720,
+          "gzip": 347
+        },
+        {
+          "file": "chunks/_virtual_wxt-html-plugins-BaAyCpKt.js",
+          "bytes": 713,
+          "gzip": 426
+        },
+        {
+          "file": "chunks/useAriaLabelledBy-p4oG2GF3.js",
+          "bytes": 585,
+          "gzip": 395
+        },
+        {
+          "file": "chunks/language-combobox-options-BTsru-9q.js",
+          "bytes": 526,
+          "gzip": 290
+        },
+        {
+          "file": "chunks/help-tooltip-DkVFoIUc.js",
+          "bytes": 482,
+          "gzip": 310
+        },
+        {
+          "file": "chunks/languages-BuI_Wy_b.js",
+          "bytes": 420,
+          "gzip": 278
+        },
+        {
+          "file": "chunks/useControlled-j2P9haLf.js",
+          "bytes": 309,
+          "gzip": 248
+        },
+        {
+          "file": "chunks/language-labels-CRDTy1Bj.js",
+          "bytes": 250,
+          "gzip": 194
+        },
+        {
+          "file": "chunks/CSPContext-CWgmJUR1.js",
+          "bytes": 225,
+          "gzip": 193
+        },
+        {
+          "file": "chunks/resolveAriaLabelledBy-BJD39Y_Q.js",
+          "bytes": 221,
+          "gzip": 175
+        },
+        {
+          "file": "chunks/getHighlightReason-CdffJEuO.js",
+          "bytes": 206,
+          "gzip": 167
+        },
+        {
+          "file": "chunks/serializeValue-B_EucO5O.js",
+          "bytes": 133,
+          "gzip": 124
+        },
+        {
+          "file": "chunks/provider-display-Bu6x3TxS.js",
+          "bytes": 128,
+          "gzip": 128
+        },
+        {
+          "file": "chunks/isElementDisabled-KSuuBj8D.js",
+          "bytes": 114,
+          "gzip": 110
+        },
+        {
+          "file": "chunks/stringifyLocale-CkHjdQTJ.js",
+          "bytes": 99,
+          "gzip": 109
+        },
+        {
+          "file": "assets/popup-Is2Gj_lh.css",
+          "bytes": 84,
+          "gzip": 74
+        },
+        {
+          "file": "chunks/_virtual_wxt-plugins-DB4ZMZxa.js",
+          "bytes": 29,
+          "gzip": 49
+        }
+      ]
+    },
+    "options": {
+      "js": 1026970,
+      "css": 206773,
+      "gzip": 362564,
+      "assets": [
+        {
+          "file": "chunks/theme-ZJCxwwz0.js",
+          "bytes": 351667,
+          "gzip": 106911
+        },
+        {
+          "file": "chunks/storage-DzPcpBxV.js",
+          "bytes": 328453,
+          "gzip": 105270
+        },
+        {
+          "file": "assets/theme-BrFsAg62.css",
+          "bytes": 206749,
+          "gzip": 31934
+        },
+        {
+          "file": "chunks/options-OuwnYs0y.js",
+          "bytes": 97845,
+          "gzip": 28856
+        },
+        {
+          "file": "chunks/lib-8gdFDsp9.js",
+          "bytes": 93031,
+          "gzip": 30231
+        },
+        {
+          "file": "chunks/useRegisterFieldControl-DzZ-VZHg.js",
+          "bytes": 54538,
+          "gzip": 21703
+        },
+        {
+          "file": "chunks/createReactComponent-P7Hg_wH_.js",
+          "bytes": 47081,
+          "gzip": 17619
+        },
+        {
+          "file": "chunks/os-D-OZWBUF.js",
+          "bytes": 20671,
+          "gzip": 7297
+        },
+        {
+          "file": "chunks/mutation-BQW3M-t8.js",
+          "bytes": 10941,
+          "gzip": 3862
+        },
+        {
+          "file": "chunks/query-DTTq9YlU.js",
+          "bytes": 7616,
+          "gzip": 2635
+        },
+        {
+          "file": "chunks/useOpenChangeComplete-B514d-qT.js",
+          "bytes": 6980,
+          "gzip": 2636
+        },
+        {
+          "file": "chunks/button-BRBk2TEc.js",
+          "bytes": 4377,
+          "gzip": 1376
+        },
+        {
+          "file": "chunks/navigation-_BWeSWSH.js",
+          "bytes": 1134,
+          "gzip": 593
+        },
+        {
+          "file": "chunks/dist-QJDFOEJg.js",
+          "bytes": 960,
+          "gzip": 515
+        },
+        {
+          "file": "chunks/_virtual_wxt-html-plugins-BaAyCpKt.js",
+          "bytes": 713,
+          "gzip": 426
+        },
+        {
+          "file": "chunks/separator-Bn6E-1BQ.js",
+          "bytes": 657,
+          "gzip": 376
+        },
+        {
+          "file": "chunks/useHydrateAtoms-DoGV2imu.js",
+          "bytes": 277,
+          "gzip": 231
+        },
+        {
+          "file": "chunks/_virtual_wxt-plugins-DB4ZMZxa.js",
+          "bytes": 29,
+          "gzip": 49
+        },
+        {
+          "file": "assets/options-jXXsayuK.css",
+          "bytes": 24,
+          "gzip": 44
+        }
+      ]
+    },
+    "translation-hub": {
+      "js": 2411753,
+      "css": 206749,
+      "gzip": 760571,
+      "assets": [
+        {
+          "file": "chunks/execute-translate-BnKV6LFI.js",
+          "bytes": 1215699,
+          "gzip": 296751
+        },
+        {
+          "file": "chunks/theme-ZJCxwwz0.js",
+          "bytes": 351667,
+          "gzip": 106911
+        },
+        {
+          "file": "chunks/storage-DzPcpBxV.js",
+          "bytes": 328453,
+          "gzip": 105270
+        },
+        {
+          "file": "chunks/language-CHRP4RRZ.js",
+          "bytes": 245506,
+          "gzip": 116537
+        },
+        {
+          "file": "assets/theme-BrFsAg62.css",
+          "bytes": 206749,
+          "gzip": 31934
+        },
+        {
+          "file": "chunks/useRegisterFieldControl-DzZ-VZHg.js",
+          "bytes": 54538,
+          "gzip": 21703
+        },
+        {
+          "file": "chunks/createReactComponent-P7Hg_wH_.js",
+          "bytes": 47081,
+          "gzip": 17619
+        },
+        {
+          "file": "chunks/combobox-BSpHXXEf.js",
+          "bytes": 39141,
+          "gzip": 13678
+        },
+        {
+          "file": "chunks/select-DOrT82yD.js",
+          "bytes": 30362,
+          "gzip": 10558
+        },
+        {
+          "file": "chunks/translate-BPJuR-vs.js",
+          "bytes": 19379,
+          "gzip": 7173
+        },
+        {
+          "file": "chunks/translation-hub-C6kxNay8.js",
+          "bytes": 14228,
+          "gzip": 4930
+        },
+        {
+          "file": "chunks/ItemIndicator-B40wrh96.js",
+          "bytes": 11171,
+          "gzip": 4702
+        },
+        {
+          "file": "chunks/mutation-BQW3M-t8.js",
+          "bytes": 10941,
+          "gzip": 3862
+        },
+        {
+          "file": "chunks/query-DTTq9YlU.js",
+          "bytes": 7616,
+          "gzip": 2635
+        },
+        {
+          "file": "chunks/useOpenChangeComplete-B514d-qT.js",
+          "bytes": 6980,
+          "gzip": 2636
+        },
+        {
+          "file": "chunks/button-BRBk2TEc.js",
+          "bytes": 4377,
+          "gzip": 1376
+        },
+        {
+          "file": "chunks/use-text-to-speech-DjbA3nHU.js",
+          "bytes": 3628,
+          "gzip": 1784
+        },
+        {
+          "file": "chunks/useCompositeListItem-BD_BzULU.js",
+          "bytes": 3326,
+          "gzip": 1475
+        },
+        {
+          "file": "chunks/message-BoP1aqTW.js",
+          "bytes": 3052,
+          "gzip": 1237
+        },
+        {
+          "file": "chunks/field-RgsOcEyM.js",
+          "bytes": 2836,
+          "gzip": 1032
+        },
+        {
+          "file": "chunks/language-combobox-ClzoAw6w.js",
+          "bytes": 1499,
+          "gzip": 744
+        },
+        {
+          "file": "chunks/empty-BcZVFASR.js",
+          "bytes": 1375,
+          "gzip": 586
+        },
+        {
+          "file": "chunks/provider-icon-B44acuez.js",
+          "bytes": 1271,
+          "gzip": 609
+        },
+        {
+          "file": "chunks/dist-QJDFOEJg.js",
+          "bytes": 960,
+          "gzip": 515
+        },
+        {
+          "file": "chunks/built-in-prompts-D1U7_aRj.js",
+          "bytes": 795,
+          "gzip": 351
+        },
+        {
+          "file": "chunks/page-layout-CF_h9evj.js",
+          "bytes": 730,
+          "gzip": 385
+        },
+        {
+          "file": "chunks/IconSettings-CWsNNMg9.js",
+          "bytes": 720,
+          "gzip": 347
+        },
+        {
+          "file": "chunks/_virtual_wxt-html-plugins-BaAyCpKt.js",
+          "bytes": 713,
+          "gzip": 426
+        },
+        {
+          "file": "chunks/separator-Bn6E-1BQ.js",
+          "bytes": 657,
+          "gzip": 376
+        },
+        {
+          "file": "chunks/language-combobox-options-BTsru-9q.js",
+          "bytes": 526,
+          "gzip": 290
+        },
+        {
+          "file": "chunks/label-4H5lQ6e1.js",
+          "bytes": 445,
+          "gzip": 302
+        },
+        {
+          "file": "chunks/useControlled-j2P9haLf.js",
+          "bytes": 309,
+          "gzip": 248
+        },
+        {
+          "file": "chunks/useHydrateAtoms-DoGV2imu.js",
+          "bytes": 277,
+          "gzip": 231
+        },
+        {
+          "file": "chunks/language-labels-CRDTy1Bj.js",
+          "bytes": 250,
+          "gzip": 194
+        },
+        {
+          "file": "chunks/CSPContext-CWgmJUR1.js",
+          "bytes": 225,
+          "gzip": 193
+        },
+        {
+          "file": "chunks/resolveAriaLabelledBy-BJD39Y_Q.js",
+          "bytes": 221,
+          "gzip": 175
+        },
+        {
+          "file": "chunks/getHighlightReason-CdffJEuO.js",
+          "bytes": 206,
+          "gzip": 167
+        },
+        {
+          "file": "chunks/serializeValue-B_EucO5O.js",
+          "bytes": 133,
+          "gzip": 124
+        },
+        {
+          "file": "chunks/types-S9P3vI5E.js",
+          "bytes": 116,
+          "gzip": 121
+        },
+        {
+          "file": "chunks/isElementDisabled-KSuuBj8D.js",
+          "bytes": 114,
+          "gzip": 110
+        },
+        {
+          "file": "chunks/text-preparation-BibFtZOm.js",
+          "bytes": 102,
+          "gzip": 116
+        },
+        {
+          "file": "chunks/stringifyLocale-CkHjdQTJ.js",
+          "bytes": 99,
+          "gzip": 109
+        },
+        {
+          "file": "chunks/_virtual_wxt-plugins-DB4ZMZxa.js",
+          "bytes": 29,
+          "gzip": 49
+        }
+      ]
+    }
+  }
+}
