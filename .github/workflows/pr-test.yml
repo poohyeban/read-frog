@@ -1,10 +1,11 @@
 name: Read Frog Lite - Test and ZIP
 on:
-  push:
-    branches: [codex/read-frog-independent]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
+    inputs:
+      performance:
+        description: Run the additional performance analysis and baseline rebuild
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -62,6 +63,7 @@ jobs:
           retention-days: 14
 
   performance-report:
+    if: inputs.performance
     runs-on: ubuntu-latest
     timeout-minutes: 20
     continue-on-error: true

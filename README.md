@@ -53,7 +53,7 @@
 4. Chrome 打开 `chrome://extensions`，Edge 打开 `edge://extensions`，开启开发者模式，选择“加载已解压的扩展程序”。
 5. 选择**直接包含 `manifest.json` 的目录**，确认名称为 Read Frog Lite。打开扩展设置配置服务，再刷新要翻译的网页。
 
-开发中的未发布版本仍可从 [Actions](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) 下载 `read-frog-lite-chromium-<commit>` Artifact。Artifact 需要先解压外层，再解压里面的扩展 ZIP；GitHub 可能要求登录才能下载 Artifact，扩展本身不需要 Read Frog 账户。请确认该运行的全部检查通过。
+开发中的未发布版本在本地使用 `pnpm zip` 构建，不为每次提交运行 Actions。最终验收手动运行后，可从 [Actions](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) 下载 `read-frog-lite-chromium-<commit>` Artifact。Artifact 需要先解压外层，再解压里面的扩展 ZIP；GitHub 可能要求登录才能下载 Artifact，扩展本身不需要 Read Frog 账户。请确认该运行的全部检查通过。
 
 当前以 Chromium MV3 为目标；没有在本轮验证 Firefox。浏览器内置页、扩展商店等受保护页面不能像普通网页一样注入翻译脚本。
 
@@ -185,7 +185,9 @@ pnpm dev
 | `pnpm build:edge` / `pnpm zip:edge`                  | WXT Edge 目标构建；仍需独立浏览器验收                     |
 | `pnpm test:e2e`                                      | 使用已构建 `.output/chrome-mv3/` 执行真实扩展测试         |
 
-Linux CI 的浏览器回归流程：
+需要安装包时执行一次 `pnpm zip`，它已经包含生产构建，无需先运行 `pnpm build`。仅需生产目录时使用 `pnpm build`。源码、依赖和构建输入未变化时复用已验证产物，并核对来源和校验值。
+
+Linux 本地或最终 CI 的浏览器回归流程：
 
 ```sh
 pnpm zip
@@ -193,7 +195,7 @@ pnpm exec playwright install --with-deps chromium
 xvfb-run --auto-servernum pnpm test:e2e
 ```
 
-浏览器测试需要允许加载 unpacked 扩展的环境。若管理策略禁止加载，记录阻塞并使用允许该行为的 CI；不要绕过策略。E2E 失败保留 `playwright-report/`、`test-results/` 和 trace；测试使用假凭据和本地 HTTP 服务，不依赖真实付费模型。
+浏览器测试需要允许加载 unpacked 扩展的环境。若管理策略禁止加载，记录阻塞，改用允许该行为的本地浏览器，或留待最终 CI 验收；不要绕过策略或为此在开发迭代中反复触发 Actions。E2E 失败保留 `playwright-report/`、`test-results/` 和 trace；测试使用假凭据和本地 HTTP 服务，不依赖真实付费模型。
 
 不需要 Read Frog 账户、官方环境变量或云端初始化。密钥通过扩展设置填写；构建会拒绝 `WXT_*API_KEY` 环境变量，不能把私钥编译进 ZIP。`.env*`、`.output/`、`.wxt/` 和测试报告不应提交。
 
@@ -259,11 +261,11 @@ flowchart TD
 
 1. 阅读 [AGENTS.md](AGENTS.md)、[恢复矩阵](docs/restore/PLAN.md) 和相关阶段报告，确认已保留的原实现及服务边界。
 2. 从最新 `main` 建独立工作分支。先定位原模块和测试，再做最小必要修改；不要为统一风格重写成熟引擎。
-3. 为实际风险补充或恢复回归测试，运行相关测试、类型 / Lint；代码变更在交付前完成全量检查和生产构建。
+3. 为实际风险补充或恢复回归测试，在本地运行相关测试、类型 / Lint；按需生成本地安装包，最终交付前完成全量检查和生产构建。
 4. 涉及 DOM、字幕或音频播放时执行真实浏览器验收；明确记录未验证的站点 / 服务，不以单元测试替代兼容性结论。
 5. 提交可独立回滚的变更，更新对应文档与产物说明。`pre-commit` 检查暂存文件，`pre-push` 当前执行类型 / Lint 和全量单元测试。
 
-**只有 README 等说明文档变化时，不必重新构建扩展或跑全量测试。** 单独提交，检查 Markdown 格式、相对链接和命令与实际脚本是否一致；可通过 GitHub 文件编辑提交并使用 `[skip ci]`。这不适用于源码、依赖、构建配置或测试逻辑变更，也不作为绕过受保护分支规则的方式。
+**只有 README 等说明文档变化时，不必重新构建扩展或跑全量测试。** 单独提交，检查 Markdown 格式、相对链接和命令与实际脚本是否一致。工作流编辑应检查其语法和触发条件；生产源码、依赖、构建配置或测试逻辑变化仍需相应的本地验证。构建与发布工作流仅手动触发，不依赖 `[skip ci]` 管理日常资源消耗，也不绕过受保护分支规则。
 
 ### 从 Read Frog 上游吸收修复
 
@@ -300,7 +302,9 @@ pnpm licenses list --prod --json | node scripts/generate-notices.mjs
 
 ## CI、构建产物与版本更新
 
-当前工作流是 [`.github/workflows/pr-test.yml`](.github/workflows/pr-test.yml)，使用 Node 24、pnpm 12.10.1 和只读仓库权限：
+开发阶段在本地测试、构建并保存产物，代码继续提交和推送 GitHub 备份。构建与发布工作流均仅保留 `workflow_dispatch`，不因 push、PR 或 tag 自动执行。等开发完成、Actions 权限恢复并明确需要最终验收时，再手动运行一次；权限恢复本身不代表需要立即运行。
+
+最终验收工作流是 [`.github/workflows/pr-test.yml`](.github/workflows/pr-test.yml)，使用 Node 24、pnpm 12.10.1 和只读仓库权限：
 
 1. frozen lockfile 安装依赖。
 2. 类型 / Lint、单元及本地协议测试。
@@ -310,25 +314,25 @@ pnpm licenses list --prod --json | node scripts/generate-notices.mjs
 
 **CI 产物先于 E2E 上传，所以能下载 Artifact 不等于全部测试通过。** Actions 安装包 Artifact 保留 30 天，测试报告 14 天；已上传的 Release 附件不受该保留期影响。0.2.0 Release 使用已通过完整 CI 的生产代码产物，未重新编译。Artifact 名称可能使用 PR 的 merge SHA，可在运行记录核对 head commit。
 
-目前自动触发范围是对 `main` 的 PR，以及 `codex/read-frog-independent` 分支推送；另有 `workflow_dispatch`。新开发分支应开 PR 触发 CI，或手动运行。**直接提交 README 到 main 不会触发这条构建工作流。** 不要假设每次 main push 都自动产出新 ZIP。
+手动运行 **Read Frog Lite - Test and ZIP** 时选择待验收分支。默认仅运行一次安装包构建及功能回归；额外性能任务的 `performance` 选项默认为关闭，只有需要新证据时才开启。该选项会额外生成分析构建并重建固定基线，不能将已有结果原样重复测量当作每次提交的必需步骤。
 
 需要发布新的开发安装包时：
 
-1. 修改 `package.json` 版本，并更新 README 的版本、已验证能力和限制；版本号由 WXT 用于 manifest / ZIP。
-2. 代码或依赖变化完成检查，手动验收关键路径，在 CI 生成 ZIP。
-3. 记录来源 Commit、CI 链接、构建指标 / 校验值和兼容性变化。涉及数据格式时先说明升级 / 回退方法。
+1. 确认 `package.json` 版本和待交付提交；正式版本变更时再同步 README。版本号由 WXT 用于 manifest / ZIP，开发包另外记录来源 Commit。
+2. 代码或依赖变化完成本地检查，运行一次 `pnpm zip`，手动验收关键路径。生产输入未变化时复用已验证 ZIP，不因推送代码或修改文档重复构建。
+3. 记录来源 Commit、工具版本、本地验证结果、构建指标 / 校验值和兼容性变化。最终 CI 完成后再补运行链接；本地构建不能标记为已通过 CI。涉及数据格式时先说明升级 / 回退方法。
 4. 需要对外提供稳定下载时，按下一节发布 Release；只分发自己 Fork 的产物，不发布到上游。商店发布、签名和部署仍不在工作流内。
 
 ### 发布 Release：复用已验证产物
 
-[`.github/workflows/release.yml`](.github/workflows/release.yml) 在推送 `v*` tag 时发布，也支持在 Actions 中手动选择已有 tag。它不会重新安装依赖、编译或跑全量测试，而是：
+[`.github/workflows/release.yml`](.github/workflows/release.yml) 仅在 Actions 中手动选择已有 tag 后发布，推送 tag 不会发布。它不会重新安装依赖、编译或跑全量测试，而是：
 
 - 检查 tag 与 `package.json` 版本一致，且存在 `docs/restore/RELEASE-<版本>.md`。
 - 从成功的完整 CI 中选取尚未过期的 Artifact，要求其 head 是待发布提交的祖先；其后仅允许 README、docs 和发布工作流自身有差异，生产代码必须一致。
 - 检查 ZIP 完整性、manifest、许可证和 `docs/restore/final-metrics.json` 中记录的 SHA256，生成 `SHA256SUMS.txt`。
 - 将 ZIP 与校验文件上传为草稿，再正式发布到本 Fork 的 Releases。
 
-注意：准备打版本标签的提交消息不要带 `[skip ci]`。它也会跳过 tag 的发布工作流；纯文档直接提交 main 本来就不触发构建。如果标签已经创建但发布未触发，在 Actions 打开 **Publish verified extension → Run workflow**，填写原标签即可，无需移动标签或重建 ZIP。
+开发期间不运行发布工作流。最终验收通过并确定发布后，在 Actions 打开 **Publish verified extension → Run workflow**，选择包含手动发布流程的分支并填写已有标签，无需移动标签或重建 ZIP。当前发布流程仍要求成功的 CI Artifact；本地安装包可用于开发验收，不能冒充该流程要求的 CI 产物。
 
 维护者发布步骤：先完成 CI 和版本说明，记录实际 ZIP 校验值，提交后创建并推送版本 tag，例如：
 
@@ -337,7 +341,7 @@ git tag v0.2.0 <已确认的发布提交>
 git push origin v0.2.0
 ```
 
-示例中的 `v0.2.0` 已存在，实际发布应使用新的 tag，不移动已发布 tag，不覆盖已发布附件。没有匹配的成功 CI、Artifact 已过期或校验值不符时，发布会失败，应补齐对应验证 / 产物记录。工作流只对显式 tag 或手动发布生效，普通 main / README 提交不会发布 Release。
+示例中的 `v0.2.0` 已存在，实际发布应使用新的 tag，不移动已发布 tag，不覆盖已发布附件。没有匹配的成功 CI、Artifact 已过期或校验值不符时，发布会失败，应补齐对应验证 / 产物记录。创建或推送 tag 仅保存版本引用，发布必须另行手动触发。
 
 0.2.0 参考指标：源码 992 文件，直接依赖 runtime 55 / dev 37，生产目录 14,543,554 字节，扩展 ZIP 4,598,062 字节；历史记录见 [`metrics-0.2.0.json`](docs/restore/metrics-0.2.0.json)。当前发布产物的精确大小和 SHA256 见 [`final-metrics.json`](docs/restore/final-metrics.json)，不能沿用旧版本的校验值。
 

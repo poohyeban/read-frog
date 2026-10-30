@@ -75,3 +75,5 @@ flowchart LR
 ## Routine commands
 
 `pnpm check:architecture` checks source boundaries; add `--build` after a production build. `--report` refreshes the file/dependency inventory. `pnpm perf:report` emits raw Node/JSDOM observations. `pnpm perf:icons` compares isolated icon entries. `node scripts/build-fingerprint.mjs` records produced file hashes. See the performance report for production browser and 30-minute soak commands and their limits.
+
+Development validation and packaging run locally; source commits continue to be pushed for backup. Both GitHub build and release workflows are manual-only and reserved for final acceptance/publication. Additional CI performance and baseline builds are opt-in, disabled by default. `pnpm zip` already performs the production build; avoid a redundant preceding `pnpm build`. Reuse verified artifacts when production inputs are unchanged, and distinguish local results from successful CI evidence. Restoring Actions access does not authorize an immediate run.
