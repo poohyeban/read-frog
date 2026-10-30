@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: '"%s" Çevir'
   showOriginal: Orijinali Göster
 popup:
+  state:
+    loading: Sayfa denetleniyor…
+    retry: Durumu yeniden dene
+    emptyProviders: Sağlayıcı yok
   autoLang: Otomatik
   sourceLang: Kaynak
   targetLang: Hedef

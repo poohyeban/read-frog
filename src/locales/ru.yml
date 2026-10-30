@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: Перевести "%s"
   showOriginal: Показать оригинал
 popup:
+  state:
+    loading: Проверка страницы…
+    retry: Повторить проверку
+    emptyProviders: Нет провайдеров
   autoLang: Авто
   sourceLang: Исходный
   targetLang: Целевой

@@ -1,32 +1,22 @@
-import type { Config } from "@/types/config/config"
 import { atom } from "jotai"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { sitePatternForHost, urlMatchesPattern } from "@/utils/url-pattern"
-import { getActiveTabUrl } from "@/utils/utils"
+import { popupTabAtom } from "./session"
 
-type TranslateConfig = Config["pageTranslation"]
-
-// Sync atom to store the checked state
-export const isCurrentSiteInPatternsAtom = atom<boolean>(false)
-
-export async function getIsInPatterns(translateConfig: TranslateConfig) {
-  const activeTabUrl = await getActiveTabUrl()
-  if (!activeTabUrl) return false
-  return translateConfig.page.autoTranslatePatterns.some((pattern) =>
-    urlMatchesPattern(activeTabUrl, pattern),
+export const isCurrentSiteInPatternsAtom = atom((get) => {
+  const url = get(popupTabAtom)?.url
+  return (
+    !!url &&
+    get(configFieldsAtomMap.pageTranslation).page.autoTranslatePatterns.some((pattern) =>
+      urlMatchesPattern(url, pattern),
+    )
   )
-}
-
-// Async atom to initialize the checked state
-export const initIsCurrentSiteInPatternsAtom = atom(null, async (get, set) => {
-  const translateConfig = get(configFieldsAtomMap.pageTranslation)
-  set(isCurrentSiteInPatternsAtom, await getIsInPatterns(translateConfig))
 })
 
 // Atom to toggle current site in auto-translate patterns
 export const toggleCurrentSiteAtom = atom(null, async (get, set, checked: boolean) => {
   const translateConfig = get(configFieldsAtomMap.pageTranslation)
-  const activeTabUrl = await getActiveTabUrl()
+  const activeTabUrl = get(popupTabAtom)?.url
 
   if (!activeTabUrl) return
 
@@ -38,7 +28,7 @@ export const toggleCurrentSiteAtom = atom(null, async (get, set, checked: boolea
   if (checked) {
     // Add hostname to patterns if not already present
     if (!currentPatterns.some((pattern) => urlMatchesPattern(activeTabUrl, pattern))) {
-      void set(configFieldsAtomMap.pageTranslation, {
+      await set(configFieldsAtomMap.pageTranslation, {
         page: {
           ...translateConfig.page,
           autoTranslatePatterns: [...currentPatterns, hostPattern],
@@ -50,16 +40,11 @@ export const toggleCurrentSiteAtom = atom(null, async (get, set, checked: boolea
     const filteredPatterns = currentPatterns.filter(
       (pattern) => !urlMatchesPattern(activeTabUrl, pattern),
     )
-    void set(configFieldsAtomMap.pageTranslation, {
+    await set(configFieldsAtomMap.pageTranslation, {
       page: {
         ...translateConfig.page,
         autoTranslatePatterns: filteredPatterns,
       },
     })
   }
-
-  // Update the local state
-  set(isCurrentSiteInPatternsAtom, checked)
 })
-
-export const isPageTranslatedAtom = atom<boolean>(false)

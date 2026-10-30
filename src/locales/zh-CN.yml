@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: 翻译”%s”
   showOriginal: 显示原文
 popup:
+  state:
+    loading: 正在读取页面状态…
+    retry: 重试页面状态
+    emptyProviders: 未配置服务
   autoLang: 自动检测
   sourceLang: 来源语言
   targetLang: 目标语言

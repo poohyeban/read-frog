@@ -16,10 +16,12 @@ await build({
       name: "ui-config-fixture",
       resolveId(id) {
         if (id === "virtual:fixture") return "\0fixture"
+        return undefined
       },
       load(id) {
         if (id === "\0fixture")
           return `export { DEFAULT_CONFIG as default } from '@/utils/constants/config'`
+        return undefined
       },
     },
   ],

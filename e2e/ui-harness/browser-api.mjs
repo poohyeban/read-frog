@@ -69,7 +69,8 @@ export function installBrowserAPI({
     getPlatformInfo: async () => ({ os: "linux", arch: "x86-64" }),
     openOptionsPage: async () => {},
     sendMessage(message, callback) {
-      if (failure === "hang" && message.type === "getEnablePageTranslationByTabId") return
+      if (failure === "hang" && message.type === "getEnablePageTranslationByTabId") return undefined
+      if (message.type === "tryToSetEnablePageTranslationByTabId") translated = message.data.enabled
       const response =
         message.type === "getEnablePageTranslationByTabId"
           ? translated
@@ -100,7 +101,7 @@ export function installBrowserAPI({
       create: async () => {},
       onUpdated: event(),
       onActivated: event(),
-      sendMessage: runtime.sendMessage,
+      sendMessage: (...args) => runtime.sendMessage(...args),
     },
     i18n: { getUILanguage: () => locale, getMessage: (key) => key },
     permissions: { contains: async () => true },

@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: 翻譯「%s」
   showOriginal: 顯示原文
 popup:
+  state:
+    loading: 正在讀取頁面狀態…
+    retry: 重試頁面狀態
+    emptyProviders: 未設定服務
   autoLang: 自動偵測
   sourceLang: 來源語言
   targetLang: 目標語言

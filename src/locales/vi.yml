@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: Dịch "%s"
   showOriginal: Hiển thị bản gốc
 popup:
+  state:
+    loading: Đang kiểm tra trang…
+    retry: Thử lại trạng thái
+    emptyProviders: Không có nhà cung cấp
   autoLang: Tự động
   sourceLang: Nguồn
   targetLang: Đích

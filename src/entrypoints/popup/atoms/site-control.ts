@@ -3,15 +3,21 @@ import { atom } from "jotai"
 import { browser } from "#imports"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { sitePatternForHost, urlMatchesPattern } from "@/utils/url-pattern"
-import { getActiveTabUrl } from "@/utils/utils"
+import { popupTabAtom } from "./session"
 
 export function isInSiteControlList(patterns: string[], url: string): boolean {
   return patterns.some((p) => urlMatchesPattern(url, p))
 }
 
 // Atom to track if current site is in patterns
-export const isCurrentSiteInWhitelistAtom = atom<boolean>(false)
-export const isCurrentSiteInBlacklistAtom = atom<boolean>(false)
+export const isCurrentSiteInWhitelistAtom = atom((get) => {
+  const url = get(popupTabAtom)?.url
+  return !!url && isInSiteControlList(get(configFieldsAtomMap.siteControl).whitelistPatterns, url)
+})
+export const isCurrentSiteInBlacklistAtom = atom((get) => {
+  const url = get(popupTabAtom)?.url
+  return !!url && isInSiteControlList(get(configFieldsAtomMap.siteControl).blacklistPatterns, url)
+})
 
 async function toggleSiteInPatterns(
   get: Getter,
@@ -20,7 +26,7 @@ async function toggleSiteInPatterns(
   patternsKey: "blacklistPatterns" | "whitelistPatterns",
 ) {
   const siteControlConfig = get(configFieldsAtomMap.siteControl)
-  const activeTabUrl = await getActiveTabUrl()
+  const activeTabUrl = get(popupTabAtom)?.url
 
   if (!activeTabUrl) return
 
@@ -45,20 +51,16 @@ async function toggleSiteInPatterns(
     })
   }
 
-  const [currentTab] = await browser.tabs.query({ active: true, currentWindow: true })
-  if (currentTab!.id) {
-    void browser.tabs.reload(currentTab!.id)
-  }
+  const tab = get(popupTabAtom)
+  if (tab) await browser.tabs.reload(tab.id)
 }
 
 // Atom to toggle current site in whitelist patterns
 export const toggleCurrentSiteInWhitelistAtom = atom(null, async (get, set, checked: boolean) => {
   await toggleSiteInPatterns(get, set, checked, "whitelistPatterns")
-  set(isCurrentSiteInWhitelistAtom, checked)
 })
 
 // Atom to toggle current site in blacklist patterns
 export const toggleCurrentSiteInBlacklistAtom = atom(null, async (get, set, checked: boolean) => {
   await toggleSiteInPatterns(get, set, checked, "blacklistPatterns")
-  set(isCurrentSiteInBlacklistAtom, checked)
 })

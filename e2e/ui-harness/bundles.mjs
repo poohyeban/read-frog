@@ -11,7 +11,7 @@ for (const name of ["popup", "options", "translation-hub"]) {
   )
   const seen = new Set()
   const assets = []
-  async function visit(file) {
+  const visit = async (file) => {
     if (seen.has(file)) return
     seen.add(file)
     const bytes = await readFile(file)

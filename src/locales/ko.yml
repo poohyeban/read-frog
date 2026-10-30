@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: '"%s" 번역'
   showOriginal: 원문 보기
 popup:
+  state:
+    loading: 페이지 확인 중…
+    retry: 페이지 상태 재시도
+    emptyProviders: 제공자 없음
   autoLang: 자동
   sourceLang: 원본
   targetLang: 대상

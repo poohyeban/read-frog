@@ -3,9 +3,8 @@ import type { ProvidersConfig } from "@/types/config/provider"
 import type { ProviderSelectorOption } from "@/utils/providers/provider-display"
 import type { ProviderCapability } from "@/utils/providers/provider-registry"
 import { useAtomValue } from "jotai"
-import { useMemo } from "react"
+import { lazy, Suspense, useMemo } from "react"
 import { HelpTooltip } from "@/components/help-tooltip"
-import { FeatureProviderSelectorList } from "@/components/llm-providers/feature-provider-selector-list"
 import { useTheme } from "@/components/providers/theme-provider"
 import { Avatar, AvatarGroup, AvatarGroupCount, AvatarImage } from "@/components/ui/base-ui/avatar"
 import { Button } from "@/components/ui/base-ui/button"
@@ -16,6 +15,15 @@ import { getSelectionToolbarActions } from "@/utils/custom-actions"
 import { i18n } from "@/utils/i18n"
 import { getProviderLogo, getProviderName } from "@/utils/providers/provider-display"
 import { getSelectableProvidersForCapability } from "@/utils/providers/provider-registry"
+
+const loadProviderSelectors = () =>
+  import("@/components/llm-providers/feature-provider-selector-list").then((module) => ({
+    default: module.FeatureProviderSelectorList,
+  }))
+const ProviderSelectors = lazy(loadProviderSelectors)
+const warmProviderSelectors = () => {
+  void loadProviderSelectors().catch(() => {})
+}
 
 const VISIBLE_PROVIDER_COUNT = 5
 
@@ -115,6 +123,8 @@ export default function ProvidersField() {
           <HelpTooltip>{i18n.t("popup.providers.description")}</HelpTooltip>
         </span>
         <DrawerTrigger
+          onPointerEnter={warmProviderSelectors}
+          onFocus={warmProviderSelectors}
           render={
             <Button type="button" variant="ghost" aria-label={i18n.t("popup.providers.open")} />
           }
@@ -124,7 +134,9 @@ export default function ProvidersField() {
       </div>
       <DrawerContent>
         <DrawerBody className="p-4" data-base-ui-swipe-ignore="">
-          <FeatureProviderSelectorList providerSelectorTriggerSize="sm" />
+          <Suspense fallback={<p role="status">{i18n.t("popup.state.loading")}</p>}>
+            <ProviderSelectors providerSelectorTriggerSize="sm" />
+          </Suspense>
         </DrawerBody>
       </DrawerContent>
     </Drawer>

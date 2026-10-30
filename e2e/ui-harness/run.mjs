@@ -33,7 +33,7 @@ const server = createServer(async (req, res) => {
     res.end()
   }
 })
-await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve))
+await new Promise((done) => server.listen(0, "127.0.0.1", done))
 const url = `http://127.0.0.1:${server.address().port}`
 const browser = await chromium.launch({
   executablePath: "/usr/bin/chromium",
@@ -79,13 +79,11 @@ try {
           paint: performance
             .getEntriesByType("paint")
             .map((e) => ({ name: e.name, start: e.startTime })),
-          resources: performance
-            .getEntriesByType("resource")
-            .map((e) => ({
-              name: e.name.split("/").at(-1),
-              duration: e.duration,
-              bytes: e.decodedBodySize,
-            })),
+          resources: performance.getEntriesByType("resource").map((e) => ({
+            name: e.name.split("/").at(-1),
+            duration: e.duration,
+            bytes: e.decodedBodySize,
+          })),
           height: document.body.scrollHeight,
           overflow: document.documentElement.scrollWidth > innerWidth,
         }))

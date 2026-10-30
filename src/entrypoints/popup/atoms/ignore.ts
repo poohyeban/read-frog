@@ -1,17 +1,12 @@
 import { atom } from "jotai"
-
-const EMPTY_TAB_URLS = ["about:blank", "chrome://newtab/", "edge://newtab/", "about:newtab"]
-
-const EXTENSION_URLS = [
-  "chrome://extensions/",
-  "chrome-extension://",
-  "edge-extension://",
-  "chrome://newtab/",
-  "edge://newtab/",
-]
+import { popupTabAtom } from "./session"
 
 export function isIgnoreUrl(url: string): boolean {
-  return EMPTY_TAB_URLS.some((u) => url.includes(u)) || EXTENSION_URLS.some((u) => url.includes(u))
+  try {
+    return !["http:", "https:", "file:"].includes(new URL(url).protocol)
+  } catch {
+    return true
+  }
 }
 
-export const isIgnoreTabAtom = atom<boolean>(false)
+export const isIgnoreTabAtom = atom((get) => isIgnoreUrl(get(popupTabAtom)?.url ?? ""))
