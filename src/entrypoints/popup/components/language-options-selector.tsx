@@ -1,8 +1,7 @@
 import type { LanguageItem } from "@/components/language-combobox-options"
 import type { LangCodeISO6393 } from "@/utils/languages"
 import { Combobox as ComboboxPrimitive } from "@base-ui/react"
-import { Icon } from "@iconify/react/offline"
-import { IconChevronDown } from "@tabler/icons-react"
+import { IconArrowRight, IconChevronDown } from "@tabler/icons-react"
 import { useAtom, useAtomValue } from "jotai"
 import { useMemo } from "react"
 import { filterLanguage } from "@/components/language-combobox-options"
@@ -29,7 +28,8 @@ function createLanguageItem(code: LangCodeISO6393): LanguageItem<LangCodeISO6393
   }
 }
 
-const langSelectorTriggerClasses = "!h-14 w-30 rounded-lg pr-2 gap-1 justify-between bg-transparent"
+const langSelectorTriggerClasses =
+  "!h-14 min-w-0 flex-1 rounded-lg pr-2 gap-1 justify-between bg-transparent"
 
 const langSelectorContentClasses = "flex flex-col items-start text-base font-medium min-w-0 flex-1"
 
@@ -56,7 +56,7 @@ function LanguageComboboxTrigger({
     >
       <div className={langSelectorContentClasses}>
         <span className="w-full truncate text-left">{label}</span>
-        <span className="text-sm text-neutral-500">{subtitle}</span>
+        <span className="text-xs text-muted-foreground">{subtitle}</span>
       </div>
       <IconChevronDown className="size-4 text-muted-foreground" />
     </ComboboxPrimitive.Trigger>
@@ -111,7 +111,7 @@ export default function LanguageOptionsSelector() {
   const targetLangLabel = currentTargetItem?.label ?? getLanguageLabel(language.targetCode)
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between gap-2">
       <Combobox
         value={currentSourceItem}
         onValueChange={handleSourceLangChange}
@@ -142,7 +142,7 @@ export default function LanguageOptionsSelector() {
           <ComboboxEmpty>{i18n.t("translationHub.noLanguagesFound")}</ComboboxEmpty>
         </ComboboxContent>
       </Combobox>
-      <Icon icon="tabler:arrow-right" className="h-4 w-4 text-neutral-500" />
+      <IconArrowRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
       <Combobox
         value={currentTargetItem}
         onValueChange={handleTargetLangChange}

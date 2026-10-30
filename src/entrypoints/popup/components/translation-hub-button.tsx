@@ -1,4 +1,4 @@
-import { Icon } from "@iconify/react/offline"
+import { IconLanguageHiragana } from "@tabler/icons-react"
 import { useAtomValue } from "jotai"
 import { browser } from "#imports"
 import { Button } from "@/components/ui/base-ui/button"
@@ -27,8 +27,17 @@ export function TranslationHubButton() {
 
   return (
     <Tooltip>
-      <TooltipTrigger render={<Button variant="ghost" size="icon" onClick={handleClick} />}>
-        <Icon icon="tabler:language-hiragana" />
+      <TooltipTrigger
+        render={
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={i18n.t("popup.hub.tooltip")}
+            onClick={handleClick}
+          />
+        }
+      >
+        <IconLanguageHiragana className="size-4" aria-hidden="true" />
       </TooltipTrigger>
       <TooltipContent className="max-w-[200px] flex-col items-start text-wrap has-data-[slot=kbd]:pr-3">
         {i18n.t("popup.hub.tooltip")}

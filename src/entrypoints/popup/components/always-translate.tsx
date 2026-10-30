@@ -22,6 +22,7 @@ export function AlwaysTranslate() {
       <div className="flex items-center justify-between gap-2">
         <span className="text-[13px] font-medium">{i18n.t("popup.alwaysTranslate")}</span>
         <Switch
+          aria-label={i18n.t("popup.alwaysTranslate")}
           checked={isCurrentSiteInPatterns}
           onCheckedChange={toggleCurrentSite}
           disabled={isIgnoreTab}

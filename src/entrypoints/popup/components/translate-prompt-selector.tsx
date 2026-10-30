@@ -48,7 +48,10 @@ export default function TranslatePromptSelector() {
           })
         }}
       >
-        <SelectTrigger className="h-7! w-31 pr-1.5 pl-2.5">
+        <SelectTrigger
+          aria-label={i18n.t("translatePrompt.title")}
+          className="h-7! w-31 pr-1.5 pl-2.5"
+        >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

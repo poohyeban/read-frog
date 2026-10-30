@@ -15,6 +15,7 @@ export function AISmartContext() {
         <HelpTooltip>{i18n.t("popup.aiSmartContextDescription")}</HelpTooltip>
       </span>
       <Switch
+        aria-label={i18n.t("popup.aiSmartContext")}
         checked={translateConfig.enableAIContentAware}
         onCheckedChange={(checked) =>
           setTranslateConfig(deepmerge(translateConfig, { enableAIContentAware: checked }))

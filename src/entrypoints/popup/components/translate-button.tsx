@@ -2,6 +2,7 @@ import { useAtomValue } from "jotai"
 import { Button } from "@/components/ui/base-ui/button"
 import { Kbd, KbdGroup } from "@/components/ui/base-ui/kbd"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
+import { featureProviderRefAtom } from "@/utils/atoms/provider"
 import { i18n } from "@/utils/i18n"
 import { formatHotkeyParts } from "@/utils/os.ts"
 import { isShortcutEmpty } from "@/utils/shortcut"
@@ -11,6 +12,7 @@ import { pageStatusAtom, retryPageStatusAtom, togglePageTranslationAtom } from "
 import { isCurrentSiteInBlacklistAtom, isCurrentSiteInWhitelistAtom } from "../atoms/site-control"
 
 export default function TranslateButton({ className }: { className?: string }) {
+  const provider = useAtomValue(featureProviderRefAtom("pageTranslation"))
   const status = useAtomValue(pageStatusAtom)
   const { run: toggleTranslation } = useAtomValue(togglePageTranslationAtom)
   const { run: retry } = useAtomValue(retryPageStatusAtom)
@@ -23,7 +25,8 @@ export default function TranslateButton({ className }: { className?: string }) {
 
   const isSiteBlocked = mode === "whitelist" ? !isCurrentSiteInWhitelist : isCurrentSiteInBlacklist
   const isDisabled =
-    status.phase !== "error" && (isIgnoreTab || isSiteBlocked || status.phase !== "ready")
+    status.phase !== "error" &&
+    (isIgnoreTab || isSiteBlocked || status.phase !== "ready" || (!isPageTranslated && !provider))
   const shortcutParts = isShortcutEmpty(translateConfig.page.shortcut)
     ? []
     : formatHotkeyParts(translateConfig.page.shortcut)

@@ -3,3 +3,5 @@
 ---
 
 perf(popup): load configuration controls independently of page translation state, recover failed startup requests, and load interface languages and provider selectors on demand.
+
+fix(popup): compact the header and controls, deduplicate provider summaries, and give icon buttons, switches, and selectors accessible names.
