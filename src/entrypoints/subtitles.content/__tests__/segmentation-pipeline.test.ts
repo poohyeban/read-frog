@@ -47,7 +47,7 @@ describe("segmentation pipeline", () => {
 
     await (pipeline as any).runLoop()
 
-    const segmentedStarts = (pipeline as any).segmentedRawStarts as Set<number>
+    const segmentedStarts = new Set(pipeline.processedFragments.map((f) => f.start))
 
     // The window ahead of the playhead is segmented...
     expect(segmentedStarts.has(0)).toBe(true)
@@ -78,7 +78,7 @@ describe("segmentation pipeline", () => {
 
     await (pipeline as any).runLoop()
 
-    const segmentedStarts = (pipeline as any).segmentedRawStarts as Set<number>
+    const segmentedStarts = new Set(pipeline.processedFragments.map((f) => f.start))
     const furthestSegmented = Math.max(...segmentedStarts)
 
     // At 3x the window is 3x wider, so the buffer reaches past the 1x bound...
@@ -110,13 +110,13 @@ describe("segmentation pipeline", () => {
     })
 
     await (pipeline as any).runLoop()
-    const afterStart = Math.max(...((pipeline as any).segmentedRawStarts as Set<number>))
+    const afterStart = Math.max(...new Set(pipeline.processedFragments.map((f) => f.start)))
 
     // Playback moves into the buffered region; the pipeline should top the window back up
     // rather than stay starved behind its own bound.
     currentTime = 150
     await (pipeline as any).runLoop()
-    const afterAdvance = Math.max(...((pipeline as any).segmentedRawStarts as Set<number>))
+    const afterAdvance = Math.max(...new Set(pipeline.processedFragments.map((f) => f.start)))
 
     expect(afterAdvance).toBeGreaterThan(afterStart)
     expect(afterAdvance).toBeLessThan(150_000 + 2 * PROCESS_LOOK_AHEAD_MS)

@@ -3,13 +3,12 @@ import type { SubtitlesFragment } from "../types"
 import type { Config } from "@/types/config/config"
 import type { SubtitlePromptContext } from "@/types/content"
 import type { PromptableProviderRef, SerializableProviderRef } from "@/utils/providers/provider-ref"
-import { APICallError } from "ai"
 import { getLocalConfig } from "@/utils/config/storage"
 import { cleanText } from "@/utils/content/utils"
+import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
 import { Sha256Hex } from "@/utils/hash"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
-import { i18n } from "@/utils/i18n"
 import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
 import { normalizePromptContextValue } from "@/utils/prompts/context"
@@ -19,6 +18,7 @@ import {
   serializeProviderRef,
 } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
+import { subtitleFailure } from "../result"
 import { createSubtitleTranslationPlan } from "../translation-plan"
 
 /**
@@ -40,32 +40,6 @@ export type SubtitlesTask = "lineTranslation" | "summary" | "segmentation"
  * has its own route for the wider output budget, but `getHostedFeatureForRoute`
  * collapses it back onto the same status gate.
  */
-
-function toFriendlyErrorMessage(error: unknown): string {
-  if (error instanceof APICallError) {
-    switch (error.statusCode) {
-      case 429:
-        return i18n.t("subtitles.errors.aiRateLimited")
-      case 401:
-      case 403:
-        return i18n.t("subtitles.errors.aiAuthFailed")
-      case 500:
-      case 502:
-      case 503:
-        return i18n.t("subtitles.errors.aiServiceUnavailable")
-      default:
-        break
-    }
-  }
-
-  const message = error instanceof Error ? error.message : String(error)
-
-  if (message.includes("No Response") || message.includes("Empty response")) {
-    return i18n.t("subtitles.errors.aiNoResponse")
-  }
-
-  return message
-}
 
 export interface SubtitlesVideoContext {
   videoTitle: string
@@ -105,6 +79,7 @@ async function translateSingleSubtitle(
   task: SubtitleTaskOptions,
 ): Promise<string> {
   task.signal?.throwIfAborted()
+  if (!text.trim()) return ""
   const context = normalizeSubtitlePromptContext(videoContext)
   const { terms: glossaryTerms, revision: glossaryRevision } = await resolveGlossaryTerms(
     prepareTranslationText(text),
@@ -245,12 +220,26 @@ export async function translateSubtitles(
   videoContext = { ...videoContext }
   task.signal?.throwIfAborted()
   if (!config) {
-    return fragments.map((f) => ({ ...f, translation: "" }))
+    return fragments.map((f) => ({
+      ...f,
+      translation: "",
+      translationOutcome: {
+        status: "permanent",
+        message: "No subtitle translation provider configured",
+      },
+    }))
   }
 
   const providerRef = await resolveSubtitlesProviderRef(config, "lineTranslation")
   if (!providerRef) {
-    return fragments.map((f) => ({ ...f, translation: "" }))
+    return fragments.map((f) => ({
+      ...f,
+      translation: "",
+      translationOutcome: {
+        status: "permanent",
+        message: "No subtitle translation provider configured",
+      },
+    }))
   }
 
   const translationPromises = fragments.map((fragment) =>
@@ -259,17 +248,22 @@ export async function translateSubtitles(
 
   const results = await Promise.allSettled(translationPromises)
 
-  // If all translations failed, throw with friendly error message
-  const allRejected = results.every((r): r is PromiseRejectedResult => r.status === "rejected")
-  if (allRejected && results.length) {
-    throw new Error(toFriendlyErrorMessage(results[0]!.reason))
-  }
-
-  return fragments.map((fragment, index) => {
-    const result = results[index]
-    return {
-      ...fragment,
-      translation: result!.status === "fulfilled" ? result!.value : "",
+  task.signal?.throwIfAborted()
+  const invalidated = results.find(
+    (result) => result.status === "rejected" && isExtensionContextInvalidatedError(result.reason),
+  )
+  if (invalidated?.status === "rejected") throw invalidated.reason
+  return fragments.map((fragment, index): SubtitlesFragment => {
+    const result = results[index]!
+    if (result.status === "fulfilled" && (result.value.trim() || !fragment.text.trim())) {
+      return {
+        ...fragment,
+        translation: result.value,
+        translationOutcome: { status: result.value.trim() ? "success" : "empty" },
+      }
     }
+    const error =
+      result.status === "rejected" ? result.reason : new Error("Empty subtitle translation")
+    return { ...fragment, translation: "", translationOutcome: subtitleFailure(error) }
   })
 }

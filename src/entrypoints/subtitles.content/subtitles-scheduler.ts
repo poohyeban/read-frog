@@ -1,4 +1,5 @@
 import type { StateData, SubtitlesFragment, SubtitlesState } from "@/utils/subtitles/types"
+import { CueTimeline, cueIdentity } from "@/utils/subtitles/cue-timeline"
 import {
   adPlayingAtom,
   currentSubtitleAtom,
@@ -11,16 +12,15 @@ import {
 
 const ERROR_STATE_AUTO_HIDE_MS = 5_000
 
-function cueIdentityKey(fragment: Pick<SubtitlesFragment, "start" | "end" | "text">): string {
-  return `${fragment.start}\0${fragment.end}\0${fragment.text}`
-}
-
 /**
  * Holds only *translated* cues. Originals live on sourceTrackAtom; the UI falls back there.
  */
 export class SubtitlesScheduler {
   private videoElement: HTMLVideoElement
-  private subtitles: SubtitlesFragment[] = []
+  private timeline = new CueTimeline()
+  private get subtitles() {
+    return this.timeline.cues
+  }
   private currentIndex = -1
   private active = false
   private currentState: StateData = {
@@ -35,6 +35,7 @@ export class SubtitlesScheduler {
   }
 
   start() {
+    this.attachListeners()
     this.active = true
     // Sync immediately: timeupdate may not fire while paused / mid-video.
     this.updateSubtitles(this.videoElement.currentTime)
@@ -49,46 +50,11 @@ export class SubtitlesScheduler {
       return
     }
 
-    const existingMap = new Map(this.subtitles.map((s) => [s.start, s]))
-    let currentSubtitleUpdated = false
-    const previousCurrentStart =
-      this.currentIndex >= 0 ? (this.subtitles[this.currentIndex]?.start ?? null) : null
-
-    for (const newSub of subtitles) {
-      const existing = existingMap.get(newSub.start)
-
-      if (!existing) {
-        this.subtitles.push(newSub)
-        existingMap.set(newSub.start, newSub)
-        continue
-      }
-
-      if (newSub.translation !== undefined) {
-        const updatedSub = {
-          ...existing,
-          text: newSub.text,
-          end: newSub.end,
-          translation: newSub.translation,
-        }
-        const idx = this.subtitles.findIndex((s) => s.start === existing.start)
-        if (idx >= 0) {
-          this.subtitles[idx] = updatedSub
-          existingMap.set(existing.start, updatedSub)
-        }
-
-        if (previousCurrentStart !== null && existing.start === previousCurrentStart) {
-          currentSubtitleUpdated = true
-        }
-      }
-    }
-
-    this.subtitles.sort((a, b) => a.start - b.start)
+    const previous = this.currentIndex >= 0 ? this.subtitles[this.currentIndex] : null
+    this.timeline = this.timeline.upsert(subtitles)
     this.publishTranslatedTrack()
     this.updateSubtitles(this.videoElement.currentTime)
-
-    if (currentSubtitleUpdated) {
-      this.updateCurrentSubtitle()
-    }
+    if (previous !== this.subtitles[this.currentIndex]) this.updateCurrentSubtitle()
   }
 
   /**
@@ -109,10 +75,10 @@ export class SubtitlesScheduler {
     )
 
     const byIdentity = new Map(
-      overlapping.map((fragment) => [cueIdentityKey(fragment), fragment] as const),
+      overlapping.map((fragment) => [cueIdentity(fragment), fragment] as const),
     )
     const preserved = nextFragments.flatMap((fragment) => {
-      const previous = byIdentity.get(cueIdentityKey(fragment))
+      const previous = byIdentity.get(cueIdentity(fragment))
       if (previous?.translation === undefined) {
         return []
       }
@@ -136,7 +102,7 @@ export class SubtitlesScheduler {
       return
     }
 
-    this.subtitles = next
+    this.timeline = new CueTimeline(next)
     this.publishTranslatedTrack()
     // Force re-resolve: index alone may stay stale while the atom still holds a removed cue.
     this.currentIndex = -1
@@ -157,6 +123,7 @@ export class SubtitlesScheduler {
   }
 
   stop() {
+    this.clearErrorAutoHide()
     this.active = false
     this.detachListeners()
     this.updateVisibility()
@@ -199,7 +166,7 @@ export class SubtitlesScheduler {
 
   reset() {
     this.setState("idle")
-    this.subtitles = []
+    this.timeline = new CueTimeline()
     this.publishTranslatedTrack()
     this.currentIndex = -1
     this.updateCurrentSubtitle()
@@ -236,8 +203,7 @@ export class SubtitlesScheduler {
       return
     }
 
-    const subtitle = this.subtitles.find((sub) => sub.start <= timeMs && sub.end > timeMs)
-    const newIndex = subtitle ? this.subtitles.indexOf(subtitle) : -1
+    const newIndex = this.timeline.indexAt(timeMs)
 
     if (newIndex !== this.currentIndex) {
       this.currentIndex = newIndex

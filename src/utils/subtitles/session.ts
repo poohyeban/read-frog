@@ -24,11 +24,19 @@ export class SubtitleSession {
   private active = true
   private disposed = false
   private tasks = new Set<SubtitleTask>()
+  private disposers = new Set<() => void>()
   readonly identity: Readonly<{ videoId: string; trackId: string; revision: number }>
 
   constructor(identity = { videoId: "", trackId: "", revision: 0 }) {
     this.identity = Object.freeze({ ...identity })
     if (typeof window !== "undefined") window.addEventListener("pagehide", this.dispose)
+  }
+  own(dispose: () => void) {
+    this.disposers.add(dispose)
+    return () => this.disposers.delete(dispose)
+  }
+  get isActive() {
+    return this.active && !this.disposed
   }
   start() {
     if (this.disposed) throw new TranslationCancelledError(this.id)
@@ -82,6 +90,8 @@ export class SubtitleSession {
     if (this.disposed) return
     this.stop()
     this.disposed = true
+    for (const dispose of this.disposers) dispose()
+    this.disposers.clear()
     if (typeof window !== "undefined") window.removeEventListener("pagehide", this.dispose)
   }
   get taskCount() {

@@ -6,6 +6,7 @@ import type { StateData, SubtitlesFragment, SubtitlesState } from "@/utils/subti
 import { atom, createStore } from "jotai"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { DEFAULT_SUBTITLE_POSITION, SUBTITLES_SOURCE } from "@/utils/constants/subtitles"
+import { getCueTimeline } from "@/utils/subtitles/cue-timeline"
 import { hasRenderableSubtitleByMode, isAwaitingTranslation } from "@/utils/subtitles/display-rules"
 import { ROOT_VIEW } from "./ui/subtitles-settings-panel/views"
 import { DEFAULT_SECTION_ID } from "./ui/subtitles-sidebar/sections"
@@ -52,7 +53,7 @@ export const displaySubtitleAtom = atom((get): SubtitlesFragment | null => {
     return scheduled
   }
 
-  return get(sourceTrackAtom).find((f) => f.start <= timeMs && f.end > timeMs) ?? null
+  return getCueTimeline(get(sourceTrackAtom)).at(timeMs)
 })
 
 export const subtitlesStateAtom = atom<StateData | null>(null)

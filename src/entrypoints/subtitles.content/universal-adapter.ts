@@ -1085,7 +1085,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
         onChunkSegmented: (chunk, nextFragments) => {
           if (chunk.length === 0 || !chunk[0]) return
           const chunkStart = chunk[0].start
-          const chunkEnd = chunk.at(-1)!.end
+          const chunkEnd = chunk.reduce((end, cue) => Math.max(end, cue.end), 0)
           this.replaceSourceTrackWindow(chunkStart, chunkEnd, nextFragments)
           // Drop identity-changed/spanning translations; keep translations for unchanged cues
           // so preSegmented (and partial AI recuts) do not wipe work then skip re-translate.
@@ -1097,6 +1097,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
 
     this.translationCoordinator = new TranslationCoordinator({
       session,
+      configSnapshot: config ?? undefined,
       getFragments: () =>
         this.segmentationPipeline
           ? this.segmentationPipeline.processedFragments

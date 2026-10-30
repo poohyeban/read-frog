@@ -1,6 +1,9 @@
 import type { SubtitlesFragment } from "./types"
+import { cueIdentity, getCueTimeline } from "./cue-timeline"
 
 export interface TranscriptLine {
+  id?: string
+  sourceLanguage?: string
   start: number
   end: number
   text: string
@@ -16,13 +19,15 @@ export function buildTranscript(
   source: SubtitlesFragment[],
   translated: SubtitlesFragment[],
 ): TranscriptLine[] {
-  const translationByStart = new Map(
-    translated.filter((cue) => cue.translation).map((cue) => [cue.start, cue.translation!]),
+  const translationByIdentity = new Map(
+    translated.filter((cue) => cue.translation).map((cue) => [cueIdentity(cue), cue.translation!]),
   )
 
-  return source.map((cue) => {
-    const translation = translationByStart.get(cue.start)
+  return getCueTimeline(source).cues.map((cue) => {
+    const translation = translationByIdentity.get(cueIdentity(cue))
     return {
+      id: cue.id,
+      sourceLanguage: cue.sourceLanguage,
       start: cue.start,
       end: cue.end,
       text: cue.text,
@@ -39,7 +44,7 @@ export function buildTranscript(
  * clamping keeps "nothing is being said" distinct from "the first line is".
  */
 export function findActiveLine(lines: TranscriptLine[], timeMs: number): number {
-  return lines.findIndex((line) => line.start <= timeMs && line.end > timeMs)
+  return getCueTimeline(lines).indexAt(timeMs)
 }
 
 export function formatTimestamp(ms: number): string {

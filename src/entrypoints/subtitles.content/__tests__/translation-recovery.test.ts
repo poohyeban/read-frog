@@ -63,10 +63,11 @@ describe("subtitle translation recovery", () => {
     vi.mocked(getLocalConfig).mockRejectedValue(new Error("Extension context invalidated."))
     vi.mocked(translateSubtitles).mockRejectedValue(new Error("Extension context invalidated."))
     const fragments = [{ text: "Still visible after reload", start: 0, end: 10_000 }]
-    const { coordinator, onStateChange } = setup(fragments)
+    const { coordinator, onStateChange, onTranslated } = setup(fragments)
     coordinator.start()
     await vi.waitFor(() => expect(onStateChange).toHaveBeenCalledWith("idle"))
-    expect(fragments[0]).toHaveProperty("translation", "")
+    expect(onTranslated).not.toHaveBeenCalled()
+    expect(fragments[0]?.text).toBe("Still visible after reload")
     expect(getLocalConfig).toHaveBeenCalledTimes(1)
   })
 
