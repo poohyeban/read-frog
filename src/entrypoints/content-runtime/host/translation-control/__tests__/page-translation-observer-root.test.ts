@@ -64,7 +64,7 @@ vi.mock("@/utils/host/translate/webpage-context", async (importOriginal) => ({
   getOrCreateWebPageContext: vi.fn<(...args: any[]) => any>().mockResolvedValue(null),
 }))
 
-vi.mock("@/utils/host/translate/translate-text", () => ({
+vi.mock("@/utils/host/translate/ui/translation-config-feedback", () => ({
   validateTranslationConfigAndToast: mockValidateTranslationConfigAndToast,
 }))
 

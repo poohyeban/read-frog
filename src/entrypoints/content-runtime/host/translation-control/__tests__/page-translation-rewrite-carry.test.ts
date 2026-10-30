@@ -40,7 +40,7 @@ vi.mock("@/utils/host/translate/filter-small-paragraph", () => ({
 vi.mock("@/utils/host/translate/target-language-skip", () => ({
   shouldSkipAsTargetLanguage: vi.fn<(...args: any[]) => any>().mockResolvedValue(false),
 }))
-vi.mock("@/utils/host/translate/translate-text", () => ({
+vi.mock("@/utils/host/translate/ui/translation-config-feedback", () => ({
   validateTranslationConfigAndToast: mockValidateTranslationConfigAndToast,
 }))
 vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({

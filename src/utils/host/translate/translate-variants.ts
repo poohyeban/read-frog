@@ -6,6 +6,7 @@ import type { TranslationTextFormat } from "@/types/config/translate"
 import type { LangCodeISO6393 } from "@/utils/languages"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
 import { getDetectedCodeFromStorage, getFinalSourceCode } from "@/utils/config/languages"
+import { getConfigSnapshotRevision } from "@/utils/config/snapshot-revision"
 import { logger } from "@/utils/logger"
 import { getContextRequirements } from "@/utils/prompts/translate"
 import { serializeProviderRef } from "@/utils/providers/provider-ref"
@@ -151,6 +152,7 @@ async function translateTextUsingPageConfig(
   config: Config,
   text: string,
   options: {
+    origin?: "page" | "page-title"
     extraHashTags?: string[]
     webPageContext?: {
       webTitle?: string | null
@@ -194,6 +196,9 @@ async function translateTextUsingPageConfig(
   }
 
   return translateTextCore({
+    origin: options.origin ?? "page",
+    mode: config.pageTranslation.mode,
+    configRevision: getConfigSnapshotRevision(config),
     text: preparedText,
     langConfig: config.language,
     providerConfig,
@@ -264,6 +269,7 @@ export async function translateTextForPageTitle(text: string): Promise<string> {
     : undefined
 
   return translateTextUsingPageConfig(config, text, {
+    origin: "page-title",
     extraHashTags: ["pageTitleTranslation"],
     webPageContext: {
       webTitle: text,
@@ -332,6 +338,9 @@ export async function translateTextForInput(
   )
 
   return translateTextCore({
+    origin: "input",
+    mode: "independent",
+    configRevision: getConfigSnapshotRevision(config),
     text,
     langConfig: {
       sourceCode: resolvedFromLang,

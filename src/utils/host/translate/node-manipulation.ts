@@ -5,8 +5,8 @@ import { isHTMLElement } from "../dom/filter"
 import { walkAndLabelElement } from "../dom/traversal"
 import { beginNodeTranslation } from "./core/node-translation-lifecycle"
 import { translateWalkedElement } from "./core/translation-walker"
-import { validateTranslationConfigAndToast } from "./translate-text"
 import { beginNodeSiteRuleCSSOperation } from "./ui/node-site-rule-css"
+import { validateTranslationConfigAndToast } from "./ui/translation-config-feedback"
 
 // Re-export public APIs
 export {

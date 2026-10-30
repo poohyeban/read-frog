@@ -74,7 +74,7 @@ describe("cross-feature context ownership", () => {
       message.mock.calls.filter(([name]) => name === "cancelPageTranslationRequests"),
     ).toHaveLength(0)
     const execution = message.mock.calls.find(([name]) => name === "enqueueTranslateRequest")!
-    expect(execution[1].sessionId).toBeUndefined()
+    expect(execution[1].sessionId).toMatch(/^request-/)
   })
   it("cancels the underlying scoped message only after the last subscriber exits", async () => {
     message.mockImplementation((name) =>

@@ -14,7 +14,10 @@ import {
   auditInlineAtomTokens,
   hasInlineAtomTokens,
 } from "@/utils/host/translate/inline-atom-tokens"
-import { normalizePromptContextValue } from "@/utils/host/translate/translate-text"
+import {
+  normalizePromptContextValue,
+  assertTranslationPlanIdentity,
+} from "@/utils/host/translate/translation-plan"
 import { logger } from "@/utils/logger"
 import { onMessage } from "@/utils/message"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
@@ -78,6 +81,7 @@ export function setupPageTranslationHandlers(): void {
   onMessage("enqueueTranslateRequest", async (message) => {
     const scope = trackScope(message.sender, message.data.sessionId)
     try {
+      assertTranslationPlanIdentity(message.data)
       const routing = getQueuedTranslationRouting(message.data)
       const { requestQueue, batchQueue } = await queuesPromise
       const {

@@ -3,8 +3,8 @@ import type {
   BackgroundGenerateTextResponse,
 } from "@/types/background-generate-text"
 import type { Config } from "@/types/config/config"
-import type { TranslationTextFormat } from "@/types/config/translate"
 import type { ProviderRequestRouting } from "@/types/provider-request"
+import type { TranslationRequestPayload } from "@/types/translation-request"
 import type {
   TTSPlaybackStartRequest,
   TTSPlaybackStartResponse,
@@ -102,37 +102,7 @@ interface ProtocolMap {
     selectionText: string
   }) => void
 
-  enqueueTranslateRequest: (
-    data: ProviderRequestRouting & {
-      glossaryTerms?: MatchedTerm[]
-      glossaryRevision?: number
-      text: string
-      langConfig: Config["language"]
-      scheduleAt: number
-      hash: string
-      textFormat?: TranslationTextFormat
-      // Source line breaks are semantic (newline-preserving container or typed
-      // input); providers whose transport collapses "\n" must protect them.
-      preserveLineBreaks?: boolean
-      webTitle?: string | null
-      webDescription?: string | null
-      webContent?: string | null
-      webSummary?: string | null
-      // Page-translation session this request belongs to; scopes the request
-      // for cancelPageTranslationRequests. Absent for non-page requests
-      // (input/selection translation), which are never cancellable.
-      sessionId?: string
-      promptConfig?: Pick<Config["pageTranslation"], "customPromptsConfig">
-      forceRetranslation?: boolean
-
-      // scoped elsewhere does not — the background serves every tab and cannot
-      // tell them apart. Passing `[]` means "nothing matched"
-
-      // requests resolved either side of an edit made while the page was still
-      // translating; without this the background would settle a disagreement by
-      // message arrival order
-    },
-  ) => Promise<string>
+  enqueueTranslateRequest: (data: TranslationRequestPayload) => Promise<string>
   cancelPageTranslationRequests: (data: { sessionId: string }) => void
   getOrGenerateWebPageSummary: (
     data: ProviderRequestRouting<PromptableProviderRef> & {

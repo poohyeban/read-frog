@@ -47,7 +47,6 @@ import {
   translateNodesBilingualMode,
   translateWalkedElement,
 } from "@/utils/host/translate/node-manipulation"
-import { validateTranslationConfigAndToast } from "@/utils/host/translate/translate-text"
 import {
   primePageTranslationContext,
   translateTextForPageTitle,
@@ -63,6 +62,7 @@ import {
 import { cleanupNodeSiteRuleCSSIfUnused } from "@/utils/host/translate/ui/node-site-rule-css"
 import { cancelSpinnerAnimation } from "@/utils/host/translate/ui/spinner"
 import { ensureSiteRuleCSS, removeSiteRuleCSS } from "@/utils/host/translate/ui/style-injector"
+import { validateTranslationConfigAndToast } from "@/utils/host/translate/ui/translation-config-feedback"
 import {
   getOrCreateWebPageContext,
   getWebPageContentRevision,

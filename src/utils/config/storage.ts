@@ -4,6 +4,7 @@ import { storage } from "#imports"
 import { configSchema } from "@/types/config/config"
 import { CONFIG_STORAGE_KEY, DEFAULT_CONFIG } from "../constants/config"
 import { logger } from "../logger"
+import { copyConfigSnapshot } from "./snapshot-revision"
 
 let configRevision = 0
 let validatedConfig: Config | null | undefined
@@ -21,7 +22,8 @@ export async function getLocalConfig(): Promise<Config | null> {
     watching = true
     storage.watch<Config>(`local:${CONFIG_STORAGE_KEY}`, invalidateConfig)
   }
-  if (validatedConfig !== undefined) return validatedConfig && structuredClone(validatedConfig)
+  if (validatedConfig !== undefined)
+    return validatedConfig && copyConfigSnapshot(validatedConfig, configRevision)
   const revision = configRevision
   if (!pendingRead) {
     const promise = storage
@@ -45,7 +47,7 @@ export async function getLocalConfig(): Promise<Config | null> {
   const config = await pendingRead.promise
   // Existing UI callers are allowed to edit their returned copy. An in-flight
   // request's copy is never mutated by a later storage update or another caller.
-  return config && structuredClone(config)
+  return config && copyConfigSnapshot(config, revision)
 }
 
 export async function setLocalConfig(config: Config) {
