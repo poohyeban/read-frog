@@ -1,9 +1,7 @@
 import { Icon } from "@iconify/react/offline"
-import debounce from "debounce"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
-import { useEffect, useMemo } from "react"
+import { useEffect } from "react"
 import { Button } from "@/components/ui/base-ui/button"
-import { detectLanguage } from "@/utils/content/language"
 import { i18n } from "@/utils/i18n"
 import {
   detectedLangCodeAtom,
@@ -23,23 +21,28 @@ export function LanguageControlPanel() {
   const setDetectedSourceLangCode = useSetAtom(detectedSourceLangCodeAtom)
   const detectedLangCode = useAtomValue(detectedLangCodeAtom)
 
-  // Debounced language detection from input text
-
-  const debouncedDetect = useMemo(
-    () =>
-      debounce(async (text: string) => {
-        const detected = await detectLanguage(text, {
-          minLength: 1,
-        })
-        setDetectedSourceLangCode(detected)
-      }, 1000),
-    [setDetectedSourceLangCode],
-  )
-
   useEffect(() => {
-    void debouncedDetect(inputText)
-    return () => debouncedDetect.clear()
-  }, [inputText, debouncedDetect])
+    let active = true
+    if (sourceLangCode !== "auto" || !inputText.trim()) {
+      setDetectedSourceLangCode(null)
+      return undefined
+    }
+    const timer = setTimeout(() => {
+      void import("@/utils/content/language")
+        .then(async ({ detectLanguage }) => {
+          if (!active) return
+          const detected = await detectLanguage(inputText, { minLength: 1 })
+          if (active) setDetectedSourceLangCode(detected)
+        })
+        .catch(() => {
+          if (active) setDetectedSourceLangCode(null)
+        })
+    }, 1000)
+    return () => {
+      active = false
+      clearTimeout(timer)
+    }
+  }, [inputText, sourceLangCode, setDetectedSourceLangCode])
 
   return (
     <div className="flex w-full items-center gap-3">

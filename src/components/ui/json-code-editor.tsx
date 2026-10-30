@@ -1,69 +1,33 @@
-/**
- * JSON Code Editor Component
- *
- * CodeMirror-based code editor for JSON with syntax highlighting and theme support.
- * Uses @uiw/react-codemirror with @codemirror/lang-json for rich editing experience.
- */
-
 import type { ReactCodeMirrorProps } from "@uiw/react-codemirror"
-import { json, jsonParseLinter } from "@codemirror/lang-json"
-import { linter, lintGutter } from "@codemirror/lint"
-import CodeMirror from "@uiw/react-codemirror"
-import { useTheme } from "@/components/providers/theme-provider"
-import { cn } from "@/utils/styles/utils"
-
-// Custom linter that allows empty content (jsonParseLinter throws on empty string)
-const allowEmptyJsonLinter = linter((view) => {
-  const content = view.state.doc.toString().trim()
-  if (!content) {
-    return []
-  }
-  return jsonParseLinter()(view)
-})
+import { lazy, Suspense } from "react"
+import { i18n } from "@/utils/i18n"
 
 interface JSONCodeEditorProps extends Omit<ReactCodeMirrorProps, "theme" | "extensions"> {
   hasError?: boolean
 }
-
-export function JSONCodeEditor({
-  hasError,
-  className,
-  editable = true,
-  ...props
-}: JSONCodeEditorProps) {
-  const { theme } = useTheme()
-
-  return (
-    <CodeMirror
-      extensions={[json(), allowEmptyJsonLinter, lintGutter()]}
-      theme={theme}
-      basicSetup={{
-        lineNumbers: true,
-        highlightActiveLineGutter: true,
-        highlightActiveLine: true,
-        foldGutter: true,
-        bracketMatching: true,
-        closeBrackets: true,
-        autocompletion: true,
-        syntaxHighlighting: true,
-      }}
-      className={cn(
-        "overflow-hidden rounded-lg border",
-        "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50",
-        hasError &&
-          "border-destructive focus-within:border-destructive focus-within:ring-destructive/50",
-        !editable && "cursor-not-allowed opacity-50",
-        className,
-      )}
-      style={{
-        fontSize: 14,
-        fontFamily:
-          'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "Courier New", monospace',
-      }}
-      editable={editable}
-      {...props}
-    />
-  )
+const loadEditor = () =>
+  import("./json-code-editor-impl").then((module) => ({ default: module.JSONCodeEditor }))
+const Editor = lazy(loadEditor)
+export function preloadJSONCodeEditor() {
+  void loadEditor().catch(() => {})
 }
 
-JSONCodeEditor.displayName = "JSONCodeEditor"
+/** Only mount CodeMirror when a field is visible; keep its owning draft mounted afterwards. */
+export function JSONCodeEditor(props: JSONCodeEditorProps) {
+  return (
+    <Suspense
+      fallback={
+        <div
+          role="status"
+          aria-busy="true"
+          className="rounded-lg border p-3 text-muted-foreground"
+          style={{ minHeight: props.height ?? "150px" }}
+        >
+          {i18n.t("ui.loading")}
+        </div>
+      }
+    >
+      <Editor {...props} />
+    </Suspense>
+  )
+}

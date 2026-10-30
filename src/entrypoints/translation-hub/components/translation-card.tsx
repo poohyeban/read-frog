@@ -11,7 +11,6 @@ import { isLLMProviderConfig } from "@/types/config/provider"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { PROVIDER_ITEMS } from "@/utils/constants/providers"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
-import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { i18n } from "@/utils/i18n"
 import { getTranslatePromptFromConfig } from "@/utils/prompts/translate"
@@ -85,6 +84,9 @@ export function TranslationCard({
             input,
             { glossaryTerms },
           )
+
+        const { executeTranslate } = await import("@/utils/host/translate/execute-translate")
+        if (abortController.signal.aborted || requestIdRef.current !== myRequestId) return undefined
 
         let result: string
         {

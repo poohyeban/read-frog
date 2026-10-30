@@ -158,7 +158,7 @@ export default function ProvidersField() {
           <DrawerDescription>{i18n.t("popup.providers.description")}</DrawerDescription>
         </DrawerHeader>
         <DrawerBody className="p-4" data-base-ui-swipe-ignore="">
-          <Suspense fallback={<p role="status">{i18n.t("popup.state.loading")}</p>}>
+          <Suspense fallback={<p role="status">{i18n.t("ui.loading")}</p>}>
             <ProviderSelectors providerSelectorTriggerSize="sm" />
           </Suspense>
         </DrawerBody>
