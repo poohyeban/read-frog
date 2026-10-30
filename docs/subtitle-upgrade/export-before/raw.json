@@ -1,0 +1,181 @@
+{
+  "environment": {
+    "source": "/tmp/read-frog-subtitle-baseline/source",
+    "browser": "154.0.8037.57",
+    "node": "v24.19.0",
+    "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+  },
+  "errors": [],
+  "rendererMemory": [
+    {
+      "type": "renderer",
+      "peakRssKiB": 34212,
+      "rssKiB": 34212
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 219936,
+      "rssKiB": 214480
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 91280,
+      "rssKiB": 91280
+    }
+  ],
+  "scales": [
+    {
+      "size": 100,
+      "samples": [
+        {
+          "duration": 3.599999997764826,
+          "result": {
+            "count": 100,
+            "unique": 100,
+            "valid": true,
+            "bytes": 4980
+          },
+          "translationCalls": 20,
+          "heap": 3080648
+        },
+        {
+          "duration": 0.5,
+          "result": {
+            "count": 100,
+            "unique": 100,
+            "valid": true,
+            "bytes": 4980
+          },
+          "translationCalls": 20,
+          "heap": 3942564
+        },
+        {
+          "duration": 0.6999999992549419,
+          "result": {
+            "count": 100,
+            "unique": 100,
+            "valid": true,
+            "bytes": 4980
+          },
+          "translationCalls": 20,
+          "heap": 3554672
+        }
+      ]
+    },
+    {
+      "size": 1000,
+      "samples": [
+        {
+          "duration": 8.899999998509884,
+          "result": {
+            "count": 1000,
+            "unique": 1000,
+            "valid": true,
+            "bytes": 51781
+          },
+          "translationCalls": 200,
+          "heap": 4595704
+        },
+        {
+          "duration": 3.800000000745058,
+          "result": {
+            "count": 1000,
+            "unique": 1000,
+            "valid": true,
+            "bytes": 51781
+          },
+          "translationCalls": 200,
+          "heap": 4201800
+        },
+        {
+          "duration": 4,
+          "result": {
+            "count": 1000,
+            "unique": 1000,
+            "valid": true,
+            "bytes": 51781
+          },
+          "translationCalls": 200,
+          "heap": 4283820
+        }
+      ]
+    },
+    {
+      "size": 10000,
+      "samples": [
+        {
+          "duration": 23.299999997019768,
+          "result": {
+            "count": 10000,
+            "unique": 10000,
+            "valid": true,
+            "bytes": 537782
+          },
+          "translationCalls": 2000,
+          "heap": 13786624
+        },
+        {
+          "duration": 19.799999997019768,
+          "result": {
+            "count": 10000,
+            "unique": 10000,
+            "valid": true,
+            "bytes": 537782
+          },
+          "translationCalls": 2000,
+          "heap": 17359108
+        },
+        {
+          "duration": 15,
+          "result": {
+            "count": 10000,
+            "unique": 10000,
+            "valid": true,
+            "bytes": 537782
+          },
+          "translationCalls": 2000,
+          "heap": 15818540
+        }
+      ]
+    },
+    {
+      "size": 50000,
+      "samples": [
+        {
+          "duration": 108,
+          "result": {
+            "count": 50000,
+            "unique": 50000,
+            "valid": true,
+            "bytes": 2777782
+          },
+          "translationCalls": 10000,
+          "heap": 59098140
+        },
+        {
+          "duration": 86.30000000074506,
+          "result": {
+            "count": 50000,
+            "unique": 50000,
+            "valid": true,
+            "bytes": 2777782
+          },
+          "translationCalls": 10000,
+          "heap": 78254208
+        },
+        {
+          "duration": 102.39999999850988,
+          "result": {
+            "count": 50000,
+            "unique": 50000,
+            "valid": true,
+            "bytes": 2777782
+          },
+          "translationCalls": 10000,
+          "heap": 54968751
+        }
+      ]
+    }
+  ],
+  "note": "Actual downloader + SRT builder; presegmented source, three full exports per size; zero-latency mock translator, no Provider billing and no disk download. These calls are content batches, not HTTP requests."
+}
