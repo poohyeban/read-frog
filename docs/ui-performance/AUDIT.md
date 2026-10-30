@@ -29,20 +29,20 @@ Hub 静态引用 executeTranslate，将模型执行依赖带入空白编辑页�
 
 ## 全入口技术栈与所有权
 
-| 范围 | 当前工具及决策 |
-|---|---|
-| 所有 React UI | React 19、WXT/MV3、Vite、Tailwind 4 保留；共享 token 与 Base UI 交互组件 |
-| Popup | Jotai 配置/页面状态，Base UI combobox/select/drawer/tooltip/toast；不引入 Router；按需复杂面板 |
-| Options | React Router hash 路由、lazy 页面、TanStack Form/autosave；CodeMirror 限定编辑器路由；保持恢复边界 |
-| Translation Hub | Jotai 可编辑输入/请求、Query mutation、服务执行工具；将服务实现移出初始图 |
-| 划词/输入/浮动 UI | content-runtime React root、Jotai、Query、共享交互组件；生命周期属于宿主 controller，不搬入 Popup |
-| 字幕 | 独立 UI context、React/Query 和共享样式；本轮不改字幕调度业务 |
-| Lexical | 输入注入适配器的类型和测试依赖；不作为自有页面编辑器打包，保留 devDependency |
-| TanStack Store/Form | 表单状态内部使用，非第二套全局配置状态；不机械移除 |
-| Query | 真正异步请求/重试/mutation；配置归 Jotai/storage，翻译引擎归 headless 契约 |
-| Motion | slider/color picker 等复杂拖拽可保留；普通短动画优先 CSS，遵守 reduced motion |
-| Iconify/Tabler/Remix | 本地离线动态图标用于用户自定义动作；固定新 UI 用命名 Tabler 导入；不替换全部存量图标 |
-| shadcn | 仓库内设计约定和 CLI；不新增另一套 Radix 等交互底座。CLI 不属运行时需求 |
+| 范围                 | 当前工具及决策                                                                                     |
+| -------------------- | -------------------------------------------------------------------------------------------------- |
+| 所有 React UI        | React 19、WXT/MV3、Vite、Tailwind 4 保留；共享 token 与 Base UI 交互组件                           |
+| Popup                | Jotai 配置/页面状态，Base UI combobox/select/drawer/tooltip/toast；不引入 Router；按需复杂面板     |
+| Options              | React Router hash 路由、lazy 页面、TanStack Form/autosave；CodeMirror 限定编辑器路由；保持恢复边界 |
+| Translation Hub      | Jotai 可编辑输入/请求、Query mutation、服务执行工具；将服务实现移出初始图                          |
+| 划词/输入/浮动 UI    | content-runtime React root、Jotai、Query、共享交互组件；生命周期属于宿主 controller，不搬入 Popup  |
+| 字幕                 | 独立 UI context、React/Query 和共享样式；本轮不改字幕调度业务                                      |
+| Lexical              | 输入注入适配器的类型和测试依赖；不作为自有页面编辑器打包，保留 devDependency                       |
+| TanStack Store/Form  | 表单状态内部使用，非第二套全局配置状态；不机械移除                                                 |
+| Query                | 真正异步请求/重试/mutation；配置归 Jotai/storage，翻译引擎归 headless 契约                         |
+| Motion               | slider/color picker 等复杂拖拽可保留；普通短动画优先 CSS，遵守 reduced motion                      |
+| Iconify/Tabler/Remix | 本地离线动态图标用于用户自定义动作；固定新 UI 用命名 Tabler 导入；不替换全部存量图标               |
+| shadcn               | 仓库内设计约定和 CLI；不新增另一套 Radix 等交互底座。CLI 不属运行时需求                            |
 
 Provider 摘要订阅整个 configAtom，任何配置变化都重复构建所有功能的 Provider 分配，应改为稳定的相关投影。不要 blanket memo。configAtom 初始重读承担订阅安装前后竞态保护；没有可靠修订号握手前不随意删除。现有串行写入、乐观更新与跨上下文同步测试必须保留。
 
@@ -53,10 +53,10 @@ Provider 摘要订阅整个 configAtom，任何配置变化都重复构建所有
 ## 基线结果
 
 | 条件（模拟消息延迟） | 内容 DOM P50/P95 ms | 正确状态可交互 P50/P95 ms | 首个内容绘制上界 P50/P95 ms |
-|---|---:|---:|---:|
-| cold / 10 ms | 392.6 / 432.8 | 392.8 / 433.1 | 448.4 / 502.8 |
-| cold / 120 ms | 488.2 / 540.3 | 488.3 / 540.5 | 548.6 / 597.4 |
-| repeat / 10 ms | 356.9 / 418.3 | 357.0 / 418.7 | 414.8 / 502.2 |
-| repeat / 120 ms | 470.6 / 511.2 | 470.7 / 511.5 | 527.3 / 570.7 |
+| -------------------- | ------------------: | ------------------------: | --------------------------: |
+| cold / 10 ms         |       392.6 / 432.8 |             392.8 / 433.1 |               448.4 / 502.8 |
+| cold / 120 ms        |       488.2 / 540.3 |             488.3 / 540.5 |               548.6 / 597.4 |
+| repeat / 10 ms       |       356.9 / 418.3 |             357.0 / 418.7 |               414.8 / 502.2 |
+| repeat / 120 ms      |       470.6 / 511.2 |             470.7 / 511.5 |               527.3 / 570.7 |
 
 内容绘制为 DOM 出现后的双 rAF 上界，另存浏览器 FCP；不能将它当成精确光栅化时刻。每组保留全部 30 样本，不剔异常值。后续同机同脚本复测。

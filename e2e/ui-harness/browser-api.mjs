@@ -37,6 +37,7 @@ export function installBrowserAPI({
   const area = {
     onChanged: changed,
     async get(keys) {
+      if (failure === "storage") throw new Error("fixture storage failure")
       const result =
         typeof keys === "string"
           ? { [keys]: values[keys] }
@@ -109,7 +110,14 @@ export function installBrowserAPI({
   }
   window.chrome = api
   window.browser = api
-  window.__uiFixture = { values, changed, runtimeMessages }
+  window.__uiFixture = {
+    values,
+    changed,
+    runtimeMessages,
+    setFailure: (value) => {
+      failure = value
+    },
+  }
   window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
     supportsFiber: true,
     inject: () => 1,

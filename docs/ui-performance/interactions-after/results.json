@@ -1,0 +1,234 @@
+{
+  "note": "Production builds; cold contexts; DOM click dispatch to usable content/feedback; drawer intentionally has NO hover/focus preload. Excludes Playwright auto-wait and physical display presentation.",
+  "samples": 30,
+  "summary": {
+    "drawer": {
+      "p50": 62.5,
+      "p95": 74.40000000223517
+    },
+    "language": {
+      "p50": 108.90000000223517,
+      "p95": 138.5
+    },
+    "feedback": {
+      "p50": 5.899999998509884,
+      "p95": 7.699999999254942
+    },
+    "translationFeedback": {
+      "p50": 1.5,
+      "p95": 1.9000000022351742
+    }
+  },
+  "rows": [
+    {
+      "sample": 0,
+      "drawer": 60.5,
+      "language": 107.60000000149012,
+      "feedback": 5.400000002235174,
+      "translationFeedback": 1.199999999254942
+    },
+    {
+      "sample": 1,
+      "drawer": 61.5,
+      "language": 104.19999999925494,
+      "feedback": 6.199999999254942,
+      "translationFeedback": 1.5
+    },
+    {
+      "sample": 2,
+      "drawer": 64.39999999850988,
+      "language": 182.80000000074506,
+      "feedback": 6.199999999254942,
+      "translationFeedback": 1.6000000014901161
+    },
+    {
+      "sample": 3,
+      "drawer": 66.30000000074506,
+      "language": 138.5,
+      "feedback": 5.699999999254942,
+      "translationFeedback": 1.5
+    },
+    {
+      "sample": 4,
+      "drawer": 64.09999999776483,
+      "language": 124.69999999925494,
+      "feedback": 7.300000000745058,
+      "translationFeedback": 1.699999999254942
+    },
+    {
+      "sample": 5,
+      "drawer": 71.59999999776483,
+      "language": 120.30000000074506,
+      "feedback": 6.800000000745058,
+      "translationFeedback": 1.5999999977648258
+    },
+    {
+      "sample": 6,
+      "drawer": 60.69999999925494,
+      "language": 108.90000000223517,
+      "feedback": 5.5,
+      "translationFeedback": 1.199999999254942
+    },
+    {
+      "sample": 7,
+      "drawer": 69.10000000149012,
+      "language": 119.79999999701977,
+      "feedback": 6,
+      "translationFeedback": 1.300000000745058
+    },
+    {
+      "sample": 8,
+      "drawer": 65.19999999925494,
+      "language": 95.69999999925494,
+      "feedback": 7.699999999254942,
+      "translationFeedback": 1.9000000022351742
+    },
+    {
+      "sample": 9,
+      "drawer": 61.69999999925494,
+      "language": 100.59999999776483,
+      "feedback": 5.800000000745058,
+      "translationFeedback": 1.3999999985098839
+    },
+    {
+      "sample": 10,
+      "drawer": 60.099999997764826,
+      "language": 117.80000000074506,
+      "feedback": 6.300000000745058,
+      "translationFeedback": 1.699999999254942
+    },
+    {
+      "sample": 11,
+      "drawer": 74.40000000223517,
+      "language": 99.30000000074506,
+      "feedback": 6.600000001490116,
+      "translationFeedback": 1.699999999254942
+    },
+    {
+      "sample": 12,
+      "drawer": 65,
+      "language": 110.40000000223517,
+      "feedback": 7.100000001490116,
+      "translationFeedback": 1.699999999254942
+    },
+    {
+      "sample": 13,
+      "drawer": 56.100000001490116,
+      "language": 100.5,
+      "feedback": 5.600000001490116,
+      "translationFeedback": 1.5
+    },
+    {
+      "sample": 14,
+      "drawer": 62.20000000298023,
+      "language": 97.5,
+      "feedback": 5.699999999254942,
+      "translationFeedback": 1.5999999977648258
+    },
+    {
+      "sample": 15,
+      "drawer": 62.5,
+      "language": 104,
+      "feedback": 5,
+      "translationFeedback": 1.2999999970197678
+    },
+    {
+      "sample": 16,
+      "drawer": 65.10000000149012,
+      "language": 120.5,
+      "feedback": 5.800000000745058,
+      "translationFeedback": 1.2000000029802322
+    },
+    {
+      "sample": 17,
+      "drawer": 61.099999997764826,
+      "language": 114.09999999776483,
+      "feedback": 7.099999997764826,
+      "translationFeedback": 1.699999999254942
+    },
+    {
+      "sample": 18,
+      "drawer": 56.600000001490116,
+      "language": 115.10000000149012,
+      "feedback": 5.599999997764826,
+      "translationFeedback": 1.6000000014901161
+    },
+    {
+      "sample": 19,
+      "drawer": 55.19999999925494,
+      "language": 110.60000000149012,
+      "feedback": 5.899999998509884,
+      "translationFeedback": 1.300000000745058
+    },
+    {
+      "sample": 20,
+      "drawer": 77.70000000298023,
+      "language": 124.5,
+      "feedback": 7.900000002235174,
+      "translationFeedback": 1.5
+    },
+    {
+      "sample": 21,
+      "drawer": 70.20000000298023,
+      "language": 110.5,
+      "feedback": 6.5,
+      "translationFeedback": 1.699999999254942
+    },
+    {
+      "sample": 22,
+      "drawer": 61,
+      "language": 102.29999999701977,
+      "feedback": 5.300000000745058,
+      "translationFeedback": 1.3999999985098839
+    },
+    {
+      "sample": 23,
+      "drawer": 63.900000002235174,
+      "language": 109.29999999701977,
+      "feedback": 7.600000001490116,
+      "translationFeedback": 1.5999999977648258
+    },
+    {
+      "sample": 24,
+      "drawer": 61,
+      "language": 102.69999999925494,
+      "feedback": 6.800000000745058,
+      "translationFeedback": 1.5999999977648258
+    },
+    {
+      "sample": 25,
+      "drawer": 60.80000000074506,
+      "language": 100.69999999925494,
+      "feedback": 6.099999997764826,
+      "translationFeedback": 2.100000001490116
+    },
+    {
+      "sample": 26,
+      "drawer": 66.80000000074506,
+      "language": 100.89999999850988,
+      "feedback": 5.199999999254942,
+      "translationFeedback": 1.199999999254942
+    },
+    {
+      "sample": 27,
+      "drawer": 58.79999999701977,
+      "language": 100.39999999850988,
+      "feedback": 5.199999999254942,
+      "translationFeedback": 1.4000000022351742
+    },
+    {
+      "sample": 28,
+      "drawer": 73.5,
+      "language": 93.5,
+      "feedback": 5.100000001490116,
+      "translationFeedback": 1.0999999977648258
+    },
+    {
+      "sample": 29,
+      "drawer": 63.19999999925494,
+      "language": 116.69999999925494,
+      "feedback": 5.5,
+      "translationFeedback": 1.3999999985098839
+    }
+  ]
+}

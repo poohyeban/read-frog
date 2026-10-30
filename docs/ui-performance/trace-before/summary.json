@@ -1,0 +1,2291 @@
+{
+  "note": "5 separate traced normal-production loads. Event durations are inclusive and may overlap; background threads are reported separately. Never add these to wall-clock startup or compare traced startup with untraced samples.",
+  "results": [
+    {
+      "sample": 0,
+      "groups": [
+        {
+          "name": "FunctionCall",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 21,
+          "ms": 99.017
+        },
+        {
+          "name": "V8.CompileCode",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 1855,
+          "ms": 72.18300000000042
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102855,
+          "tid": 102865,
+          "count": 1,
+          "ms": 61.606
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102855,
+          "tid": 102865,
+          "count": 1,
+          "ms": 61.603
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102855,
+          "tid": 102865,
+          "count": 1,
+          "ms": 61.443
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102855,
+          "tid": 102885,
+          "count": 2,
+          "ms": 46.678
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102855,
+          "tid": 102885,
+          "count": 1,
+          "ms": 46.615
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102855,
+          "tid": 102885,
+          "count": 1,
+          "ms": 46.521
+        },
+        {
+          "name": "V8.ParseProgram",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 53,
+          "ms": 37.92
+        },
+        {
+          "name": "V8.ParseFunction",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 1808,
+          "ms": 33.049000000000085
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102855,
+          "tid": 102867,
+          "count": 11,
+          "ms": 33.009
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102855,
+          "tid": 102867,
+          "count": 17,
+          "ms": 32.986000000000004
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102855,
+          "tid": 102886,
+          "count": 22,
+          "ms": 23.491000000000003
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102855,
+          "tid": 102886,
+          "count": 22,
+          "ms": 23.401999999999997
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102855,
+          "tid": 102886,
+          "count": 22,
+          "ms": 23.233
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 1873,
+          "ms": 22.201000000000036
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102855,
+          "tid": 102867,
+          "count": 11,
+          "ms": 21.673000000000002
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102855,
+          "tid": 102885,
+          "count": 934,
+          "ms": 19.033000000000058
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 2415,
+          "ms": 17.422999999999952
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102855,
+          "tid": 102883,
+          "count": 2,
+          "ms": 11.054
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102855,
+          "tid": 102883,
+          "count": 1,
+          "ms": 10.994
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102855,
+          "tid": 102883,
+          "count": 1,
+          "ms": 10.976
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102855,
+          "tid": 102865,
+          "count": 1,
+          "ms": 10.079
+        },
+        {
+          "name": "ParseAuthorStyleSheet",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 2,
+          "ms": 8.55
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102855,
+          "tid": 102882,
+          "count": 6,
+          "ms": 8.124
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102855,
+          "tid": 102882,
+          "count": 4,
+          "ms": 7.917999999999999
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102855,
+          "tid": 102867,
+          "count": 832,
+          "ms": 7.830999999999966
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102855,
+          "tid": 102882,
+          "count": 4,
+          "ms": 6.577000000000001
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102855,
+          "tid": 102886,
+          "count": 398,
+          "ms": 6.408999999999977
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102855,
+          "tid": 102867,
+          "count": 6,
+          "ms": 6.345999999999999
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102855,
+          "tid": 102865,
+          "count": 698,
+          "ms": 6.19699999999996
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102855,
+          "tid": 102865,
+          "count": 3,
+          "ms": 5.172
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102855,
+          "tid": 102883,
+          "count": 1,
+          "ms": 4.815
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102855,
+          "tid": 102865,
+          "count": 3,
+          "ms": 3.69
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102855,
+          "tid": 102883,
+          "count": 1,
+          "ms": 3.177
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 1468,
+          "ms": 2.902999999999902
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102855,
+          "tid": 102867,
+          "count": 11,
+          "ms": 2.653
+        },
+        {
+          "name": "ParseHTML",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 19,
+          "ms": 2.4459999999999984
+        },
+        {
+          "name": "HTMLDocumentParser::MaybeFetchQueuedPreloads",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 1,
+          "ms": 2.33
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102855,
+          "tid": 102885,
+          "count": 1,
+          "ms": 2.218
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102855,
+          "tid": 102886,
+          "count": 22,
+          "ms": 1.898
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102855,
+          "tid": 102867,
+          "count": 23,
+          "ms": 1.7810000000000001
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102855,
+          "tid": 102883,
+          "count": 181,
+          "ms": 1.4729999999999994
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102855,
+          "tid": 102885,
+          "count": 10,
+          "ms": 1.1449999999999994
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102855,
+          "tid": 102882,
+          "count": 2,
+          "ms": 1.044
+        },
+        {
+          "name": "V8.Compile",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 13,
+          "ms": 0.9620000000000001
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102855,
+          "tid": 102882,
+          "count": 187,
+          "ms": 0.9320000000000006
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102855,
+          "tid": 102885,
+          "count": 12,
+          "ms": 0.7280000000000001
+        },
+        {
+          "name": "v8.compileModule",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 40,
+          "ms": 0.6940000000000003
+        },
+        {
+          "name": "V8.CompileEval",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 37,
+          "ms": 0.6070000000000002
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102855,
+          "tid": 102882,
+          "count": 4,
+          "ms": 0.514
+        },
+        {
+          "name": "V8.CompileStreamedModule",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 40,
+          "ms": 0.4720000000000003
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102855,
+          "tid": 102885,
+          "count": 1,
+          "ms": 0.434
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102855,
+          "tid": 102867,
+          "count": 21,
+          "ms": 0.375
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102855,
+          "tid": 102886,
+          "count": 31,
+          "ms": 0.3620000000000001
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102855,
+          "tid": 102882,
+          "count": 12,
+          "ms": 0.26000000000000006
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102855,
+          "tid": 102886,
+          "count": 28,
+          "ms": 0.20800000000000005
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102855,
+          "tid": 102883,
+          "count": 9,
+          "ms": 0.17000000000000004
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102855,
+          "tid": 102882,
+          "count": 11,
+          "ms": 0.107
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102855,
+          "tid": 102883,
+          "count": 9,
+          "ms": 0.08600000000000002
+        },
+        {
+          "name": "V8.CompileScript",
+          "pid": 102855,
+          "tid": 102855,
+          "count": 2,
+          "ms": 0.022000000000000002
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "groups": [
+        {
+          "name": "FunctionCall",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 20,
+          "ms": 88.80000000000001
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102898,
+          "tid": 102908,
+          "count": 1,
+          "ms": 72.652
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102898,
+          "tid": 102908,
+          "count": 1,
+          "ms": 72.649
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102898,
+          "tid": 102908,
+          "count": 1,
+          "ms": 72.452
+        },
+        {
+          "name": "V8.CompileCode",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 1855,
+          "ms": 69.04500000000046
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102898,
+          "tid": 102920,
+          "count": 3,
+          "ms": 57.071
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102898,
+          "tid": 102920,
+          "count": 3,
+          "ms": 57.065
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102898,
+          "tid": 102920,
+          "count": 3,
+          "ms": 56.994
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102898,
+          "tid": 102918,
+          "count": 14,
+          "ms": 55.234
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102898,
+          "tid": 102918,
+          "count": 14,
+          "ms": 55.152
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102898,
+          "tid": 102918,
+          "count": 14,
+          "ms": 52.933
+        },
+        {
+          "name": "V8.ParseProgram",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 53,
+          "ms": 49.938
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102898,
+          "tid": 102919,
+          "count": 13,
+          "ms": 46.038
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102898,
+          "tid": 102919,
+          "count": 12,
+          "ms": 45.96499999999999
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102898,
+          "tid": 102919,
+          "count": 12,
+          "ms": 44.42000000000001
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102898,
+          "tid": 102920,
+          "count": 989,
+          "ms": 38.33800000000008
+        },
+        {
+          "name": "V8.ParseFunction",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 1808,
+          "ms": 35.09100000000014
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102898,
+          "tid": 102910,
+          "count": 10,
+          "ms": 24.411
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102898,
+          "tid": 102910,
+          "count": 6,
+          "ms": 21.369999999999997
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 2428,
+          "ms": 20.792000000000087
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 1863,
+          "ms": 19.791000000000064
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102898,
+          "tid": 102918,
+          "count": 14,
+          "ms": 17.431999999999995
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102898,
+          "tid": 102919,
+          "count": 916,
+          "ms": 15.253000000000066
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102898,
+          "tid": 102919,
+          "count": 12,
+          "ms": 15.001000000000001
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102898,
+          "tid": 102918,
+          "count": 401,
+          "ms": 13.731999999999998
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102898,
+          "tid": 102908,
+          "count": 1,
+          "ms": 13.491
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102898,
+          "tid": 102919,
+          "count": 21,
+          "ms": 11.281
+        },
+        {
+          "name": "ParseAuthorStyleSheet",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 2,
+          "ms": 11.272
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102898,
+          "tid": 102908,
+          "count": 3,
+          "ms": 10.891
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102898,
+          "tid": 102910,
+          "count": 4,
+          "ms": 10.799
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102898,
+          "tid": 102917,
+          "count": 6,
+          "ms": 9.372
+        },
+        {
+          "name": "HTMLDocumentParser::MaybeFetchQueuedPreloads",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 1,
+          "ms": 8.424
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102898,
+          "tid": 102917,
+          "count": 4,
+          "ms": 8.075
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102898,
+          "tid": 102920,
+          "count": 3,
+          "ms": 7.473999999999999
+        },
+        {
+          "name": "ParseHTML",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 19,
+          "ms": 5.483999999999999
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102898,
+          "tid": 102917,
+          "count": 2,
+          "ms": 4.494
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102898,
+          "tid": 102908,
+          "count": 676,
+          "ms": 4.209999999999959
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 1468,
+          "ms": 3.5289999999998782
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102898,
+          "tid": 102910,
+          "count": 6,
+          "ms": 3.5050000000000003
+        },
+        {
+          "name": "v8.compileModule",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 40,
+          "ms": 3.4579999999999997
+        },
+        {
+          "name": "V8.CompileStreamedModule",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 40,
+          "ms": 3.1579999999999995
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102898,
+          "tid": 102917,
+          "count": 4,
+          "ms": 2.21
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102898,
+          "tid": 102908,
+          "count": 3,
+          "ms": 2.158
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102898,
+          "tid": 102910,
+          "count": 149,
+          "ms": 1.5359999999999967
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102898,
+          "tid": 102920,
+          "count": 15,
+          "ms": 1.4499999999999993
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102898,
+          "tid": 102919,
+          "count": 1,
+          "ms": 1.149
+        },
+        {
+          "name": "V8.Compile",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 13,
+          "ms": 1.1419999999999992
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102898,
+          "tid": 102920,
+          "count": 13,
+          "ms": 1.130999999999999
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102898,
+          "tid": 102917,
+          "count": 111,
+          "ms": 0.8770000000000004
+        },
+        {
+          "name": "V8.CompileEval",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 37,
+          "ms": 0.7480000000000003
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102898,
+          "tid": 102918,
+          "count": 29,
+          "ms": 0.6210000000000001
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102898,
+          "tid": 102919,
+          "count": 20,
+          "ms": 0.6100000000000001
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102898,
+          "tid": 102918,
+          "count": 27,
+          "ms": 0.4930000000000001
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102898,
+          "tid": 102917,
+          "count": 4,
+          "ms": 0.373
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102898,
+          "tid": 102910,
+          "count": 6,
+          "ms": 0.36800000000000005
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102898,
+          "tid": 102917,
+          "count": 15,
+          "ms": 0.18300000000000002
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102898,
+          "tid": 102910,
+          "count": 9,
+          "ms": 0.15800000000000003
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102898,
+          "tid": 102910,
+          "count": 9,
+          "ms": 0.099
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102898,
+          "tid": 102917,
+          "count": 14,
+          "ms": 0.09400000000000001
+        },
+        {
+          "name": "V8.CompileScript",
+          "pid": 102898,
+          "tid": 102898,
+          "count": 2,
+          "ms": 0.032
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "groups": [
+        {
+          "name": "FunctionCall",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 19,
+          "ms": 96.087
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102932,
+          "tid": 102954,
+          "count": 1,
+          "ms": 75.346
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102932,
+          "tid": 102954,
+          "count": 1,
+          "ms": 75.341
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102932,
+          "tid": 102954,
+          "count": 1,
+          "ms": 75.081
+        },
+        {
+          "name": "V8.CompileCode",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 1854,
+          "ms": 68.71700000000054
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102932,
+          "tid": 102952,
+          "count": 8,
+          "ms": 57.760000000000005
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102932,
+          "tid": 102952,
+          "count": 5,
+          "ms": 56.297
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102932,
+          "tid": 102952,
+          "count": 5,
+          "ms": 52.107
+        },
+        {
+          "name": "V8.ParseProgram",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 53,
+          "ms": 43.347000000000016
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102932,
+          "tid": 102944,
+          "count": 18,
+          "ms": 41.61700000000001
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102932,
+          "tid": 102944,
+          "count": 14,
+          "ms": 37.68400000000001
+        },
+        {
+          "name": "V8.ParseFunction",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 1807,
+          "ms": 33.791000000000096
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102932,
+          "tid": 102942,
+          "count": 18,
+          "ms": 32.437
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102932,
+          "tid": 102944,
+          "count": 14,
+          "ms": 25.02
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102932,
+          "tid": 102942,
+          "count": 17,
+          "ms": 24.901999999999997
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102932,
+          "tid": 102952,
+          "count": 1590,
+          "ms": 21.55700000000012
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 1879,
+          "ms": 18.865000000000016
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 2441,
+          "ms": 16.10600000000001
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102932,
+          "tid": 102942,
+          "count": 17,
+          "ms": 13.122
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102932,
+          "tid": 102952,
+          "count": 5,
+          "ms": 11.46
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102932,
+          "tid": 102954,
+          "count": 693,
+          "ms": 7.154999999999967
+        },
+        {
+          "name": "ParseAuthorStyleSheet",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 2,
+          "ms": 7.003
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102932,
+          "tid": 102944,
+          "count": 487,
+          "ms": 6.069999999999967
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102932,
+          "tid": 102942,
+          "count": 17,
+          "ms": 5.318999999999999
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102932,
+          "tid": 102954,
+          "count": 1,
+          "ms": 4.79
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102932,
+          "tid": 102944,
+          "count": 14,
+          "ms": 4.523999999999999
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102932,
+          "tid": 102942,
+          "count": 417,
+          "ms": 4.22199999999999
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102932,
+          "tid": 102952,
+          "count": 3,
+          "ms": 3.943
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102932,
+          "tid": 102944,
+          "count": 4,
+          "ms": 3.7609999999999997
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102932,
+          "tid": 102955,
+          "count": 4,
+          "ms": 3.627
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102932,
+          "tid": 102952,
+          "count": 23,
+          "ms": 3.608999999999998
+        },
+        {
+          "name": "HTMLDocumentParser::MaybeFetchQueuedPreloads",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 1,
+          "ms": 3.286
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 1518,
+          "ms": 3.263999999999894
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102932,
+          "tid": 102942,
+          "count": 1,
+          "ms": 3.122
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102932,
+          "tid": 102944,
+          "count": 24,
+          "ms": 2.7859999999999983
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102932,
+          "tid": 102955,
+          "count": 2,
+          "ms": 2.6879999999999997
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102932,
+          "tid": 102954,
+          "count": 3,
+          "ms": 2.471
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102932,
+          "tid": 102954,
+          "count": 3,
+          "ms": 2.1319999999999997
+        },
+        {
+          "name": "ParseHTML",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 19,
+          "ms": 2.0929999999999995
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102932,
+          "tid": 102942,
+          "count": 33,
+          "ms": 1.7749999999999992
+        },
+        {
+          "name": "v8.compileModule",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 40,
+          "ms": 1.626999999999999
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102932,
+          "tid": 102955,
+          "count": 2,
+          "ms": 1.345
+        },
+        {
+          "name": "V8.CompileStreamedModule",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 40,
+          "ms": 1.3309999999999995
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102932,
+          "tid": 102952,
+          "count": 21,
+          "ms": 1.097
+        },
+        {
+          "name": "V8.Compile",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 13,
+          "ms": 0.5900000000000001
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102932,
+          "tid": 102944,
+          "count": 25,
+          "ms": 0.5210000000000001
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102932,
+          "tid": 102956,
+          "count": 1,
+          "ms": 0.499
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102932,
+          "tid": 102956,
+          "count": 1,
+          "ms": 0.495
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102932,
+          "tid": 102956,
+          "count": 1,
+          "ms": 0.484
+        },
+        {
+          "name": "V8.CompileEval",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 37,
+          "ms": 0.47200000000000025
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102932,
+          "tid": 102955,
+          "count": 2,
+          "ms": 0.29700000000000004
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102932,
+          "tid": 102942,
+          "count": 33,
+          "ms": 0.26100000000000007
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102932,
+          "tid": 102956,
+          "count": 40,
+          "ms": 0.18200000000000005
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102932,
+          "tid": 102955,
+          "count": 9,
+          "ms": 0.13199999999999998
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102932,
+          "tid": 102956,
+          "count": 1,
+          "ms": 0.091
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102932,
+          "tid": 102955,
+          "count": 2,
+          "ms": 0.075
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102932,
+          "tid": 102956,
+          "count": 6,
+          "ms": 0.042
+        },
+        {
+          "name": "V8.CompileScript",
+          "pid": 102932,
+          "tid": 102932,
+          "count": 2,
+          "ms": 0.035
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102932,
+          "tid": 102955,
+          "count": 2,
+          "ms": 0.027000000000000003
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102932,
+          "tid": 102956,
+          "count": 6,
+          "ms": 0.022000000000000002
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102932,
+          "tid": 102955,
+          "count": 2,
+          "ms": 0.015
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "groups": [
+        {
+          "name": "FunctionCall",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 20,
+          "ms": 89.1
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102968,
+          "tid": 102978,
+          "count": 2,
+          "ms": 85.83
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102968,
+          "tid": 102978,
+          "count": 1,
+          "ms": 85.758
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102968,
+          "tid": 102978,
+          "count": 1,
+          "ms": 85.57
+        },
+        {
+          "name": "V8.CompileCode",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 1855,
+          "ms": 68.72900000000043
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102968,
+          "tid": 102991,
+          "count": 4,
+          "ms": 46.932
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102968,
+          "tid": 102991,
+          "count": 5,
+          "ms": 46.586
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102968,
+          "tid": 102980,
+          "count": 11,
+          "ms": 43.79
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102968,
+          "tid": 102980,
+          "count": 7,
+          "ms": 39.192
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102968,
+          "tid": 102991,
+          "count": 4,
+          "ms": 38.796
+        },
+        {
+          "name": "V8.ParseProgram",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 53,
+          "ms": 38.57000000000001
+        },
+        {
+          "name": "V8.ParseFunction",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 1808,
+          "ms": 35.69900000000024
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102968,
+          "tid": 102990,
+          "count": 10,
+          "ms": 34.894
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102968,
+          "tid": 102990,
+          "count": 9,
+          "ms": 24.133999999999993
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102968,
+          "tid": 102993,
+          "count": 9,
+          "ms": 23.315000000000005
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102968,
+          "tid": 102993,
+          "count": 6,
+          "ms": 22.693
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102968,
+          "tid": 102980,
+          "count": 7,
+          "ms": 19.975
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 1875,
+          "ms": 19.332000000000043
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102968,
+          "tid": 102994,
+          "count": 14,
+          "ms": 18.177000000000003
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102968,
+          "tid": 102993,
+          "count": 6,
+          "ms": 16.91
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 2400,
+          "ms": 16.52499999999997
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102968,
+          "tid": 102994,
+          "count": 12,
+          "ms": 15.597999999999999
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102968,
+          "tid": 102980,
+          "count": 4,
+          "ms": 14.489
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102968,
+          "tid": 102978,
+          "count": 697,
+          "ms": 13.180000000000012
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102968,
+          "tid": 102991,
+          "count": 987,
+          "ms": 11.42799999999998
+        },
+        {
+          "name": "HTMLDocumentParser::MaybeFetchQueuedPreloads",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 1,
+          "ms": 10.698
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102968,
+          "tid": 102980,
+          "count": 671,
+          "ms": 10.15
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102968,
+          "tid": 102993,
+          "count": 3,
+          "ms": 9.809999999999999
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102968,
+          "tid": 102994,
+          "count": 12,
+          "ms": 9.729
+        },
+        {
+          "name": "ParseAuthorStyleSheet",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 2,
+          "ms": 9.45
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102968,
+          "tid": 102990,
+          "count": 9,
+          "ms": 7.823999999999999
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102968,
+          "tid": 102991,
+          "count": 1,
+          "ms": 7.368
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102968,
+          "tid": 102990,
+          "count": 9,
+          "ms": 7.351
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102968,
+          "tid": 102990,
+          "count": 1,
+          "ms": 5.846
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102968,
+          "tid": 102978,
+          "count": 1,
+          "ms": 5.256
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102968,
+          "tid": 102993,
+          "count": 565,
+          "ms": 4.8259999999999685
+        },
+        {
+          "name": "ParseHTML",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 19,
+          "ms": 4.2250000000000005
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102968,
+          "tid": 102991,
+          "count": 4,
+          "ms": 3.9739999999999998
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 1490,
+          "ms": 3.444999999999885
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102968,
+          "tid": 102994,
+          "count": 120,
+          "ms": 3.382999999999997
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102968,
+          "tid": 102978,
+          "count": 3,
+          "ms": 3.1399999999999997
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102968,
+          "tid": 102990,
+          "count": 198,
+          "ms": 2.5369999999999995
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102968,
+          "tid": 102994,
+          "count": 2,
+          "ms": 2.342
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102968,
+          "tid": 102991,
+          "count": 21,
+          "ms": 1.991999999999999
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102968,
+          "tid": 102978,
+          "count": 3,
+          "ms": 1.843
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102968,
+          "tid": 102991,
+          "count": 19,
+          "ms": 1.6399999999999995
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102968,
+          "tid": 102990,
+          "count": 17,
+          "ms": 1.5009999999999994
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102968,
+          "tid": 102980,
+          "count": 7,
+          "ms": 1.391
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 102968,
+          "tid": 102992,
+          "count": 2,
+          "ms": 1.374
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 102968,
+          "tid": 102992,
+          "count": 1,
+          "ms": 1.178
+        },
+        {
+          "name": "v8.compileModule",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 40,
+          "ms": 1.0010000000000006
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102968,
+          "tid": 102993,
+          "count": 6,
+          "ms": 0.9960000000000001
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102968,
+          "tid": 102994,
+          "count": 12,
+          "ms": 0.8840000000000001
+        },
+        {
+          "name": "V8.Compile",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 13,
+          "ms": 0.775
+        },
+        {
+          "name": "V8.CompileStreamedModule",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 40,
+          "ms": 0.7190000000000004
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102968,
+          "tid": 102992,
+          "count": 1,
+          "ms": 0.719
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 102968,
+          "tid": 102978,
+          "count": 1,
+          "ms": 0.631
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102968,
+          "tid": 102980,
+          "count": 7,
+          "ms": 0.546
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102968,
+          "tid": 102993,
+          "count": 31,
+          "ms": 0.5410000000000001
+        },
+        {
+          "name": "V8.CompileEval",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 37,
+          "ms": 0.5160000000000002
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102968,
+          "tid": 102994,
+          "count": 12,
+          "ms": 0.3350000000000001
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102968,
+          "tid": 102980,
+          "count": 7,
+          "ms": 0.29800000000000004
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102968,
+          "tid": 102993,
+          "count": 22,
+          "ms": 0.29400000000000004
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102968,
+          "tid": 102994,
+          "count": 12,
+          "ms": 0.24400000000000005
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102968,
+          "tid": 102990,
+          "count": 17,
+          "ms": 0.23200000000000004
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 102968,
+          "tid": 102992,
+          "count": 1,
+          "ms": 0.133
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 102968,
+          "tid": 102992,
+          "count": 1,
+          "ms": 0.032
+        },
+        {
+          "name": "V8.CompileScript",
+          "pid": 102968,
+          "tid": 102968,
+          "count": 2,
+          "ms": 0.024
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 102968,
+          "tid": 102992,
+          "count": 1,
+          "ms": 0.007
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 102968,
+          "tid": 102992,
+          "count": 1,
+          "ms": 0.006
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 102968,
+          "tid": 102992,
+          "count": 1,
+          "ms": 0.005
+        }
+      ]
+    },
+    {
+      "sample": 4,
+      "groups": [
+        {
+          "name": "FunctionCall",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 21,
+          "ms": 94.47099999999999
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 103005,
+          "tid": 103011,
+          "count": 9,
+          "ms": 76.459
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 103005,
+          "tid": 103028,
+          "count": 2,
+          "ms": 66.721
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 103005,
+          "tid": 103028,
+          "count": 1,
+          "ms": 66.643
+        },
+        {
+          "name": "V8.CompileCode",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 1855,
+          "ms": 66.61300000000038
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 103005,
+          "tid": 103028,
+          "count": 1,
+          "ms": 66.494
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 103005,
+          "tid": 103011,
+          "count": 6,
+          "ms": 62.017
+        },
+        {
+          "name": "V8.ParseProgram",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 53,
+          "ms": 37.930000000000014
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 103005,
+          "tid": 103027,
+          "count": 13,
+          "ms": 36.79799999999999
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 103005,
+          "tid": 103027,
+          "count": 11,
+          "ms": 33.946999999999996
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 103005,
+          "tid": 103011,
+          "count": 6,
+          "ms": 33.483999999999995
+        },
+        {
+          "name": "V8.ParseFunction",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 1808,
+          "ms": 33.367000000000075
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 103005,
+          "tid": 103027,
+          "count": 11,
+          "ms": 27.840999999999998
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 103005,
+          "tid": 103031,
+          "count": 13,
+          "ms": 24.071
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 103005,
+          "tid": 103031,
+          "count": 13,
+          "ms": 24.027
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 103005,
+          "tid": 103031,
+          "count": 13,
+          "ms": 23.865
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 1870,
+          "ms": 19.433
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 103005,
+          "tid": 103013,
+          "count": 9,
+          "ms": 18.296000000000003
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 103005,
+          "tid": 103026,
+          "count": 7,
+          "ms": 18.251999999999995
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 103005,
+          "tid": 103026,
+          "count": 3,
+          "ms": 17.822000000000003
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 103005,
+          "tid": 103013,
+          "count": 4,
+          "ms": 17.16
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 2410,
+          "ms": 16.768999999999938
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 103005,
+          "tid": 103026,
+          "count": 4,
+          "ms": 16.185000000000002
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 103005,
+          "tid": 103011,
+          "count": 1170,
+          "ms": 14.039000000000001
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 103005,
+          "tid": 103011,
+          "count": 3,
+          "ms": 13.524
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 103005,
+          "tid": 103028,
+          "count": 671,
+          "ms": 13.285999999999923
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 103005,
+          "tid": 103027,
+          "count": 389,
+          "ms": 12.544
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 103005,
+          "tid": 103013,
+          "count": 5,
+          "ms": 12.437000000000001
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 103005,
+          "tid": 103026,
+          "count": 3,
+          "ms": 12.168
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 103005,
+          "tid": 103031,
+          "count": 629,
+          "ms": 11.520000000000005
+        },
+        {
+          "name": "v8.parseOnBackgroundParsing",
+          "pid": 103005,
+          "tid": 103029,
+          "count": 4,
+          "ms": 9.411
+        },
+        {
+          "name": "ParseAuthorStyleSheet",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 2,
+          "ms": 9.409
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 103005,
+          "tid": 103013,
+          "count": 4,
+          "ms": 8.835
+        },
+        {
+          "name": "v8.parseOnBackground",
+          "pid": 103005,
+          "tid": 103029,
+          "count": 2,
+          "ms": 8.818
+        },
+        {
+          "name": "BackgroundCompileTask::Run",
+          "pid": 103005,
+          "tid": 103029,
+          "count": 2,
+          "ms": 7.386
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 103005,
+          "tid": 103011,
+          "count": 6,
+          "ms": 7.110999999999999
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 103005,
+          "tid": 103027,
+          "count": 11,
+          "ms": 5.616999999999999
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 103005,
+          "tid": 103028,
+          "count": 1,
+          "ms": 4.594
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 103005,
+          "tid": 103027,
+          "count": 2,
+          "ms": 4.053
+        },
+        {
+          "name": "HTMLDocumentParser::MaybeFetchQueuedPreloads",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 1,
+          "ms": 3.855
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 1486,
+          "ms": 3.4279999999998805
+        },
+        {
+          "name": "ParseHTML",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 19,
+          "ms": 2.620999999999998
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 103005,
+          "tid": 103028,
+          "count": 3,
+          "ms": 2.611
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 103005,
+          "tid": 103028,
+          "count": 1,
+          "ms": 2.605
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 103005,
+          "tid": 103011,
+          "count": 25,
+          "ms": 1.9359999999999993
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 103005,
+          "tid": 103028,
+          "count": 3,
+          "ms": 1.8099999999999998
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 103005,
+          "tid": 103027,
+          "count": 20,
+          "ms": 1.751
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 103005,
+          "tid": 103029,
+          "count": 182,
+          "ms": 1.6889999999999985
+        },
+        {
+          "name": "v8.parseOnBackgroundWaiting",
+          "pid": 103005,
+          "tid": 103029,
+          "count": 2,
+          "ms": 1.67
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 103005,
+          "tid": 103013,
+          "count": 4,
+          "ms": 1.472
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 103005,
+          "tid": 103013,
+          "count": 114,
+          "ms": 0.9230000000000003
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 103005,
+          "tid": 103031,
+          "count": 13,
+          "ms": 0.901
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 103005,
+          "tid": 103013,
+          "count": 13,
+          "ms": 0.8280000000000001
+        },
+        {
+          "name": "v8.compileModule",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 40,
+          "ms": 0.8020000000000004
+        },
+        {
+          "name": "V8.CompileStreamedModule",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 40,
+          "ms": 0.6070000000000003
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 103005,
+          "tid": 103011,
+          "count": 22,
+          "ms": 0.5750000000000001
+        },
+        {
+          "name": "V8.Compile",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 13,
+          "ms": 0.554
+        },
+        {
+          "name": "V8.PreParse",
+          "pid": 103005,
+          "tid": 103026,
+          "count": 62,
+          "ms": 0.4480000000000002
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 103005,
+          "tid": 103031,
+          "count": 14,
+          "ms": 0.429
+        },
+        {
+          "name": "V8.CompileEval",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 37,
+          "ms": 0.3900000000000002
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 103005,
+          "tid": 103029,
+          "count": 2,
+          "ms": 0.325
+        },
+        {
+          "name": "V8.CompileCodeBackground",
+          "pid": 103005,
+          "tid": 103026,
+          "count": 3,
+          "ms": 0.262
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 103005,
+          "tid": 103027,
+          "count": 20,
+          "ms": 0.258
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 103005,
+          "tid": 103031,
+          "count": 14,
+          "ms": 0.23
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 103005,
+          "tid": 103029,
+          "count": 10,
+          "ms": 0.17500000000000004
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 103005,
+          "tid": 103013,
+          "count": 14,
+          "ms": 0.16200000000000003
+        },
+        {
+          "name": "V8.CompileIgnition",
+          "pid": 103005,
+          "tid": 103026,
+          "count": 6,
+          "ms": 0.1
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 103005,
+          "tid": 103029,
+          "count": 9,
+          "ms": 0.07600000000000001
+        },
+        {
+          "name": "V8.CompileIgnitionFinalization",
+          "pid": 103005,
+          "tid": 103026,
+          "count": 6,
+          "ms": 0.066
+        },
+        {
+          "name": "V8.CompileScript",
+          "pid": 103005,
+          "tid": 103005,
+          "count": 2,
+          "ms": 0.023
+        }
+      ]
+    }
+  ]
+}

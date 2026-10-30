@@ -60,9 +60,6 @@ function EditableProviderConfig({ providerConfig }: { providerConfig: APIProvide
   const setAllProvidersConfig = useSetAtom(configFieldsAtomMap.providersConfig)
   const setConfig = useSetAtom(writeConfigAtom)
   const config = useAtomValue(configAtom)
-  // Decides which built-in tiers count as usable below. Unknown status reads as
-  // usable, so an unreachable status endpoint never traps someone with a
-  // credential they want gone.
 
   const patchProvider = useSetAtom(patchProviderConfigAtom)
   const { form, autosave } = useProviderForm(providerConfig, async (_snapshot, changes) => {

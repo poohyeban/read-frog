@@ -29,7 +29,7 @@ async function initApp() {
   const session = createPopupSession(store)
   window.addEventListener("pagehide", () => session.dispose(), { once: true })
   // Page state starts in parallel and cannot block language/provider/settings controls.
-  void session.start()
+  const pageStateReady = session.start()
   const [configValue, themeMode] = await Promise.all([
     withDeadline(getLocalConfig()),
     withDeadline(getLocalThemeMode()),
@@ -38,6 +38,10 @@ async function initApp() {
   await initI18n(config.uiLanguage)
   store.set(configAtom, config)
   store.set(baseThemeModeAtom, themeMode)
+  // Coalesce an already-nearby worker reply before the expensive first render.
+  // Two frames is a hard budget: a slow/unavailable worker still cannot hold
+  // configuration controls behind its full RPC timeout.
+  await withDeadline(pageStateReady, 32).catch(() => {})
 
   renderPersistentReactRoot(
     root,

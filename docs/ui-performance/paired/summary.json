@@ -1,0 +1,258 @@
+[
+  {
+    "version": "before",
+    "cache": "cold",
+    "backgroundDelay": 10,
+    "samples": 30,
+    "metrics": {
+      "meaningful": {
+        "p50": 392.69999999925494,
+        "p95": 443.80000000074506
+      },
+      "meaningfulPaint": {
+        "p50": 451.4000000022352,
+        "p95": 509.6000000014901
+      },
+      "interactive": {
+        "p50": 392.80000000074506,
+        "p95": 443.8999999985099
+      },
+      "ScriptDuration": {
+        "p50": 0.204551,
+        "p95": 0.236686
+      },
+      "TaskDuration": {
+        "p50": 0.375576,
+        "p95": 0.439201
+      },
+      "JSHeapUsedSize": {
+        "p50": 10260752,
+        "p95": 10322516
+      }
+    }
+  },
+  {
+    "version": "before",
+    "cache": "cold",
+    "backgroundDelay": 120,
+    "samples": 30,
+    "metrics": {
+      "meaningful": {
+        "p50": 493.29999999701977,
+        "p95": 545.6999999992549
+      },
+      "meaningfulPaint": {
+        "p50": 545.3000000007451,
+        "p95": 598.8999999985099
+      },
+      "interactive": {
+        "p50": 493.3999999985099,
+        "p95": 545.8999999985099
+      },
+      "ScriptDuration": {
+        "p50": 0.191627,
+        "p95": 0.215471
+      },
+      "TaskDuration": {
+        "p50": 0.359995,
+        "p95": 0.412005
+      },
+      "JSHeapUsedSize": {
+        "p50": 10283420,
+        "p95": 10323184
+      }
+    }
+  },
+  {
+    "version": "before",
+    "cache": "repeat",
+    "backgroundDelay": 10,
+    "samples": 30,
+    "metrics": {
+      "meaningful": {
+        "p50": 374,
+        "p95": 425
+      },
+      "meaningfulPaint": {
+        "p50": 432.1000000014901,
+        "p95": 474.8999999985099
+      },
+      "interactive": {
+        "p50": 374.1000000014901,
+        "p95": 425.1000000014901
+      },
+      "ScriptDuration": {
+        "p50": 0.201599,
+        "p95": 0.227376
+      },
+      "TaskDuration": {
+        "p50": 0.366899,
+        "p95": 0.428056
+      },
+      "JSHeapUsedSize": {
+        "p50": 10283820,
+        "p95": 10344460
+      }
+    }
+  },
+  {
+    "version": "before",
+    "cache": "repeat",
+    "backgroundDelay": 120,
+    "samples": 30,
+    "metrics": {
+      "meaningful": {
+        "p50": 473.19999999925494,
+        "p95": 497.20000000298023
+      },
+      "meaningfulPaint": {
+        "p50": 528.2999999970198,
+        "p95": 554.6000000014901
+      },
+      "interactive": {
+        "p50": 473.3999999985099,
+        "p95": 497.30000000074506
+      },
+      "ScriptDuration": {
+        "p50": 0.192274,
+        "p95": 0.214314
+      },
+      "TaskDuration": {
+        "p50": 0.366977,
+        "p95": 0.38803
+      },
+      "JSHeapUsedSize": {
+        "p50": 10270664,
+        "p95": 10320376
+      }
+    }
+  },
+  {
+    "version": "after",
+    "cache": "cold",
+    "backgroundDelay": 10,
+    "samples": 30,
+    "metrics": {
+      "meaningful": {
+        "p50": 315.19999999925494,
+        "p95": 410.19999999925494
+      },
+      "meaningfulPaint": {
+        "p50": 382.0999999977648,
+        "p95": 475.79999999701977
+      },
+      "interactive": {
+        "p50": 315.19999999925494,
+        "p95": 410.29999999701977
+      },
+      "ScriptDuration": {
+        "p50": 0.170594,
+        "p95": 0.220329
+      },
+      "TaskDuration": {
+        "p50": 0.342367,
+        "p95": 0.40897
+      },
+      "JSHeapUsedSize": {
+        "p50": 9720280,
+        "p95": 9771344
+      }
+    }
+  },
+  {
+    "version": "after",
+    "cache": "cold",
+    "backgroundDelay": 120,
+    "samples": 30,
+    "metrics": {
+      "meaningful": {
+        "p50": 331.4000000022352,
+        "p95": 366.19999999925494
+      },
+      "meaningfulPaint": {
+        "p50": 391,
+        "p95": 422.19999999925494
+      },
+      "interactive": {
+        "p50": 400.19999999925494,
+        "p95": 434.19999999925494
+      },
+      "ScriptDuration": {
+        "p50": 0.173934,
+        "p95": 0.196094
+      },
+      "TaskDuration": {
+        "p50": 0.346457,
+        "p95": 0.389535
+      },
+      "JSHeapUsedSize": {
+        "p50": 9775996,
+        "p95": 9810436
+      }
+    }
+  },
+  {
+    "version": "after",
+    "cache": "repeat",
+    "backgroundDelay": 10,
+    "samples": 30,
+    "metrics": {
+      "meaningful": {
+        "p50": 303.80000000074506,
+        "p95": 333
+      },
+      "meaningfulPaint": {
+        "p50": 368,
+        "p95": 424.30000000074506
+      },
+      "interactive": {
+        "p50": 303.80000000074506,
+        "p95": 333
+      },
+      "ScriptDuration": {
+        "p50": 0.170892,
+        "p95": 0.218078
+      },
+      "TaskDuration": {
+        "p50": 0.345081,
+        "p95": 0.415269
+      },
+      "JSHeapUsedSize": {
+        "p50": 9726676,
+        "p95": 9776696
+      }
+    }
+  },
+  {
+    "version": "after",
+    "cache": "repeat",
+    "backgroundDelay": 120,
+    "samples": 30,
+    "metrics": {
+      "meaningful": {
+        "p50": 315.1000000014901,
+        "p95": 376
+      },
+      "meaningfulPaint": {
+        "p50": 378.29999999701977,
+        "p95": 448
+      },
+      "interactive": {
+        "p50": 386.69999999925494,
+        "p95": 457.80000000074506
+      },
+      "ScriptDuration": {
+        "p50": 0.178245,
+        "p95": 0.231939
+      },
+      "TaskDuration": {
+        "p50": 0.344883,
+        "p95": 0.425462
+      },
+      "JSHeapUsedSize": {
+        "p50": 9753728,
+        "p95": 9818012
+      }
+    }
+  }
+]

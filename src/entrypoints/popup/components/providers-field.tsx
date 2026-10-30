@@ -5,7 +5,7 @@ import { IconChevronRight } from "@tabler/icons-react"
 import { dequal } from "dequal"
 import { useAtomValue } from "jotai"
 import { selectAtom } from "jotai/utils"
-import { lazy, Suspense, useMemo } from "react"
+import { useMemo, useState } from "react"
 import { HelpTooltip } from "@/components/help-tooltip"
 import { useTheme } from "@/components/providers/theme-provider"
 import { Avatar, AvatarGroup, AvatarGroupCount, AvatarImage } from "@/components/ui/base-ui/avatar"
@@ -26,11 +26,14 @@ import { i18n } from "@/utils/i18n"
 import { getProviderLogo, getProviderName } from "@/utils/providers/provider-display"
 import { getSelectableProvidersForCapability } from "@/utils/providers/provider-registry"
 
+type ProviderSelectorsComponent =
+  typeof import("@/components/llm-providers/feature-provider-selector-list").FeatureProviderSelectorList
+let cachedSelectors: ProviderSelectorsComponent | undefined
 const loadProviderSelectors = () =>
-  import("@/components/llm-providers/feature-provider-selector-list").then((module) => ({
-    default: module.FeatureProviderSelectorList,
-  }))
-const ProviderSelectors = lazy(loadProviderSelectors)
+  import("@/components/llm-providers/feature-provider-selector-list").then((module) => {
+    cachedSelectors = module.FeatureProviderSelectorList
+    return cachedSelectors
+  })
 const warmProviderSelectors = () => {
   void loadProviderSelectors().catch(() => {})
 }
@@ -113,6 +116,21 @@ function ProviderAvatarSummary({ slots }: { slots: SelectedProviderSlot[] }) {
 
 export default function ProvidersField() {
   const { assignments, providers } = useAtomValue(providerSummaryInputAtom)
+  const [Selectors, setSelectors] = useState<ProviderSelectorsComponent | undefined>(
+    () => cachedSelectors,
+  )
+  const [loadFailed, setLoadFailed] = useState(false)
+  const prepareSelectors = () => {
+    if (cachedSelectors) {
+      setSelectors(() => cachedSelectors)
+      return
+    }
+    setLoadFailed(false)
+    void loadProviderSelectors().then(
+      (component) => setSelectors(() => component),
+      () => setLoadFailed(true),
+    )
+  }
 
   const selectedProviders = useMemo(
     () => getSelectedProviderOptions(assignments, providers),
@@ -120,7 +138,11 @@ export default function ProvidersField() {
   )
 
   return (
-    <Drawer>
+    <Drawer
+      onOpenChange={(open) => {
+        if (open) prepareSelectors()
+      }}
+    >
       <div className="flex items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 text-[13px] font-medium">
           {i18n.t("popup.providers.title")}
@@ -158,9 +180,13 @@ export default function ProvidersField() {
           <DrawerDescription>{i18n.t("popup.providers.description")}</DrawerDescription>
         </DrawerHeader>
         <DrawerBody className="p-4" data-base-ui-swipe-ignore="">
-          <Suspense fallback={<p role="status">{i18n.t("ui.loading")}</p>}>
-            <ProviderSelectors providerSelectorTriggerSize="sm" />
-          </Suspense>
+          {Selectors ? (
+            <Selectors providerSelectorTriggerSize="sm" />
+          ) : loadFailed ? (
+            <Button onClick={prepareSelectors}>{i18n.t("options.autosave.retry")}</Button>
+          ) : (
+            <p role="status">{i18n.t("ui.loading")}</p>
+          )}
         </DrawerBody>
       </DrawerContent>
     </Drawer>

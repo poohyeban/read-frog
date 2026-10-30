@@ -47,7 +47,9 @@ const cases = [
   { name: "message-error", failure: "message" },
   { name: "message-timeout", failure: "hang" },
   { name: "tabs-error", failure: "tabs" },
+  { name: "storage-error", failure: "storage" },
   { name: "loading", backgroundDelay: 1200, loading: true },
+  { name: "already-translated", translated: true, backgroundDelay: 1200 },
   { name: "scale-125", scale: 1.25 },
   { name: "scale-150", scale: 1.5 },
   ...["az", "es", "ja", "ko", "ru", "tr", "vi", "zh-TW"].map((locale) => ({
@@ -56,7 +58,7 @@ const cases = [
   })),
 ]
 try {
-  for (const item of cases) {
+  for (const item of process.env.UI_VISUAL_BASELINE ? cases.slice(0, 4) : cases) {
     const config = structuredClone(base)
     config.uiLanguage = item.locale || "en"
     if (item.long) {
@@ -87,9 +89,12 @@ try {
       backgroundDelay: item.backgroundDelay || 10,
       tabUrl: item.tabUrl === undefined ? "https://example.com/article" : item.tabUrl,
       failure: item.failure,
+      translated: item.translated ?? false,
     })
     await page.goto(`http://127.0.0.1:${server.address().port}/popup.html`)
-    await page.waitForFunction(() => window.__uiTrace.meaningful)
+    if (item.failure === "storage")
+      await page.getByRole("button", { name: "Retry", exact: true }).waitFor()
+    else await page.waitForFunction(() => window.__uiTrace.meaningful)
     if (!item.loading)
       await page.waitForFunction(
         () => {
@@ -110,72 +115,89 @@ try {
     }))
     expect(state.overflow, item.name).toBe(false)
     expect(errors, item.name).toEqual([])
-    if (item.loading || item.name === "restricted") expect(state.disabled, item.name).toBe(true)
+    if (item.loading || item.name === "restricted" || item.empty)
+      expect(state.disabled, item.name).toBe(true)
     await page.locator("#root").screenshot({ path: `${output}/${item.name}.png` })
+    if (item.translated) expect(state.translate).toMatch(/Show Original/)
+    if (item.loading) expect(state.translate).toMatch(/Checking/)
+    if (["message-error", "message-timeout", "tabs-error"].includes(item.name)) {
+      await page.evaluate(() => window.__uiFixture.setFailure(undefined))
+      await page.locator("[data-popup-translate]").click()
+      await expect(page.locator("[data-popup-translate]")).toHaveText(/Translate/)
+    }
     results.push({ name: item.name, ...state })
     await context.close()
     console.log(item.name, "OK", state.height)
   }
-  // Actual controls: persistent config writes, translation acknowledgement, keyboard/focus.
-  const context = await browser.newContext({
-    viewport: { width: 320, height: 600 },
-    reducedMotion: "reduce",
-  })
-  const page = await context.newPage()
-  const errors = []
-  page.on("pageerror", (e) => errors.push(e.message))
-  await page.addInitScript(installBrowserAPI, { config: { ...base, uiLanguage: "en" } })
-  await page.goto(`http://127.0.0.1:${server.address().port}/popup.html`)
-  await page.waitForFunction(() => window.__uiTrace.interactive)
-  const timings = {}
-  const translate = page.locator("[data-popup-translate]")
-  if (await translate.count()) {
-    const start = performance.now()
-    await translate.click()
-    await expect(translate).toHaveText(/Show Original/)
-    timings.translate = performance.now() - start
-    await translate.click()
-    await expect(translate).toHaveText(/Translate/)
-  }
-  const providers = page.getByRole("button", { name: "Open provider settings" })
-  let start = performance.now()
-  await providers.click()
-  await page.locator('[data-slot="drawer-content"] [data-slot="select-trigger"]').first().waitFor()
-  timings.firstDrawer = performance.now() - start
-  await page
-    .locator('[data-slot="drawer-content"]')
-    .screenshot({ path: `${output}/providers-open.png` })
-  await page.keyboard.press("Escape")
-  await expect(providers).toBeFocused()
-  const source = page.getByLabel("Source", { exact: true })
-  await source.focus()
-  start = performance.now()
-  await source.press("Enter")
-  await page.getByRole("combobox").last().waitFor()
-  timings.firstLanguageMenu = performance.now() - start
-  await page.keyboard.press("Escape")
-  await expect(source).toBeFocused()
-  const ai = page.getByRole("switch", { name: "AI Smart Context" })
-  if (await ai.count()) {
-    const before = await ai.getAttribute("aria-checked")
+  if (!process.env.UI_VISUAL_BASELINE) {
+    // Actual controls: persistent config writes, translation acknowledgement, keyboard/focus.
+    const context = await browser.newContext({
+      viewport: { width: 320, height: 600 },
+      reducedMotion: "reduce",
+    })
+    const page = await context.newPage()
+    const errors = []
+    page.on("pageerror", (e) => errors.push(e.message))
+    await page.addInitScript(installBrowserAPI, { config: { ...base, uiLanguage: "en" } })
+    await page.goto(`http://127.0.0.1:${server.address().port}/popup.html`)
+    await page.waitForFunction(() => window.__uiTrace.interactive)
+    await page.setViewportSize({
+      width: 320,
+      height: await page.locator("#root").evaluate((element) => element.scrollHeight),
+    })
+    const timings = {}
+    const translate = page.locator("[data-popup-translate]")
+    if (await translate.count()) {
+      const start = performance.now()
+      await translate.click()
+      await expect(translate).toHaveText(/Show Original/)
+      timings.translate = performance.now() - start
+      await translate.click()
+      await expect(translate).toHaveText(/Translate/)
+    }
+    const providers = page.getByRole("button", { name: "Open provider settings" })
+    let start = performance.now()
+    await providers.click()
+    await page
+      .locator('[data-slot="drawer-content"] [data-slot="select-trigger"]')
+      .first()
+      .waitFor()
+    timings.firstDrawer = performance.now() - start
+    await page
+      .locator('[data-slot="drawer-content"]')
+      .screenshot({ path: `${output}/providers-open.png` })
+    await page.keyboard.press("Escape")
+    await expect(providers).toBeFocused()
+    const source = page.getByLabel("Source", { exact: true })
+    await source.focus()
     start = performance.now()
-    await ai.press("Space")
-    await expect(ai).toHaveAttribute("aria-checked", before === "true" ? "false" : "true")
-    timings.switchFeedback = performance.now() - start
-    await page.waitForFunction(
-      () => window.__uiTrace.calls.filter((c) => c.name === "storage.set" && c.end).length >= 2,
-    )
+    await source.press("Enter")
+    await page.getByRole("combobox").last().waitFor()
+    timings.firstLanguageMenu = performance.now() - start
+    await page.keyboard.press("Escape")
+    await expect(source).toBeFocused()
+    const ai = page.getByRole("switch", { name: "AI Smart Context" })
+    if (await ai.count()) {
+      const before = await ai.getAttribute("aria-checked")
+      start = performance.now()
+      await ai.press("Space")
+      await expect(ai).toHaveAttribute("aria-checked", before === "true" ? "false" : "true")
+      timings.switchFeedback = performance.now() - start
+      await page.waitForFunction(
+        () => window.__uiTrace.calls.filter((c) => c.name === "storage.set" && c.end).length >= 2,
+      )
+    }
+    await page.evaluate(async () => {
+      const config = structuredClone(window.__uiFixture.values.readFrogLiteConfig)
+      config.uiLanguage = "zh-CN"
+      await window.browser.storage.local.set({ readFrogLiteConfig: config })
+    })
+    await expect(page.getByLabel("来源语言", { exact: true })).toBeVisible()
+    await page.locator("#root").screenshot({ path: `${output}/runtime-language-switch.png` })
+    expect(errors).toEqual([])
+    results.push({ name: "interactions", timings, errors })
+    await context.close()
   }
-  await page.evaluate(async () => {
-    const config = structuredClone(window.__uiFixture.values.readFrogLiteConfig)
-    config.uiLanguage = "zh-CN"
-    await window.browser.storage.local.set({ readFrogLiteConfig: config })
-  })
-  await expect(page.getByLabel("来源语言", { exact: true })).toBeVisible()
-  await page.locator("#root").screenshot({ path: `${output}/runtime-language-switch.png` })
-  expect(errors).toEqual([])
-  results.push({ name: "interactions", timings, errors })
-  await context.close()
 } finally {
   await browser.close()
   server.close()

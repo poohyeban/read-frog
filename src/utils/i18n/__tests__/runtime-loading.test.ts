@@ -9,7 +9,8 @@ vi.mock("../resources", () => ({
   resources: {
     en: {
       translation: {
-        popup: { translate: "Translate" },
+        popup: { translate: "Translate", sourceLang: "Source" },
+        options: { apiProviders: { badges: { featureCount: "{{0}} features" } } },
         test: { value: "Hello {{0}}", literal: "{{selection}} %s" },
       },
     },
@@ -42,6 +43,8 @@ describe("runtime locale loading", () => {
     await old
     expect(getUiLocale()).toBe("ja")
     expect(i18n.t("popup.translate")).toBe("翻訳")
+    expect(i18n.t("popup.sourceLang")).toBe("Source")
+    expect(i18n.t("options.apiProviders.badges.featureCount", ["<word>"])).toBe("<word> features")
   })
   it("keeps a complete previous locale after load failure and can retry", async () => {
     loader.load.mockRejectedValueOnce(new Error("chunk unavailable"))

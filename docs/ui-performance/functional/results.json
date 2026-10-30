@@ -1,0 +1,16 @@
+{
+  "passed": [
+    "target language selection persists",
+    "feature provider assignment persists",
+    "translation style persists",
+    "translation mode persists",
+    "site auto-translation add/remove persists",
+    "external site configuration updates derived switch",
+    "site blacklist gates translation",
+    "pointer drag toggles exactly once",
+    "reduced motion removes thumb transition",
+    "theme storage synchronization",
+    "all actions keep the captured tab; no repeated tabs query",
+    "all visible primary controls have accessible names"
+  ]
+}

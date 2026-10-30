@@ -1,0 +1,394 @@
+{
+  "startup": [
+    {
+      "version": "before",
+      "cache": "cold",
+      "backgroundDelay": 10,
+      "samples": 30,
+      "metrics": {
+        "meaningful": {
+          "p50": 392.69999999925494,
+          "p95": 443.80000000074506
+        },
+        "meaningfulPaint": {
+          "p50": 451.4000000022352,
+          "p95": 509.6000000014901
+        },
+        "interactive": {
+          "p50": 392.80000000074506,
+          "p95": 443.8999999985099
+        },
+        "ScriptDuration": {
+          "p50": 0.204551,
+          "p95": 0.236686
+        },
+        "TaskDuration": {
+          "p50": 0.375576,
+          "p95": 0.439201
+        },
+        "JSHeapUsedSize": {
+          "p50": 10260752,
+          "p95": 10322516
+        }
+      }
+    },
+    {
+      "version": "before",
+      "cache": "cold",
+      "backgroundDelay": 120,
+      "samples": 30,
+      "metrics": {
+        "meaningful": {
+          "p50": 493.29999999701977,
+          "p95": 545.6999999992549
+        },
+        "meaningfulPaint": {
+          "p50": 545.3000000007451,
+          "p95": 598.8999999985099
+        },
+        "interactive": {
+          "p50": 493.3999999985099,
+          "p95": 545.8999999985099
+        },
+        "ScriptDuration": {
+          "p50": 0.191627,
+          "p95": 0.215471
+        },
+        "TaskDuration": {
+          "p50": 0.359995,
+          "p95": 0.412005
+        },
+        "JSHeapUsedSize": {
+          "p50": 10283420,
+          "p95": 10323184
+        }
+      }
+    },
+    {
+      "version": "before",
+      "cache": "repeat",
+      "backgroundDelay": 10,
+      "samples": 30,
+      "metrics": {
+        "meaningful": {
+          "p50": 374,
+          "p95": 425
+        },
+        "meaningfulPaint": {
+          "p50": 432.1000000014901,
+          "p95": 474.8999999985099
+        },
+        "interactive": {
+          "p50": 374.1000000014901,
+          "p95": 425.1000000014901
+        },
+        "ScriptDuration": {
+          "p50": 0.201599,
+          "p95": 0.227376
+        },
+        "TaskDuration": {
+          "p50": 0.366899,
+          "p95": 0.428056
+        },
+        "JSHeapUsedSize": {
+          "p50": 10283820,
+          "p95": 10344460
+        }
+      }
+    },
+    {
+      "version": "before",
+      "cache": "repeat",
+      "backgroundDelay": 120,
+      "samples": 30,
+      "metrics": {
+        "meaningful": {
+          "p50": 473.19999999925494,
+          "p95": 497.20000000298023
+        },
+        "meaningfulPaint": {
+          "p50": 528.2999999970198,
+          "p95": 554.6000000014901
+        },
+        "interactive": {
+          "p50": 473.3999999985099,
+          "p95": 497.30000000074506
+        },
+        "ScriptDuration": {
+          "p50": 0.192274,
+          "p95": 0.214314
+        },
+        "TaskDuration": {
+          "p50": 0.366977,
+          "p95": 0.38803
+        },
+        "JSHeapUsedSize": {
+          "p50": 10270664,
+          "p95": 10320376
+        }
+      }
+    },
+    {
+      "version": "after",
+      "cache": "cold",
+      "backgroundDelay": 10,
+      "samples": 30,
+      "metrics": {
+        "meaningful": {
+          "p50": 315.19999999925494,
+          "p95": 410.19999999925494
+        },
+        "meaningfulPaint": {
+          "p50": 382.0999999977648,
+          "p95": 475.79999999701977
+        },
+        "interactive": {
+          "p50": 315.19999999925494,
+          "p95": 410.29999999701977
+        },
+        "ScriptDuration": {
+          "p50": 0.170594,
+          "p95": 0.220329
+        },
+        "TaskDuration": {
+          "p50": 0.342367,
+          "p95": 0.40897
+        },
+        "JSHeapUsedSize": {
+          "p50": 9720280,
+          "p95": 9771344
+        }
+      }
+    },
+    {
+      "version": "after",
+      "cache": "cold",
+      "backgroundDelay": 120,
+      "samples": 30,
+      "metrics": {
+        "meaningful": {
+          "p50": 331.4000000022352,
+          "p95": 366.19999999925494
+        },
+        "meaningfulPaint": {
+          "p50": 391,
+          "p95": 422.19999999925494
+        },
+        "interactive": {
+          "p50": 400.19999999925494,
+          "p95": 434.19999999925494
+        },
+        "ScriptDuration": {
+          "p50": 0.173934,
+          "p95": 0.196094
+        },
+        "TaskDuration": {
+          "p50": 0.346457,
+          "p95": 0.389535
+        },
+        "JSHeapUsedSize": {
+          "p50": 9775996,
+          "p95": 9810436
+        }
+      }
+    },
+    {
+      "version": "after",
+      "cache": "repeat",
+      "backgroundDelay": 10,
+      "samples": 30,
+      "metrics": {
+        "meaningful": {
+          "p50": 303.80000000074506,
+          "p95": 333
+        },
+        "meaningfulPaint": {
+          "p50": 368,
+          "p95": 424.30000000074506
+        },
+        "interactive": {
+          "p50": 303.80000000074506,
+          "p95": 333
+        },
+        "ScriptDuration": {
+          "p50": 0.170892,
+          "p95": 0.218078
+        },
+        "TaskDuration": {
+          "p50": 0.345081,
+          "p95": 0.415269
+        },
+        "JSHeapUsedSize": {
+          "p50": 9726676,
+          "p95": 9776696
+        }
+      }
+    },
+    {
+      "version": "after",
+      "cache": "repeat",
+      "backgroundDelay": 120,
+      "samples": 30,
+      "metrics": {
+        "meaningful": {
+          "p50": 315.1000000014901,
+          "p95": 376
+        },
+        "meaningfulPaint": {
+          "p50": 378.29999999701977,
+          "p95": 448
+        },
+        "interactive": {
+          "p50": 386.69999999925494,
+          "p95": 457.80000000074506
+        },
+        "ScriptDuration": {
+          "p50": 0.178245,
+          "p95": 0.231939
+        },
+        "TaskDuration": {
+          "p50": 0.344883,
+          "p95": 0.425462
+        },
+        "JSHeapUsedSize": {
+          "p50": 9753728,
+          "p95": 9818012
+        }
+      }
+    }
+  ],
+  "bundles": {
+    "before": {
+      "popup": {
+        "js": 1802425,
+        "css": 207137
+      },
+      "options": {
+        "js": 1612250,
+        "css": 207077
+      },
+      "translation-hub": {
+        "js": 2995886,
+        "css": 207053
+      }
+    },
+    "after": {
+      "popup": {
+        "js": 988176,
+        "css": 206833
+      },
+      "options": {
+        "js": 1027827,
+        "css": 206773
+      },
+      "translation-hub": {
+        "js": 1187718,
+        "css": 206749
+      }
+    }
+  },
+  "scriptDurationMs": {
+    "before": 196.59449999999998,
+    "after": 174.4515
+  },
+  "heapMB": {
+    "before": 10.276084,
+    "after": 9.742704
+  },
+  "maximumCLS": {
+    "before": 8.5634765625e-05,
+    "after": 0.0002602650669642857
+  },
+  "profiles": {
+    "before": {
+      "moduleReady": 222,
+      "rootMount": 61.600000001490116,
+      "phases": {
+        "config-zod": 17.90000000037253,
+        "config": 24.90000000037253,
+        "i18n": 1.700000001117587
+      },
+      "providerEditCommits": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "after": {
+      "moduleReady": 190.89999999850988,
+      "rootMount": 61.69999999925494,
+      "phases": {
+        "config-zod": 10.100000001490116,
+        "config": 17.399999998509884,
+        "i18n": 1.6000000014901161
+      },
+      "providerEditCommits": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "traceEventMediansMs": {
+    "before": {
+      "FunctionCall": 94.47099999999999,
+      "V8.CompileCode": 68.72900000000043,
+      "v8.parseOnBackground": 230.478,
+      "v8.parseOnBackgroundParsing": 249.964,
+      "BackgroundCompileTask::Run": 178.46399999999997,
+      "V8.ParseProgram": 38.57000000000001,
+      "V8.ParseFunction": 33.791000000000096,
+      "V8.CompileIgnition": 27.310000000000016,
+      "V8.PreParse": 62.03499999999993,
+      "V8.CompileCodeBackground": 22.177,
+      "ParseAuthorStyleSheet": 9.409,
+      "v8.parseOnBackgroundWaiting": 16.442,
+      "V8.CompileIgnitionFinalization": 9.297999999999885,
+      "ParseHTML": 2.620999999999998,
+      "HTMLDocumentParser::MaybeFetchQueuedPreloads": 3.855,
+      "V8.Compile": 0.775,
+      "v8.compileModule": 1.0010000000000006,
+      "V8.CompileEval": 0.5160000000000002,
+      "V8.CompileStreamedModule": 0.7190000000000004,
+      "V8.CompileScript": 0.024
+    },
+    "after": {
+      "FunctionCall": 90.35400000000001,
+      "V8.CompileCode": 61.300000000000395,
+      "v8.parseOnBackgroundParsing": 162.78900000000002,
+      "v8.parseOnBackground": 154.066,
+      "BackgroundCompileTask::Run": 124.90499999999999,
+      "V8.ParseFunction": 34.427000000000135,
+      "V8.ParseProgram": 27.963,
+      "V8.PreParse": 46.500999999999976,
+      "V8.CompileIgnition": 21.438999999999965,
+      "v8.parseOnBackgroundWaiting": 27.345000000000002,
+      "V8.CompileCodeBackground": 17.234,
+      "HTMLDocumentParser::MaybeFetchQueuedPreloads": 4.618,
+      "ParseHTML": 6.369999999999999,
+      "ParseAuthorStyleSheet": 9.24,
+      "V8.CompileIgnitionFinalization": 5.927999999999905,
+      "v8.compileModule": 3.147999999999999,
+      "V8.CompileStreamedModule": 1.6889999999999987,
+      "V8.Compile": 0.6830000000000002,
+      "V8.CompileEval": 0.11199999999999999,
+      "V8.CompileScript": 0.038
+    }
+  },
+  "optionsFirstRouteResources": {
+    "before": {
+      "js": 3698183,
+      "hasExecution": true,
+      "hasCodeMirror": true
+    },
+    "after": {
+      "js": 1332863,
+      "hasExecution": false,
+      "hasCodeMirror": false
+    }
+  }
+}
