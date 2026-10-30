@@ -1,0 +1,74 @@
+[
+  {
+    "version": "before",
+    "locale": "zh-CN",
+    "cache": "cold",
+    "samples": 30,
+    "durationP50": 3.800000000745058,
+    "durationP95": 11.099999997764826,
+    "bytes": 53766
+  },
+  {
+    "version": "before",
+    "locale": "zh-CN",
+    "cache": "repeat",
+    "samples": 30,
+    "durationP50": 1.2000000029802322,
+    "durationP95": 4.900000002235174,
+    "bytes": 53766
+  },
+  {
+    "version": "before",
+    "locale": "zh-TW",
+    "cache": "cold",
+    "samples": 30,
+    "durationP50": 3.2000000029802322,
+    "durationP95": 6.800000000745058,
+    "bytes": 54106
+  },
+  {
+    "version": "before",
+    "locale": "zh-TW",
+    "cache": "repeat",
+    "samples": 30,
+    "durationP50": 1,
+    "durationP95": 3.7999999970197678,
+    "bytes": 54106
+  },
+  {
+    "version": "after",
+    "locale": "zh-CN",
+    "cache": "cold",
+    "samples": 30,
+    "durationP50": 3,
+    "durationP95": 7.300000000745058,
+    "bytes": 53766
+  },
+  {
+    "version": "after",
+    "locale": "zh-CN",
+    "cache": "repeat",
+    "samples": 30,
+    "durationP50": 1.199999999254942,
+    "durationP95": 2.7999999970197678,
+    "bytes": 53766
+  },
+  {
+    "version": "after",
+    "locale": "zh-TW",
+    "cache": "cold",
+    "samples": 30,
+    "durationP50": 3,
+    "durationP95": 6.5,
+    "bytes": 54106
+  },
+  {
+    "version": "after",
+    "locale": "zh-TW",
+    "cache": "repeat",
+    "samples": 30,
+    "durationP50": 1.0999999977648258,
+    "durationP95": 2,
+    "bytes": 54106
+  }
+]

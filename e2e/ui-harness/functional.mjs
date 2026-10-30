@@ -117,7 +117,7 @@ try {
   const box = await ai.boundingBox()
   await page.mouse.move(box.x + 4, box.y + box.height / 2)
   await page.mouse.down()
-  await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 6 })
+  await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2, { steps: 1 })
   await page.mouse.up()
   await expect(ai).toBeChecked()
   await persisted(
@@ -128,7 +128,41 @@ try {
       () => window.__uiTrace.calls.filter((c) => c.name === "storage.set").length,
     )) - writesBeforeDrag,
   ).toBe(2)
-  passed.push("pointer drag toggles exactly once")
+  passed.push("one-move pointer drag toggles exactly once")
+  await page.mouse.move(box.x + box.width - 2, box.y + box.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(box.x + 2, box.y + box.height / 2, { steps: 1 })
+  await page.mouse.up()
+  await expect(ai).not.toBeChecked()
+  await settled()
+  const touch = await context.newCDPSession(page)
+  const touchPoint = (x) => [{ x, y: box.y + box.height / 2 }]
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: touchPoint(box.x + 3),
+  })
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: touchPoint(box.x + box.width - 2),
+  })
+  await touch.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] })
+  await expect(ai).toBeChecked()
+  await settled()
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchStart",
+    touchPoints: touchPoint(box.x + box.width - 2),
+  })
+  await touch.send("Input.dispatchTouchEvent", {
+    type: "touchMove",
+    touchPoints: touchPoint(box.x + 3),
+  })
+  await touch.send("Input.dispatchTouchEvent", { type: "touchCancel", touchPoints: [] })
+  await expect(ai).toBeChecked()
+  await ai.focus()
+  await page.keyboard.press("Space")
+  await expect(ai).not.toBeChecked()
+  await settled()
+  passed.push("reverse drag, native touch one-move, touch cancellation, keyboard Space")
   expect(
     await ai
       .locator('[data-slot="switch-thumb"]')

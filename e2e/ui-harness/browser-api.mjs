@@ -70,17 +70,37 @@ export function installBrowserAPI({
     getPlatformInfo: async () => ({ os: "linux", arch: "x86-64" }),
     openOptionsPage: async () => {},
     sendMessage(message, callback) {
-      if (failure === "hang" && message.type === "getEnablePageTranslationByTabId") return undefined
-      if (message.type === "tryToSetEnablePageTranslationByTabId") translated = message.data.enabled
-      const response =
-        message.type === "getEnablePageTranslationByTabId"
+      if (
+        failure === "hang" &&
+        ["getEnablePageTranslationByTabId", "getAppliedPageTranslationStateByTabId"].includes(
+          message.type,
+        )
+      )
+        return undefined
+      if (
+        ["tryToSetEnablePageTranslationByTabId", "applyPageTranslationCommandByTabId"].includes(
+          message.type,
+        )
+      )
+        translated = message.data.enabled
+      const response = [
+        "getAppliedPageTranslationStateByTabId",
+        "applyPageTranslationCommandByTabId",
+      ].includes(message.type)
+        ? { enabled: translated, url: tabUrl }
+        : message.type === "getEnablePageTranslationByTabId"
           ? translated
           : message.type === "getDetectedCode"
             ? "eng"
             : undefined
       const promise = call(`message:${message.type}`, backgroundDelay, response).then((res) => {
         const reply =
-          failure === "message" && message.type === "getEnablePageTranslationByTabId"
+          failure === "message" &&
+          [
+            "getEnablePageTranslationByTabId",
+            "getAppliedPageTranslationStateByTabId",
+            "applyPageTranslationCommandByTabId",
+          ].includes(message.type)
             ? { err: { name: "Error", message: "fixture unavailable" } }
             : { res }
         callback?.(reply)

@@ -76,6 +76,20 @@ interface ProtocolMap {
   getInitialConfig: () => Config | null
 
   getEnablePageTranslationByTabId: (data: { tabId: number }) => boolean | undefined
+  getAppliedPageTranslationStateByTabId: (data: {
+    tabId: number
+    url: string
+  }) => Promise<{ enabled: boolean; url: string }>
+  applyPageTranslationCommandByTabId: (data: {
+    tabId: number
+    url: string
+    enabled: boolean
+  }) => Promise<{ enabled: boolean; url: string }>
+  getAppliedPageTranslationState: () => { enabled: boolean; url: string }
+  applyPageTranslationCommand: (data: {
+    url: string
+    enabled: boolean
+  }) => Promise<{ enabled: boolean; url: string }>
   getEnablePageTranslationFromContentScript: () => Promise<boolean>
   tryToSetEnablePageTranslationByTabId: (data: { tabId: number; enabled: boolean }) => void
   tryToSetEnablePageTranslationOnContentScript: (data: { enabled: boolean }) => void

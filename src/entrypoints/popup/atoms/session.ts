@@ -33,11 +33,11 @@ export function createPopupSession(store: ReturnType<typeof createStore>) {
   let active = true
   let revision = 0
   let unwatch: (() => void) | undefined
-  let pollingTimer: ReturnType<typeof setTimeout> | undefined
-  let finishPolling: (() => void) | undefined
   const current = (id: number) => active && id === revision
   const read = (tab: PopupTab) =>
-    withDeadline(sendMessage("getEnablePageTranslationByTabId", { tabId: tab.id }))
+    withDeadline(
+      sendMessage("getAppliedPageTranslationStateByTabId", { tabId: tab.id, url: tab.url }),
+    )
 
   async function refresh() {
     const request = ++revision
@@ -56,8 +56,8 @@ export function createPopupSession(store: ReturnType<typeof createStore>) {
           if (active && store.get(pageStatusAtom).phase !== "pending") void refresh()
         })
       }
-      const enabled = await read(tab)
-      if (current(request)) store.set(pageStatusAtom, { phase: "ready", enabled: enabled ?? false })
+      const applied = await read(tab)
+      if (current(request)) store.set(pageStatusAtom, { phase: "ready", enabled: applied.enabled })
     } catch {
       if (current(request)) store.set(pageStatusAtom, { phase: "error" })
     }
@@ -71,25 +71,13 @@ export function createPopupSession(store: ReturnType<typeof createStore>) {
     const enabled = !state.enabled
     store.set(pageStatusAtom, { phase: "pending", enabled: state.enabled })
     try {
-      await withDeadline(
-        sendMessage("tryToSetEnablePageTranslationByTabId", { tabId: tab.id, enabled }),
+      const applied = await withDeadline(
+        sendMessage("applyPageTranslationCommandByTabId", { tabId: tab.id, url: tab.url, enabled }),
       )
-      // The command acknowledges dispatch, not completion. Read the authoritative
-      // state until the content manager has applied it; never claim an optimistic start.
-      const deadline = Date.now() + 2500
-      while (current(request)) {
-        const actual = await read(tab)
-        if (!current(request)) return
-        if (actual === enabled) {
-          store.set(pageStatusAtom, { phase: "ready", enabled })
-          return
-        }
-        if (Date.now() >= deadline) throw new Error("Translation state was not confirmed")
-        await new Promise<void>((resolve) => {
-          finishPolling = resolve
-          pollingTimer = setTimeout(resolve, 100)
-        })
-      }
+      if (!current(request)) return
+      if (applied.url !== tab.url || applied.enabled !== enabled)
+        throw new Error("Translation command was not confirmed")
+      store.set(pageStatusAtom, { phase: "ready", enabled })
     } catch {
       if (current(request)) store.set(pageStatusAtom, { phase: "error" })
     }
@@ -111,8 +99,6 @@ export function createPopupSession(store: ReturnType<typeof createStore>) {
       active = false
       revision++
       unwatch?.()
-      clearTimeout(pollingTimer)
-      finishPolling?.()
     },
   }
 }

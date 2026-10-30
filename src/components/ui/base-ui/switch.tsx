@@ -141,8 +141,9 @@ function Switch({
              actually is, so tracking starts from the current pixel instead of
              snapping by the dead zone plus whatever the spring had already moved. */
           stopX()
-          gesture.current = { clientX: event.clientX, originX: getX(), dragging: true }
-          return
+          current.dragging = true
+          // Keep the press anchor: the first move may be the only move before
+          // pointerup (especially on touch). It must apply its displacement.
         }
         setX(Math.max(inset, Math.min(dragMax, current.originX + delta)))
       },
