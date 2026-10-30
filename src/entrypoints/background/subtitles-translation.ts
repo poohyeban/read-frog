@@ -56,14 +56,17 @@ export function setupSubtitlesTranslationHandlers(): void {
         glossaryTerms,
         glossaryRevision,
       } = request
-      const cached = await db.translationCache.get(hash)
+      const useBatch = shouldUseBatchQueue(providerRef)
+      // A batch result belongs to the complete rendered batch, not this cue.
+      // Old per-cue LLM entries may contain a different neighbour/glossary union.
+      const cached = useBatch ? undefined : await db.translationCache.get(hash)
       assertCurrent(scope)
       if (cached?.translation) return cached.translation
       const context: SubtitlePromptContext = { webTitle, webDescription, videoSummary: summary }
       let result: string
       // Timestamp is owned by the background; a sender cannot jump other tabs' work.
       const scheduleAt = Date.now()
-      if (shouldUseBatchQueue(providerRef)) {
+      if (useBatch) {
         result = await batchQueue.enqueue({
           text,
           langConfig,
@@ -93,7 +96,7 @@ export function setupSubtitlesTranslationHandlers(): void {
       }
       assertCurrent(scope)
       if (!result.trim() && text.trim()) throw new Error("Empty subtitle translation")
-      if (result)
+      if (result && !useBatch)
         await db.translationCache.put({ key: hash, translation: result, createdAt: new Date() })
       return result
     }

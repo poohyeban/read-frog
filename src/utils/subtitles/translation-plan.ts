@@ -19,7 +19,7 @@ export interface SubtitleTranslationPlan {
   readonly request: Readonly<SubtitleRequestPayload>
 }
 
-/** Only request semantics enter the cache key; video position/scope do not. */
+/** Cue admission/dedup identity; persistent LLM caching uses the rendered whole batch. */
 export function createSubtitleTranslationPlan(
   input: Omit<SubtitleRequestPayload, "hash"> & {
     promptConfig: NonNullable<SubtitleRequestPayload["promptConfig"]>
