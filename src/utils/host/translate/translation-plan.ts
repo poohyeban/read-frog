@@ -6,7 +6,9 @@ import type { MatchedTerm } from "@/utils/glossary/types"
 import type { LangCodeISO6393 } from "@/utils/languages"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import { Sha256Hex } from "@/utils/hash"
+import { freezeData } from "@/utils/immutable"
 import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
+import { normalizePromptContextValue } from "@/utils/prompts/context"
 import {
   getTranslatePromptFromConfig,
   getContextRequirements,
@@ -16,14 +18,7 @@ import { hasHtmlAttributeMarkerProtocol } from "./html-attribute-markers"
 import { hasInlineAtomTokens } from "./inline-atom-tokens"
 import { prepareTranslationText } from "./text-preparation"
 
-export function normalizePromptContextValue(
-  value: string | null | undefined,
-): string | null | undefined {
-  if (value === null || value === undefined) {
-    return value
-  }
-  return value.trim() === "" ? null : value
-}
+export { normalizePromptContextValue } from "@/utils/prompts/context"
 
 export function normalizeWebPagePromptContext(
   webPageContext?: WebPagePromptContext,
@@ -133,14 +128,6 @@ export interface TranslationPlan {
   readonly request: Readonly<Omit<TranslationRequestPayload, "scheduleAt">>
   readonly validation: { readonly htmlAttributes: boolean; readonly inlineAtoms: boolean }
 }
-function freezeData<T>(value: T): T {
-  if (value && typeof value === "object") {
-    for (const child of Object.values(value)) freezeData(child)
-    Object.freeze(value)
-  }
-  return value
-}
-
 /** Pure planning: all asynchronous dependencies are resolved by the caller. */
 export function createTranslationPlan(input: TranslationPlanInput): TranslationPlan {
   const data = structuredClone(input)

@@ -31,6 +31,7 @@ await build({
         )
           return resolve(harness, "fixture.ts")
         if (substitute[id]) return resolve(harness, substitute[id])
+        return undefined
       },
     },
     react(),
@@ -67,8 +68,8 @@ try {
   const errors = []
   page.on("pageerror", (error) => errors.push(error.message))
   const config = JSON.parse(await readFile("/tmp/read-frog-ui-fixture/config.json", "utf8"))
-  await page.addInitScript((config) => {
-    window.__config = config
+  await page.addInitScript((fixtureConfig) => {
+    window.__config = fixtureConfig
   }, config)
   await page.goto(`${server.url}/index.html`)
   await page.waitForFunction(() => window.runSubtitleBenchmark)

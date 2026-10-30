@@ -234,3 +234,39 @@ describe("segmentation pipeline", () => {
     expect(pipeline.processedFragments).toEqual([{ text: "hello world", start: 0, end: 1000 }])
   })
 })
+
+describe("segmentation generations", () => {
+  it("stop/start does not let old response publish or old finally unlock new work", async () => {
+    const { aiSegmentBlock } = await import("@/utils/subtitles/processor/ai-segmentation")
+    const completions: ((rows: any[]) => void)[] = []
+    vi.mocked(aiSegmentBlock).mockImplementation(
+      () => new Promise((resolve) => completions.push(resolve)),
+    )
+    const onChunkSegmented = vi.fn<(...args: any[]) => any>()
+    const source = [{ start: 0, end: 1000, text: "source" }]
+    const pipeline = new SegmentationPipeline({
+      baselineFragments: source,
+      rawFragments: source,
+      getVideoElement: () => ({ currentTime: 0 }) as HTMLVideoElement,
+      getSourceLanguage: () => "en",
+      providerRef: LOCAL_REF,
+      onChunkSegmented,
+    })
+    pipeline.start()
+    await vi.waitFor(() => expect(completions).toHaveLength(1))
+    const oldSignal = vi.mocked(aiSegmentBlock).mock.calls.at(-1)![2]!.signal!
+    pipeline.stop()
+    pipeline.start()
+    await vi.waitFor(() => expect(completions).toHaveLength(2))
+    expect(oldSignal.aborted).toBe(true)
+    completions[0]!([{ ...source[0], text: "old" }])
+    await Promise.resolve()
+    await Promise.resolve()
+    expect(onChunkSegmented).not.toHaveBeenCalled()
+    expect(pipeline.isRunning).toBe(true)
+    completions[1]!(source)
+    await vi.waitFor(() => expect(onChunkSegmented).toHaveBeenCalledOnce())
+    expect(pipeline.processedFragments[0]?.text).toBe("source")
+    pipeline.stop()
+  })
+})

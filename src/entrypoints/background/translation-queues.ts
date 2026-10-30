@@ -1,6 +1,7 @@
 import type { Config } from "@/types/config/config"
 import type { ProviderConfig } from "@/types/config/provider"
 import type { BatchQueueConfig, RequestQueueConfig } from "@/types/config/translate"
+import type { SubtitlePromptContext } from "@/types/content"
 import type { WebPagePromptContext } from "@/types/content"
 import type { ProviderRequestRouting } from "@/types/provider-request"
 import type { MatchedTerm } from "@/utils/glossary/types"
@@ -18,7 +19,10 @@ import {
 import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { logger } from "@/utils/logger"
-import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
+import {
+  getSubtitlesTranslatePrompt,
+  getSubtitlesTranslatePromptFromConfig,
+} from "@/utils/prompts/subtitles"
 import { getTranslatePrompt, getTranslatePromptFromConfig } from "@/utils/prompts/translate"
 import { BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
@@ -174,7 +178,7 @@ export async function executeBatchTranslation<TContext>(
   promptResolver: PromptResolver<TContext>,
   signal?: AbortSignal,
 ): Promise<string[]> {
-  const { langConfig, context, promptConfig } = dataList[0]!
+  const { langConfig, context, promptConfig, subtitlePromptConfig } = dataList[0]!
   const texts = dataList.map((d) => d.text)
 
   const batchText = texts.join(`\n\n${BATCH_SEPARATOR}\n\n`)
@@ -182,7 +186,7 @@ export async function executeBatchTranslation<TContext>(
     batchText,
     langConfig,
     dataList[0]!,
-    snapshotPromptResolver(promptResolver, promptConfig),
+    snapshotPromptResolver(promptResolver, promptConfig, subtitlePromptConfig),
     {
       isBatch: true,
       context,
@@ -197,7 +201,16 @@ export async function executeBatchTranslation<TContext>(
 function snapshotPromptResolver<TContext>(
   resolver: PromptResolver<TContext>,
   config?: Pick<Config["pageTranslation"], "customPromptsConfig">,
+  subtitleConfig?: Pick<Config["videoSubtitles"], "customPromptsConfig">,
 ): PromptResolver<TContext> {
+  if (subtitleConfig)
+    return async (language, text, options) =>
+      getSubtitlesTranslatePromptFromConfig(
+        subtitleConfig,
+        language,
+        text,
+        options as import("@/utils/prompts/translate").TranslatePromptOptions<SubtitlePromptContext>,
+      )
   return config
     ? async (language, text, options) =>
         getTranslatePromptFromConfig(
@@ -224,6 +237,7 @@ export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & 
   // Cancellation scope (`${tabId}:${sessionId}`); absent = uncancellable.
   scope?: string
   promptConfig?: Pick<Config["pageTranslation"], "customPromptsConfig">
+  subtitlePromptConfig?: Pick<Config["videoSubtitles"], "customPromptsConfig">
 }
 
 /**
@@ -293,6 +307,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
         data.context ? JSON.stringify(data.context) : "",
         JSON.stringify(data.provider),
         JSON.stringify(data.promptConfig ?? null),
+        JSON.stringify(data.subtitlePromptConfig ?? null),
 
         // Not the terms — the REVISION. The terms differ per paragraph and
         // keying on them would end batching for glossary users; the revision is
@@ -337,9 +352,9 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
           text,
           langConfig,
           data,
-          snapshotPromptResolver(promptResolver, data.promptConfig),
+          snapshotPromptResolver(promptResolver, data.promptConfig, data.subtitlePromptConfig),
           {
-            isBatch: data.promptConfig ? true : undefined,
+            isBatch: data.promptConfig || data.subtitlePromptConfig ? true : undefined,
             context,
             signal,
 
@@ -471,12 +486,14 @@ const selectSubtitlesQueueConfig = (config: Config) => ({
   batchQueueConfig: config.videoSubtitles.batchQueueConfig,
 })
 export function createSubtitlesTranslationQueues() {
+  const cancelledScopes = new CancelledScopeRegistry(10 * 60_000, 4096)
   const queuesPromise = loadQueueSetupConfig("subtitles", selectSubtitlesQueueConfig).then(
     ({ requestQueueConfig, batchQueueConfig, configSource }) =>
       createTranslationQueues({
         requestQueueConfig,
         batchQueueConfig,
         promptResolver: getSubtitlesTranslatePrompt,
+        isScopeCancelled: (scope) => cancelledScopes.has(scope),
         queueName: "subtitles",
         configSource,
       }),
@@ -484,5 +501,5 @@ export function createSubtitlesTranslationQueues() {
 
   watchQueueConfig("subtitles", queuesPromise, selectSubtitlesQueueConfig)
 
-  return queuesPromise
+  return { queuesPromise, cancelledScopes }
 }

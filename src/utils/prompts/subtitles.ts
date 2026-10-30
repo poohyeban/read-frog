@@ -1,4 +1,5 @@
 import type { TranslatePromptOptions, TranslatePromptResult } from "./translate"
+import type { Config } from "@/types/config/config"
 import type { SubtitlePromptContext } from "@/types/content"
 import { getLocalConfig } from "@/utils/config/storage"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
@@ -23,7 +24,23 @@ export async function getSubtitlesTranslatePrompt(
   options?: TranslatePromptOptions<SubtitlePromptContext>,
 ): Promise<TranslatePromptResult> {
   const config = (await getLocalConfig()) ?? DEFAULT_CONFIG
-  const customPromptsConfig = config.videoSubtitles.customPromptsConfig
+  const glossaryTerms =
+    options?.glossaryTerms ??
+    (await resolveGlossaryTerms(input, config.glossary.enabled, config.language.targetCode)).terms
+  return getSubtitlesTranslatePromptFromConfig(config.videoSubtitles, targetLang, input, {
+    ...options,
+    glossaryTerms,
+  })
+}
+
+/** Pure builder: hash, batch execution and fallback use the exact same template. */
+export function getSubtitlesTranslatePromptFromConfig(
+  config: Pick<Config["videoSubtitles"], "customPromptsConfig">,
+  targetLang: string,
+  input: string,
+  options?: TranslatePromptOptions<SubtitlePromptContext>,
+): TranslatePromptResult {
+  const customPromptsConfig = config.customPromptsConfig
   const { patterns, promptId } = customPromptsConfig
 
   const resolvedPromptId = promptId || DEFAULT_TRANSLATE_PROMPT_ID
@@ -73,9 +90,7 @@ ${DEFAULT_BATCH_TRANSLATE_PROMPT}`
   // their cache key (subtitles/processor/translator.ts:143) — stays identical
   // for a user whose glossary missed this cue.
   const resolvedSystemPrompt = replaceTokens(systemPrompt)
-  const glossaryTerms =
-    options?.glossaryTerms ??
-    (await resolveGlossaryTerms(input, config.glossary.enabled, config.language.targetCode)).terms
+  const glossaryTerms = options?.glossaryTerms ?? []
   return {
     systemPrompt: appendGlossaryToSystemPrompt(resolvedSystemPrompt, glossaryTerms),
     prompt: replaceTokens(prompt),

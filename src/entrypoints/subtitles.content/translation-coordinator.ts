@@ -7,9 +7,11 @@ import { TRANSLATE_LOOK_AHEAD_MS, TRANSLATION_BATCH_SIZE } from "@/utils/constan
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { effectiveLookAheadMs } from "@/utils/subtitles/lookahead"
 import { translateSubtitles } from "@/utils/subtitles/processor/translator"
+import { SubtitleSession } from "@/utils/subtitles/session"
 import { adPlayingAtom, subtitlesStore } from "./atoms"
 
 export interface TranslationCoordinatorOptions {
+  session?: SubtitleSession
   getFragments: () => SubtitlesFragment[]
   getVideoElement: () => HTMLVideoElement | null
   getCurrentState: () => SubtitlesState
@@ -23,6 +25,7 @@ function fragmentIdentity(fragment: Pick<SubtitlesFragment, "end" | "text">): st
 }
 
 export class TranslationCoordinator {
+  private session: SubtitleSession
   private translatingStarts = new Set<number>()
   private translatedStarts = new Set<number>()
   private failedStarts = new Set<number>()
@@ -45,6 +48,7 @@ export class TranslationCoordinator {
   private onStateChange: (state: SubtitlesState, data?: Record<string, string>) => void
 
   constructor(options: TranslationCoordinatorOptions) {
+    this.session = options.session ?? new SubtitleSession()
     this.getFragments = options.getFragments
     this.getVideoElement = options.getVideoElement
     this.getCurrentState = options.getCurrentState
@@ -61,6 +65,7 @@ export class TranslationCoordinator {
     const video = this.getVideoElement()
     if (!video) return
 
+    this.session.start()
     this.active = true
     this.attachVideoListeners(video)
 
@@ -72,6 +77,7 @@ export class TranslationCoordinator {
   }
 
   stop() {
+    this.session.stop()
     this.active = false
     this.runId += 1
     // Allow a subsequent start() to translate immediately; the in-flight batch is
@@ -89,6 +95,7 @@ export class TranslationCoordinator {
   }
 
   reset() {
+    this.session.stop()
     this.active = false
     this.runId += 1
     this.detachVideoListeners()
@@ -224,11 +231,17 @@ export class TranslationCoordinator {
       this.rememberIdentity(f)
     })
 
+    const task = this.session.begin("playback", batch.map((f) => f.start).join(","))
     let config: Config | null = null
     try {
       config = await getLocalConfig()
       if (!this.active || runId !== this.runId) return
-      const translated = await translateSubtitles(batch, this.videoContext, config ?? undefined)
+      const translated = await translateSubtitles(
+        batch,
+        this.videoContext,
+        config ?? undefined,
+        task,
+      )
       if (!this.active || runId !== this.runId) {
         batch.forEach((f) => this.translatingStarts.delete(f.start))
         return
@@ -292,6 +305,7 @@ export class TranslationCoordinator {
       this.lastEmittedState = "error"
       this.onStateChange("error", { message: errorMessage })
     } finally {
+      task.complete()
       // Only the current generation may clear the lock / chain another tick.
       if (runId === this.runId) {
         this.isTranslating = false

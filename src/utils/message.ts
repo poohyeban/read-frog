@@ -4,6 +4,7 @@ import type {
 } from "@/types/background-generate-text"
 import type { Config } from "@/types/config/config"
 import type { ProviderRequestRouting } from "@/types/provider-request"
+import type { SubtitleRequestPayload } from "@/types/subtitle-request"
 import type { TranslationRequestPayload } from "@/types/translation-request"
 import type {
   TTSPlaybackStartRequest,
@@ -11,10 +12,8 @@ import type {
   TTSPlaybackStopRequest,
 } from "@/types/tts-playback"
 import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
-import type { MatchedTerm } from "@/utils/glossary/types"
 import type { LangCodeISO6393 } from "@/utils/languages"
 import type { SpeechAudio } from "@/utils/providers/audio/types"
-import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
@@ -33,22 +32,12 @@ interface ProtocolMap {
   ttsOffscreenStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
 
   clearAiSegmentationCache: () => Promise<void>
-  enqueueSubtitlesTranslateRequest: (data: {
-    text: string
-    langConfig: Config["language"]
-    providerRef: SerializableProviderRef
-    scheduleAt: number
-    hash: string
-    webTitle?: string | null
-    webDescription?: string | null
-    summary?: string | null
-    // See `enqueueTranslateRequest`.
-    glossaryTerms?: MatchedTerm[]
-    glossaryRevision?: number
-  }) => Promise<string>
+  enqueueSubtitlesTranslateRequest: (data: SubtitleRequestPayload) => Promise<string>
+  cancelSubtitleRequests: (data: { sessionId: string }) => void
   getSubtitlesSummary: (data: {
     videoTitle: string
     subtitlesContext: string
+    sessionId?: string
     providerRef: PromptableProviderRef
   }) => Promise<string | null>
   getCachedVideoSummary: (data: {
@@ -64,6 +53,7 @@ interface ProtocolMap {
   }) => Promise<void>
   aiSegmentSubtitles: (data: {
     jsonContent: string
+    sessionId?: string
     providerRef: PromptableProviderRef
   }) => Promise<string>
   getGlossarySnapshot: (data: {

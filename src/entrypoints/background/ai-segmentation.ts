@@ -50,7 +50,11 @@ function cleanVttResponse(text: string): string {
 /**
  * Run AI segmentation on JSON subtitle content
  */
-export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promise<string> {
+export async function runAiSegmentSubtitles(
+  data: AiSegmentSubtitlesData,
+  options: { signal?: AbortSignal } = {},
+): Promise<string> {
+  options.signal?.throwIfAborted()
   const { jsonContent, providerRef } = data
 
   if (!jsonContent) {
@@ -71,6 +75,7 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
 
   const cacheKey = Sha256Hex(Sha256Hex(jsonContent), getProviderCacheIdentity(providerRef))
   const cached = await db.aiSegmentationCache.get(cacheKey)
+  options.signal?.throwIfAborted()
   if (cached) {
     if (isSegmentationAligned(source, parseSimplifiedVttToFragments(cached.result))) {
       logger.info("[Background] AI subtitle segmentation cache hit")
@@ -83,14 +88,19 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
   const { systemPrompt, prompt } = getSubtitlesSegmentationPrompt(jsonContent)
 
   try {
-    const segmentedVtt = await generateTextForProviderRef({
-      providerRef,
-      // Its own route, not videoSubtitles: segmentation emits a whole WebVTT
-      // block and needs the wider output budget that route reserves.
+    const segmentedVtt = await generateTextForProviderRef(
+      {
+        providerRef,
+        // Its own route, not videoSubtitles: segmentation emits a whole WebVTT
+        // block and needs the wider output budget that route reserves.
 
-      instructions: systemPrompt,
-      prompt,
-    })
+        instructions: systemPrompt,
+        prompt,
+        maxOutputTokens: 16_384,
+      },
+      options,
+    )
+    options.signal?.throwIfAborted()
 
     const result = cleanVttResponse(segmentedVtt)
 
@@ -105,6 +115,7 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
       throw new Error("AI segmentation does not match the source timeline")
     }
 
+    options.signal?.throwIfAborted()
     await db.aiSegmentationCache.put({
       key: cacheKey,
       result,

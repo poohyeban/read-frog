@@ -1,9 +1,11 @@
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import type { SubtitlesFragment } from "@/utils/subtitles/types"
 import { PROCESS_LOOK_AHEAD_MS } from "@/utils/constants/subtitles"
+import { freezeData } from "@/utils/immutable"
 import { effectiveLookAheadMs } from "@/utils/subtitles/lookahead"
 import { aiSegmentBlock } from "@/utils/subtitles/processor/ai-segmentation"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
+import { SubtitleSession, type SubtitleTask } from "@/utils/subtitles/session"
 
 export type ChunkSegmentedHandler = (
   chunk: SubtitlesFragment[],
@@ -17,6 +19,9 @@ export class SegmentationPipeline {
   private rawFragments: SubtitlesFragment[]
   private segmentedRawStarts = new Set<number>()
   private aiSegmentFailedRawStarts = new Set<number>()
+  private session: SubtitleSession
+  private task: SubtitleTask | null = null
+  private generation = 0
   private running = false
   private stopped = false
 
@@ -28,6 +33,7 @@ export class SegmentationPipeline {
   private providerRef: PromptableProviderRef | null
 
   constructor(options: {
+    session?: SubtitleSession
     baselineFragments?: SubtitlesFragment[]
     rawFragments: SubtitlesFragment[]
     getVideoElement: () => HTMLVideoElement | null
@@ -36,11 +42,12 @@ export class SegmentationPipeline {
     preSegmented?: boolean
     onChunkSegmented?: ChunkSegmentedHandler
   }) {
+    this.session = options.session ?? new SubtitleSession()
     this.rawFragments = options.rawFragments
     this.processedFragments = [...(options.baselineFragments ?? [])]
     this.getVideoElement = options.getVideoElement
     this.getSourceLanguage = options.getSourceLanguage
-    this.providerRef = options.providerRef
+    this.providerRef = freezeData(structuredClone(options.providerRef))
     this.preSegmented = options.preSegmented ?? false
     this.onChunkSegmented = options.onChunkSegmented ?? null
   }
@@ -54,12 +61,17 @@ export class SegmentationPipeline {
   }
 
   start() {
+    this.session.start()
     this.stopped = false
     void this.runLoop()
   }
 
   stop() {
     this.stopped = true
+    this.generation++
+    this.running = false
+    this.task?.cancel()
+    this.task = null
   }
 
   restart() {
@@ -76,6 +88,7 @@ export class SegmentationPipeline {
   private async runLoop() {
     if (this.running) return
     this.running = true
+    const generation = this.generation
 
     const video = this.getVideoElement()
     if (!video) {
@@ -84,24 +97,26 @@ export class SegmentationPipeline {
     }
 
     try {
-      while (!this.stopped && this.hasUnprocessedChunks()) {
-        const didWork = await this.processNextChunk(video.currentTime * 1000)
+      while (!this.stopped && generation === this.generation && this.hasUnprocessedChunks()) {
+        const didWork = await this.processNextChunk(video.currentTime * 1000, generation)
         if (!didWork) break
       }
     } finally {
-      this.running = false
+      if (generation === this.generation) this.running = false
     }
   }
 
-  private async processNextChunk(currentTimeMs: number): Promise<boolean> {
+  private async processNextChunk(
+    currentTimeMs: number,
+    generation = this.generation,
+  ): Promise<boolean> {
     if (this.stopped) return false
 
     const chunk = this.findNextChunk(currentTimeMs)
     if (chunk.length === 0) return false
 
-    chunk.forEach((f) => this.segmentedRawStarts.add(f.start))
-
     if (this.preSegmented) {
+      chunk.forEach((f) => this.segmentedRawStarts.add(f.start))
       this.replaceProcessedChunk(chunk, chunk)
       return true
     }
@@ -109,27 +124,29 @@ export class SegmentationPipeline {
     if (!this.providerRef) {
       // Do not leave starts marked segmented with no replacement (would skip forever).
       const optimized = optimizeSubtitles(chunk, this.getSourceLanguage())
+      chunk.forEach((f) => this.segmentedRawStarts.add(f.start))
       this.replaceProcessedChunk(chunk, optimized)
       return true
     }
 
+    const task = this.session.begin("segmentation", String(chunk[0]!.start))
+    this.task = task
     try {
-      const segmented = await aiSegmentBlock(chunk, this.providerRef)
+      const segmented = await aiSegmentBlock(chunk, this.providerRef, task)
       // Session may have been torn down while the AI call was in flight.
-      if (this.stopped) {
-        chunk.forEach((f) => this.segmentedRawStarts.delete(f.start))
-        return true
-      }
+      if (this.stopped || generation !== this.generation || !task.isCurrent()) return false
       const optimized = optimizeSubtitles(segmented, this.getSourceLanguage())
+      chunk.forEach((f) => this.segmentedRawStarts.add(f.start))
       this.replaceProcessedChunk(chunk, optimized)
     } catch {
-      if (this.stopped) {
-        chunk.forEach((f) => this.segmentedRawStarts.delete(f.start))
-        return true
-      }
+      if (this.stopped || generation !== this.generation || !task.isCurrent()) return false
       chunk.forEach((f) => this.aiSegmentFailedRawStarts.add(f.start))
       const optimized = optimizeSubtitles(chunk, this.getSourceLanguage())
+      chunk.forEach((f) => this.segmentedRawStarts.add(f.start))
       this.replaceProcessedChunk(chunk, optimized)
+    } finally {
+      task.complete()
+      if (this.task === task) this.task = null
     }
 
     return true

@@ -93,7 +93,12 @@ describe("subtitle translation recovery", () => {
         displayMode === "translationOnly" ? fragments[0]!.text : "",
       )
       expect(getLocalConfig).toHaveBeenCalledTimes(1)
-      expect(translateSubtitles).toHaveBeenCalledWith(expect.anything(), expect.anything(), config)
+      expect(translateSubtitles).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        config,
+        expect.objectContaining({ signal: expect.any(AbortSignal) }),
+      )
     },
   )
 

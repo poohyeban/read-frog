@@ -28,6 +28,7 @@ import {
   resolveSubtitlesProviderRef,
   fetchSubtitlesSummary,
 } from "@/utils/subtitles/processor/translator"
+import { SubtitleSession } from "@/utils/subtitles/session"
 import { downloadSubtitlesAsSrt } from "@/utils/subtitles/srt"
 import { showAiSubtitlesWallToast, showSubtitlesErrorToast } from "@/utils/subtitles/toast"
 import { requestVideoSummary, VIDEO_SUMMARY_QUERY_SCOPE } from "@/utils/subtitles/video-summary"
@@ -98,6 +99,7 @@ export interface SubtitlesProvidersAdapter {
 }
 
 export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
+  private subtitleSession: SubtitleSession | null = null
   private config: PlatformConfig
   private subtitlesScheduler: SubtitlesScheduler | null = null
   private fetchers: SubtitlesFetcherFactories
@@ -479,6 +481,8 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
   }
 
   private clearRuntimeSession() {
+    this.subtitleSession?.dispose()
+    this.subtitleSession = null
     this.translationCoordinator?.stop()
     this.segmentationPipeline?.stop()
     this.translationCoordinator = null
@@ -870,7 +874,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
 
     try {
       const config = await getLocalConfig()
-      if (this.destroyed) return false
+      if (this.destroyed || operationId !== this.switchOperationId) return false
 
       // Resolve through the capability registry, not providersConfig: Built-in
       // AI is synthesized by the registry and is never a row there, so the
@@ -883,6 +887,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       // Only a running session can be resumed, so a fresh start skips the track check.
       const useSameTrack = hasCurrentSession && (await this.fetcher.shouldUseSameTrack())
 
+      if (this.destroyed || operationId !== this.switchOperationId) return false
       if (useSameTrack && hasCurrentSession) {
         // Translated sessions create a coordinator; passthrough sessions only cache rendered fragments.
         if (this.translationCoordinator) {
@@ -910,7 +915,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       loadingSource = true
       await this.getOrLoadSourceSubtitles()
       loadingSource = false
-      if (this.destroyed) return false
+      if (this.destroyed || operationId !== this.switchOperationId) return false
       this.sessionSubtitles = this.sourceSubtitles
 
       if (this.shouldSkipTranslationForCurrentTrack(config)) {
@@ -1026,6 +1031,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
   }
 
   private async processTranslatedSubtitles(config: Config | null) {
+    const operationId = this.switchOperationId
     const scheduler = this.subtitlesScheduler
     if (!scheduler) return
 
@@ -1049,6 +1055,13 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     // rule-based recut and skips the summary without a doomed prompt attempt
     // per look-ahead window.
     const providerRef = config ? await resolveSubtitlesProviderRef(config, "lineTranslation") : null
+    if (this.destroyed || operationId !== this.switchOperationId) return
+    this.subtitleSession?.dispose()
+    const session = (this.subtitleSession = new SubtitleSession({
+      videoId: this.sessionVideoId ?? "",
+      trackId: `${this.source}:${this.sourceCacheVersion}`,
+      revision: this.sourceCacheVersion,
+    }))
     const promptableProviderRef =
       providerRef && canProviderRefGenerateText(providerRef) ? providerRef : null
 
@@ -1060,6 +1073,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
 
     if (useAiSegmentation) {
       this.segmentationPipeline = new SegmentationPipeline({
+        session,
         baselineFragments: this.sourceProcessedSubtitles,
         rawFragments: this.sessionSubtitles,
         getVideoElement: () => this.subtitlesScheduler?.getVideoElement() ?? null,
@@ -1082,6 +1096,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     }
 
     this.translationCoordinator = new TranslationCoordinator({
+      session,
       getFragments: () =>
         this.segmentationPipeline
           ? this.segmentationPipeline.processedFragments
@@ -1101,9 +1116,15 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     )
     this.subtitlesSummaryContextHash = summaryContextHash ?? null
 
-    void fetchSubtitlesSummary(videoContext, config ?? undefined, promptableProviderRef).then(
-      (summary) => {
-        if (!summaryContextHash) {
+    const summaryTask = session.begin("context", summaryContextHash ?? "summary")
+    void fetchSubtitlesSummary(
+      videoContext,
+      config ?? undefined,
+      promptableProviderRef,
+      summaryTask,
+    )
+      .then((summary) => {
+        if (!summaryTask.isCurrent() || !summaryContextHash) {
           return
         }
 
@@ -1112,7 +1133,10 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
         }
 
         videoContext.summary = summary
-      },
-    )
+      })
+      .catch(() => {
+        /* Existing source context remains available when summary fails. */
+      })
+      .finally(() => summaryTask.complete())
   }
 }
