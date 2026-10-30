@@ -164,6 +164,8 @@ async function translateTextUsingPageConfig(
     preserveLineBreaks?: boolean
     // Session captured at pipeline entry by the caller; see translateTextForPage.
     sessionId?: string
+    signal?: AbortSignal
+    requestScopeId?: string
     forceRetranslation?: boolean
   } = {},
 ): Promise<string> {
@@ -212,6 +214,8 @@ async function translateTextUsingPageConfig(
     textFormat: options.textFormat,
     preserveLineBreaks: options.preserveLineBreaks,
     sessionId: options.sessionId,
+    signal: options.signal,
+    requestScopeId: options.requestScopeId,
     forceRetranslation: options.forceRetranslation,
   })
 }
@@ -259,8 +263,13 @@ export async function translateTextForPage(
  * Page title translation — uses page translation settings, but always treats the
  * current source title as the webpage title context.
  */
-export async function translateTextForPageTitle(text: string): Promise<string> {
-  const session = getPageTranslationSession()
+export async function translateTextForPageTitle(
+  text: string,
+  signal?: AbortSignal,
+): Promise<string> {
+  const parent = getPageTranslationSession()
+  const session =
+    parent && signal ? { ...parent, signal: AbortSignal.any([parent.signal, signal]) } : parent
   const sessionId = session?.id
   const config = await getConfigOrThrow()
   const providerConfig = resolvePageTranslationProvider(config)
@@ -271,6 +280,8 @@ export async function translateTextForPageTitle(text: string): Promise<string> {
   return translateTextUsingPageConfig(config, text, {
     origin: "page-title",
     extraHashTags: ["pageTitleTranslation"],
+    signal: session?.signal ?? signal,
+    requestScopeId: signal ? `title-${crypto.randomUUID()}` : undefined,
     webPageContext: {
       webTitle: text,
       webDescription: webPageContext?.webDescription,

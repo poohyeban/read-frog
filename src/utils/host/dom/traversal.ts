@@ -104,6 +104,7 @@ export interface WalkCallbacks {
 }
 
 export interface ChunkedWalkOptions extends WalkCallbacks {
+  signal?: AbortSignal
   scheduler?: LocalScheduler
   /** Checked at every slice boundary; returning false aborts the walk. */
   shouldContinue?: () => boolean
@@ -268,7 +269,12 @@ export async function walkAndLabelElementChunked(
   config: Config,
   options: ChunkedWalkOptions = {},
 ): Promise<WalkResult | null> {
-  const { shouldContinue = () => true, scheduler = pageLocalScheduler, ...callbacks } = options
+  const {
+    shouldContinue = () => true,
+    scheduler = pageLocalScheduler,
+    signal,
+    ...callbacks
+  } = options
 
   if (!shouldContinue()) return null
   prepareLatexmlTextBoxes(element, config)
@@ -280,6 +286,7 @@ export async function walkAndLabelElementChunked(
   return (
     (await scheduler.run(walkNode(element, walkId, config, callbacks), {
       current: shouldContinue,
+      signal,
     })) ?? null
   )
 }

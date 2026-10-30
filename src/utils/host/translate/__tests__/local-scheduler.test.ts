@@ -73,3 +73,48 @@ describe("one local work budget", () => {
     expect(scheduler.pending).toBe(0)
   })
 })
+
+it("releases queued DOM references immediately when the owner aborts during a yield", async () => {
+  let release!: () => void
+  const paused = new Promise<void>((resolve) => {
+    release = resolve
+  })
+  const scheduler = new LocalScheduler(0, () => paused)
+  const owner = new AbortController()
+  const run = vi.fn<() => void>()
+  const pending = scheduler.schedule(run, () => true, owner.signal)
+  expect(scheduler.pending).toBe(1)
+  owner.abort()
+  expect(scheduler.pending).toBe(0)
+  expect(await pending).toBeUndefined()
+  expect(run).not.toHaveBeenCalled()
+  release()
+})
+it("recovers after a dispatch failure and allows abort inside a running generator", async () => {
+  const scheduler = new LocalScheduler(
+    0,
+    vi
+      .fn<() => Promise<void>>()
+      .mockRejectedValueOnce(new Error("yield failed"))
+      .mockResolvedValue(undefined),
+  )
+  await expect(scheduler.schedule(() => 1)).rejects.toThrow("yield failed")
+  expect(await scheduler.schedule(() => 2)).toBe(2)
+  const owner = new AbortController()
+  let closed = false
+  const task = scheduler.run(
+    (function* () {
+      try {
+        owner.abort()
+        yield
+        throw new Error("must never resume")
+      } finally {
+        closed = true
+      }
+    })(),
+    { signal: owner.signal },
+  )
+  await expect(task).resolves.toBeUndefined()
+  expect(closed).toBe(true)
+  expect(scheduler.pending).toBe(0)
+})

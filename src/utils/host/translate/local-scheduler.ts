@@ -7,6 +7,10 @@ type Work = {
   reject: (error: unknown) => void
   promise: Promise<unknown>
   foreground: boolean
+  signal?: AbortSignal
+  detach: () => void
+  executing: boolean
+  cancelled: boolean
 }
 
 /** One page-local loop budgets synchronous expansion, never network completion. */
@@ -22,25 +26,52 @@ export class LocalScheduler {
 
   run<T>(
     iterator: Generator<unknown, T>,
-    options: { key?: object; current?: () => boolean; foreground?: boolean } = {},
+    options: {
+      key?: object
+      current?: () => boolean
+      foreground?: boolean
+      signal?: AbortSignal
+    } = {},
   ): Promise<T | undefined> {
-    const key = options.key ?? iterator
+    if (options.signal?.aborted) {
+      iterator.return(undefined as T)
+      return Promise.resolve(undefined)
+    }
+    let key = options.key ?? iterator
     const existing = this.tasks.get(key)
-    if (existing) return existing.promise as Promise<T>
+    if (existing?.signal === options.signal && existing) return existing.promise as Promise<T>
+    // Deduplication must never let one consumer cancel another owner's work.
+    if (existing) key = iterator
     let resolve!: (value: unknown) => void
     let reject!: (error: unknown) => void
     const promise = new Promise<T | undefined>((res, rej) => {
       resolve = res as (value: unknown) => void
       reject = rej
     })
-    const task = {
+    const task: Work = {
       iterator,
       current: options.current ?? (() => true),
       resolve,
       reject,
       promise,
       foreground: options.foreground ?? false,
+      signal: options.signal,
+      detach: () => options.signal?.removeEventListener("abort", cancel),
+      executing: false,
+      cancelled: false,
     }
+    const cancel = () => {
+      task.cancelled = true
+      this.remove(key, task)
+      try {
+        // Abort may be raised inside next(); closing a running generator throws.
+        if (!task.executing) task.iterator.return(undefined)
+        task.resolve(undefined)
+      } catch (error) {
+        task.reject(error)
+      }
+    }
+    options.signal?.addEventListener("abort", cancel, { once: true })
     this.tasks.set(key, task)
     ;(task.foreground ? this.foreground : this.background).set(key, task)
     if (!this.running) {
@@ -50,13 +81,17 @@ export class LocalScheduler {
     return promise
   }
 
-  schedule<T>(callback: () => T, current: () => boolean = () => true): Promise<T | undefined> {
+  schedule<T>(
+    callback: () => T,
+    current: () => boolean = () => true,
+    signal?: AbortSignal,
+  ): Promise<T | undefined> {
     return this.run(
       (function* () {
         yield
         return callback()
       })(),
-      { current, foreground: true },
+      { current, foreground: true, signal },
     )
   }
 
@@ -64,43 +99,72 @@ export class LocalScheduler {
     return this.tasks.size
   }
 
+  private remove(key: object, task: Work): void {
+    if (this.tasks.get(key) !== task) return
+    this.tasks.delete(key)
+    this.foreground.delete(key)
+    this.background.delete(key)
+    task.detach()
+  }
+
   private async drain(): Promise<void> {
     let deadline = performance.now() + this.budgetMs
     let foregroundTurns = 0
-    // A microtask boundary after each step admits the resumed consumer's local
-    // work before the next budget check. Resolving an entire wave at once would
-    // let all consumers pass the budget and block the next frame together.
-    while (this.tasks.size) {
-      if (performance.now() >= deadline) {
-        await this.yieldMain()
-        deadline = performance.now() + this.budgetMs
-      }
-      const queue =
-        this.foreground.size && (foregroundTurns < 4 || !this.background.size)
-          ? this.foreground
-          : this.background
-      const [key, task] = queue.entries().next().value!
-      foregroundTurns = task.foreground ? foregroundTurns + 1 : 0
-      queue.delete(key)
-      try {
-        if (!task.current()) {
-          this.tasks.delete(key)
-          task.iterator.return(undefined)
-          task.resolve(undefined)
-        } else {
-          const next = task.iterator.next()
-          if (next.done) {
-            this.tasks.delete(key)
-            task.resolve(next.value)
-          } else queue.set(key, task)
+    try {
+      while (this.tasks.size) {
+        if (performance.now() >= deadline) {
+          await this.yieldMain()
+          deadline = performance.now() + this.budgetMs
+          if (!this.tasks.size) break
         }
-      } catch (error) {
-        this.tasks.delete(key)
+        const queue =
+          this.foreground.size && (foregroundTurns < 4 || !this.background.size)
+            ? this.foreground
+            : this.background
+        const [key, task] = queue.entries().next().value!
+        foregroundTurns = task.foreground ? foregroundTurns + 1 : 0
+        queue.delete(key)
+        try {
+          if (!task.current() || task.signal?.aborted) {
+            this.remove(key, task)
+            task.iterator.return(undefined)
+            task.resolve(undefined)
+          } else {
+            task.executing = true
+            let next: IteratorResult<unknown>
+            try {
+              next = task.iterator.next()
+            } finally {
+              task.executing = false
+            }
+            if (task.cancelled) task.iterator.return(undefined)
+            else if (next.done) {
+              this.remove(key, task)
+              task.resolve(next.value)
+            } else queue.set(key, task)
+          }
+        } catch (error) {
+          this.remove(key, task)
+          task.reject(error)
+        }
+        // Admit resumed consumers before the next budget check. Do not await
+        // their network promises: RequestQueue retains network concurrency.
+        await Promise.resolve()
+      }
+    } catch (error) {
+      // A failed yield must not leave the scheduler permanently marked running.
+      for (const [key, task] of this.tasks) {
+        this.remove(key, task)
+        try {
+          task.iterator.return(undefined)
+        } catch {
+          /* preserve dispatch error */
+        }
         task.reject(error)
       }
-      await Promise.resolve()
+    } finally {
+      this.running = false
     }
-    this.running = false
   }
 }
 

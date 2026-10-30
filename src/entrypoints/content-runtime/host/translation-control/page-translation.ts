@@ -9,21 +9,14 @@ import {
 } from "@/utils/constants/dom-labels"
 import {
   GIANT_PARAGRAPH_MAX_SPLIT_DEPTH,
-  GIANT_PARAGRAPH_SPLIT_MIN_VIEWPORT_PX,
-  GIANT_PARAGRAPH_SPLIT_VIEWPORT_MULTIPLIER,
   GIANT_SPLIT_STRANDED_TEXT_MAX_UNITS,
 } from "@/utils/constants/translate"
-import {
-  clearAppliedDocumentTitleTranslation,
-  setAppliedDocumentTitleTranslation,
-} from "@/utils/content/document-title"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
 import {
   hasNoWalkAncestor,
   isHTMLElement,
   isWalkBlockedElement as isWalkBlockedElementFilter,
 } from "@/utils/host/dom/filter"
-import { deepQueryAllSelector } from "@/utils/host/dom/find"
 import { isLatexmlTextBoxReflowRecord } from "@/utils/host/dom/latexml-text-box"
 import {
   canSplitGiantWithoutStrandingOwnText,
@@ -47,10 +40,7 @@ import {
   translateNodesBilingualMode,
   translateWalkedElement,
 } from "@/utils/host/translate/node-manipulation"
-import {
-  primePageTranslationContext,
-  translateTextForPageTitle,
-} from "@/utils/host/translate/translate-variants"
+import { primePageTranslationContext } from "@/utils/host/translate/translate-variants"
 import {
   beginPageTranslationSession,
   getPageTranslationSession,
@@ -64,7 +54,6 @@ import { cancelSpinnerAnimation } from "@/utils/host/translate/ui/spinner"
 import { ensureSiteRuleCSS, removeSiteRuleCSS } from "@/utils/host/translate/ui/style-injector"
 import { validateTranslationConfigAndToast } from "@/utils/host/translate/ui/translation-config-feedback"
 import {
-  getOrCreateWebPageContext,
   getWebPageContentRevision,
   isInPageAnchorChange,
   releaseWebPageContext,
@@ -77,8 +66,10 @@ import {
   resolvePageTranslationProviderOrNull,
 } from "@/utils/providers/provider-ref"
 import { removeReactShadowHost } from "@/utils/react-shadow-host/create-shadow-host"
-import { isTranslationCancelledError } from "@/utils/request/cancellation"
 import { getEffectiveSiteRule } from "@/utils/site-rules/effective"
+import { DocumentTitleTask } from "./document-title-task"
+import { DOMObservation } from "./dom-observation"
+import { ViewportScheduler, renderedHeight, maxUnitHeight } from "./viewport-scheduler"
 
 type SimpleIntersectionOptions = Omit<IntersectionObserverInit, "threshold"> & {
   threshold?: number
@@ -89,127 +80,6 @@ type DebouncedRetry = (() => void) & { clear: () => void }
 interface RetranslationBudget {
   windowStart: number
   passes: number
-}
-
-/**
- * Whether IntersectionObserver can see `element` at all. A `display: contents`
- * element generates no box: its rect is 0×0 and the observer reports it once
- * as not intersecting, then never again.
- */
-function hasBox(element: Element): boolean {
-  return element.getClientRects().length > 0
-}
-
-/**
- * The boxes a box-less element is rendered through: its nearest descendants
- * that have a box, reached through box-less descendants only, shadow roots
- * included (a `display: contents` custom element renders its shadow tree).
- */
-function collectRenderedBoxes(element: Element, boxes: Element[] = []): Element[] {
-  for (const child of [...element.children, ...(element.shadowRoot?.children ?? [])]) {
-    if (hasBox(child)) boxes.push(child)
-    else collectRenderedBoxes(child, boxes)
-  }
-  return boxes
-}
-
-/** The parent element, continuing from the top of a shadow root to its host. */
-function parentElementAcrossShadow(element: Element): Element | null {
-  const root = element.getRootNode()
-  return element.parentElement ?? (root instanceof ShadowRoot ? root.host : null)
-}
-
-/**
- * Whether `element` is box-less because it, or an ancestor below its nearest
- * rendered one, is `display: none`: a closed menu a site rule opened to the
- * walk (`walkHiddenSelectors`), where it gets a box of its own once the site
- * shows it. A `display: contents` element never gets one, open or closed, so
- * it does not count.
- */
-function isInHiddenRegion(element: Element): boolean {
-  if (window.getComputedStyle(element).display === "contents") return false
-  for (
-    let current: Element | null = element;
-    current && !hasBox(current);
-    current = parentElementAcrossShadow(current)
-  ) {
-    if (window.getComputedStyle(current).display === "none") return true
-  }
-  return false
-}
-
-/**
- * The box a box-less element's content is laid out in: its nearest ancestor
- * that has a box, through shadow roots (a plain-text unit at the top of one is
- * laid out in its host).
- */
-function findLayoutBox(element: Element): Element | null {
-  for (
-    let ancestor = parentElementAcrossShadow(element);
-    ancestor;
-    ancestor = parentElementAcrossShadow(ancestor)
-  ) {
-    if (hasBox(ancestor)) return ancestor
-  }
-  return null
-}
-
-/**
- * How tall everything laid out in `box` is. A scroll container's own box is
- * only its viewport, but all the units inside it are taken together when it
- * intersects, so its scroll extent is what has to fit a split-sized unit.
- */
-function layoutExtent(box: Element): number {
-  return Math.max(box.getBoundingClientRect().height, box.scrollHeight)
-}
-
-/**
- * Height used by the giant-unit split. A box-less unit is measured across the
- * boxes it renders through, counting what each lays out (a scrolling list
- * inside it holds its whole history); its own 0×0 rect would let a tall one
- * pass as short and translate whole on the first intersection (#1881). Units
- * with a box keep their own height, zero included.
- */
-function renderedHeight(unit: HTMLElement): number {
-  const { height } = unit.getBoundingClientRect()
-  if (height > 0 || hasBox(unit)) return height
-
-  let top = Infinity
-  let bottom = -Infinity
-  for (const box of collectRenderedBoxes(unit)) {
-    const rect = box.getBoundingClientRect()
-    top = Math.min(top, rect.top)
-    bottom = Math.max(bottom, rect.top + layoutExtent(box))
-  }
-  return bottom > top ? bottom - top : 0
-}
-
-/** The tallest unit translated in one go; taller ones are split first (#1881). */
-function maxUnitHeight(): number {
-  return (
-    Math.max(window.innerHeight, GIANT_PARAGRAPH_SPLIT_MIN_VIEWPORT_PX) *
-    GIANT_PARAGRAPH_SPLIT_VIEWPORT_MULTIPLIER
-  )
-}
-
-/** The same cap across, for content laid out side by side. */
-function maxUnitWidth(): number {
-  return (
-    Math.max(window.innerWidth, GIANT_PARAGRAPH_SPLIT_MIN_VIEWPORT_PX) *
-    GIANT_PARAGRAPH_SPLIT_VIEWPORT_MULTIPLIER
-  )
-}
-
-/**
- * Whether everything laid out in `box` may be taken in one go when it
- * intersects. Its scroll extent counts in both directions: a short list can
- * hold a long history, and a narrow one a long row.
- */
-function layoutFitsSplitCap(box: Element): boolean {
-  const rect = box.getBoundingClientRect()
-  return (
-    layoutExtent(box) <= maxUnitHeight() && Math.max(rect.width, box.scrollWidth) <= maxUnitWidth()
-  )
 }
 
 interface IPageTranslationManager {
@@ -280,16 +150,8 @@ export class PageTranslationManager implements IPageTranslationManager {
   }
   /** Non-null while a start() is between its guard and activation; see start(). */
   private pendingStart: symbol | null = null
-  private intersectionObserver: IntersectionObserver | null = null
-  /**
-   * Gates box-less units on the boxes they render through (see observeUnit).
-   * Created for the first such unit, so most pages never get one.
-   */
-  private boxlessUnitObserver: IntersectionObserver | null = null
-  /** Box-less units still waiting for one of their boxes to intersect. */
-  private pendingBoxlessUnits = new WeakSet<HTMLElement>()
-  private mutationObservers: MutationObserver[] = []
-  private observedMutationRoots = new WeakSet<Node>()
+  private viewport: ViewportScheduler | undefined
+  private readonly domObservation = new DOMObservation()
   private walkId: string | null = null
   private readonly onPageHide = () => this.stop()
   private requestSessionUrl: string | undefined
@@ -313,13 +175,7 @@ export class PageTranslationManager implements IPageTranslationManager {
   }
   /** Pending initial chunked walk; mutation handling serializes behind it. */
   private initialWalkDone: Promise<void> | null = null
-  private titleObserver: MutationObserver | null = null
-  // Non-null exactly while the tab title is being tracked.
-  private lastSourceTitle: string | null = null
-  private lastAppliedTranslatedTitle: string | null = null
-  // Never reset: a request from before a stop or a switch-off must not match
-  // a later one's version.
-  private titleRequestVersion = 0
+  private readonly titleTask = new DocumentTitleTask(() => this.isPageTranslating)
   // The "translate tab title" switch: read when a session starts, then kept
   // current by setTitleTranslationEnabled.
   private titleTranslationEnabled = true
@@ -442,7 +298,7 @@ export class PageTranslationManager implements IPageTranslationManager {
 
     // Capture only source metadata before title translation. Content and
     // summary preparation begin when the walk discovers its first paragraph.
-    await this.primeDocumentTitleContext(
+    await this.titleTask.prime(
       config.pageTranslation.enableAIContentAware &&
         canResolvedProviderRefGenerateText(providerConfig),
     )
@@ -452,23 +308,17 @@ export class PageTranslationManager implements IPageTranslationManager {
     // The live value, not the config read above: the switch may have been
     // flipped while this start was awaiting.
     if (this.titleTranslationEnabled) {
-      this.startDocumentTitleTracking()
+      this.titleTask.start()
     }
 
     // Listen to existing elements when they enter the viewport
     const walkId = getRandomUUID()
     this.walkId = walkId
-    this.intersectionObserver = new IntersectionObserver((entries, observer) => {
-      const targets: HTMLElement[] = []
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue
-        observer.unobserve(entry.target)
-        if (isHTMLElement(entry.target) && !entry.target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
-          targets.push(entry.target)
-        }
-      }
-      this.translateIntersectedUnits(targets, walkId)
-    }, this.intersectionOptions)
+    const viewport = new ViewportScheduler(this.intersectionOptions, (units) =>
+      this.translateIntersectedUnits(units, walkId),
+    )
+    this.viewport = viewport
+    this.session?.own(() => viewport.dispose())
 
     // Observe mutations BEFORE the chunked walk: page JS runs between walk
     // slices, and records emitted meanwhile must not be lost. The walk only
@@ -512,9 +362,9 @@ export class PageTranslationManager implements IPageTranslationManager {
       return
     }
     if (enabled) {
-      this.startDocumentTitleTracking()
+      this.titleTask.start()
     } else {
-      this.stopDocumentTitleTracking()
+      this.titleTask.dispose()
     }
   }
 
@@ -542,7 +392,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       this.session = getPageTranslationSession()
       releaseWebPageContext()
       this.contextPrimed = false
-      this.titleRequestVersion++
+      this.titleTask.invalidate()
     }
     this.requestSessionUrl = url
 
@@ -609,20 +459,11 @@ export class PageTranslationManager implements IPageTranslationManager {
     this.pendingRetranslateRetries.clear()
     this.retranslateRetries = new WeakMap()
     this.retranslationBudgets = new WeakMap()
-    this.stopDocumentTitleTracking()
+    this.titleTask.dispose()
 
-    if (this.intersectionObserver) {
-      this.intersectionObserver.disconnect()
-      this.intersectionObserver = null
-    }
-    if (this.boxlessUnitObserver) {
-      this.boxlessUnitObserver.disconnect()
-      this.boxlessUnitObserver = null
-    }
-    this.pendingBoxlessUnits = new WeakSet()
-    this.mutationObservers.forEach((observer) => observer.disconnect())
-    this.mutationObservers = []
-    this.observedMutationRoots = new WeakSet()
+    this.viewport?.dispose()
+    this.viewport = undefined
+    this.domObservation.dispose()
 
     removeSiteRuleCSS(document)
     removeAllTranslatedWrapperNodes()
@@ -684,137 +525,12 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
   }
 
-  private shouldManageDocumentTitle(): boolean {
-    return window === window.top
-  }
-
-  private async primeDocumentTitleContext(shouldPrimeWebPageContext: boolean): Promise<void> {
-    if (!this.shouldManageDocumentTitle() || !shouldPrimeWebPageContext) {
-      return
-    }
-
-    try {
-      await getOrCreateWebPageContext(false)
-    } catch {
-      logger.warn("Failed to prime webpage context before translating document title:")
-    }
-  }
-
-  private startDocumentTitleTracking(): void {
-    if (!this.shouldManageDocumentTitle() || this.lastSourceTitle !== null) {
-      return
-    }
-
-    this.lastSourceTitle = document.title || ""
-    this.lastAppliedTranslatedTitle = null
-
-    this.observeDocumentTitle()
-    void this.syncDocumentTitle(this.lastSourceTitle)
-  }
-
-  private stopDocumentTitleTracking(): void {
-    if (!this.shouldManageDocumentTitle() || this.lastSourceTitle === null) {
-      return
-    }
-
-    const currentTitle = document.title || ""
-    if (currentTitle !== this.lastAppliedTranslatedTitle) {
-      this.lastSourceTitle = currentTitle
-    }
-
-    if (this.titleObserver) {
-      this.titleObserver.disconnect()
-      this.titleObserver = null
-    }
-
-    this.titleRequestVersion++
-
-    if (this.lastSourceTitle !== null && document.title !== this.lastSourceTitle) {
-      document.title = this.lastSourceTitle
-    }
-    clearAppliedDocumentTitleTranslation()
-
-    this.lastSourceTitle = null
-    this.lastAppliedTranslatedTitle = null
-  }
-
-  private observeDocumentTitle(): void {
-    if (!document.head) {
-      return
-    }
-
-    if (this.titleObserver) {
-      this.titleObserver.disconnect()
-    }
-
-    this.titleObserver = new MutationObserver(() => {
-      this.handleDocumentTitleMutation()
-    })
-
-    this.titleObserver.observe(document.head, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-    })
-  }
-
-  private handleDocumentTitleMutation(): void {
-    if (!this.isPageTranslating || !this.shouldManageDocumentTitle()) {
-      return
-    }
-
-    const currentTitle = document.title || ""
-
-    if (currentTitle === this.lastSourceTitle) {
-      return
-    }
-
-    if (currentTitle === this.lastAppliedTranslatedTitle) {
-      return
-    }
-
-    this.lastSourceTitle = currentTitle
-    void this.syncDocumentTitle(currentTitle)
-  }
-
-  private async syncDocumentTitle(sourceTitle: string): Promise<void> {
-    if (!sourceTitle.trim() || !this.isPageTranslating || !this.shouldManageDocumentTitle()) {
-      return
-    }
-
-    const requestVersion = ++this.titleRequestVersion
-
-    try {
-      const translatedTitle = await translateTextForPageTitle(sourceTitle)
-      if (!this.isPageTranslating || requestVersion !== this.titleRequestVersion) {
-        return
-      }
-
-      const nextTitle = translatedTitle || sourceTitle
-      this.lastAppliedTranslatedTitle = nextTitle
-      // Before the write, so no prompt can see the translation without it.
-      setAppliedDocumentTitleTranslation(sourceTitle, nextTitle)
-
-      if (document.title === nextTitle) {
-        return
-      }
-
-      document.title = nextTitle
-    } catch (error) {
-      // A cancelled session's title request rejecting is expected, not noise.
-      if (isTranslationCancelledError(error)) return
-      if (requestVersion === this.titleRequestVersion) {
-        logger.warn("Failed to translate document title:")
-      }
-    }
-  }
-
   private async observeTopLevelParagraphs(
     container: HTMLElement,
     existingConfig?: Config,
     options: { chunked?: boolean } = {},
   ): Promise<void> {
-    const observer = this.intersectionObserver
+    const observer = this.viewport
     // Capture locals: this method awaits, and `this.walkId` may belong to a
     // newer session by the time an await resumes.
     const walkId = this.walkId
@@ -845,6 +561,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       const result = await walkAndLabelElementChunked(container, walkId, config, {
         onBlockedElement,
         onParagraph,
+        signal: this.session?.lifetimeSignal,
         shouldContinue: () => this.isPageTranslating && this.walkId === walkId,
       })
       if (result === null || this.walkId !== walkId) return
@@ -868,6 +585,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       this.registerDiscoveredParagraphs(paragraphs, container, walkId, config),
       {
         current: () => this.walkId === walkId,
+        signal: this.session?.lifetimeSignal,
       },
     )
   }
@@ -926,6 +644,7 @@ export class PageTranslationManager implements IPageTranslationManager {
   ): Promise<void> {
     await pageLocalScheduler.run(this.expandParagraphUnits(element, walkId, config, depth), {
       current: () => this.walkId === walkId,
+      signal: this.session?.lifetimeSignal,
     })
   }
 
@@ -936,11 +655,11 @@ export class PageTranslationManager implements IPageTranslationManager {
     depth: number,
   ): Generator<void> {
     yield
-    const observer = this.intersectionObserver
+    const observer = this.viewport
     if (!observer) return
 
     if (depth >= GIANT_PARAGRAPH_MAX_SPLIT_DEPTH || renderedHeight(element) <= maxUnitHeight()) {
-      this.observeUnit(observer, element, walkId)
+      observer.observe(element)
       return
     }
 
@@ -955,7 +674,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     })
     if (innerTopLevelParagraphs.length === 0) {
       // Unsplittable giant (no nested paragraphs) — observe it whole.
-      this.observeUnit(observer, element, walkId)
+      observer.observe(element)
       return
     }
     if (
@@ -971,7 +690,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       element !== element.ownerDocument.body &&
       !canSplitGiantWithoutStrandingOwnText(element)
     ) {
-      this.observeUnit(observer, element, walkId)
+      observer.observe(element)
       return
     }
     if (!canSplitParagraphIntoDescendants(element, innerTopLevelParagraphs, config)) {
@@ -986,111 +705,11 @@ export class PageTranslationManager implements IPageTranslationManager {
       // rather than here: bilingual can interleave a wrapper at any boundary,
       // while translationOnly has to cut the units apart into whole nodes and
       // therefore keeps per-span observation for the plans it cannot express.
-      this.observeUnit(observer, element, walkId)
+      observer.observe(element)
       return
     }
     for (const paragraph of innerTopLevelParagraphs) {
       yield* this.expandParagraphUnits(paragraph, walkId, config, depth + 1)
-    }
-  }
-
-  /**
-   * Hand one paragraph unit to the viewport gate.
-   *
-   * A unit with a box is observed directly, as before. A box-less unit
-   * (`display: contents`; Telegram web wraps every message in one) can never
-   * intersect, so it would never translate. It is gated on boxes instead:
-   * preferably the box its content is laid out in, which covers all of it,
-   * plain text included; when what that box lays out is larger than a
-   * split-sized unit (a long column, a scrolling list or row), the unit's own
-   * inner boxes. A unit with neither keeps the direct observation.
-   *
-   * A unit inside a closed menu is box-less too, but it is observed directly
-   * like a rendered one: it intersects once the site shows it. Gating it on a
-   * visible ancestor would translate every closed menu on the page up front,
-   * ahead of the content on screen.
-   */
-  private observeUnit(observer: IntersectionObserver, unit: HTMLElement, walkId: string): void {
-    if (hasBox(unit) || isInHiddenRegion(unit)) {
-      // It may have been box-less when first registered; its old gate must not
-      // translate it a second time.
-      this.pendingBoxlessUnits.delete(unit)
-      observer.observe(unit)
-      return
-    }
-    const layoutBox = findLayoutBox(unit)
-    const boxes =
-      layoutBox && layoutFitsSplitCap(layoutBox) ? [layoutBox] : collectRenderedBoxes(unit)
-    if (boxes.length === 0) {
-      observer.observe(unit)
-      return
-    }
-    this.pendingBoxlessUnits.add(unit)
-    const boxlessUnitObserver = this.getBoxlessUnitObserver(walkId)
-    for (const box of boxes) boxlessUnitObserver.observe(box)
-  }
-
-  /** Run a pending unit's registration again against the page as it is now. */
-  private registerUnitAgain(unit: HTMLElement): void {
-    if (this.intersectionObserver && this.walkId) {
-      this.observeUnit(this.intersectionObserver, unit, this.walkId)
-    }
-  }
-
-  private getBoxlessUnitObserver(walkId: string): IntersectionObserver {
-    this.boxlessUnitObserver ??= new IntersectionObserver((entries, observer) => {
-      const units: HTMLElement[] = []
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue
-        observer.unobserve(entry.target)
-        units.push(...this.takePendingUnitsAt(entry.target))
-      }
-      this.translateIntersectedUnits(units, walkId)
-    }, this.intersectionOptions)
-    return this.boxlessUnitObserver
-  }
-
-  private takePendingUnitsAt(box: Element): HTMLElement[] {
-    const units: HTMLElement[] = []
-    const take = (element: Element) => {
-      if (
-        isHTMLElement(element) &&
-        this.pendingBoxlessUnits.delete(element) &&
-        !element.closest(`.${CONTENT_WRAPPER_CLASS}`)
-      ) {
-        units.push(element)
-      }
-    }
-    for (
-      let element = parentElementAcrossShadow(box);
-      element;
-      element = parentElementAcrossShadow(element)
-    ) {
-      take(element)
-    }
-    // Every match, nested ones included: the box is unobserved after this, so a
-    // pending unit left inside another one would have nothing left to fire it.
-    // Taking them together is only safe while all of it fits a split-sized
-    // unit; a box that grew past that since it was chosen (history loaded in
-    // while it was off-screen) gives each unit a gate of its own instead.
-    if (isHTMLElement(box)) {
-      const inside = deepQueryAllSelector(box, (element) => this.pendingBoxlessUnits.has(element))
-      if (layoutFitsSplitCap(box)) inside.forEach(take)
-      else inside.forEach((unit) => this.registerUnitAgain(unit))
-    }
-    return units
-  }
-
-  /**
-   * Removed subtrees are unobserved whether or not they held a pending unit, so
-   * virtualized or re-rendered content does not stay observed after it is gone.
-   */
-  private unobserveRemovedGates(record: MutationRecord): void {
-    const observer = this.boxlessUnitObserver
-    if (!observer) return
-    for (const node of record.removedNodes) {
-      if (!isHTMLElement(node)) continue
-      for (const removed of deepQueryAllSelector(node, () => true)) observer.unobserve(removed)
     }
   }
 
@@ -1108,9 +727,18 @@ export class PageTranslationManager implements IPageTranslationManager {
       // All viewport callbacks use the same local scheduler. Only local work
       // is serialized; each paragraph's network request remains concurrent.
       const isWalkCurrent = () => this.walkId === walkId
-      for (const unit of units) {
-        void translateWalkedElement(unit, walkId, currentConfig, false, isWalkCurrent)
-      }
+      const signal = this.session?.signal
+      await pageLocalScheduler.run(
+        (function* () {
+          for (const unit of units) {
+            yield
+            void Promise.resolve(
+              translateWalkedElement(unit, walkId, currentConfig, false, isWalkCurrent),
+            ).catch((error) => logger.warn("Viewport translation failed", error))
+          }
+        })(),
+        { current: isWalkCurrent, signal, foreground: true },
+      )
     })()
   }
 
@@ -1217,24 +845,11 @@ export class PageTranslationManager implements IPageTranslationManager {
    * Start observing mutations for a container and all its shadow roots
    */
   private observeMutations(container: HTMLElement, config?: Config, discover = true): void {
-    // Dynamic pages re-add the same subtrees repeatedly; without dedup every
-    // re-added shadow host gained a duplicate subtree observer (#1831).
-    if (!this.observedMutationRoots.has(container)) {
-      this.observedMutationRoots.add(container)
-      const mutationObserver = new MutationObserver((records) => {
-        void this.handleMutationRecords(records, container)
-      })
-
-      mutationObserver.observe(container, {
-        childList: true,
-        subtree: true,
-        characterData: true,
-        attributes: true,
-        attributeFilter: ["style", "class", "hidden", "aria-hidden"],
-      })
-
-      this.mutationObservers.push(mutationObserver)
-    }
+    this.domObservation.observe(container, (records, root) => {
+      void this.handleMutationRecords(records, root).catch((error) =>
+        logger.warn("Mutation processing failed", error),
+      )
+    })
     if (discover) this.observeIsolatedDescendantsMutations(container, config)
   }
 
@@ -1482,7 +1097,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     const scannedAdditions = new Set<HTMLElement>()
     for (const rec of traversalRecords) {
       if (rec.type === "childList") {
-        this.unobserveRemovedGates(rec)
+        this.viewport?.unobserveRemovedGates(rec)
         // A node added inside an already-registered bilingual source is that
         // source's business, never a translation unit of its own. Walking it as
         // a fresh walk root recomputes "top-level paragraph" relative to the
@@ -1674,7 +1289,10 @@ export class PageTranslationManager implements IPageTranslationManager {
     const walkId = this.walkId
     const iterator = this.discoverIsolatedRoots(element, config, options.scanIsolatedTrees ?? false)
     void pageLocalScheduler
-      .run(iterator, { current: () => this.walkId === walkId && this.isPageTranslating })
+      .run(iterator, {
+        current: () => this.walkId === walkId && this.isPageTranslating,
+        signal: this.session?.lifetimeSignal,
+      })
       .catch((error) => logger.warn("Isolated-root discovery failed", error))
   }
 

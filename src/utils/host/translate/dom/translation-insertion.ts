@@ -10,6 +10,7 @@ import {
 } from "../../../constants/dom-labels"
 import { isHTMLElement, isNaturalBlockTransNode, isNaturalInlineTransNode } from "../../dom/filter"
 import { getOwnerDocument } from "../../dom/node"
+import { pageLocalScheduler } from "../local-scheduler"
 import { decorateTranslationNode } from "../ui/decorate-translation"
 import { isForceInlineTranslation, isShortInlineTranslationText } from "../ui/translation-utils"
 
@@ -19,6 +20,7 @@ interface TranslationInsertionContext {
   styleSources?: readonly TransNode[]
   sourceText: string
   isCurrent?: () => boolean
+  signal?: AbortSignal
   // Fired synchronously right after the translated node is appended, BEFORE
   // the decorate await. This is the only sound point to snapshot the wrapper's
   // expected content (#1918): earlier and the isCurrent() entry guard would
@@ -132,12 +134,28 @@ export function addBlockTranslation(
 }
 
 export async function insertTranslatedNodeIntoWrapper(
+  wrapper: HTMLElement,
+  context: TranslationInsertionContext,
+  text: string,
+  style: TranslationNodeStyleConfig,
+  config: Config,
+  forceBlock = false,
+): Promise<void> {
+  await pageLocalScheduler.schedule(
+    () => insertContent(wrapper, context, text, style, config, forceBlock),
+    context.isCurrent,
+    context.signal,
+  )
+}
+
+async function insertContent(
   translatedWrapperNode: HTMLElement,
   {
     layoutSource,
     styleSources,
     sourceText,
     isCurrent,
+    signal,
     onContentInserted,
     renderTranslatedContent,
   }: TranslationInsertionContext,
@@ -205,24 +223,30 @@ export async function insertTranslatedNodeIntoWrapper(
 
   if (isCurrent && !isCurrent()) return
 
-  // GitHub renders footnotes inside <sub> with line-height: 0. The original
-  // text wraps in the outer paragraph's line boxes, but our block translation
-  // is an inline-block inside <sub> and lays out its own lines. Inheriting
-  // that zero line height gives those lines no vertical advance: they paint
-  // at the same y coordinate while the translation's content box has no height.
-  // Inline translations still flow through the paragraph's line boxes, so
-  // leave their inherited line height alone.
-  if (
-    translatedNode.classList.contains(BLOCK_CONTENT_CLASS) &&
-    Number.parseFloat(window.getComputedStyle(translatedNode).lineHeight) === 0
-  ) {
-    translatedNode.style.lineHeight = "normal"
-  }
+  await pageLocalScheduler.schedule(
+    () => {
+      // GitHub renders footnotes inside <sub> with line-height: 0. The original
+      // text wraps in the outer paragraph's line boxes, but our block translation
+      // is an inline-block inside <sub> and lays out its own lines. Inheriting
+      // that zero line height gives those lines no vertical advance: they paint
+      // at the same y coordinate while the translation's content box has no height.
+      // Inline translations still flow through the paragraph's line boxes, so
+      // leave their inherited line height alone.
+      if (
+        translatedNode.classList.contains(BLOCK_CONTENT_CLASS) &&
+        Number.parseFloat(window.getComputedStyle(translatedNode).lineHeight) === 0
+      ) {
+        translatedNode.style.lineHeight = "normal"
+      }
 
-  if (
-    translatedNode.classList.contains(BLOCK_CONTENT_CLASS) &&
-    isDisplacedBelowFloat(translatedNode)
-  ) {
-    translatedNode.setAttribute(FLOAT_WRAP_ATTRIBUTE, "true")
-  }
+      if (
+        translatedNode.classList.contains(BLOCK_CONTENT_CLASS) &&
+        isDisplacedBelowFloat(translatedNode)
+      ) {
+        translatedNode.setAttribute(FLOAT_WRAP_ATTRIBUTE, "true")
+      }
+    },
+    isCurrent,
+    signal,
+  )
 }

@@ -72,6 +72,7 @@ export interface TranslateTextOptions {
   // Page-translation session id used for cancellation scoping. Deliberately
   // NOT part of the cache hash — cache identity must not vary per session.
   sessionId?: string
+  requestScopeId?: string
   forceRetranslation?: boolean
   /**
    * Whether the user's glossary is switched on. Supplied by the caller, which
@@ -153,7 +154,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     extraHashTags,
     scope: {
       kind: sessionId ? "page" : "independent",
-      id: sessionId ?? `request-${crypto.randomUUID()}`,
+      id: options.requestScopeId ?? sessionId ?? `request-${crypto.randomUUID()}`,
     },
   })
   const signal =

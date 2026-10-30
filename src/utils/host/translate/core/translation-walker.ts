@@ -15,6 +15,7 @@ import {
   isTransNode,
 } from "../../dom/filter"
 import { pageLocalScheduler } from "../local-scheduler"
+import { getPageTranslationSession } from "../translation-session"
 import { translateNodes } from "./translation-modes"
 import { getTranslationOnlyAnchorState } from "./translation-state"
 
@@ -49,6 +50,7 @@ export async function translateWalkedElement(
   shouldContinue: () => boolean = () => true,
   forceRetranslation: boolean = false,
 ): Promise<void> {
+  const signal = getPageTranslationSession()?.signal
   const promises: Promise<void>[] = []
   function* expand(element: HTMLElement): Generator<void> {
     yield
@@ -145,7 +147,7 @@ export async function translateWalkedElement(
       }
     }
   }
-  await pageLocalScheduler.run(expand(root), { current: shouldContinue, foreground: true })
+  await pageLocalScheduler.run(expand(root), { current: shouldContinue, foreground: true, signal })
   // This simultaneously ensures that when concurrent translation
   // and external await call this function, all translations are completed
   await Promise.all(promises)

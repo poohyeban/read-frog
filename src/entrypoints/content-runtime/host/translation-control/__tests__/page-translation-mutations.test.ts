@@ -2311,11 +2311,14 @@ describe("pageTranslationManager mutation re-walk", () => {
     shadowRoot.append(shadowChild)
     document.body.append(host)
 
+    const observe = vi.spyOn(MutationObserver.prototype, "observe")
+    const disconnect = vi.spyOn(MutationObserver.prototype, "disconnect")
+    const activeObservers = () => observe.mock.calls.length - disconnect.mock.calls.length
     const manager = new PageTranslationManager()
     await manager.start()
     await flushDomUpdates()
 
-    const observerCountAfterStart = (manager as any).mutationObservers.length
+    const observerCountAfterStart = activeObservers()
     expect(observerCountAfterStart).toBeGreaterThan(0)
 
     for (let i = 0; i < 5; i++) {
@@ -2325,9 +2328,11 @@ describe("pageTranslationManager mutation re-walk", () => {
       await flushDomUpdates()
     }
 
-    expect((manager as any).mutationObservers.length).toBe(observerCountAfterStart)
+    expect(activeObservers()).toBe(observerCountAfterStart)
 
     manager.stop()
+    observe.mockRestore()
+    disconnect.mockRestore()
   })
 
   it("splits a pure-container giant into its descendant paragraphs (#1881)", async () => {
