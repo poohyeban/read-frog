@@ -71,3 +71,16 @@ it("bounds each DOM frame and releases all pending writes on stop", () => {
   frames.shift()!(0)
   expect(applied).toBe(2)
 })
+
+it("keeps the first new hover request valid after SPA navigation prepares its context", async () => {
+  window.history.replaceState({}, "", "/article-before")
+  document.body.innerHTML = "<main><p>Before navigation</p></main>"
+  await getOrCreateWebPageContext(false)
+  const oldGate = captureCommitGate()
+  window.history.pushState({}, "", "/article-after")
+  document.querySelector("p")!.textContent = "After navigation"
+  const newGate = captureCommitGate()
+  await getOrCreateWebPageContext(false)
+  expect(oldGate.isCurrent()).toBe(false)
+  expect(newGate.isCurrent()).toBe(true)
+})

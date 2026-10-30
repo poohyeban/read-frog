@@ -95,6 +95,19 @@ export function getWebPageContentRevision(): number {
   return contentRevision
 }
 
+/** Bring lazy route/mutation invalidation forward before a new render guard
+ * captures its revision. Context preparation must not invalidate that same task. */
+export function synchronizeWebPageContext(): void {
+  if (typeof window === "undefined" || typeof document === "undefined") return
+  getDocumentContextSignal()
+  if (documentObserver) notePageContentMutations(documentObserver.takeRecords())
+  const currentUrl = window.location.href
+  if (contextUrl && contextUrl !== currentUrl && !isInPageAnchorChange(contextUrl, currentUrl))
+    invalidateWebPageContext()
+  contextUrl = currentUrl
+  if (cachedWebPageContext && Date.now() - cachedAt > 5 * 60_000) invalidateWebPageContext()
+}
+
 export function invalidateWebPageContext(): void {
   contentRevision++
   lastInvalidatedAt = Date.now()
@@ -264,16 +277,9 @@ export async function getOrCreateWebPageContext(
 ): Promise<CachedWebPageContext | null> {
   if (typeof window === "undefined" || typeof document === "undefined") return null
 
-  getDocumentContextSignal()
-  // Drain synchronously so a request in the mutation's own JS turn cannot see
-  // a cached old article before MutationObserver delivery.
-  if (documentObserver) notePageContentMutations(documentObserver.takeRecords())
-  const currentUrl = window.location.href
   signal?.throwIfAborted()
-  if (contextUrl && contextUrl !== currentUrl && !isInPageAnchorChange(contextUrl, currentUrl))
-    invalidateWebPageContext()
-  contextUrl = currentUrl
-  if (cachedWebPageContext && Date.now() - cachedAt > 5 * 60_000) invalidateWebPageContext()
+  synchronizeWebPageContext()
+  const currentUrl = window.location.href
   const revision = contentRevision
   if (!includeContent) {
     const metadata = {

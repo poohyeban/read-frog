@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { storage } from "#imports"
 import { DEFAULT_CONFIG, CONFIG_STORAGE_KEY } from "@/utils/constants/config"
 import { GLOSSARY_REVISION_KEY } from "@/utils/constants/glossary"
-import { SUBTITLES_SOURCE } from "@/utils/constants/subtitles"
+import { HIDE_NATIVE_CAPTIONS_STYLE_ID, SUBTITLES_SOURCE } from "@/utils/constants/subtitles"
 import { subtitleConfigIdentity } from "@/utils/subtitles/config-identity"
 import {
   NoSubtitlesError,
@@ -123,6 +123,28 @@ describe("universalVideoAdapter", () => {
   afterEach(() => {
     subtitlesStore.set(adPlayingAtom, false)
     vi.unstubAllGlobals()
+  })
+
+  it("restores native captions even when storage unwatch throws after extension reload", () => {
+    const { adapter, subtitlesFetcher } = createAdapter([])
+    const remove = vi.fn<() => void>()
+    const secondUnwatch = vi.fn<() => void>()
+    vi.stubGlobal("document", {
+      title: "Test video",
+      querySelector: () => null,
+      getElementById: (id: string) => (id === HIDE_NATIVE_CAPTIONS_STYLE_ID ? { remove } : null),
+    })
+    ;(adapter as any).isNativeSubtitlesHidden = true
+    ;(adapter as any).unwatchConfig = [
+      () => {
+        throw new Error("Extension context invalidated")
+      },
+      secondUnwatch,
+    ]
+    expect(() => adapter.destroy()).not.toThrow()
+    expect(secondUnwatch).toHaveBeenCalledOnce()
+    expect(remove).toHaveBeenCalledOnce()
+    expect(subtitlesFetcher.cleanup).toHaveBeenCalledOnce()
   })
 
   it("tracks ad state and resyncs subtitles when an ad ends", () => {

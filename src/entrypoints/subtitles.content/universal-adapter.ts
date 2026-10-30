@@ -22,6 +22,7 @@ import { resolveLanguageCodeFromLocale } from "@/utils/content/page-language"
 import { waitForElement } from "@/utils/dom/wait-for-element"
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { i18n } from "@/utils/i18n"
+import { logger } from "@/utils/logger"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { removeReactShadowHost } from "@/utils/react-shadow-host/create-shadow-host"
 import { subtitleConfigIdentity } from "@/utils/subtitles/config-identity"
@@ -206,7 +207,16 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
   destroy() {
     if (this.destroyed) return
     this.destroyed = true
-    for (const unwatch of this.unwatchConfig.splice(0)) unwatch()
+    for (const unwatch of this.unwatchConfig.splice(0)) {
+      try {
+        unwatch()
+      } catch (error) {
+        // WXT's storage disposer touches browser.storage, which is already gone
+        // after extension reload. Local teardown must still restore native captions.
+        if (!isExtensionContextInvalidatedError(error))
+          logger.warn("Failed to remove subtitle config watcher", error)
+      }
+    }
     if (typeof window !== "undefined") {
       window.removeEventListener("pagehide", this.handlePageHide)
       window.removeEventListener("pageshow", this.handlePageShow)

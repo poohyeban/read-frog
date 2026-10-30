@@ -3,7 +3,11 @@ import { captureTranslationConfigValidity } from "@/utils/config/snapshot-revisi
 import { TranslationCancelledError } from "@/utils/request/cancellation"
 import { translationActivity } from "./engine-state"
 import { getPageTranslationSession } from "./translation-session"
-import { getWebPageContentRevision, isInPageAnchorChange } from "./webpage-context"
+import {
+  getWebPageContentRevision,
+  isInPageAnchorChange,
+  synchronizeWebPageContext,
+} from "./webpage-context"
 
 export interface CommitGate {
   readonly signal?: AbortSignal
@@ -17,6 +21,7 @@ export function captureCommitGate(
   sourceCurrent: () => boolean = () => true,
   config?: Config,
 ): CommitGate {
+  synchronizeWebPageContext()
   const configCurrent = captureTranslationConfigValidity(config)
   const session = getPageTranslationSession()
   const revision = getWebPageContentRevision()

@@ -253,6 +253,35 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
       }
     }
     results.compatibility = []
+    // Exercise the complete production hover path after history navigation,
+    // including lazy context preparation, without requiring an unpacked MV3 host.
+    {
+      const page = await context.newPage()
+      const errors = []
+      page.on("pageerror", (error) => errors.push(error.message))
+      await page.goto(`${origin}/article?seed=hover-before&smart=false`)
+      await page.waitForFunction(() => Boolean(window.harness))
+      const paragraph = page.locator("#p0")
+      await page.evaluate(() => window.harness.translateNode(document.querySelector("#p0")))
+      await expect(paragraph.locator(".read-frog-translated-content-wrapper")).toContainText(
+        "本地模拟译文",
+      )
+      const nextTitle = "This is the new article heading after client-side navigation."
+      await paragraph.evaluate((element, heading) => {
+        history.pushState({}, "", "?seed=hover-after")
+        element.firstChild.remove()
+        element.append(heading)
+      }, nextTitle)
+      await expect(paragraph).toHaveText(nextTitle)
+      await page.evaluate(() => window.harness.translateNode(document.querySelector("#p0")))
+      await expect(paragraph.locator(".read-frog-translated-content-wrapper")).toContainText(
+        "本地模拟译文",
+      )
+      expect(await page.evaluate(() => window.harness.metrics.translations)).toBe(2)
+      expect(errors).toEqual([])
+      results.compatibility.push({ fixture: "hover-after-navigation", passed: true })
+      await page.close()
+    }
     for (const fixture of [
       "float",
       "markdown",

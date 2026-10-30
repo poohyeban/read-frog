@@ -60,6 +60,8 @@ export async function buildHarness(sourceRoot, output) {
           if (id !== "\0translation-entry") return undefined
           return `
           import { PageTranslationManager } from '@/entrypoints/content-runtime/host/translation-control/page-translation'
+          import { removeOrShowNodeTranslation } from '@/utils/host/translate/node-manipulation'
+          import { getLocalConfig } from '@/utils/config/storage'
           import { DEFAULT_CONFIG, CONFIG_STORAGE_KEY } from '@/utils/constants/config'
           import { storage } from '${harness}/runtime.js'
           import { metrics } from '${harness}/messages.js'
@@ -72,7 +74,7 @@ export async function buildHarness(sourceRoot, output) {
           config.pageTranslation.enableAIContentAware = new URLSearchParams(location.search).get('smart') === 'true'
           await storage.setItem('local:' + CONFIG_STORAGE_KEY, config)
           const manager = new PageTranslationManager()
-          window.harness = { manager, metrics, config, async update() { await storage.setItem('local:' + CONFIG_STORAGE_KEY, config) } }
+          window.harness = { manager, metrics, config, translateNode: async (element) => removeOrShowNodeTranslation(element, await getLocalConfig()), async update() { await storage.setItem('local:' + CONFIG_STORAGE_KEY, config) } }
         `
         },
       },
