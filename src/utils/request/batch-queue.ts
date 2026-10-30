@@ -80,7 +80,7 @@ export interface BatchOptions<T, R> {
   // batch was outside every cancellable structure (retry backoff sleep).
   isScopeCancelled?: (scopeKey: string) => boolean
   executeBatch: (dataList: T[], meta: BatchExecutionMeta) => Promise<R[]>
-  executeIndividual?: (data: T) => Promise<R>
+  executeIndividual?: (data: T, meta: BatchExecutionMeta) => Promise<R>
   onError?: (
     error: Error,
     context: { batchKey: string; retryCount: number; isFallback: boolean },
@@ -103,7 +103,7 @@ export class BatchQueue<T, R> {
   private getScope?: (data: T) => string | undefined
   private isScopeCancelled?: (scopeKey: string) => boolean
   private executeBatch: (dataList: T[], meta: BatchExecutionMeta) => Promise<R[]>
-  private executeIndividual?: (data: T) => Promise<R>
+  private executeIndividual?: (data: T, meta: BatchExecutionMeta) => Promise<R>
   private onError?: (
     error: Error,
     context: { batchKey: string; retryCount: number; isFallback: boolean },
@@ -423,7 +423,14 @@ export class BatchQueue<T, R> {
           if (!this.executeIndividual) {
             throw new Error("executeIndividual is not defined")
           }
-          const result = await this.executeIndividual(task.data)
+          // Pending dedup may have joined several subscribers onto one item.
+          // Fallback must retain those scopes, not only the first sender's data.
+          const scopes =
+            task.cancelScopes === null
+              ? undefined
+              : [...task.cancelScopes].filter((scope) => !this.isScopeCancelled?.(scope))
+          if (scopes?.length === 0) throw new TranslationCancelledError("fallback")
+          const result = await this.executeIndividual(task.data, { scopes })
           task.resolve(result)
         } catch (error) {
           const err = error as Error

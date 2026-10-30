@@ -52,7 +52,8 @@ export default function NodeTranslationHotkeySelector() {
       >
         <SelectTrigger
           size="sm"
-          className="ring-none -mt-3.5 -mb-4 -ml-2 h-5! cursor-pointer truncate rounded-md border-none bg-transparent! px-2 pt-3.5 pb-4 text-[13px] font-medium shadow-none focus-visible:border-none focus-visible:ring-0"
+          aria-label={i18n.t("popup.translateParagraph")}
+          className="-ml-2 h-7! min-w-0 flex-1 cursor-pointer truncate rounded-md border-none bg-transparent! px-2 text-[13px] font-medium shadow-none"
         >
           <div className="truncate">
             <HotkeyDisplay hotkey={hotkey} shortcut={shortcut} />
@@ -69,6 +70,7 @@ export default function NodeTranslationHotkeySelector() {
         </SelectContent>
       </Select>
       <Switch
+        aria-label={i18n.t("popup.translateParagraph")}
         checked={enabled}
         onCheckedChange={(checked) => {
           void setTranslateConfig((current) => ({ node: { ...current.node, enabled: checked } }))

@@ -5,11 +5,16 @@ import type { SubtitlesFragment, SubtitlesState } from "@/utils/subtitles/types"
 import { getLocalConfig } from "@/utils/config/storage"
 import { TRANSLATE_LOOK_AHEAD_MS, TRANSLATION_BATCH_SIZE } from "@/utils/constants/subtitles"
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
+import { cueIdentity, getCueTimeline } from "@/utils/subtitles/cue-timeline"
 import { effectiveLookAheadMs } from "@/utils/subtitles/lookahead"
 import { translateSubtitles } from "@/utils/subtitles/processor/translator"
+import { subtitleFailure, type SubtitleOutcome } from "@/utils/subtitles/result"
+import { SubtitleSession, type SubtitleTask } from "@/utils/subtitles/session"
 import { adPlayingAtom, subtitlesStore } from "./atoms"
 
 export interface TranslationCoordinatorOptions {
+  session?: SubtitleSession
+  configSnapshot?: Config
   getFragments: () => SubtitlesFragment[]
   getVideoElement: () => HTMLVideoElement | null
   getCurrentState: () => SubtitlesState
@@ -17,338 +22,247 @@ export interface TranslationCoordinatorOptions {
   onTranslated: (fragments: SubtitlesFragment[]) => void
   onStateChange: (state: SubtitlesState, data?: Record<string, string>) => void
 }
-
-function fragmentIdentity(fragment: Pick<SubtitlesFragment, "end" | "text">): string {
-  return `${fragment.end}\0${fragment.text}`
+interface PendingBatch {
+  task: SubtitleTask
+  cues: SubtitlesFragment[]
 }
+const EVENTS = [
+  "loadedmetadata",
+  "loadeddata",
+  "seeking",
+  "seeked",
+  "playing",
+  "timeupdate",
+  "ratechange",
+] as const
+const MAX_PENDING_BATCHES = 2
 
+/** Local admission is bounded; network concurrency/rate limits belong to RequestQueue. */
 export class TranslationCoordinator {
-  private translatingStarts = new Set<number>()
-  private translatedStarts = new Set<number>()
-  private failedStarts = new Set<number>()
-  /** Identity of the cue (end+text) associated with a booked start. */
-  private knownIdentities = new Map<number, string>()
-  private isTranslating = false
-  /** False after stop(); blocks chained ticks and in-flight result application. */
+  private session: SubtitleSession
   private active = false
-  /** Bumped on stop() so in-flight batches cannot apply after stop/start. */
-  private runId = 0
+  private video: HTMLVideoElement | null = null
+  private pending = new Set<PendingBatch>()
+  private pendingKeys = new Set<string>()
+  private translated = new Set<string>()
+  private failed = new Map<
+    string,
+    { phase: "cooling" | "permanent"; attempts: number; retryAt: number }
+  >()
+  private retryTimer: ReturnType<typeof setTimeout> | undefined
+  private tickQueued = false
   private lastEmittedState: SubtitlesState = "idle"
   private videoContext: SubtitlesVideoContext = { videoTitle: "", subtitlesTextContent: "" }
-  private listenersAttached = false
 
-  private getFragments: () => SubtitlesFragment[]
-  private getVideoElement: () => HTMLVideoElement | null
-  private getCurrentState: () => SubtitlesState
-  private segmentationPipeline: SegmentationPipeline | null
-  private onTranslated: (fragments: SubtitlesFragment[]) => void
-  private onStateChange: (state: SubtitlesState, data?: Record<string, string>) => void
-
-  constructor(options: TranslationCoordinatorOptions) {
-    this.getFragments = options.getFragments
-    this.getVideoElement = options.getVideoElement
-    this.getCurrentState = options.getCurrentState
-    this.segmentationPipeline = options.segmentationPipeline
-    this.onTranslated = options.onTranslated
-    this.onStateChange = options.onStateChange
+  constructor(private options: TranslationCoordinatorOptions) {
+    this.session = options.session ?? new SubtitleSession()
+    this.session.own(() => this.stop())
   }
-
   start(videoContext?: SubtitlesVideoContext) {
-    if (videoContext !== undefined) {
-      this.videoContext = videoContext
-    }
-
-    const video = this.getVideoElement()
+    if (videoContext) this.videoContext = videoContext
+    const video = this.options.getVideoElement()
     if (!video) return
-
+    this.session.start()
     this.active = true
-    this.attachVideoListeners(video)
-
-    if (this.segmentationPipeline) {
-      this.segmentationPipeline.start()
+    if (this.video !== video) {
+      this.detach()
+      this.video = video
+      for (const event of EVENTS) video.addEventListener(event, this.requestTick)
     }
-
-    this.handleTranslationTick()
+    this.options.segmentationPipeline?.start()
+    this.requestTick()
   }
-
   stop() {
     this.active = false
-    this.runId += 1
-    // Allow a subsequent start() to translate immediately; the in-flight batch is
-    // invalidated by runId and must not leave locks stuck.
-    this.isTranslating = false
-    this.translatingStarts.clear()
-    this.detachVideoListeners()
-    this.segmentationPipeline?.stop()
+    clearTimeout(this.retryTimer)
+    this.session.stop()
+    this.pending.clear()
+    this.pendingKeys.clear()
+    this.detach()
+    this.options.segmentationPipeline?.stop()
   }
-
-  /** Kick a nearby pass without waiting for the next timeupdate (e.g. after an ad). */
-  requestTick() {
-    if (!this.active) return
-    this.handleTranslationTick()
-  }
-
   reset() {
-    this.active = false
-    this.runId += 1
-    this.detachVideoListeners()
-    this.translatingStarts.clear()
-    this.translatedStarts.clear()
-    this.failedStarts.clear()
-    this.knownIdentities.clear()
-    this.isTranslating = false
+    this.stop()
+    this.translated.clear()
+    this.failed.clear()
     this.lastEmittedState = "idle"
-    this.videoContext = { videoTitle: "", subtitlesTextContent: "" }
   }
-
-  private attachVideoListeners(video: HTMLVideoElement) {
-    if (this.listenersAttached) return
-    video.addEventListener("timeupdate", this.handleTranslationTick)
-    video.addEventListener("seeked", this.handleTranslationTick)
-    if (this.segmentationPipeline) {
-      video.addEventListener("seeked", this.handleSeek)
-    }
-    this.listenersAttached = true
-  }
-
-  private detachVideoListeners() {
-    if (!this.listenersAttached) return
-    const video = this.getVideoElement()
-    if (video) {
-      video.removeEventListener("timeupdate", this.handleTranslationTick)
-      video.removeEventListener("seeked", this.handleTranslationTick)
-      video.removeEventListener("seeked", this.handleSeek)
-    }
-    this.listenersAttached = false
-  }
-
   clearFailed() {
-    this.failedStarts.clear()
+    this.failed.clear()
   }
-
-  /**
-   * Drop bookkeeping for starts that no longer exist, or whose cue identity
-   * (end+text) changed after AI re-segmentation — same start can be a recut line.
-   */
+  private detach() {
+    if (this.video)
+      for (const event of EVENTS) this.video.removeEventListener(event, this.requestTick)
+    this.video = null
+  }
+  /** Collapse same-turn scrubbing events without delaying ordinary zero-second startup. */
+  requestTick = () => {
+    if (!this.active || !this.session.isActive || this.tickQueued) return
+    this.tickQueued = true
+    queueMicrotask(() => {
+      this.tickQueued = false
+      if (this.active) this.handleTranslationTick()
+    })
+  }
   noteFragmentListChanged() {
-    if (!this.active) return
-
-    const byStart = new Map(this.getFragments().map((fragment) => [fragment.start, fragment]))
-
-    this.invalidateStaleStarts(this.translatedStarts, byStart)
-    this.invalidateStaleStarts(this.translatingStarts, byStart)
-    this.invalidateStaleStarts(this.failedStarts, byStart)
-
-    this.handleTranslationTick()
+    const timeline = getCueTimeline(this.options.getFragments())
+    for (const key of this.translated) if (!timeline.has(key)) this.translated.delete(key)
+    for (const key of this.failed.keys()) if (!timeline.has(key)) this.failed.delete(key)
+    this.requestTick()
   }
-
-  private invalidateStaleStarts(starts: Set<number>, byStart: Map<number, SubtitlesFragment>) {
-    for (const start of [...starts]) {
-      const current = byStart.get(start)
-      if (!current) {
-        starts.delete(start)
-        this.knownIdentities.delete(start)
-        continue
-      }
-
-      const known = this.knownIdentities.get(start)
-      if (known !== undefined && known !== fragmentIdentity(current)) {
-        starts.delete(start)
-        this.knownIdentities.delete(start)
-      }
-    }
+  private cancelBatch(batch: PendingBatch) {
+    batch.task.cancel()
+    this.pending.delete(batch)
+    for (const cue of batch.cues) this.pendingKeys.delete(cueIdentity(cue))
   }
-
-  private rememberIdentity(fragment: SubtitlesFragment) {
-    this.knownIdentities.set(fragment.start, fragmentIdentity(fragment))
-  }
-
   private handleTranslationTick = () => {
-    if (!this.active) return
-    // Ad timeline can freeze or jump; do not translate against main-video cues mid-ad.
-    if (subtitlesStore.get(adPlayingAtom)) return
-
-    const video = this.getVideoElement()
-    if (!video) return
-
-    const currentTimeMs = video.currentTime * 1000
-    const fragments = this.getFragments()
-
-    if (this.getCurrentState() === "error") return
-
-    this.updateLoadingStateAt(currentTimeMs, fragments)
-
-    if (
-      this.segmentationPipeline &&
-      !this.segmentationPipeline.isRunning &&
-      this.segmentationPipeline.hasUnprocessedChunks()
-    ) {
-      this.segmentationPipeline.restart()
-    }
-
-    if (this.isTranslating) return
-    void this.translateNearby(currentTimeMs)
-  }
-
-  private async translateNearby(currentTimeMs: number) {
-    if (!this.active) return
-
-    const fragments = this.getFragments()
-
-    const lookAheadMs = effectiveLookAheadMs(
-      TRANSLATE_LOOK_AHEAD_MS,
-      this.getVideoElement()?.playbackRate,
-    )
-
-    const batch = fragments
-      .filter(
-        (f) =>
-          !this.translatedStarts.has(f.start) &&
-          !this.translatingStarts.has(f.start) &&
-          !this.failedStarts.has(f.start) &&
-          // A long cue can still be on screen after its start is outside the
-          // look-back window (especially after seeking or a slow earlier batch).
-          f.end > currentTimeMs - 5000 &&
-          f.start <= currentTimeMs + lookAheadMs,
-      )
-      .slice(0, TRANSLATION_BATCH_SIZE)
-
-    if (batch.length === 0) {
+    if (!this.active || !this.session.isActive) return
+    if (subtitlesStore.get(adPlayingAtom)) {
+      for (const batch of [...this.pending]) this.cancelBatch(batch)
+      this.options.segmentationPipeline?.stop()
       return
     }
-
-    const runId = this.runId
-    this.isTranslating = true
-    batch.forEach((f) => {
-      this.translatingStarts.add(f.start)
-      this.rememberIdentity(f)
-    })
-
+    const video = this.options.getVideoElement()
+    if (!video) return
+    const timeMs = video.currentTime * 1000
+    const fragments = this.options.getFragments()
+    const timeline = getCueTimeline(fragments)
+    const ahead = effectiveLookAheadMs(TRANSLATE_LOOK_AHEAD_MS, video.playbackRate)
+    const relevant = (cue: SubtitlesFragment) =>
+      cue.end > timeMs && cue.start <= timeMs + ahead && timeline.has(cueIdentity(cue))
+    // Cancel obsolete pending work before admitting the new current position.
+    for (const batch of [...this.pending])
+      if (!batch.cues.some(relevant) || batch.cues.some((c) => !timeline.has(cueIdentity(c))))
+        this.cancelBatch(batch)
+    this.options.segmentationPipeline?.reprioritize?.()
+    this.updateLoadingStateAt(timeMs, fragments)
+    clearTimeout(this.retryTimer)
+    let nextRetry = Infinity
+    const window = timeline.window(timeMs, timeMs + ahead + 1)
+    for (const cue of window) {
+      const failure = this.failed.get(cueIdentity(cue))
+      if (failure?.phase === "cooling" && failure.retryAt > Date.now())
+        nextRetry = Math.min(nextRetry, failure.retryAt)
+    }
+    if (Number.isFinite(nextRetry))
+      this.retryTimer = setTimeout(this.requestTick, nextRetry - Date.now())
+    const candidates = window.filter(
+      (c) =>
+        (c.start <= timeMs || !this.options.segmentationPipeline?.isAwaitingSegmentation?.(c)) &&
+        !this.translated.has(cueIdentity(c)) &&
+        !this.pendingKeys.has(cueIdentity(c)) &&
+        this.failed.get(cueIdentity(c))?.phase !== "permanent" &&
+        (this.failed.get(cueIdentity(c))?.retryAt ?? 0) <= Date.now(),
+    )
+    // Window returns all currently covering cues first (including long cues), then future cues.
+    if (
+      candidates[0] &&
+      candidates[0].start <= timeMs &&
+      this.pending.size >= MAX_PENDING_BATCHES
+    ) {
+      const future = [...this.pending].filter((b) => b.cues.every((c) => c.start > timeMs)).at(-1)
+      if (future) this.cancelBatch(future)
+    }
+    while (this.pending.size < MAX_PENDING_BATCHES && candidates.length) {
+      const cues = candidates.splice(0, TRANSLATION_BATCH_SIZE)
+      const task = this.session.begin(
+        "playback",
+        cues.map(cueIdentity).join("|"),
+        cues[0]!.start <= timeMs ? 0 : cues[0]!.start <= timeMs + 10_000 ? 1 : 2,
+      )
+      const batch = { task, cues }
+      this.pending.add(batch)
+      for (const cue of cues) this.pendingKeys.add(cueIdentity(cue))
+      void this.translateBatch(batch)
+    }
+  }
+  private async translateBatch(batch: PendingBatch) {
+    const { task, cues } = batch
     let config: Config | null = null
+    const context = { ...this.videoContext }
     try {
-      config = await getLocalConfig()
-      if (!this.active || runId !== this.runId) return
-      const translated = await translateSubtitles(batch, this.videoContext, config ?? undefined)
-      if (!this.active || runId !== this.runId) {
-        batch.forEach((f) => this.translatingStarts.delete(f.start))
-        return
-      }
-
-      // Only accept results whose cue identity still matches the current fragment list.
-      const stillValid = this.filterIdentityValid(translated)
-
-      stillValid.forEach((f) => {
-        this.translatingStarts.delete(f.start)
-        this.translatedStarts.add(f.start)
-        this.rememberIdentity(f)
+      config = this.options.configSnapshot ?? (await getLocalConfig())
+      if (!task.isCurrent()) return
+      const translated = await translateSubtitles(cues, context, config ?? undefined, task)
+      if (!task.isCurrent()) return
+      const timeline = getCueTimeline(this.options.getFragments())
+      const requested = new Set(cues.map(cueIdentity))
+      const valid = translated.filter(
+        (c) => requested.has(cueIdentity(c)) && timeline.has(cueIdentity(c)),
+      )
+      const returned = new Set(valid.map(cueIdentity))
+      for (const key of requested)
+        if (!returned.has(key))
+          this.recordFailure(key, { status: "temporary", message: "Missing subtitle result" })
+      const publish = valid.map((cue) => {
+        const status = cue.translationOutcome?.status
+        if (status === "success" || status === "empty" || (!status && cue.translation?.trim())) {
+          this.translated.add(cueIdentity(cue))
+          this.failed.delete(cueIdentity(cue))
+          return cue
+        }
+        this.recordFailure(
+          cueIdentity(cue),
+          cue.translationOutcome ?? { status: "temporary", message: "Missing translation" },
+        )
+        return this.fallback(cue, config)
       })
-      // Starts that disappeared or were recut mid-request should not stay "translating".
-      batch.forEach((f) => {
-        this.translatingStarts.delete(f.start)
-      })
-      this.onTranslated(stillValid)
-
-      const latestTimeMs = this.getCurrentVideoTimeMs(currentTimeMs)
-      const latestFragments = this.getFragments()
-      this.updateLoadingStateAt(latestTimeMs, latestFragments)
+      this.options.onTranslated(publish)
     } catch (error) {
-      if (!this.active || runId !== this.runId) {
-        batch.forEach((f) => this.translatingStarts.delete(f.start))
-        return
-      }
-
-      // Starts that disappeared or were recut mid-request should not stay "translating".
-      batch.forEach((f) => {
-        this.translatingStarts.delete(f.start)
-      })
-
-      // Same identity gate as the success path: never bookkeep or publish recut/stale cues.
-      const stillValid = this.filterIdentityValid(batch)
-      stillValid.forEach((f) => {
-        this.failedStarts.add(f.start)
-        this.rememberIdentity(f)
-      })
-
-      // Recovery must not read storage again: an invalidated extension context
-      // can fail that read too, leaving the cue unresolved and rejecting the tick.
-      const validForFallback = this.filterIdentityValid(stillValid)
-      const displayMode = config?.videoSubtitles?.style.displayMode
-      const fallback =
-        displayMode === "translationOnly"
-          ? validForFallback.map((f) => ({ ...f, translation: f.text }))
-          : validForFallback.map((f) => ({ ...f, translation: "" }))
-      if (fallback.length > 0) {
-        this.onTranslated(fallback)
-      }
-
+      if (!task.isCurrent()) return
       if (isExtensionContextInvalidatedError(error)) {
         this.stop()
-        this.lastEmittedState = "idle"
-        this.onStateChange("idle")
+        this.options.onStateChange("idle")
         return
       }
-
-      const errorMessage = error instanceof Error ? error.message : String(error)
+      const timeline = getCueTimeline(this.options.getFragments())
+      const valid = cues.filter((c) => timeline.has(cueIdentity(c)))
+      for (const cue of valid) this.recordFailure(cueIdentity(cue), subtitleFailure(error))
+      this.options.onTranslated(
+        valid.map((c) =>
+          this.fallback({ ...c, translationOutcome: subtitleFailure(error) }, config),
+        ),
+      )
       this.lastEmittedState = "error"
-      this.onStateChange("error", { message: errorMessage })
+      this.options.onStateChange("error", {
+        message: error instanceof Error ? error.message : String(error),
+      })
     } finally {
-      // Only the current generation may clear the lock / chain another tick.
-      if (runId === this.runId) {
-        this.isTranslating = false
-        if (this.active) {
-          this.handleTranslationTick()
-        }
-      }
+      if (this.pending.delete(batch))
+        for (const cue of cues) this.pendingKeys.delete(cueIdentity(cue))
+      task.complete()
+      this.requestTick()
     }
   }
-
-  private getCurrentVideoTimeMs(fallbackTimeMs: number): number {
-    const video = this.getVideoElement()
-    if (!video) {
-      return fallbackTimeMs
+  private fallback(cue: SubtitlesFragment, config: Config | null): SubtitlesFragment {
+    return {
+      ...cue,
+      translation: config?.videoSubtitles.style.displayMode === "translationOnly" ? cue.text : "",
     }
-    return video.currentTime * 1000
   }
-
-  /** Keep only cues whose start+end+text still match the live fragment list. */
-  private filterIdentityValid(fragments: SubtitlesFragment[]): SubtitlesFragment[] {
-    const byStart = new Map(this.getFragments().map((fragment) => [fragment.start, fragment]))
-    return fragments.filter((fragment) => {
-      const current = byStart.get(fragment.start)
-      return !!current && current.end === fragment.end && current.text === fragment.text
+  private recordFailure(key: string, outcome: SubtitleOutcome) {
+    if (outcome.status === "success" || outcome.status === "empty") return
+    const attempts = (this.failed.get(key)?.attempts ?? 0) + 1
+    const permanent =
+      outcome.status === "permanent" || outcome.status === "cancelled" || attempts >= 2
+    this.failed.set(key, {
+      phase: permanent ? "permanent" : "cooling",
+      attempts,
+      retryAt: Date.now() + Math.max(30_000, outcome.retryAfterMs ?? 0),
     })
   }
-
-  private findActiveCue(timeMs: number, fragments: SubtitlesFragment[]): SubtitlesFragment | null {
-    return fragments.find((f) => f.start <= timeMs && f.end > timeMs) ?? null
-  }
-
-  private isCueResolved(startMs: number): boolean {
-    return this.translatedStarts.has(startMs) || this.failedStarts.has(startMs)
-  }
-
   private updateLoadingStateAt(timeMs: number, fragments: SubtitlesFragment[]) {
-    const activeCue = this.findActiveCue(timeMs, fragments)
-
-    if (activeCue) {
-      const nextState: SubtitlesState = this.isCueResolved(activeCue.start) ? "idle" : "loading"
-      if (nextState === this.lastEmittedState) return
-      this.lastEmittedState = nextState
-      this.onStateChange(nextState)
-      return
+    const active = getCueTimeline(fragments).at(timeMs)
+    const next =
+      active && !this.translated.has(cueIdentity(active)) && !this.failed.has(cueIdentity(active))
+        ? "loading"
+        : "idle"
+    if (
+      next !== this.lastEmittedState ||
+      (this.options.getCurrentState() === "loading" && next === "idle")
+    ) {
+      this.lastEmittedState = next
+      this.options.onStateChange(next)
     }
-
-    // Gap / music intro / before first cue: never keep the corner loading badge up.
-    // Adapter may have set "loading" before fragments were ready; lastEmittedState can
-    // still be "idle" while the scheduler state remains "loading" — always clear it.
-    if (this.lastEmittedState === "idle" && this.getCurrentState() !== "loading") {
-      return
-    }
-    this.lastEmittedState = "idle"
-    this.onStateChange("idle")
-  }
-
-  private handleSeek = () => {
-    this.segmentationPipeline?.restart()
   }
 }

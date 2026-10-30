@@ -15,6 +15,7 @@ import { setupUrlChangeListener } from "./listen"
 import { bindTranslationModeShortcutKey } from "./translation-control/bind-translation-mode-shortcut"
 import { bindTranslationShortcutKey } from "./translation-control/bind-translation-shortcut"
 import { registerNodeTranslationTriggers } from "./translation-control/node-translation"
+import { applyPageCommand } from "./translation-control/page-command"
 import { PageTranslationManager } from "./translation-control/page-translation"
 
 export async function bootstrapHostContent(
@@ -115,6 +116,15 @@ export async function bootstrapHostContent(
   }
   window.addEventListener("extension:URLChange", handleExtensionUrlChange)
 
+  // A top-frame RPC reply confirms manager completion, not persisted user intent.
+  const cleanupAppliedState = onMessage("getAppliedPageTranslationState", () => ({
+    enabled: manager.isActive,
+    url: window.location.href,
+  }))
+  const cleanupAppliedCommand = onMessage("applyPageTranslationCommand", (msg) =>
+    applyPageCommand(manager, msg.data),
+  )
+
   // Listen for translation state changes from background
   const cleanupTranslationStateListener = onMessage("askManagerToTogglePageTranslation", (msg) => {
     const { enabled } = msg.data
@@ -159,6 +169,8 @@ export async function bootstrapHostContent(
     cleanupTranslationShortcut()
     cleanupTranslationModeShortcut()
     cleanupTranslationStateListener()
+    cleanupAppliedState()
+    cleanupAppliedCommand()
     cleanupFrameTranslationStateListener()
     cleanupDetectedLanguageRefreshListener()
     window.removeEventListener("extension:URLChange", handleExtensionUrlChange)

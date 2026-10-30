@@ -15,6 +15,7 @@ import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { resolveLanguageCodeFromLocale } from "@/utils/content/page-language"
 import { i18n } from "@/utils/i18n"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
+import { cueIdentity } from "@/utils/subtitles/cue-timeline"
 import { aiSegmentBlock } from "@/utils/subtitles/processor/ai-segmentation"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
 import {
@@ -23,6 +24,7 @@ import {
   fetchSubtitlesSummary,
   translateSubtitles,
 } from "@/utils/subtitles/processor/translator"
+import { SubtitleSession, type SubtitleTask } from "@/utils/subtitles/session"
 import { downloadSubtitlesAsSrt } from "@/utils/subtitles/srt"
 import {
   subtitlesStore,
@@ -35,6 +37,8 @@ const MAX_COLLAPSED_AI_SEGMENT_DURATION_MS = 1
 const TRANSLATED_EXPORT_BATCH_CONCURRENCY = 2
 
 export class TranslatedSubtitlesDownloader {
+  private session: SubtitleSession | null = null
+  private task: SubtitleTask | null = null
   private isDownloading = false
   private operationId = 0
   private successTimeout: ReturnType<typeof setTimeout> | null = null
@@ -60,16 +64,27 @@ export class TranslatedSubtitlesDownloader {
     const operationId = ++this.operationId
     const pageTitle = getSourceDocumentTitle()
     const videoId = this.config.getVideoId?.()
+    this.session = new SubtitleSession({
+      videoId: videoId ?? "",
+      trackId: `export:${operationId}`,
+      revision: operationId,
+    })
+    this.task = this.session.begin("export", "complete-srt")
     this.setStatus(TranslatedDownloadPhase.Checking, null)
 
     try {
-      const configSnapshot = await getLocalConfig()
+      const loadedConfig = await getLocalConfig()
+      const configSnapshot = loadedConfig ? structuredClone(loadedConfig) : null
       this.assertActive(operationId)
       if (!configSnapshot) {
         throw new Error(i18n.t("subtitles.errors.translatedExportFailed"))
       }
 
-      const sourceSubtitles = await this.fetcher.fetch()
+      const sourceSubtitles = [...(await this.fetcher.fetch())].sort(
+        (a, b) => a.start - b.start || a.end - b.end,
+      )
+      if (sourceSubtitles.some((c) => !Number.isFinite(c.start) || !Number.isFinite(c.end)))
+        throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
       this.assertActive(operationId)
       if (sourceSubtitles.length === 0) {
         throw new Error(i18n.t("subtitles.errors.noSubtitlesFound"))
@@ -120,6 +135,8 @@ export class TranslatedSubtitlesDownloader {
       this.setStatus(TranslatedDownloadPhase.Idle, null)
     } finally {
       if (this.isActive(operationId)) {
+        this.session?.dispose()
+        this.task = null
         this.isDownloading = false
         this.snapshotFetcher = null
       }
@@ -127,6 +144,8 @@ export class TranslatedSubtitlesDownloader {
   }
 
   dispose(): void {
+    this.session?.dispose()
+    this.task = null
     this.operationId++
     this.isDownloading = false
     this.snapshotFetcher = null
@@ -147,6 +166,11 @@ export class TranslatedSubtitlesDownloader {
 
   private isActive(operationId: number): boolean {
     return operationId === this.operationId
+  }
+
+  private taskFor(operationId: number) {
+    this.assertActive(operationId)
+    return this.task ?? {}
   }
 
   private assertActive(operationId: number): void {
@@ -204,10 +228,15 @@ export class TranslatedSubtitlesDownloader {
       const batchWindow = batches.slice(index, index + TRANSLATED_EXPORT_BATCH_CONCURRENCY)
       const translatedBatchWindow = await Promise.all(
         batchWindow.map(async (batch) => {
-          const translatedBatch = await translateSubtitles(batch, videoContext, config)
+          const translatedBatch = await translateSubtitles(
+            batch,
+            videoContext,
+            config,
+            this.taskFor(operationId),
+          )
           this.assertActive(operationId)
           if (
-            translatedBatch.length !== batch.length ||
+            !this.matchesRequestedCues(batch, translatedBatch) ||
             this.hasIncompleteTranslatedFragments(translatedBatch)
           ) {
             throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
@@ -234,11 +263,34 @@ export class TranslatedSubtitlesDownloader {
       throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
     }
 
-    return translatedFragments
+    return translatedFragments.sort((a, b) => a.start - b.start || a.end - b.end)
+  }
+
+  private matchesRequestedCues(
+    requested: SubtitlesFragment[],
+    result: SubtitlesFragment[],
+  ): boolean {
+    if (requested.length !== result.length) return false
+    const remaining = new Map<string, number>()
+    for (const cue of requested) {
+      const key = cueIdentity(cue)
+      remaining.set(key, (remaining.get(key) ?? 0) + 1)
+    }
+    for (const cue of result) {
+      const key = cueIdentity(cue),
+        count = remaining.get(key) ?? 0
+      if (!count) return false
+      remaining.set(key, count - 1)
+    }
+    return true
   }
 
   private hasIncompleteTranslatedFragments(fragments: SubtitlesFragment[]): boolean {
-    return fragments.some((fragment) => !fragment.translation?.trim())
+    return fragments.some(
+      (fragment) =>
+        !fragment.translation?.trim() ||
+        (fragment.translationOutcome && fragment.translationOutcome.status !== "success"),
+    )
   }
 
   private buildTranslationBatches(fragments: SubtitlesFragment[]): SubtitlesFragment[][] {
@@ -284,7 +336,7 @@ export class TranslatedSubtitlesDownloader {
     let segmented: SubtitlesFragment[]
 
     try {
-      segmented = await aiSegmentBlock(chunk, providerRef)
+      segmented = await aiSegmentBlock(chunk, providerRef, this.taskFor(operationId))
       this.assertActive(operationId)
     } catch {
       return optimizeSubtitles(chunk, sourceLanguage)
@@ -304,7 +356,7 @@ export class TranslatedSubtitlesDownloader {
         let retrySegmented: SubtitlesFragment[]
 
         try {
-          retrySegmented = await aiSegmentBlock(retryChunk, providerRef)
+          retrySegmented = await aiSegmentBlock(retryChunk, providerRef, this.taskFor(operationId))
           this.assertActive(operationId)
         } catch {
           return optimizeSubtitles(chunk, sourceLanguage)
@@ -474,7 +526,12 @@ export class TranslatedSubtitlesDownloader {
 
     if (summaryContextHash) {
       try {
-        videoContext.summary = await fetchSubtitlesSummary(videoContext, config, providerRef)
+        videoContext.summary = await fetchSubtitlesSummary(
+          videoContext,
+          config,
+          providerRef,
+          this.taskFor(operationId),
+        )
         this.assertActive(operationId)
       } catch {
         videoContext.summary = null

@@ -1,0 +1,24 @@
+{
+  "environment": {
+    "source": "/workspace/read-frog",
+    "browser": "154.0.8037.57",
+    "node": "v24.19.0",
+    "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+  },
+  "errors": [],
+  "checks": {
+    "restore": true,
+    "boundedDOM": true,
+    "manualScrollPreserved": true,
+    "rowClickSeeks": true,
+    "resumeAvailable": true,
+    "resumeCurrent": true,
+    "variableHeight": true,
+    "backwardSeek": true
+  },
+  "scales": [],
+  "seeks": [
+    0
+  ],
+  "mountedRows": 23
+}

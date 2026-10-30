@@ -1,6 +1,7 @@
 import type { Config } from "@/types/config/config"
 import type { ProviderConfig } from "@/types/config/provider"
 import type { BatchQueueConfig, RequestQueueConfig } from "@/types/config/translate"
+import type { SubtitlePromptContext } from "@/types/content"
 import type { WebPagePromptContext } from "@/types/content"
 import type { ProviderRequestRouting } from "@/types/provider-request"
 import type { MatchedTerm } from "@/utils/glossary/types"
@@ -15,12 +16,18 @@ import {
   BATCH_TIMEOUT_PER_CHAR_MS,
   MAX_BATCH_TIMEOUT_MS,
 } from "@/utils/constants/translate"
+import { db } from "@/utils/db/dexie/db"
 import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
+import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
+import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { logger } from "@/utils/logger"
-import { getSubtitlesTranslatePrompt } from "@/utils/prompts/subtitles"
-import { getTranslatePrompt } from "@/utils/prompts/translate"
-import { BatchQueue } from "@/utils/request/batch-queue"
+import {
+  getSubtitlesTranslatePrompt,
+  getSubtitlesTranslatePromptFromConfig,
+} from "@/utils/prompts/subtitles"
+import { getTranslatePrompt, getTranslatePromptFromConfig } from "@/utils/prompts/translate"
+import { BatchCountMismatchError, BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
 import { RequestQueue } from "@/utils/request/request-queue"
 import { ensureInitializedConfig } from "./config"
@@ -174,24 +181,82 @@ export async function executeBatchTranslation<TContext>(
   promptResolver: PromptResolver<TContext>,
   signal?: AbortSignal,
 ): Promise<string[]> {
-  const { langConfig, context } = dataList[0]!
+  const { langConfig, context, promptConfig, subtitlePromptConfig } = dataList[0]!
   const texts = dataList.map((d) => d.text)
 
-  const batchText = texts.join(`\n\n${BATCH_SEPARATOR}\n\n`)
-  const result = await executeQueuedTranslation(
-    batchText,
-    langConfig,
-    dataList[0]!,
-    promptResolver,
-    {
+  const batchText = prepareTranslationText(texts.join(`\n\n${BATCH_SEPARATOR}\n\n`))
+  const glossaryTerms = mergeBatchGlossaryTerms(dataList)
+  let resolver = snapshotPromptResolver(promptResolver, promptConfig, subtitlePromptConfig)
+  let cacheKey: string | undefined
+  // A cue hash describes one input, not the neighbouring cues or glossary union
+  // the model sees. Persist only the complete subtitle batch under its actual
+  // rendered prompt. A singleton (including fallback) has its own identity.
+  if (subtitlePromptConfig) {
+    const prompt = await resolver(LANG_CODE_TO_EN_NAME[langConfig.targetCode], batchText, {
       isBatch: true,
       context,
-      signal,
+      glossaryTerms,
+    })
+    cacheKey = Sha256Hex(
+      "subtitle-batch-prompt-v1",
+      JSON.stringify(getLocalProviderConfig(dataList[0]!.provider)),
+      langConfig.sourceCode,
+      langConfig.targetCode,
+      JSON.stringify(texts),
+      prompt.systemPrompt,
+      prompt.prompt,
+    )
+    resolver = async () => prompt
+    const cached = await db.translationCache.get(cacheKey)
+    signal?.throwIfAborted()
+    if (cached?.translation) {
+      const parsed = parseBatchResult(cached.translation)
+      if (parsed.length === texts.length && parsed.every((text, i) => text || !texts[i]!.trim()))
+        return parsed
+    }
+  }
+  const result = await executeQueuedTranslation(batchText, langConfig, dataList[0]!, resolver, {
+    isBatch: true,
+    context,
+    signal,
 
-      glossaryTerms: mergeBatchGlossaryTerms(dataList),
-    },
-  )
-  return parseBatchResult(result)
+    glossaryTerms,
+  })
+  const parsed = parseBatchResult(result)
+  if (cacheKey) {
+    signal?.throwIfAborted()
+    // Let BatchQueue own count-mismatch retries, without spending the network
+    // retry budget as well. Invalid responses must never enter the cache.
+    if (parsed.length !== texts.length) return parsed
+    if (parsed.some((text, i) => !text && texts[i]!.trim()))
+      throw new Error("Empty subtitle translation")
+    await db.translationCache.put({ key: cacheKey, translation: result, createdAt: new Date() })
+  }
+  return parsed
+}
+
+function snapshotPromptResolver<TContext>(
+  resolver: PromptResolver<TContext>,
+  config?: Pick<Config["pageTranslation"], "customPromptsConfig">,
+  subtitleConfig?: Pick<Config["videoSubtitles"], "customPromptsConfig">,
+): PromptResolver<TContext> {
+  if (subtitleConfig)
+    return async (language, text, options) =>
+      getSubtitlesTranslatePromptFromConfig(
+        subtitleConfig,
+        language,
+        text,
+        options as import("@/utils/prompts/translate").TranslatePromptOptions<SubtitlePromptContext>,
+      )
+  return config
+    ? async (language, text, options) =>
+        getTranslatePromptFromConfig(
+          config,
+          language,
+          text,
+          options as import("@/utils/prompts/translate").TranslatePromptOptions<WebPagePromptContext>,
+        )
+    : resolver
 }
 
 export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & {
@@ -208,6 +273,9 @@ export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & 
   glossaryRevision?: number
   // Cancellation scope (`${tabId}:${sessionId}`); absent = uncancellable.
   scope?: string
+  promptConfig?: Pick<Config["pageTranslation"], "customPromptsConfig">
+  priority?: number
+  subtitlePromptConfig?: Pick<Config["videoSubtitles"], "customPromptsConfig">
 }
 
 /**
@@ -254,13 +322,16 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     )
   }
 
-  const requestQueue = new RequestQueue({
-    rate,
-    capacity,
-    timeoutMs: 20_000,
-    maxRetries: 2,
-    baseRetryDelayMs: 1_000,
-  })
+  const requestQueue = new RequestQueue(
+    {
+      rate,
+      capacity,
+      timeoutMs: 20_000,
+      maxRetries: 2,
+      baseRetryDelayMs: 1_000,
+    },
+    queueName === "subtitles" ? 30_000 : undefined,
+  )
   const batchQueue = new BatchQueue<TranslateBatchData<TContext>, string>({
     maxCharactersPerBatch,
     maxItemsPerBatch,
@@ -270,11 +341,20 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     // Narrow port, not the whole queue: while the rate limiter has no free
     // slot, pending batches keep filling to maxItems/maxChars instead of
     // flushing tiny every batchDelay (they'd only freeze in the queue).
-    dispatchGate: { nextDispatchEtaMs: () => requestQueue.nextDispatchEtaMs() },
+    // Subtitle producers admit at most two batches. Flush after the normal 100ms
+    // aggregation window so current cues can enter the priority queue ahead of
+    // already waiting summaries/exports. Page batching keeps its pressure gate.
+    dispatchGate:
+      queueName === "subtitles"
+        ? undefined
+        : { nextDispatchEtaMs: () => requestQueue.nextDispatchEtaMs() },
     getBatchKey: (data) => {
       return Sha256Hex(
         `${data.langConfig.sourceCode}-${data.langConfig.targetCode}-${getQueuedProviderId(data.provider)}`,
         data.context ? JSON.stringify(data.context) : "",
+        JSON.stringify(data.provider),
+        JSON.stringify(data.promptConfig ?? null),
+        JSON.stringify(data.subtitlePromptConfig ?? null),
 
         // Not the terms — the REVISION. The terms differ per paragraph and
         // keying on them would end batching for glossary users; the revision is
@@ -286,7 +366,10 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       )
     },
     getCharacters: (data) => data.text.length,
-    getDedupKey: (data) => data.hash,
+    getDedupKey: (data) =>
+      queueName === "subtitles"
+        ? Sha256Hex(data.hash, `glossaryRevision:${data.glossaryRevision ?? 0}`)
+        : data.hash,
     getScope: (data) => data.scope,
     isScopeCancelled,
     executeBatch: async (dataList, meta) => {
@@ -307,27 +390,44 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
         return await executeBatchTranslation(dataList, promptResolver, signal)
       }
 
-      return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, { timeoutMs })
+      return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, {
+        timeoutMs,
+        priority: Math.min(...dataList.map((d) => d.priority ?? 1)),
+      })
     },
-    executeIndividual: async (data) => {
-      const { text, langConfig, hash, scheduleAt, context, scope, glossaryTerms } = data
+    executeIndividual: async (data, meta) => {
+      const { text, langConfig, hash, scheduleAt, context, glossaryTerms } = data
       // This individual fallback is its own model call, but any automatic
       // retries of its RequestQueue thunk reuse the same idempotency key.
 
       const thunk = async (signal?: AbortSignal) => {
-        return executeQueuedTranslation(text, langConfig, data, promptResolver, {
-          context,
-          signal,
+        if (data.subtitlePromptConfig) {
+          const results = await executeBatchTranslation([data], promptResolver, signal)
+          if (results.length !== 1) throw new BatchCountMismatchError(1, results.length, results)
+          return results[0]!
+        }
+        return executeQueuedTranslation(
+          text,
+          langConfig,
+          data,
+          snapshotPromptResolver(promptResolver, data.promptConfig, data.subtitlePromptConfig),
+          {
+            isBatch: data.promptConfig || data.subtitlePromptConfig ? true : undefined,
+            context,
+            signal,
 
-          // The sender's own terms, NOT the batch union: this is one item again.
-          // Dropping them here would let a batch that fell back translate
-          // without the glossary and then cache that result under a hash taken
-          // over a prompt that HAD the terms in it — a mismatch that outlives
-          // the failure by a week.
-          glossaryTerms,
-        })
+            // The sender's own terms, NOT the batch union: this is one item again.
+            // Dropping them here would let a batch that fell back translate
+            // without the glossary and then cache that result under a hash taken
+            // over a prompt that HAD the terms in it — a mismatch that outlives
+            // the failure by a week.
+            glossaryTerms,
+          },
+        )
       }
-      return requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined)
+      return requestQueue.enqueue(thunk, scheduleAt, hash, meta.scopes, {
+        priority: data.priority,
+      })
     },
     onError: (error, context) => {
       const errorType = context.isFallback ? "Individual request" : "Batch request"
@@ -446,12 +546,14 @@ const selectSubtitlesQueueConfig = (config: Config) => ({
   batchQueueConfig: config.videoSubtitles.batchQueueConfig,
 })
 export function createSubtitlesTranslationQueues() {
+  const cancelledScopes = new CancelledScopeRegistry(10 * 60_000, 4096)
   const queuesPromise = loadQueueSetupConfig("subtitles", selectSubtitlesQueueConfig).then(
     ({ requestQueueConfig, batchQueueConfig, configSource }) =>
       createTranslationQueues({
         requestQueueConfig,
         batchQueueConfig,
         promptResolver: getSubtitlesTranslatePrompt,
+        isScopeCancelled: (scope) => cancelledScopes.has(scope),
         queueName: "subtitles",
         configSource,
       }),
@@ -459,5 +561,5 @@ export function createSubtitlesTranslationQueues() {
 
   watchQueueConfig("subtitles", queuesPromise, selectSubtitlesQueueConfig)
 
-  return queuesPromise
+  return { queuesPromise, cancelledScopes }
 }

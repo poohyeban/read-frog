@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { createWorkPacer, pauseIfBudgetSpent, yieldToMain } from "../scheduler"
+import { LocalScheduler } from "../host/translate/local-scheduler"
+import { yieldToMain } from "../scheduler"
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -40,13 +41,13 @@ describe("yieldToMain", () => {
   })
 })
 
-describe("pauseIfBudgetSpent", () => {
+describe("LocalScheduler budget", () => {
   it("does not yield while the slice budget remains", async () => {
     const yieldFn = vi.fn<() => Promise<void>>(() => Promise.resolve())
     vi.stubGlobal("scheduler", { yield: yieldFn })
 
-    const pacer = createWorkPacer(10_000)
-    await pauseIfBudgetSpent(pacer)
+    const scheduler = new LocalScheduler(10_000)
+    await scheduler.schedule(() => {})
     expect(yieldFn).not.toHaveBeenCalled()
   })
 
@@ -54,12 +55,22 @@ describe("pauseIfBudgetSpent", () => {
     const yieldFn = vi.fn<() => Promise<void>>(() => Promise.resolve())
     vi.stubGlobal("scheduler", { yield: yieldFn })
 
-    const pacer = createWorkPacer(0)
-    const spentDeadline = pacer.deadline
-    await new Promise((resolve) => setTimeout(resolve, 1))
-
-    await pauseIfBudgetSpent(pacer)
-    expect(yieldFn).toHaveBeenCalledTimes(1)
-    expect(pacer.deadline).toBeGreaterThan(spentDeadline)
+    let time = 0
+    const now = vi.spyOn(performance, "now").mockImplementation(() => time)
+    try {
+      const scheduler = new LocalScheduler(4)
+      await scheduler.run(
+        (function* () {
+          for (let i = 0; i < 3; i++) {
+            time += 2
+            yield
+          }
+        })(),
+      )
+      expect(yieldFn).toHaveBeenCalledTimes(1)
+      expect(time).toBe(6)
+    } finally {
+      now.mockRestore()
+    }
   })
 })

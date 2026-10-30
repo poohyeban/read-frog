@@ -1,13 +1,11 @@
 "use client"
 
-import type { Transition } from "motion/react"
 import { mergeProps } from "@base-ui/react/merge-props"
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch"
-import { animate, motion, useMotionValue } from "motion/react"
 import * as React from "react"
 import { cn } from "@/utils/styles/utils"
 
-// Ported from the design system (`@repo/ui`'s switch.tsx); keep the two in step.
+// Shared Base UI switch: native CSS transitions, including reduced-motion support.
 
 type SwitchSize = "sm" | "default"
 
@@ -17,7 +15,7 @@ type SwitchProps = SwitchPrimitive.Root.Props & { size?: SwitchSize }
    around it. `height === thumb + 2 * gap` has to hold or the thumb stops being
    round. A thumb that floats inside the track reads as friendlier than one that
    fills it edge to edge, so the gap is ~10% of the track height. These are
-   numbers rather than classes because the thumb's spring and the drag bounds
+   numbers rather than classes because the thumb's position and the drag bounds
    are computed from them. */
 const SIZES = {
   default: { track: 32, height: 18.4, thumb: 14.4, gap: 2 },
@@ -37,18 +35,8 @@ const DRAG_DEAD_ZONE = 2
    1px from the right. */
 const TRACK_BORDER = 1
 
-/* Critically damped: lands exactly, with no overshoot, which suits a trip this short. */
-const THUMB_SPRING = { type: "spring", duration: 0.16, bounce: 0 } as const satisfies Transition
-
-/* The thumb is driven by a motion value rather than a CSS transition because the
-   pointer can grab it mid-flight: a drag has to pick up wherever the spring
-   currently is, and the release has to spring on from there without a velocity
-   reset. Width and height ride the same spring declaratively.
-
-   It reshapes under the pointer — a pill on hover (thumb/8 wider), a squash on
-   press (thumb/4 wider, thumb/4 shorter). Growing it would push past the track on
-   the checked side, so the extra width is subtracted back out of the resting x,
-   which pins the right edge while the thumb stretches inward. */
+// Preserve pointer dragging and mid-transition pickup without loading an animation
+// runtime for this short movement. Complex sliders/color pickers still use Motion.
 function Switch({
   className,
   style,
@@ -94,28 +82,38 @@ function Switch({
   const thumbHeight = pressed ? thumb - pressExtend : thumb
   const restingX = isChecked ? inset + travel - extend : inset
 
-  /* Starting at `restingX` is what keeps the first paint still: on mount the
-     effect below springs the thumb to where it already is. */
-  const x = useMotionValue(restingX)
+  /* No mount animation: the first render already has the correct thumb position. */
+  const thumbElement = React.useRef<HTMLSpanElement>(null)
+  function getX() {
+    const thumbNode = thumbElement.current
+    if (!thumbNode) return restingX
+    const transform = getComputedStyle(thumbNode).transform
+    return transform === "none" ? restingX : new DOMMatrixReadOnly(transform).m41
+  }
+  function setX(value: number) {
+    if (thumbElement.current) thumbElement.current.style.transform = `translateX(${value}px)`
+  }
+  function stopX() {
+    const value = getX()
+    if (thumbElement.current) thumbElement.current.style.transition = "none"
+    setX(value)
+  }
 
   /* The drag's right bound assumes the pressed (widest) thumb, since a drag is
      always pressed; its left bound is `inset`. */
   const dragMax = inset + travel - pressExtend
 
-  React.useEffect(() => {
-    if (gesture.current?.dragging) return undefined
-    const controls = animate(x, restingX, THUMB_SPRING)
-    return () => controls.stop()
-  }, [restingX, x])
-
-  /* Ends a press and reports whether it was a drag. A drag's thumb springs back to
+  /* Ends a press and reports whether it was a drag. A drag's thumb moves back to
      the resting position; the render that follows re-targets it if releasing
      moved that position (the thumb un-squashes, or the switch toggles). */
   function release(): boolean {
     const wasDragging = gesture.current?.dragging ?? false
     gesture.current = null
     setPressed(false)
-    if (wasDragging) animate(x, restingX, THUMB_SPRING)
+    if (wasDragging) {
+      if (thumbElement.current) thumbElement.current.style.transition = ""
+      setX(restingX)
+    }
     return wasDragging
   }
 
@@ -128,7 +126,7 @@ function Switch({
         if (locked || (event.pointerType === "mouse" && event.button !== 0)) return
         setPressed(true)
         swallowNextClick.current = false
-        gesture.current = { clientX: event.clientX, originX: x.get(), dragging: false }
+        gesture.current = { clientX: event.clientX, originX: getX(), dragging: false }
         event.currentTarget.setPointerCapture(event.pointerId)
       },
       onPointerMove(event) {
@@ -137,20 +135,21 @@ function Switch({
         const delta = event.clientX - current.clientX
         if (!current.dragging) {
           if (Math.abs(delta) < DRAG_DEAD_ZONE) return
-          /* Pressing reshaped the thumb, so a spring toward the pressed resting
+          /* Pressing reshaped the thumb, so a transition toward the pressed resting
              position is still in flight and would keep overwriting the value set
              below. The finger wins: stop it, then re-anchor on wherever the thumb
              actually is, so tracking starts from the current pixel instead of
              snapping by the dead zone plus whatever the spring had already moved. */
-          x.stop()
-          gesture.current = { clientX: event.clientX, originX: x.get(), dragging: true }
-          return
+          stopX()
+          current.dragging = true
+          // Keep the press anchor: the first move may be the only move before
+          // pointerup (especially on touch). It must apply its displacement.
         }
-        x.set(Math.max(inset, Math.min(dragMax, current.originX + delta)))
+        setX(Math.max(inset, Math.min(dragMax, current.originX + delta)))
       },
       onPointerUp() {
         if (!gesture.current) return
-        const shouldBeOn = x.get() > (inset + dragMax) / 2
+        const shouldBeOn = getX() > (inset + dragMax) / 2
         if (!release()) return
         if (shouldBeOn !== isChecked) inputElement.current?.click()
         swallowNextClick.current = true
@@ -180,7 +179,7 @@ function Switch({
       data-slot="switch"
       data-size={size}
       className={cn(
-        "peer group/switch relative inline-flex shrink-0 cursor-pointer touch-none items-center rounded-full border border-transparent transition-colors duration-100 outline-none select-none after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-readonly:cursor-default dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:bg-accent data-unchecked:bg-input dark:data-unchecked:bg-input/80 data-disabled:cursor-not-allowed data-disabled:opacity-50",
+        "peer group/switch relative inline-flex shrink-0 cursor-pointer touch-none items-center rounded-full border border-transparent transition-colors duration-100 outline-none select-none after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-readonly:cursor-default motion-reduce:transition-none dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:bg-accent data-unchecked:bg-input dark:data-unchecked:bg-input/80 data-disabled:cursor-not-allowed data-disabled:opacity-50",
         className,
       )}
       {...gestureProps}
@@ -203,12 +202,15 @@ function Switch({
       <SwitchPrimitive.Thumb
         data-slot="switch-thumb"
         render={
-          <motion.span
-            className="pointer-events-none absolute top-1/2 left-0 block rounded-full bg-white"
-            initial={false}
-            style={{ x, y: "-50%" }}
-            animate={{ width: thumbWidth, height: thumbHeight }}
-            transition={THUMB_SPRING}
+          <span
+            ref={thumbElement}
+            className="pointer-events-none absolute top-1/2 left-0 block rounded-full bg-white transition-[transform,width,height] duration-150 ease-out motion-reduce:transition-none"
+            style={{
+              transform: `translateX(${restingX}px)`,
+              translate: "0 -50%",
+              width: thumbWidth,
+              height: thumbHeight,
+            }}
           />
         }
       />

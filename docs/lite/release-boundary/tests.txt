@@ -1,0 +1,16 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+Not implemented: navigation to another Document
+(node:167523) Warning: AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:167523) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+(node:167523) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+
+ Test Files  300 passed (300)
+      Tests  2781 passed (2781)
+   Start at  12:27:36
+   Duration  109.97s (environment 33%, import 24%, tests 20%, setup 15%, transform 8%, worker 1%)
+
+    Isolate  300 workers spawned · ~433ms startup each (spawn + environment, per file)
+             at least ~42.84s faster with isolate: false — reuses workers across files instead of one per file

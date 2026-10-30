@@ -24,8 +24,8 @@ function getLanguage() {
  * Mechanism: the subtree is keyed on i18next's language, so it remounts in the new
  * language whenever that changes — including when another tree changed it, since the
  * content runtime's UIs share one i18next. A change of the configured `uiLanguage` is
- * applied in a layout effect; with bundled resources the switch is synchronous, so the
- * remount paints in the new language.
+ * applied in a layout effect; the selected local resource loads before the language changes, so the
+ * remount paints only complete translations.
  *
  * The first value is not applied. Every entrypoint runs `initI18n` with the stored config
  * before it renders, while a jotai store that isn't hydrated starts from the default
@@ -35,12 +35,15 @@ function getLanguage() {
 export function LocaleBoundary({ children }: { children: ReactNode }) {
   const uiLanguage = useAtomValue(configFieldsAtomMap.uiLanguage)
   const language = useSyncExternalStore(subscribeToLanguage, getLanguage)
-  const appliedUiLanguage = useRef(uiLanguage)
+  const appliedUiLanguage = useRef<typeof uiLanguage | undefined>(uiLanguage)
 
   useLayoutEffect(() => {
     if (appliedUiLanguage.current === uiLanguage) return
     appliedUiLanguage.current = uiLanguage
-    void setUiLanguage(uiLanguage)
+    void Promise.resolve(setUiLanguage(uiLanguage)).catch(() => {
+      // Keep the last complete language on a chunk error; allow a later retry.
+      appliedUiLanguage.current = undefined
+    })
   }, [uiLanguage])
 
   return <Fragment key={language}>{children}</Fragment>

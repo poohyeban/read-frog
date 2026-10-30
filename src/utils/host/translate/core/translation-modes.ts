@@ -27,6 +27,7 @@ import {
 import { unwrapDeepestOnlyHTMLChild } from "../../dom/find"
 import { getOwnerDocument } from "../../dom/node"
 import { canSplitGiantWithoutStrandingOwnText } from "../../dom/traversal"
+import { captureCommitGate, type CommitGate } from "../commit-gate"
 import { containsInlineAtomOutsideWrappers, renderInlineAtomTranslation } from "../dom/inline-atoms"
 import {
   buildVirtualParagraphPlan,
@@ -57,6 +58,7 @@ import {
   insertVirtualParagraphWrappers,
   materializeVirtualParagraphUnitRuns,
 } from "../dom/virtual-paragraph-insertion"
+import { pageLocalScheduler } from "../local-scheduler"
 import { translateTextForPage } from "../translate-variants"
 import { setTranslationDirAndLang } from "../translation-attributes"
 import { createSpinnerInside, getTranslatedTextAndRemoveSpinner } from "../ui/spinner"
@@ -117,9 +119,16 @@ function createBilingualWrapper(
 async function filterVirtualParagraphUnits(
   units: VirtualParagraphUnit[],
   config: Config,
+  gate: CommitGate,
 ): Promise<VirtualParagraphUnit[]> {
   const included = await Promise.all(
-    units.map(async (unit) => !(await shouldSkipPageTranslationText(unit.text, config))),
+    units.map((unit) =>
+      pageLocalScheduler.schedule(
+        async () => !(await shouldSkipPageTranslationText(unit.text, config)),
+        gate.isCurrent,
+        gate.signal,
+      ),
+    ),
   )
   return units.filter((_, index) => included[index])
 }
@@ -128,13 +137,14 @@ async function translateVirtualParagraph(
   entry: ReturnType<typeof insertVirtualParagraphWrappers>["inserted"][number],
   spinner: HTMLElement,
   group: VirtualParagraphGroup,
+  gate: CommitGate,
   nodes: ChildNode[],
   config: Config,
   forceBlockTranslation: boolean,
   forceRetranslation: boolean = false,
 ): Promise<void> {
   const { unit, wrapper } = entry
-  const isCurrent = () => isVirtualParagraphGroupCurrent(group, wrapper)
+  const isCurrent = () => gate.isCurrent() && isVirtualParagraphGroupCurrent(group, wrapper)
   if (!isCurrent()) return
 
   const realTranslatedText = await getTranslatedTextAndRemoveSpinner(
@@ -171,7 +181,7 @@ async function translateVirtualParagraph(
 
   await insertTranslatedNodeIntoWrapper(
     wrapper,
-    { isCurrent, layoutSource: group.layoutSource, sourceText: unit.text },
+    { isCurrent, signal: gate.signal, layoutSource: group.layoutSource, sourceText: unit.text },
     translatedText,
     config.pageTranslation.translationNodeStyle,
     config,
@@ -190,6 +200,7 @@ async function translateVirtualParagraphs(
   forceBlockTranslation: boolean,
   forceRetranslation: boolean = false,
 ): Promise<void> {
+  const gate = captureCommitGate(undefined, config)
   const group: VirtualParagraphGroup = {
     id: `${walkId}:${virtualParagraphGroupSequence++}`,
     walkId,
@@ -212,13 +223,14 @@ async function translateVirtualParagraphs(
   const sourceTextSnapshot = collectSourceTextExcludingWrappers(layoutSource)
   let includedUnits: VirtualParagraphUnit[]
   try {
-    includedUnits = await filterVirtualParagraphUnits(units, config)
+    includedUnits = await filterVirtualParagraphUnits(units, config, gate)
   } catch (error) {
     disposeVirtualParagraphGroup(group)
     throw error
   }
 
   if (
+    !gate.isCurrent() ||
     !isVirtualParagraphGroupCurrent(group) ||
     collectSourceTextExcludingWrappers(layoutSource) !== sourceTextSnapshot
   ) {
@@ -260,14 +272,20 @@ async function translateVirtualParagraphs(
 
   await Promise.allSettled(
     inserted.map((entry) =>
-      translateVirtualParagraph(
-        entry,
-        spinners.get(entry.wrapper)!,
-        group,
-        nodes,
-        config,
-        forceBlockTranslation,
-        forceRetranslation,
+      pageLocalScheduler.schedule(
+        () =>
+          translateVirtualParagraph(
+            entry,
+            spinners.get(entry.wrapper)!,
+            group,
+            gate,
+            nodes,
+            config,
+            forceBlockTranslation,
+            forceRetranslation,
+          ),
+        () => gate.isCurrent() && group.status === "active" && group.layoutSource.isConnected,
+        gate.signal,
       ),
     ),
   )
@@ -452,6 +470,7 @@ export async function translateNodesBilingualMode(
     if (!atomExtraction) return
     const requestText = atomExtraction.requestText
     const sourceSnapshot = snapshotSourceTextNodes(transNodes)
+    const gate = captureCommitGate(undefined, config)
 
     let bilingualState: BilingualTranslationState | undefined
     if (isHTMLElement(layoutSource) && sourceTextBeforeFilter !== null) {
@@ -487,8 +506,9 @@ export async function translateNodesBilingualMode(
     }
 
     if (
-      nodeTranslation &&
-      (!nodeTranslation.active || !verifySourceSnapshot(transNodes, sourceSnapshot))
+      !gate.isCurrent() ||
+      (nodeTranslation &&
+        (!nodeTranslation.active || !verifySourceSnapshot(transNodes, sourceSnapshot)))
     ) {
       if (bilingualState) unregisterBilingualTranslationState(bilingualState)
       return
@@ -557,6 +577,7 @@ export async function translateNodesBilingualMode(
     }
     let disposed = false
     const isCurrent = () =>
+      gate.isCurrent() &&
       !disposed &&
       (bilingualState
         ? isBilingualTranslationStateCurrent(bilingualState)
@@ -622,6 +643,7 @@ export async function translateNodesBilingualMode(
       translatedWrapperNode,
       {
         isCurrent,
+        signal: gate.signal,
         layoutSource,
         styleSources: transNodes,
         // Wrapper-content integrity snapshot (#1918): armed synchronously at
@@ -751,12 +773,17 @@ async function translateNonMaterializableGiant(
   // observer already refused to lose it.
   if (!canSplitGiantWithoutStrandingOwnText(layoutSource)) return false
 
+  const gate = captureCommitGate(() => layoutSource.isConnected, config)
   const paragraphs = collectTopLevelParagraphDescendants(layoutSource)
   if (paragraphs.length === 0) return false
 
   await Promise.allSettled(
     paragraphs.map((paragraph) =>
-      translateTranslationOnlyRun([paragraph], walkId, config, false, forceRetranslation),
+      pageLocalScheduler.schedule(
+        () => translateTranslationOnlyRun([paragraph], walkId, config, false, forceRetranslation),
+        gate.isCurrent,
+        gate.signal,
+      ),
     ),
   )
   return true
@@ -780,6 +807,7 @@ async function maybeTranslateVirtualUnitRuns(
   toggle: boolean,
   forceRetranslation: boolean,
 ): Promise<boolean> {
+  const gate = captureCommitGate(() => layoutSource.isConnected, config)
   const previousState = getTranslationOnlyAnchorState(layoutSource)
   const hasPreviousGeneration =
     previousState !== undefined &&
@@ -846,14 +874,19 @@ async function maybeTranslateVirtualUnitRuns(
 
     await Promise.allSettled(
       runs.map((run) =>
-        translateTranslationOnlyRun(
-          run.nodes,
-          walkId,
-          config,
-          false,
-          forceRetranslation,
-          isCurrent,
-          getNodeTranslation(walkId) ? disposeGeneration : undefined,
+        pageLocalScheduler.schedule(
+          () =>
+            translateTranslationOnlyRun(
+              run.nodes,
+              walkId,
+              config,
+              false,
+              forceRetranslation,
+              isCurrent,
+              getNodeTranslation(walkId) ? disposeGeneration : undefined,
+            ),
+          () => gate.isCurrent() && isCurrent(),
+          gate.signal,
         ),
       ),
     )
@@ -861,9 +894,12 @@ async function maybeTranslateVirtualUnitRuns(
     // Queued, not called: each unit applies its swap through the same batch, so
     // running now would read an empty anchor and undo the generation just
     // before its own translations land.
-    batchDOMOperation(() => {
-      if (isCurrent()) endVirtualTranslationOnlyGeneration(layoutSource)
-    })
+    batchDOMOperation(
+      () => {
+        if (isCurrent()) endVirtualTranslationOnlyGeneration(layoutSource)
+      },
+      { signal: gate.signal },
+    )
     return true
   } finally {
     nodes.forEach((node) => translatingNodes.delete(node))
@@ -1036,9 +1072,11 @@ async function translateTranslationOnlyRun(
 
     // Capture before filtering as well as the provider round-trip: both await.
     const sourceSnapshot = snapshotSourceTextNodes(transNodes)
+    const gate = captureCommitGate(undefined, config)
     let disposed = false
     const isRunCurrent = () =>
       !disposed &&
+      gate.isCurrent() &&
       nodeTranslation?.active !== false &&
       isCurrent() &&
       verifySourceSnapshot(transNodes, sourceSnapshot)
@@ -1093,7 +1131,12 @@ async function translateTranslationOnlyRun(
       }
       wrapperInserted = true
     }
-    batchDOMOperation(insertOperation)
+    const commitOptions = {
+      signal: gate.signal,
+      current: isRunCurrent,
+      onDiscard: () => trackedUnit.dispose(),
+    }
+    batchDOMOperation(insertOperation, commitOptions)
 
     const realTranslatedText = await getTranslatedTextAndRemoveSpinner(
       nodes,
@@ -1116,7 +1159,7 @@ async function translateTranslationOnlyRun(
       if (translatedText === "") {
         markExtensionDrivenNodeRemoval(translatedWrapperNode)
         // Batch the remove operation to execute remove operation after insert operation
-        batchDOMOperation(() => translatedWrapperNode.remove())
+        batchDOMOperation(() => translatedWrapperNode.remove(), { signal: gate.signal })
       }
       return
     }
@@ -1124,7 +1167,33 @@ async function translateTranslationOnlyRun(
     // Preferred strategy: swap the translation into the site's OWN text nodes,
     // leaving element identity (framework fibers, listeners) untouched. The
     // wrapper was only the spinner vehicle and is removed.
-    const swapPlan = planInPlaceTextSwap(transNodes, translatedText, ownerDoc)
+    const commit = gate.beginCommit()
+    const renderOptions = {
+      ...commitOptions,
+      onError: (error: unknown) => {
+        commit.fail(error)
+        trackedUnit.dispose()
+      },
+      onDiscard: () => {
+        commit.discard()
+        trackedUnit.dispose()
+      },
+    }
+    const swapPlan = await pageLocalScheduler
+      .schedule(
+        () => planInPlaceTextSwap(transNodes, translatedText, ownerDoc),
+        isRunCurrent,
+        gate.signal,
+      )
+      .catch((error) => {
+        commit.fail(error)
+        throw error
+      })
+    if (!isRunCurrent()) {
+      commit.discard()
+      trackedUnit.dispose()
+      return
+    }
     if (swapPlan) {
       batchDOMOperation(() => {
         // Wrapper gone: a global cleanup ran while the provider call was in
@@ -1132,6 +1201,7 @@ async function translateTranslationOnlyRun(
         // A superseded run (its generation torn down) is stale for the same
         // reason even when its wrapper survived the round trip.
         if (!translatedWrapperNode.isConnected || !isRunCurrent()) {
+          commit.discard()
           trackedUnit.dispose()
           return
         }
@@ -1169,13 +1239,13 @@ async function translateTranslationOnlyRun(
               endVirtualTranslationOnlyGeneration(parentNode)
           }
         }
-      })
+        commit.complete()
+      }, renderOptions)
       return
     }
 
     // Fallback strategy: render into the wrapper and displace the originals,
     // retaining the node objects so restore can re-insert the same nodes (#1846).
-    translatedWrapperNode.innerHTML = translatedText
 
     // Batch final DOM mutations to reduce layout thrashing
     batchDOMOperation(() => {
@@ -1183,10 +1253,12 @@ async function translateTranslationOnlyRun(
       // call was in flight, or the host re-rendered the region. The originals
       // are the live content — don't remove them to apply a stale translation.
       if (!translatedWrapperNode.isConnected || !isRunCurrent()) {
+        commit.discard()
         trackedUnit.dispose()
         return
       }
 
+      translatedWrapperNode.innerHTML = translatedText
       // Insert translated content after the last node
       const lastChildNode = allChildNodes.at(-1)!
       lastChildNode.parentNode?.insertBefore(translatedWrapperNode, lastChildNode.nextSibling)
@@ -1210,7 +1282,8 @@ async function translateTranslationOnlyRun(
         removeTranslatedWrapperWithRestore(translatedWrapperNode)
         disposeGeneration?.()
       }
-    })
+      commit.complete()
+    }, renderOptions)
   } finally {
     nodes.forEach((node) => translatingNodes.delete(node))
   }

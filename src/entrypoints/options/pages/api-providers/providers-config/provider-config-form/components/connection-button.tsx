@@ -6,7 +6,6 @@ import LoadingDots from "@/components/loading-dots"
 import { Button } from "@/components/ui/base-ui/button"
 import { getObjectWithoutAPIKeys } from "@/utils/config/api"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
-import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { i18n } from "@/utils/i18n"
 import { getTranslatePrompt } from "@/utils/prompts/translate"
 import { getProviderConnectionURL } from "@/utils/providers/connection-url"
@@ -93,7 +92,9 @@ export function ConnectionTestButton({ providerConfig }: { providerConfig: APIPr
   const mutation = useMutation({
     // for safety, we should not include apiKey in the mutationKey
     mutationKey: ["apiConnection", getObjectWithoutAPIKeys(providerConfig)],
-    mutationFn: async (_variables: ConnectionTestVariables) => {
+    mutationFn: async (variables: ConnectionTestVariables) => {
+      const { executeTranslate } = await import("@/utils/host/translate/execute-translate")
+      if (variables.requestId !== latestRequestIdRef.current) return undefined
       return await executeTranslate(
         "Hi",
         DEFAULT_CONFIG.language,

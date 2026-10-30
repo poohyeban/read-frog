@@ -1,0 +1,18 @@
+Final local validation — 2026-10-30
+Production source commit: c5a6c2ba
+Baseline: 18f2c8cbfddc3df5e4b7552a48b1731c28ac4cfd
+SKIP_FREE_API=true ./node_modules/.bin/vitest run
+ Test Files  278 passed (278)
+      Tests  2663 passed (2663)
+   Start at  03:51:11
+   Duration  95.62s (environment 32%, import 25%, tests 21%, setup 14%, transform 7%, worker 1%)
+./node_modules/.bin/oxlint --type-aware --type-check: exit 0
+./node_modules/.bin/oxfmt --check .: exit 0
+./node_modules/.bin/wxt build: exit 0, 12.5s, 14.73 MB
+Production manifest equals baseline: true
+Chromium harness: 20 upgraded samples, 8 compatibility fixtures passed, 27.4s
+Baseline harness: 20 samples saved; translationOnly restore failed after mutation fixture
+Full unpacked MV3 E2E: attempted; blocked by managed Chromium unpacked-extension policy; serviceworker wait timeout 15s
+No real/free/paid provider load tests performed.
+manifest.json: 1603 bytes; SHA256 976b874e7735639a8e67aa38e698d3a30f239162cb9428c4a9232ff39c5429d0
+background.js: 55074 bytes; SHA256 7d3ffa6553f5313739cc38628c4c7f1278c09389d671df1aa626e37ee21a1648

@@ -47,7 +47,7 @@ describe("segmentation pipeline", () => {
 
     await (pipeline as any).runLoop()
 
-    const segmentedStarts = (pipeline as any).segmentedRawStarts as Set<number>
+    const segmentedStarts = new Set(pipeline.processedFragments.map((f) => f.start))
 
     // The window ahead of the playhead is segmented...
     expect(segmentedStarts.has(0)).toBe(true)
@@ -78,7 +78,7 @@ describe("segmentation pipeline", () => {
 
     await (pipeline as any).runLoop()
 
-    const segmentedStarts = (pipeline as any).segmentedRawStarts as Set<number>
+    const segmentedStarts = new Set(pipeline.processedFragments.map((f) => f.start))
     const furthestSegmented = Math.max(...segmentedStarts)
 
     // At 3x the window is 3x wider, so the buffer reaches past the 1x bound...
@@ -110,13 +110,13 @@ describe("segmentation pipeline", () => {
     })
 
     await (pipeline as any).runLoop()
-    const afterStart = Math.max(...((pipeline as any).segmentedRawStarts as Set<number>))
+    const afterStart = Math.max(...new Set(pipeline.processedFragments.map((f) => f.start)))
 
     // Playback moves into the buffered region; the pipeline should top the window back up
     // rather than stay starved behind its own bound.
     currentTime = 150
     await (pipeline as any).runLoop()
-    const afterAdvance = Math.max(...((pipeline as any).segmentedRawStarts as Set<number>))
+    const afterAdvance = Math.max(...new Set(pipeline.processedFragments.map((f) => f.start)))
 
     expect(afterAdvance).toBeGreaterThan(afterStart)
     expect(afterAdvance).toBeLessThan(150_000 + 2 * PROCESS_LOOK_AHEAD_MS)
@@ -232,5 +232,41 @@ describe("segmentation pipeline", () => {
     expect(onChunkSegmented).not.toHaveBeenCalled()
     // Baseline fragments remain untouched after stop mid-flight.
     expect(pipeline.processedFragments).toEqual([{ text: "hello world", start: 0, end: 1000 }])
+  })
+})
+
+describe("segmentation generations", () => {
+  it("stop/start does not let old response publish or old finally unlock new work", async () => {
+    const { aiSegmentBlock } = await import("@/utils/subtitles/processor/ai-segmentation")
+    const completions: ((rows: any[]) => void)[] = []
+    vi.mocked(aiSegmentBlock).mockImplementation(
+      () => new Promise((resolve) => completions.push(resolve)),
+    )
+    const onChunkSegmented = vi.fn<(...args: any[]) => any>()
+    const source = [{ start: 0, end: 1000, text: "source" }]
+    const pipeline = new SegmentationPipeline({
+      baselineFragments: source,
+      rawFragments: source,
+      getVideoElement: () => ({ currentTime: 0 }) as HTMLVideoElement,
+      getSourceLanguage: () => "en",
+      providerRef: LOCAL_REF,
+      onChunkSegmented,
+    })
+    pipeline.start()
+    await vi.waitFor(() => expect(completions).toHaveLength(1))
+    const oldSignal = vi.mocked(aiSegmentBlock).mock.calls.at(-1)![2]!.signal!
+    pipeline.stop()
+    pipeline.start()
+    await vi.waitFor(() => expect(completions).toHaveLength(2))
+    expect(oldSignal.aborted).toBe(true)
+    completions[0]!([{ ...source[0], text: "old" }])
+    await Promise.resolve()
+    await Promise.resolve()
+    expect(onChunkSegmented).not.toHaveBeenCalled()
+    expect(pipeline.isRunning).toBe(true)
+    completions[1]!(source)
+    await vi.waitFor(() => expect(onChunkSegmented).toHaveBeenCalledOnce())
+    expect(pipeline.processedFragments[0]?.text).toBe("source")
+    pipeline.stop()
   })
 })

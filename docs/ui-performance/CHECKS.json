@@ -1,0 +1,62 @@
+{
+  "base": "bb14e8bb14c06cfa8abe24f54a6b0505e46880e5",
+  "branch": "codex/popup-ui-performance",
+  "fullTests": {
+    "files": 290,
+    "tests": 2703,
+    "status": "passed",
+    "SKIP_FREE_API": true
+  },
+  "finalTargetedTests": {
+    "files": 13,
+    "tests": 45,
+    "status": "passed"
+  },
+  "localeInterpolationRecheck": {
+    "files": 1,
+    "tests": 3,
+    "status": "passed"
+  },
+  "productionBuild": {
+    "status": "passed",
+    "wxt": "0.21.4",
+    "manifestIdenticalToBase": true,
+    "backgroundDynamicImports": 0,
+    "manifestSha256": "976b874e7735639a8e67aa38e698d3a30f239162cb9428c4a9232ff39c5429d0",
+    "entryHtmlSha256": {
+      "popup": "7cd56617458836bbdbcb276fc6bcae074d9a405bc4d2f4727e6c37570cadcd3d",
+      "options": "f7d3a6d3b1c6982182f5d75e5d96c4f2dd610082eb700e4850f19092cf4e9cc3",
+      "translation-hub": "05e594b4344d4b6ff32b66f5bcff26dbc06ce5907874debfe3b8bc5050079f00"
+    }
+  },
+  "browserValidation": {
+    "kind": "production pages with simulated extension APIs",
+    "chromium": "154.0.8037.57",
+    "pairedStartupLoads": 240,
+    "samplesPerScenarioAndVersion": 30,
+    "visualCases": 25,
+    "functionalChecks": 12,
+    "nativeMV3": "blocked by administrator ExtensionInstallBlocklist=[\"*\"]; not passed",
+    "nativeZoom": "not verified; device scale and content-sized viewport tested"
+  },
+  "git": {
+    "push": false,
+    "pullRequest": false,
+    "release": false,
+    "actionsInvoked": false,
+    "workflowChanges": false,
+    "dependencyChanges": false
+  },
+  "reports": [
+    "REPORT.md",
+    "AUDIT.md",
+    "UI-CONVENTIONS.md",
+    "SUMMARY.json",
+    "module-graph.json"
+  ],
+  "staticChecks": {
+    "oxlintTypeAwareAndTypeCheck": "passed",
+    "oxfmt": "passed",
+    "gitDiffCheck": "passed"
+  }
+}

@@ -3,7 +3,7 @@ import type { SupportedUiLocale } from "./resources"
 import type { UiLanguage } from "@/types/config/config"
 import i18next, { changeLanguage, getFixedT, init, t as translate } from "i18next"
 import { resolveUiLocale } from "./locale-map"
-import { DEFAULT_UI_LOCALE, resources, SUPPORTED_UI_LOCALES } from "./resources"
+import { DEFAULT_UI_LOCALE, ensureLocale, resources, SUPPORTED_UI_LOCALES } from "./resources"
 
 /**
  * Runtime-switchable i18n facade.
@@ -18,8 +18,8 @@ import { DEFAULT_UI_LOCALE, resources, SUPPORTED_UI_LOCALES } from "./resources"
  *        │ explicit → passthrough                      │
  *        └───────── initI18n() / setUiLanguage() ──────┘
  *
- * Resources for all 9 locales are bundled, so `init`/`changeLanguage` complete
- * synchronously — the React `<LocaleBoundary>` relies on this to switch without a flash.
+ * HTML pages load the selected local locale chunk before changing language.
+ * Worker/content contexts retain bundled resources for MV3 compatibility.
  */
 
 type Substitution = string | number
@@ -47,7 +47,8 @@ type FacadeT = <K extends I18nKey>(
     : [substitutions: SubstitutionTuple<GeneratedI18nStructure[K]["substitutions"]>]
 ) => string
 
-let initialized = false
+let initialization: Promise<unknown> | undefined
+let languageRevision = 0
 
 const I18NEXT_OPTIONS = {
   resources,
@@ -74,20 +75,25 @@ const I18NEXT_OPTIONS = {
  * Idempotent — a second call just switches the language if it differs.
  */
 export async function initI18n(uiLanguage: UiLanguage = "auto"): Promise<void> {
+  const request = ++languageRevision
   const lng = resolveUiLocale(uiLanguage)
-  if (initialized) {
-    if (i18next.language !== lng) {
-      await changeLanguage(lng)
-    }
-    return
+  await ensureLocale(lng)
+  if (!initialization)
+    initialization = init({ ...I18NEXT_OPTIONS, lng }).catch((error: unknown) => {
+      initialization = undefined
+      throw error
+    })
+  await initialization
+  if (request !== languageRevision) return
+  if (!i18next.hasResourceBundle(lng, "translation")) {
+    i18next.addResourceBundle(lng, "translation", resources[lng]!.translation)
   }
-  initialized = true
-  await init({ ...I18NEXT_OPTIONS, lng })
+  if (i18next.language !== lng) await changeLanguage(lng)
 }
 
-/** Switch the active UI language (synchronous with bundled resources). */
+/** Keep the current language visible while loading; the latest selection wins. */
 export async function setUiLanguage(uiLanguage: UiLanguage): Promise<void> {
-  await changeLanguage(resolveUiLocale(uiLanguage))
+  await initI18n(uiLanguage)
 }
 
 /**

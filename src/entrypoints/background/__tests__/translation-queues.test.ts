@@ -1,6 +1,7 @@
 import type { ProviderConfig } from "@/types/config/provider"
 import type { MatchedTerm } from "@/utils/glossary/types"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { browser } from "#imports"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { BATCH_SEPARATOR, NO_TRANSLATION_SENTINEL } from "@/utils/constants/prompt"
 
@@ -30,7 +31,8 @@ vi.mock("@/utils/host/translate/execute-translate", () => ({
   executeTranslate: executeTranslateMock,
 }))
 
-vi.mock("@/utils/content/summary", () => ({
+vi.mock("@/utils/content/summary", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/content/summary")>()),
   generateArticleSummary: generateArticleSummaryMock,
 }))
 
@@ -710,6 +712,65 @@ describe("translation queue helpers", () => {
     )
   })
 
+  it.each(["prompt", "provider"])(
+    "isolates queued %s snapshots even when their provider ID matches",
+    async (changed) => {
+      const configA = {
+        customPromptsConfig: {
+          promptId: "snapshot",
+          patterns: [
+            { id: "snapshot", name: "Snapshot", systemPrompt: "Snapshot A", prompt: "{{input}}" },
+          ],
+        },
+      }
+      const configB = structuredClone(configA)
+      if (changed === "prompt") configB.customPromptsConfig.patterns[0]!.systemPrompt = "Snapshot B"
+      const providerB = structuredClone(llmProvider)
+      if (changed === "provider") providerB.temperature = 0.75
+      const prompts: string[] = []
+      executeTranslateMock.mockImplementation(
+        async (_text, _lang, _provider, resolver, options) => {
+          const prompt = await resolver("Chinese", _text, options)
+          prompts.push(prompt.systemPrompt)
+          return "Translated snapshot"
+        },
+      )
+      const { setupPageTranslationHandlers } = await import("../page-translation")
+      setupPageTranslationHandlers()
+      const handler = getRegisteredMessageHandler("enqueueTranslateRequest")
+      await Promise.all(
+        [configA, configB].map((promptConfig, index) =>
+          handler({
+            data: {
+              text: `source ${index}`,
+              langConfig: DEFAULT_CONFIG.language,
+              providerRef: localProviderRef(index === 0 ? llmProvider : providerB),
+              promptConfig,
+              scheduleAt: Date.now(),
+              hash: `snapshot-${index}`,
+            },
+          }),
+        ),
+      )
+      expect(executeTranslateMock).toHaveBeenCalledTimes(2)
+      const { getTranslatePromptFromConfig } = await import("@/utils/prompts/translate")
+      const expectedPrompts = [configA, configB].map(
+        (snapshot, index) =>
+          getTranslatePromptFromConfig(snapshot, "Chinese", `source ${index}`, {
+            isBatch: true,
+            glossaryTerms: [],
+          }).systemPrompt,
+      )
+      const expectedTemperatures =
+        changed === "provider" ? [undefined, 0.75] : [undefined, undefined]
+      expect(prompts).toEqual(expectedPrompts)
+      expect(executeTranslateMock.mock.calls.map((call) => call[2].temperature)).toEqual(
+        expectedTemperatures,
+      )
+      expect(getTranslatePromptMock).not.toHaveBeenCalled()
+    },
+  )
+
   it("exposes webpage summary generation as a separate background handler", async () => {
     const { setupPageTranslationHandlers } = await import("../page-translation")
     setupPageTranslationHandlers()
@@ -732,6 +793,42 @@ describe("translation queue helpers", () => {
         signal: expect.any(AbortSignal),
       }),
     )
+  })
+
+  it("uses the sender tab for summary cancellation and releases only old navigation scopes", async () => {
+    const observeNavigation = vi.spyOn(browser.tabs.onUpdated, "addListener")
+    const { setupPageTranslationHandlers } = await import("../page-translation")
+    setupPageTranslationHandlers()
+    const navigate = observeNavigation.mock.calls.at(-1)![0]
+    const signals: AbortSignal[] = []
+    let finish!: (value: string) => void
+    generateArticleSummaryMock.mockImplementation((_title, _body, _routing, options) => {
+      signals.push(options.signal)
+      return new Promise((resolve) => {
+        finish = resolve
+      })
+    })
+    const summary = getRegisteredMessageHandler("getOrGenerateWebPageSummary")
+    const cancel = getRegisteredMessageHandler("cancelPageTranslationRequests")
+    const data = {
+      webTitle: "title",
+      webContent: "body",
+      providerRef: localProviderRef(llmProvider),
+      sessionId: "old",
+      tabId: 999,
+    }
+    const old = summary({ sender: { tab: { id: 7 } }, data }).catch((error) => error)
+    await vi.waitFor(() => expect(signals).toHaveLength(1))
+    await cancel({ sender: { tab: { id: 999 } }, data: { sessionId: "old" } })
+    expect(signals[0]!.aborted).toBe(false)
+    navigate(7, { status: "loading" }, {} as Parameters<typeof navigate>[2])
+    expect(await old).toMatchObject({ name: "TranslationCancelledError" })
+    expect(signals[0]!.aborted).toBe(true)
+    const next = summary({ sender: { tab: { id: 7 } }, data: { ...data, sessionId: "new" } })
+    await vi.waitFor(() => expect(signals).toHaveLength(2))
+    finish("New document summary")
+    await expect(next).resolves.toBe("New document summary")
+    observeNavigation.mockRestore()
   })
 
   // The merge above runs BELOW the batch key, so it can only ever see members

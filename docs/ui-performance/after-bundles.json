@@ -1,0 +1,577 @@
+{
+  "root": "/workspace/read-frog/.output/chrome-mv3",
+  "method": "Transitive static import/export graph plus HTML modulepreload/CSS; gzip informational, extension resources are local",
+  "entries": {
+    "popup": {
+      "js": 988176,
+      "css": 206833,
+      "gzip": 360599,
+      "assets": [
+        {
+          "file": "chunks/theme-DMQESPax.js",
+          "bytes": 351684,
+          "gzip": 106926
+        },
+        {
+          "file": "chunks/languages-DQC-Lt3M.js",
+          "bytes": 297822,
+          "gzip": 94710
+        },
+        {
+          "file": "assets/theme-BrFsAg62.css",
+          "bytes": 206749,
+          "gzip": 31934
+        },
+        {
+          "file": "chunks/popup-BSIrb1R5.js",
+          "bytes": 48225,
+          "gzip": 16076
+        },
+        {
+          "file": "chunks/createReactComponent-5pLcpF5a.js",
+          "bytes": 47108,
+          "gzip": 17620
+        },
+        {
+          "file": "chunks/dist-Co_TQ7lv.js",
+          "bytes": 41129,
+          "gzip": 16508
+        },
+        {
+          "file": "chunks/combobox-BKuvX2BZ.js",
+          "bytes": 39144,
+          "gzip": 13665
+        },
+        {
+          "file": "chunks/select-ySleCMFc.js",
+          "bytes": 30390,
+          "gzip": 10559
+        },
+        {
+          "file": "chunks/helpers-DJyN8IBJ.js",
+          "bytes": 29994,
+          "gzip": 10647
+        },
+        {
+          "file": "chunks/os-P8X54ebK.js",
+          "bytes": 20746,
+          "gzip": 7317
+        },
+        {
+          "file": "chunks/useRegisterFieldControl-B8wV_Rku.js",
+          "bytes": 13292,
+          "gzip": 5528
+        },
+        {
+          "file": "chunks/ItemIndicator-Dc84CNXM.js",
+          "bytes": 11203,
+          "gzip": 4717
+        },
+        {
+          "file": "chunks/mutation-DPVQU2h_.js",
+          "bytes": 10922,
+          "gzip": 3850
+        },
+        {
+          "file": "chunks/query--YAG_ibT.js",
+          "bytes": 7616,
+          "gzip": 2634
+        },
+        {
+          "file": "chunks/useOpenChangeComplete-CjBnmZ6x.js",
+          "bytes": 7013,
+          "gzip": 2652
+        },
+        {
+          "file": "chunks/switch-DTc2iPhZ.js",
+          "bytes": 5508,
+          "gzip": 2589
+        },
+        {
+          "file": "chunks/button-DG2eysiH.js",
+          "bytes": 4409,
+          "gzip": 1387
+        },
+        {
+          "file": "chunks/url-pattern-D0bJNGSC.js",
+          "bytes": 4287,
+          "gzip": 1699
+        },
+        {
+          "file": "chunks/useCompositeListItem-BhCyBPXf.js",
+          "bytes": 3358,
+          "gzip": 1492
+        },
+        {
+          "file": "chunks/message-BoP1aqTW.js",
+          "bytes": 3052,
+          "gzip": 1237
+        },
+        {
+          "file": "chunks/node-hotkey-icon-B19QeMf2.js",
+          "bytes": 1152,
+          "gzip": 580
+        },
+        {
+          "file": "chunks/navigation-cGKgZeI1.js",
+          "bytes": 1136,
+          "gzip": 596
+        },
+        {
+          "file": "chunks/storage-B4-iBtHv.js",
+          "bytes": 1065,
+          "gzip": 643
+        },
+        {
+          "file": "chunks/provider-Ds30AZa9.js",
+          "bytes": 1025,
+          "gzip": 568
+        },
+        {
+          "file": "chunks/dist-QJDFOEJg.js",
+          "bytes": 960,
+          "gzip": 515
+        },
+        {
+          "file": "chunks/built-in-prompts-Dw5laqPP.js",
+          "bytes": 797,
+          "gzip": 357
+        },
+        {
+          "file": "chunks/IconSettings-D81osIzU.js",
+          "bytes": 720,
+          "gzip": 345
+        },
+        {
+          "file": "chunks/_virtual_wxt-html-plugins-BaAyCpKt.js",
+          "bytes": 713,
+          "gzip": 426
+        },
+        {
+          "file": "chunks/useAriaLabelledBy-DokZ2jgj.js",
+          "bytes": 618,
+          "gzip": 411
+        },
+        {
+          "file": "chunks/language-combobox-options-BJ9xrDDg.js",
+          "bytes": 528,
+          "gzip": 286
+        },
+        {
+          "file": "chunks/help-tooltip-DPUADCmq.js",
+          "bytes": 457,
+          "gzip": 295
+        },
+        {
+          "file": "chunks/languages-VWXQZQFr.js",
+          "bytes": 422,
+          "gzip": 283
+        },
+        {
+          "file": "chunks/useControlled-DcL5bLSJ.js",
+          "bytes": 291,
+          "gzip": 238
+        },
+        {
+          "file": "chunks/language-labels-zfQnQJAM.js",
+          "bytes": 252,
+          "gzip": 191
+        },
+        {
+          "file": "chunks/resolveAriaLabelledBy-BJD39Y_Q.js",
+          "bytes": 221,
+          "gzip": 175
+        },
+        {
+          "file": "chunks/CSPContext-D41t3Y5B.js",
+          "bytes": 207,
+          "gzip": 181
+        },
+        {
+          "file": "chunks/getHighlightReason-Bl7TOjfm.js",
+          "bytes": 206,
+          "gzip": 167
+        },
+        {
+          "file": "chunks/serializeValue-B_EucO5O.js",
+          "bytes": 133,
+          "gzip": 124
+        },
+        {
+          "file": "chunks/provider-display-C1cyHAQH.js",
+          "bytes": 129,
+          "gzip": 129
+        },
+        {
+          "file": "chunks/isElementDisabled-KSuuBj8D.js",
+          "bytes": 114,
+          "gzip": 110
+        },
+        {
+          "file": "chunks/stringifyLocale-CkHjdQTJ.js",
+          "bytes": 99,
+          "gzip": 109
+        },
+        {
+          "file": "assets/popup-Is2Gj_lh.css",
+          "bytes": 84,
+          "gzip": 74
+        },
+        {
+          "file": "chunks/_virtual_wxt-plugins-DB4ZMZxa.js",
+          "bytes": 29,
+          "gzip": 49
+        }
+      ]
+    },
+    "options": {
+      "js": 1027827,
+      "css": 206773,
+      "gzip": 363756,
+      "assets": [
+        {
+          "file": "chunks/theme-DMQESPax.js",
+          "bytes": 351684,
+          "gzip": 106926
+        },
+        {
+          "file": "chunks/languages-DQC-Lt3M.js",
+          "bytes": 297822,
+          "gzip": 94710
+        },
+        {
+          "file": "assets/theme-BrFsAg62.css",
+          "bytes": 206749,
+          "gzip": 31934
+        },
+        {
+          "file": "chunks/options-9FvMaa8x.js",
+          "bytes": 98230,
+          "gzip": 28943
+        },
+        {
+          "file": "chunks/lib-yiDw73K4.js",
+          "bytes": 93013,
+          "gzip": 30220
+        },
+        {
+          "file": "chunks/createReactComponent-5pLcpF5a.js",
+          "bytes": 47108,
+          "gzip": 17620
+        },
+        {
+          "file": "chunks/dist-Co_TQ7lv.js",
+          "bytes": 41129,
+          "gzip": 16508
+        },
+        {
+          "file": "chunks/helpers-DJyN8IBJ.js",
+          "bytes": 29994,
+          "gzip": 10647
+        },
+        {
+          "file": "chunks/os-P8X54ebK.js",
+          "bytes": 20746,
+          "gzip": 7317
+        },
+        {
+          "file": "chunks/useRegisterFieldControl-B8wV_Rku.js",
+          "bytes": 13292,
+          "gzip": 5528
+        },
+        {
+          "file": "chunks/mutation-DPVQU2h_.js",
+          "bytes": 10922,
+          "gzip": 3850
+        },
+        {
+          "file": "chunks/query--YAG_ibT.js",
+          "bytes": 7616,
+          "gzip": 2634
+        },
+        {
+          "file": "chunks/useOpenChangeComplete-CjBnmZ6x.js",
+          "bytes": 7013,
+          "gzip": 2652
+        },
+        {
+          "file": "chunks/button-DG2eysiH.js",
+          "bytes": 4409,
+          "gzip": 1387
+        },
+        {
+          "file": "chunks/navigation-cGKgZeI1.js",
+          "bytes": 1136,
+          "gzip": 596
+        },
+        {
+          "file": "chunks/storage-B4-iBtHv.js",
+          "bytes": 1065,
+          "gzip": 643
+        },
+        {
+          "file": "chunks/dist-QJDFOEJg.js",
+          "bytes": 960,
+          "gzip": 515
+        },
+        {
+          "file": "chunks/_virtual_wxt-html-plugins-BaAyCpKt.js",
+          "bytes": 713,
+          "gzip": 426
+        },
+        {
+          "file": "chunks/separator-CY1qvqpc.js",
+          "bytes": 689,
+          "gzip": 390
+        },
+        {
+          "file": "chunks/useHydrateAtoms-FM3134Ca.js",
+          "bytes": 257,
+          "gzip": 217
+        },
+        {
+          "file": "chunks/_virtual_wxt-plugins-DB4ZMZxa.js",
+          "bytes": 29,
+          "gzip": 49
+        },
+        {
+          "file": "assets/options-jXXsayuK.css",
+          "bytes": 24,
+          "gzip": 44
+        }
+      ]
+    },
+    "translation-hub": {
+      "js": 1187718,
+      "css": 206749,
+      "gzip": 461924,
+      "assets": [
+        {
+          "file": "chunks/theme-DMQESPax.js",
+          "bytes": 351684,
+          "gzip": 106926
+        },
+        {
+          "file": "chunks/languages-DQC-Lt3M.js",
+          "bytes": 297822,
+          "gzip": 94710
+        },
+        {
+          "file": "chunks/language-DuV_rx78.js",
+          "bytes": 245582,
+          "gzip": 116592
+        },
+        {
+          "file": "assets/theme-BrFsAg62.css",
+          "bytes": 206749,
+          "gzip": 31934
+        },
+        {
+          "file": "chunks/createReactComponent-5pLcpF5a.js",
+          "bytes": 47108,
+          "gzip": 17620
+        },
+        {
+          "file": "chunks/dist-Co_TQ7lv.js",
+          "bytes": 41129,
+          "gzip": 16508
+        },
+        {
+          "file": "chunks/combobox-BKuvX2BZ.js",
+          "bytes": 39144,
+          "gzip": 13665
+        },
+        {
+          "file": "chunks/select-ySleCMFc.js",
+          "bytes": 30390,
+          "gzip": 10559
+        },
+        {
+          "file": "chunks/helpers-DJyN8IBJ.js",
+          "bytes": 29994,
+          "gzip": 10647
+        },
+        {
+          "file": "chunks/translation-hub-BOs3nAB0.js",
+          "bytes": 14021,
+          "gzip": 4724
+        },
+        {
+          "file": "chunks/useRegisterFieldControl-B8wV_Rku.js",
+          "bytes": 13292,
+          "gzip": 5528
+        },
+        {
+          "file": "chunks/ItemIndicator-Dc84CNXM.js",
+          "bytes": 11203,
+          "gzip": 4717
+        },
+        {
+          "file": "chunks/mutation-DPVQU2h_.js",
+          "bytes": 10922,
+          "gzip": 3850
+        },
+        {
+          "file": "chunks/translate-CumM4NiP.js",
+          "bytes": 10816,
+          "gzip": 4457
+        },
+        {
+          "file": "chunks/query--YAG_ibT.js",
+          "bytes": 7616,
+          "gzip": 2634
+        },
+        {
+          "file": "chunks/useOpenChangeComplete-CjBnmZ6x.js",
+          "bytes": 7013,
+          "gzip": 2652
+        },
+        {
+          "file": "chunks/button-DG2eysiH.js",
+          "bytes": 4409,
+          "gzip": 1387
+        },
+        {
+          "file": "chunks/use-text-to-speech-BufBKiN1.js",
+          "bytes": 3638,
+          "gzip": 1775
+        },
+        {
+          "file": "chunks/useCompositeListItem-BhCyBPXf.js",
+          "bytes": 3358,
+          "gzip": 1492
+        },
+        {
+          "file": "chunks/message-BoP1aqTW.js",
+          "bytes": 3052,
+          "gzip": 1237
+        },
+        {
+          "file": "chunks/field-Dw2mEfVB.js",
+          "bytes": 2817,
+          "gzip": 1013
+        },
+        {
+          "file": "chunks/language-combobox-Bu4YfLyk.js",
+          "bytes": 1475,
+          "gzip": 723
+        },
+        {
+          "file": "chunks/empty-Cb5GkpQb.js",
+          "bytes": 1350,
+          "gzip": 568
+        },
+        {
+          "file": "chunks/provider-icon-BpLiA4Rc.js",
+          "bytes": 1253,
+          "gzip": 594
+        },
+        {
+          "file": "chunks/storage-B4-iBtHv.js",
+          "bytes": 1065,
+          "gzip": 643
+        },
+        {
+          "file": "chunks/dist-QJDFOEJg.js",
+          "bytes": 960,
+          "gzip": 515
+        },
+        {
+          "file": "chunks/built-in-prompts-Dw5laqPP.js",
+          "bytes": 797,
+          "gzip": 357
+        },
+        {
+          "file": "chunks/IconSettings-D81osIzU.js",
+          "bytes": 720,
+          "gzip": 345
+        },
+        {
+          "file": "chunks/_virtual_wxt-html-plugins-BaAyCpKt.js",
+          "bytes": 713,
+          "gzip": 426
+        },
+        {
+          "file": "chunks/page-layout-DUsNJyGE.js",
+          "bytes": 705,
+          "gzip": 364
+        },
+        {
+          "file": "chunks/separator-CY1qvqpc.js",
+          "bytes": 689,
+          "gzip": 390
+        },
+        {
+          "file": "chunks/language-combobox-options-BJ9xrDDg.js",
+          "bytes": 528,
+          "gzip": 286
+        },
+        {
+          "file": "chunks/label-CfjhN3us.js",
+          "bytes": 426,
+          "gzip": 288
+        },
+        {
+          "file": "chunks/useControlled-DcL5bLSJ.js",
+          "bytes": 291,
+          "gzip": 238
+        },
+        {
+          "file": "chunks/useHydrateAtoms-FM3134Ca.js",
+          "bytes": 257,
+          "gzip": 217
+        },
+        {
+          "file": "chunks/language-labels-zfQnQJAM.js",
+          "bytes": 252,
+          "gzip": 191
+        },
+        {
+          "file": "chunks/resolveAriaLabelledBy-BJD39Y_Q.js",
+          "bytes": 221,
+          "gzip": 175
+        },
+        {
+          "file": "chunks/CSPContext-D41t3Y5B.js",
+          "bytes": 207,
+          "gzip": 181
+        },
+        {
+          "file": "chunks/getHighlightReason-Bl7TOjfm.js",
+          "bytes": 206,
+          "gzip": 167
+        },
+        {
+          "file": "chunks/serializeValue-B_EucO5O.js",
+          "bytes": 133,
+          "gzip": 124
+        },
+        {
+          "file": "chunks/types-S9P3vI5E.js",
+          "bytes": 116,
+          "gzip": 121
+        },
+        {
+          "file": "chunks/isElementDisabled-KSuuBj8D.js",
+          "bytes": 114,
+          "gzip": 110
+        },
+        {
+          "file": "chunks/text-preparation-BibFtZOm.js",
+          "bytes": 102,
+          "gzip": 116
+        },
+        {
+          "file": "chunks/stringifyLocale-CkHjdQTJ.js",
+          "bytes": 99,
+          "gzip": 109
+        },
+        {
+          "file": "chunks/_virtual_wxt-plugins-DB4ZMZxa.js",
+          "bytes": 29,
+          "gzip": 49
+        }
+      ]
+    }
+  }
+}

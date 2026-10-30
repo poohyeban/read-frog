@@ -1,0 +1,5143 @@
+{
+  "environment": {
+    "source": "/tmp/read-frog-subtitle-baseline/source",
+    "browser": "154.0.8037.57",
+    "node": "v24.19.0",
+    "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+  },
+  "errors": [],
+  "samples": [
+    {
+      "sample": 0,
+      "scenario": "bounded-export-72",
+      "duration": 979,
+      "events": [
+        {
+          "at": 108.19999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 128.60000000149012,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 229.39999999850988,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 249.60000000149012,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 350.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 371,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 471.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 492.19999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 593.1999999992549,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 613.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 716.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 736.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 837.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 857.6999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 958.6999999992549,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 978.8999999985099,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 0,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.5999999977648,
+      "events": [
+        {
+          "at": 2,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 207,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 406.69999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 606.3000000007451,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 807.3000000007451,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827.5999999977648,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 0,
+      "scenario": "stop-inflight",
+      "duration": 122.59999999776483,
+      "events": [
+        {
+          "at": 100.79999999701977,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.39999999850988,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 122.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "scenario": "bounded-export-72",
+      "duration": 967.7000000029802,
+      "events": [
+        {
+          "at": 100.70000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.90000000223517,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.70000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.90000000223517,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.9000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 483.9000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 604.9000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 725.8000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 846.7000000029802,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 947.3000000007451,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 967.6000000014901,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "scenario": "current-after-auxiliary",
+      "duration": 833.0999999977648,
+      "events": [
+        {
+          "at": 0.3999999985098839,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 205.59999999776483,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 410.80000000074506,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 612.5999999977648,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 812.8999999985099,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 833,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "scenario": "stop-inflight",
+      "duration": 120.80000000074506,
+      "events": [
+        {
+          "at": 100.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.40000000223517,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.80000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "scenario": "bounded-export-72",
+      "duration": 969.9000000022352,
+      "events": [
+        {
+          "at": 100.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121.10000000149012,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 222,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242.69999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 344.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 364.4000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 465.30000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 485.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 586.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 606.8000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 707.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 727.8000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 828.6999999992549,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 849,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 949.6000000014901,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 969.9000000022352,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.8000000007451,
+      "events": [
+        {
+          "at": 0.3999999985098839,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 201.19999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 402.0999999977648,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 606.8999999985099,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 807.5,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827.8000000007451,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "scenario": "stop-inflight",
+      "duration": 120.90000000223517,
+      "events": [
+        {
+          "at": 100.70000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.40000000223517,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.80000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "scenario": "bounded-export-72",
+      "duration": 968.0999999977648,
+      "events": [
+        {
+          "at": 100.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.79999999701977,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.19999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 585,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.1999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 706,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.2999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 827,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.1999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 947.7999999970198,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.0999999977648,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.8000000007451,
+      "events": [
+        {
+          "at": 0.3999999985098839,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 205.30000000074506,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 405,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.6999999992549,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 807.5,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827.6999999992549,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "scenario": "stop-inflight",
+      "duration": 121.09999999776483,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.39999999850988,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 4,
+      "scenario": "bounded-export-72",
+      "duration": 969.6999999992549,
+      "events": [
+        {
+          "at": 100.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.89999999850988,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242.10000000149012,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.1000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 465,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 485.1000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 586,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 606.1999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 707,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 727.3000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 828.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 848.6000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 949.6000000014901,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 969.6999999992549,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 4,
+      "scenario": "current-after-auxiliary",
+      "duration": 830.1000000014901,
+      "events": [
+        {
+          "at": 0.7000000029802322,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 205.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 410.30000000074506,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 610.1000000014901,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 809.8000000007451,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 830,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 4,
+      "scenario": "stop-inflight",
+      "duration": 120.89999999850988,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.5,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 5,
+      "scenario": "bounded-export-72",
+      "duration": 968.3999999985099,
+      "events": [
+        {
+          "at": 100.79999999701977,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121.09999999776483,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.89999999850988,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.19999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.7999999970198,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 706,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 827.1999999992549,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 948.0999999977648,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.2999999970198,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 5,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.0999999977648,
+      "events": [
+        {
+          "at": 0.3999999985098839,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200.09999999776483,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 401.3999999985099,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 601,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 804.5999999977648,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 5,
+      "scenario": "stop-inflight",
+      "duration": 121.10000000149012,
+      "events": [
+        {
+          "at": 100.70000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.40000000223517,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 6,
+      "scenario": "bounded-export-72",
+      "duration": 968.2999999970198,
+      "events": [
+        {
+          "at": 100.79999999701977,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.89999999850988,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242.09999999776483,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.7999999970198,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 948,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.1999999992549,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 6,
+      "scenario": "current-after-auxiliary",
+      "duration": 821.3999999985099,
+      "events": [
+        {
+          "at": 0.29999999701976776,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200.39999999850988,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 400.19999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 601,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 801.0999999977648,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 821.2999999970198,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 6,
+      "scenario": "stop-inflight",
+      "duration": 120.79999999701977,
+      "events": [
+        {
+          "at": 100.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.29999999701977,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.69999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 7,
+      "scenario": "bounded-export-72",
+      "duration": 967.1999999992549,
+      "events": [
+        {
+          "at": 100.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.39999999850988,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.59999999776483,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.3999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 483.5999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.1999999992549,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 604.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 725.2999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 846.2999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 946.8999999985099,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 967.1999999992549,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 7,
+      "scenario": "current-after-auxiliary",
+      "duration": 825.6000000014901,
+      "events": [
+        {
+          "at": 0.3999999985098839,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 201.10000000149012,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 401.8999999985099,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 602.8999999985099,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 805.3999999985099,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 825.5,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 7,
+      "scenario": "stop-inflight",
+      "duration": 120.80000000074506,
+      "events": [
+        {
+          "at": 100.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.39999999850988,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.80000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 8,
+      "scenario": "bounded-export-72",
+      "duration": 968.5999999977648,
+      "events": [
+        {
+          "at": 100.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.80000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.80000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 464,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 585.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 706.1999999992549,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.5999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 827.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.5999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 948.3000000007451,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.5,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 8,
+      "scenario": "current-after-auxiliary",
+      "duration": 826.7999999970198,
+      "events": [
+        {
+          "at": 0.3999999985098839,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 201.19999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 406,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.8999999985099,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 806.3999999985099,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 826.6999999992549,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 8,
+      "scenario": "stop-inflight",
+      "duration": 121,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.5,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 9,
+      "scenario": "bounded-export-72",
+      "duration": 968.3000000007451,
+      "events": [
+        {
+          "at": 100.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.80000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.9000000022352,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.1000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.8000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.1000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.8000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.4000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 827.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.4000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 948,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.3000000007451,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 9,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.3000000007451,
+      "events": [
+        {
+          "at": 0.4000000022351742,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200.69999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 405.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.3000000007451,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 806.6000000014901,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827.3000000007451,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 9,
+      "scenario": "stop-inflight",
+      "duration": 121.5,
+      "events": [
+        {
+          "at": 101.10000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.80000000074506,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 121.19999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 10,
+      "scenario": "bounded-export-72",
+      "duration": 967.2000000029802,
+      "events": [
+        {
+          "at": 100.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.80000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.80000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.4000000022352,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.70000000298023,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.30000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 483.70000000298023,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.4000000022352,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 604.6000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 725.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.2000000029802,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 846.3000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 946.8000000007451,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 967,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 10,
+      "scenario": "current-after-auxiliary",
+      "duration": 830.6000000014901,
+      "events": [
+        {
+          "at": 0.30000000074505806,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 204.90000000223517,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 404.4000000022352,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 609.1999999992549,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 810.4000000022352,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 830.6000000014901,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 10,
+      "scenario": "stop-inflight",
+      "duration": 121,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.39999999850988,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 11,
+      "scenario": "bounded-export-72",
+      "duration": 967.5,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.5999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 483.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 604.6999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 725.7999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.3999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 846.5999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 947.2999999970198,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 967.5,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 11,
+      "scenario": "current-after-auxiliary",
+      "duration": 828.0999999977648,
+      "events": [
+        {
+          "at": 0.30000000074505806,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 400.69999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.5999999977648,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 807.5999999977648,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 828,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 11,
+      "scenario": "stop-inflight",
+      "duration": 120.89999999850988,
+      "events": [
+        {
+          "at": 100.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.39999999850988,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 12,
+      "scenario": "bounded-export-72",
+      "duration": 968.2999999970198,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.89999999850988,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.5999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 483.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 585,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 706.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.2999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 827.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 948,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.2999999970198,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 12,
+      "scenario": "current-after-auxiliary",
+      "duration": 830.5999999977648,
+      "events": [
+        {
+          "at": 0.29999999701976776,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200.89999999850988,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 405.69999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 610.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 810.2999999970198,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 830.5999999977648,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 12,
+      "scenario": "stop-inflight",
+      "duration": 121,
+      "events": [
+        {
+          "at": 100.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.30000000074506,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.90000000223517,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 13,
+      "scenario": "bounded-export-72",
+      "duration": 967.5,
+      "events": [
+        {
+          "at": 100.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.39999999850988,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.69999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.5999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 604.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 725.7999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.3999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 846.5999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 947.1999999992549,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 967.3999999985099,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 13,
+      "scenario": "current-after-auxiliary",
+      "duration": 830.5999999977648,
+      "events": [
+        {
+          "at": 0.3999999985098839,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 205.09999999776483,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 409.8999999985099,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 609.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 810.3999999985099,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 830.5999999977648,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 13,
+      "scenario": "stop-inflight",
+      "duration": 120.89999999850988,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.39999999850988,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 14,
+      "scenario": "bounded-export-72",
+      "duration": 967.5999999977648,
+      "events": [
+        {
+          "at": 100.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.39999999850988,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.69999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.3999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.69999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 483.69999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.5999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 604.7999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.3999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 725.7999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.3999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 846.5999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 947.2999999970198,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 967.5999999977648,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 14,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.8000000007451,
+      "events": [
+        {
+          "at": 0.20000000298023224,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 400.6000000014901,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 605.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 807.3000000007451,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827.7000000029802,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 14,
+      "scenario": "stop-inflight",
+      "duration": 120.80000000074506,
+      "events": [
+        {
+          "at": 100.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.30000000074506,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.80000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 15,
+      "scenario": "bounded-export-72",
+      "duration": 968.1999999992549,
+      "events": [
+        {
+          "at": 100.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 343.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 464.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 585.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.3000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 706,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.3000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.8000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.1999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 947.8999999985099,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.1999999992549,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 15,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.5999999977648,
+      "events": [
+        {
+          "at": 0.29999999701976776,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 205,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 404.5999999977648,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.1999999992549,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 806.7999999970198,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 826.8999999985099,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 15,
+      "scenario": "stop-inflight",
+      "duration": 124,
+      "events": [
+        {
+          "at": 103.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 113.5,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 123.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 16,
+      "scenario": "bounded-export-72",
+      "duration": 969.3999999985099,
+      "events": [
+        {
+          "at": 100.79999999701977,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121.09999999776483,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 222.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 343.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 364,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 464.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 485.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 586.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 606.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 707.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 727.2999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 828.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 848.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 949.1999999992549,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 969.3999999985099,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 16,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.1000000014901,
+      "events": [
+        {
+          "at": 0.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200.40000000223517,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 399.9000000022352,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 604.6999999992549,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 806.6999999992549,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 826.9000000022352,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 16,
+      "scenario": "stop-inflight",
+      "duration": 121.29999999701977,
+      "events": [
+        {
+          "at": 100.89999999850988,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.69999999925494,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 121.29999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 17,
+      "scenario": "bounded-export-72",
+      "duration": 969.5,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121.19999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 222,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242.29999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 343.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 364,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 464.79999999701977,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 485.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 586,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 606.2999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 707.1999999992549,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 727.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 828.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 848.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 949.1999999992549,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 969.5,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 17,
+      "scenario": "current-after-auxiliary",
+      "duration": 836,
+      "events": [
+        {
+          "at": 0.30000000074505806,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 205.30000000074506,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 410.19999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 615.1999999992549,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 815.6999999992549,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 836,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 17,
+      "scenario": "stop-inflight",
+      "duration": 120.90000000223517,
+      "events": [
+        {
+          "at": 100.70000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.40000000223517,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.90000000223517,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 18,
+      "scenario": "bounded-export-72",
+      "duration": 972,
+      "events": [
+        {
+          "at": 101,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121.39999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 222.19999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242.69999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 344.30000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 364.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 465.3999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 485.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 586.8000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 607.1999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 708.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 729.1000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 830.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 850.6000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 951.6000000014901,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 971.8999999985099,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 18,
+      "scenario": "current-after-auxiliary",
+      "duration": 825.6999999992549,
+      "events": [
+        {
+          "at": 0.30000000074505806,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 400.69999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 601.6000000014901,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 805.4000000022352,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 825.6000000014901,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 18,
+      "scenario": "stop-inflight",
+      "duration": 121.5,
+      "events": [
+        {
+          "at": 101.19999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.69999999925494,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 121.30000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 19,
+      "scenario": "bounded-export-72",
+      "duration": 969.0999999977648,
+      "events": [
+        {
+          "at": 100.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 464.0999999977648,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 585.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.6999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 706.3999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.5999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 827.8000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 848.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 948.8000000007451,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 969,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 19,
+      "scenario": "current-after-auxiliary",
+      "duration": 820.7999999970198,
+      "events": [
+        {
+          "at": 0.5999999977648258,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 400.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 600.1999999992549,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 800.3999999985099,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 820.7999999970198,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 19,
+      "scenario": "stop-inflight",
+      "duration": 121.19999999925494,
+      "events": [
+        {
+          "at": 101,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.5,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 121.09999999776483,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 20,
+      "scenario": "bounded-export-72",
+      "duration": 971.7000000029802,
+      "events": [
+        {
+          "at": 100.70000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.90000000223517,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.90000000223517,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.1000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 466.4000000022352,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 486.6000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 587.4000000022352,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 607.6000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 708.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 728.9000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 830.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 850.7000000029802,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 951.4000000022352,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 971.7000000029802,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 20,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.8999999985099,
+      "events": [
+        {
+          "at": 0.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 201.19999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 405.8999999985099,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.5999999977648,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 806.8999999985099,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827.1999999992549,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 20,
+      "scenario": "stop-inflight",
+      "duration": 121.19999999925494,
+      "events": [
+        {
+          "at": 100.90000000223517,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.30000000074506,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 121.10000000149012,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 21,
+      "scenario": "bounded-export-72",
+      "duration": 969.5,
+      "events": [
+        {
+          "at": 100.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242.19999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 343.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.19999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 464.19999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.3999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 585.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 706.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 827.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 848.1000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 949.1999999992549,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 969.3999999985099,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 21,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.3999999985099,
+      "events": [
+        {
+          "at": 0.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 205.39999999850988,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 405.0999999977648,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.6999999992549,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 807.0999999977648,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827.3999999985099,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 21,
+      "scenario": "stop-inflight",
+      "duration": 122.5,
+      "events": [
+        {
+          "at": 101.20000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 111,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 122.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 22,
+      "scenario": "bounded-export-72",
+      "duration": 970.1999999992549,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 343.29999999701977,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.69999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 464.29999999701977,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 485.69999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 586.3999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 606.6999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 707.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 727.7999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 828.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 849.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 949.7999999970198,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 970.0999999977648,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 22,
+      "scenario": "current-after-auxiliary",
+      "duration": 830.9000000022352,
+      "events": [
+        {
+          "at": 0.4000000022351742,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 201.20000000298023,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 406,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 610.7000000029802,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 810.6000000014901,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 830.8000000007451,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 22,
+      "scenario": "stop-inflight",
+      "duration": 121,
+      "events": [
+        {
+          "at": 100.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.39999999850988,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 23,
+      "scenario": "bounded-export-72",
+      "duration": 969.1999999992549,
+      "events": [
+        {
+          "at": 100.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.90000000223517,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242.10000000149012,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 343,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.30000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.9000000022352,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.19999999925494,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 585.1999999992549,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.9000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 706.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.9000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 827.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 848,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 948.8000000007451,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 969.1000000014901,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 23,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.6999999992549,
+      "events": [
+        {
+          "at": 0.30000000074505806,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 205,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 404.80000000074506,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 807.3999999985099,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827.6000000014901,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 23,
+      "scenario": "stop-inflight",
+      "duration": 120.90000000223517,
+      "events": [
+        {
+          "at": 100.70000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.40000000223517,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.90000000223517,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 24,
+      "scenario": "bounded-export-72",
+      "duration": 968.1999999992549,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 483.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 604.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 725.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.6999999992549,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 846.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 947.8000000007451,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.1000000014901,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 24,
+      "scenario": "current-after-auxiliary",
+      "duration": 826.8000000007451,
+      "events": [
+        {
+          "at": 0.3999999985098839,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 201.09999999776483,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 405.80000000074506,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 806.5,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 826.8000000007451,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 24,
+      "scenario": "stop-inflight",
+      "duration": 121,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.59999999776483,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 25,
+      "scenario": "bounded-export-72",
+      "duration": 971,
+      "events": [
+        {
+          "at": 103,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 123.30000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 224,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 244.30000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 345.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 365.5,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 466.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 486.4000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 587.2000000029802,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 607.6000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 708.4000000022352,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 728.8000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 829.6000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 850,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 950.7000000029802,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 970.9000000022352,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 25,
+      "scenario": "current-after-auxiliary",
+      "duration": 831.8000000007451,
+      "events": [
+        {
+          "at": 0.19999999925494194,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200.80000000074506,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 405.69999999925494,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 610.6000000014901,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 811.4000000022352,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 831.6999999992549,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 25,
+      "scenario": "stop-inflight",
+      "duration": 121,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.5,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 26,
+      "scenario": "bounded-export-72",
+      "duration": 968.5,
+      "events": [
+        {
+          "at": 100.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.90000000223517,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 343.20000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.4000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 464.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.4000000022352,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 585.2000000029802,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.6000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 706.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.6000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 827.3000000007451,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.6000000014901,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 948.2000000029802,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.4000000022352,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 26,
+      "scenario": "current-after-auxiliary",
+      "duration": 830.6999999992549,
+      "events": [
+        {
+          "at": 0.30000000074505806,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 201,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 405.8999999985099,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 610.6999999992549,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 810.3000000007451,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 830.6000000014901,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 26,
+      "scenario": "stop-inflight",
+      "duration": 121.19999999925494,
+      "events": [
+        {
+          "at": 100.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.39999999850988,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 121.09999999776483,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 27,
+      "scenario": "bounded-export-72",
+      "duration": 970.5999999977648,
+      "events": [
+        {
+          "at": 100.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 483.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 604.7999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 725.7999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 846.7999999970198,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 950.1999999992549,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 970.5999999977648,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 27,
+      "scenario": "current-after-auxiliary",
+      "duration": 827.2000000029802,
+      "events": [
+        {
+          "at": 0.5,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200.30000000074506,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 400.9000000022352,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 605.8000000007451,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 806.9000000022352,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 827.2000000029802,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 27,
+      "scenario": "stop-inflight",
+      "duration": 121,
+      "events": [
+        {
+          "at": 100.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.5,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 28,
+      "scenario": "bounded-export-72",
+      "duration": 968.1000000014901,
+      "events": [
+        {
+          "at": 100.70000000298023,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 121,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 242,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 343,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 363.30000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 464.1000000014901,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 484.30000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 585,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.3000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.9000000022352,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.3000000007451,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.9000000022352,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.2000000029802,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 947.8000000007451,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.1000000014901,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 28,
+      "scenario": "current-after-auxiliary",
+      "duration": 830.6000000014901,
+      "events": [
+        {
+          "at": 0.30000000074505806,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 205.10000000149012,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 410,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 609.6000000014901,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 810.4000000022352,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 830.6000000014901,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 28,
+      "scenario": "stop-inflight",
+      "duration": 120.89999999850988,
+      "events": [
+        {
+          "at": 100.60000000149012,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.39999999850988,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 29,
+      "scenario": "bounded-export-72",
+      "duration": 968.2999999970198,
+      "events": [
+        {
+          "at": 100.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 120.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 221.59999999776483,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 241.89999999850988,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 10.\n\n%%\n\ncue 11.\n\n%%"
+        },
+        {
+          "at": 342.69999999925494,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 362.8999999985099,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 20.\n\n%%\n\ncue 21.\n\n%%"
+        },
+        {
+          "at": 463.5,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 483.79999999701977,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 30.\n\n%%\n\ncue 31.\n\n%%"
+        },
+        {
+          "at": 584.6999999992549,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 605.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 40.\n\n%%\n\ncue 41.\n\n%%"
+        },
+        {
+          "at": 705.7999999970198,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 726.1999999992549,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 50.\n\n%%\n\ncue 51.\n\n%%"
+        },
+        {
+          "at": 826.8999999985099,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 847.0999999977648,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 60.\n\n%%\n\ncue 61.\n\n%%"
+        },
+        {
+          "at": 947.7999999970198,
+          "phase": "execute",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        },
+        {
+          "at": 968.1999999992549,
+          "phase": "complete",
+          "items": 2,
+          "text": "cue 70.\n\n%%\n\ncue 71."
+        }
+      ]
+    },
+    {
+      "sample": 29,
+      "scenario": "current-after-auxiliary",
+      "duration": 830.5999999977648,
+      "events": [
+        {
+          "at": 0.29999999701976776,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "0"
+        },
+        {
+          "at": 200.79999999701977,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "1"
+        },
+        {
+          "at": 405.5999999977648,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "3"
+        },
+        {
+          "at": 610.3999999985099,
+          "phase": "auxiliary",
+          "items": 0,
+          "text": "2"
+        },
+        {
+          "at": 810.1999999992549,
+          "phase": "execute",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 830.5,
+          "phase": "complete",
+          "items": 5,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    },
+    {
+      "sample": 29,
+      "scenario": "stop-inflight",
+      "duration": 122.5,
+      "events": [
+        {
+          "at": 100.80000000074506,
+          "phase": "execute",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        },
+        {
+          "at": 110.5,
+          "phase": "stop",
+          "items": 0,
+          "text": ""
+        },
+        {
+          "at": 122.30000000074506,
+          "phase": "complete",
+          "items": 10,
+          "text": "cue 0.\n\n%%\n\ncue 1.\n\n%%\n\n"
+        }
+      ]
+    }
+  ],
+  "scales": [],
+  "note": "Actual production BatchQueue + RequestQueue factory in Chromium; only executeTranslate is a 20ms mock Provider. No real API calls or SW. Queue limits fixed identically in both versions."
+}

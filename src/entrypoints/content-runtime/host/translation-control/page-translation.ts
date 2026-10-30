@@ -9,21 +9,14 @@ import {
 } from "@/utils/constants/dom-labels"
 import {
   GIANT_PARAGRAPH_MAX_SPLIT_DEPTH,
-  GIANT_PARAGRAPH_SPLIT_MIN_VIEWPORT_PX,
-  GIANT_PARAGRAPH_SPLIT_VIEWPORT_MULTIPLIER,
   GIANT_SPLIT_STRANDED_TEXT_MAX_UNITS,
 } from "@/utils/constants/translate"
-import {
-  clearAppliedDocumentTitleTranslation,
-  setAppliedDocumentTitleTranslation,
-} from "@/utils/content/document-title"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
 import {
   hasNoWalkAncestor,
   isHTMLElement,
   isWalkBlockedElement as isWalkBlockedElementFilter,
 } from "@/utils/host/dom/filter"
-import { deepQueryAllSelector, deepQueryTopLevelSelector } from "@/utils/host/dom/find"
 import { isLatexmlTextBoxReflowRecord } from "@/utils/host/dom/latexml-text-box"
 import {
   canSplitGiantWithoutStrandingOwnText,
@@ -40,22 +33,33 @@ import {
   wasNodeRemovedByExtension,
 } from "@/utils/host/translate/core/translation-state"
 import { canSplitParagraphIntoDescendants } from "@/utils/host/translate/dom/paragraph-segmentation"
+import { translationActivity, type TranslationEngine } from "@/utils/host/translate/engine-state"
+import { pageLocalScheduler } from "@/utils/host/translate/local-scheduler"
 import {
   removeAllTranslatedWrapperNodes,
   translateNodes,
   translateNodesBilingualMode,
   translateWalkedElement,
 } from "@/utils/host/translate/node-manipulation"
-import { validateTranslationConfigAndToast } from "@/utils/host/translate/translate-text"
-import { translateTextForPageTitle } from "@/utils/host/translate/translate-variants"
+import { cancelTranslationScope } from "@/utils/host/translate/request-cancellation"
+import { primePageTranslationContext } from "@/utils/host/translate/translate-variants"
 import {
   beginPageTranslationSession,
+  getPageTranslationSession,
+  getPageTranslationSessionVersion,
+  replacePageTranslationSession,
+  type PageSession,
   endPageTranslationSession,
 } from "@/utils/host/translate/translation-session"
 import { cleanupNodeSiteRuleCSSIfUnused } from "@/utils/host/translate/ui/node-site-rule-css"
 import { cancelSpinnerAnimation } from "@/utils/host/translate/ui/spinner"
 import { ensureSiteRuleCSS, removeSiteRuleCSS } from "@/utils/host/translate/ui/style-injector"
-import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
+import { validateTranslationConfigAndToast } from "@/utils/host/translate/ui/translation-config-feedback"
+import {
+  getWebPageContentRevision,
+  isInPageAnchorChange,
+  releaseWebPageContext,
+} from "@/utils/host/translate/webpage-context"
 import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
 import {
@@ -64,9 +68,10 @@ import {
   resolvePageTranslationProviderOrNull,
 } from "@/utils/providers/provider-ref"
 import { removeReactShadowHost } from "@/utils/react-shadow-host/create-shadow-host"
-import { isTranslationCancelledError } from "@/utils/request/cancellation"
-import { createWorkPacer } from "@/utils/scheduler"
 import { getEffectiveSiteRule } from "@/utils/site-rules/effective"
+import { DocumentTitleTask } from "./document-title-task"
+import { DOMObservation } from "./dom-observation"
+import { ViewportScheduler, renderedHeight, maxUnitHeight } from "./viewport-scheduler"
 
 type SimpleIntersectionOptions = Omit<IntersectionObserverInit, "threshold"> & {
   threshold?: number
@@ -77,127 +82,6 @@ type DebouncedRetry = (() => void) & { clear: () => void }
 interface RetranslationBudget {
   windowStart: number
   passes: number
-}
-
-/**
- * Whether IntersectionObserver can see `element` at all. A `display: contents`
- * element generates no box: its rect is 0×0 and the observer reports it once
- * as not intersecting, then never again.
- */
-function hasBox(element: Element): boolean {
-  return element.getClientRects().length > 0
-}
-
-/**
- * The boxes a box-less element is rendered through: its nearest descendants
- * that have a box, reached through box-less descendants only, shadow roots
- * included (a `display: contents` custom element renders its shadow tree).
- */
-function collectRenderedBoxes(element: Element, boxes: Element[] = []): Element[] {
-  for (const child of [...element.children, ...(element.shadowRoot?.children ?? [])]) {
-    if (hasBox(child)) boxes.push(child)
-    else collectRenderedBoxes(child, boxes)
-  }
-  return boxes
-}
-
-/** The parent element, continuing from the top of a shadow root to its host. */
-function parentElementAcrossShadow(element: Element): Element | null {
-  const root = element.getRootNode()
-  return element.parentElement ?? (root instanceof ShadowRoot ? root.host : null)
-}
-
-/**
- * Whether `element` is box-less because it, or an ancestor below its nearest
- * rendered one, is `display: none`: a closed menu a site rule opened to the
- * walk (`walkHiddenSelectors`), where it gets a box of its own once the site
- * shows it. A `display: contents` element never gets one, open or closed, so
- * it does not count.
- */
-function isInHiddenRegion(element: Element): boolean {
-  if (window.getComputedStyle(element).display === "contents") return false
-  for (
-    let current: Element | null = element;
-    current && !hasBox(current);
-    current = parentElementAcrossShadow(current)
-  ) {
-    if (window.getComputedStyle(current).display === "none") return true
-  }
-  return false
-}
-
-/**
- * The box a box-less element's content is laid out in: its nearest ancestor
- * that has a box, through shadow roots (a plain-text unit at the top of one is
- * laid out in its host).
- */
-function findLayoutBox(element: Element): Element | null {
-  for (
-    let ancestor = parentElementAcrossShadow(element);
-    ancestor;
-    ancestor = parentElementAcrossShadow(ancestor)
-  ) {
-    if (hasBox(ancestor)) return ancestor
-  }
-  return null
-}
-
-/**
- * How tall everything laid out in `box` is. A scroll container's own box is
- * only its viewport, but all the units inside it are taken together when it
- * intersects, so its scroll extent is what has to fit a split-sized unit.
- */
-function layoutExtent(box: Element): number {
-  return Math.max(box.getBoundingClientRect().height, box.scrollHeight)
-}
-
-/**
- * Height used by the giant-unit split. A box-less unit is measured across the
- * boxes it renders through, counting what each lays out (a scrolling list
- * inside it holds its whole history); its own 0×0 rect would let a tall one
- * pass as short and translate whole on the first intersection (#1881). Units
- * with a box keep their own height, zero included.
- */
-function renderedHeight(unit: HTMLElement): number {
-  const { height } = unit.getBoundingClientRect()
-  if (height > 0 || hasBox(unit)) return height
-
-  let top = Infinity
-  let bottom = -Infinity
-  for (const box of collectRenderedBoxes(unit)) {
-    const rect = box.getBoundingClientRect()
-    top = Math.min(top, rect.top)
-    bottom = Math.max(bottom, rect.top + layoutExtent(box))
-  }
-  return bottom > top ? bottom - top : 0
-}
-
-/** The tallest unit translated in one go; taller ones are split first (#1881). */
-function maxUnitHeight(): number {
-  return (
-    Math.max(window.innerHeight, GIANT_PARAGRAPH_SPLIT_MIN_VIEWPORT_PX) *
-    GIANT_PARAGRAPH_SPLIT_VIEWPORT_MULTIPLIER
-  )
-}
-
-/** The same cap across, for content laid out side by side. */
-function maxUnitWidth(): number {
-  return (
-    Math.max(window.innerWidth, GIANT_PARAGRAPH_SPLIT_MIN_VIEWPORT_PX) *
-    GIANT_PARAGRAPH_SPLIT_VIEWPORT_MULTIPLIER
-  )
-}
-
-/**
- * Whether everything laid out in `box` may be taken in one go when it
- * intersects. Its scroll extent counts in both directions: a short list can
- * hold a long history, and a narrow one a long row.
- */
-function layoutFitsSplitCap(box: Element): boolean {
-  const rect = box.getBoundingClientRect()
-  return (
-    layoutExtent(box) <= maxUnitHeight() && Math.max(rect.width, box.scrollWidth) <= maxUnitWidth()
-  )
 }
 
 interface IPageTranslationManager {
@@ -247,7 +131,9 @@ interface IPageTranslationManager {
   registerPageTranslationTriggers: () => () => void
 }
 
-export class PageTranslationManager implements IPageTranslationManager {
+export class PageTranslationManager implements IPageTranslationManager, TranslationEngine {
+  readonly getSnapshot = translationActivity.getSnapshot
+  readonly subscribe = translationActivity.subscribe
   private static readonly MAX_DURATION = 500
   private static readonly MOVE_THRESHOLD = 30 * 30
   /** Max synchronous passes of the retranslation loop per invocation. */
@@ -262,20 +148,19 @@ export class PageTranslationManager implements IPageTranslationManager {
     threshold: 0.1,
   }
 
-  private isPageTranslating: boolean = false
+  private session: PageSession | undefined
+  private get isPageTranslating(): boolean {
+    return !!this.session && !this.session.lifetimeSignal.aborted
+  }
   /** Non-null while a start() is between its guard and activation; see start(). */
   private pendingStart: symbol | null = null
-  private intersectionObserver: IntersectionObserver | null = null
-  /**
-   * Gates box-less units on the boxes they render through (see observeUnit).
-   * Created for the first such unit, so most pages never get one.
-   */
-  private boxlessUnitObserver: IntersectionObserver | null = null
-  /** Box-less units still waiting for one of their boxes to intersect. */
-  private pendingBoxlessUnits = new WeakSet<HTMLElement>()
-  private mutationObservers: MutationObserver[] = []
-  private observedMutationRoots = new WeakSet<Node>()
+  private viewport: ViewportScheduler | undefined
+  private readonly domObservation = new DOMObservation()
   private walkId: string | null = null
+  private readonly onPageHide = () => this.stop()
+  private requestSessionUrl: string | undefined
+  private contextPrimed = false
+  private paragraphChildren = new WeakMap<HTMLElement, HTMLElement[]>()
   private intersectionOptions: IntersectionObserverInit
   private walkBlockedElementsCache = new WeakSet<HTMLElement>()
   private ancestorsWithWalkBlockedElements = new WeakSet<HTMLElement>()
@@ -289,16 +174,12 @@ export class PageTranslationManager implements IPageTranslationManager {
   // Strong and enumerable so stop() can cancel in-flight retries; entries are
   // removed when a retry fires, so the set only holds armed timers.
   private pendingRetranslateRetries = new Set<DebouncedRetry>()
-  private translationSessionVersion = 0
+  private get translationSessionVersion(): number {
+    return getPageTranslationSessionVersion()
+  }
   /** Pending initial chunked walk; mutation handling serializes behind it. */
   private initialWalkDone: Promise<void> | null = null
-  private titleObserver: MutationObserver | null = null
-  // Non-null exactly while the tab title is being tracked.
-  private lastSourceTitle: string | null = null
-  private lastAppliedTranslatedTitle: string | null = null
-  // Never reset: a request from before a stop or a switch-off must not match
-  // a later one's version.
-  private titleRequestVersion = 0
+  private readonly titleTask = new DocumentTitleTask(() => this.isPageTranslating)
   // The "translate tab title" switch: read when a session starts, then kept
   // current by setTitleTranslationEnabled.
   private titleTranslationEnabled = true
@@ -388,11 +269,13 @@ export class PageTranslationManager implements IPageTranslationManager {
     // below tears the session down instead of racing a pending start. The
     // session-version checks after each await abort the rest of the setup
     // once such a teardown (or a newer session) has happened.
-    this.isPageTranslating = true
-    this.translationSessionVersion += 1
+    this.requestSessionUrl = window.location.href
+    beginPageTranslationSession(config, getWebPageContentRevision)
+    this.session = getPageTranslationSession()!
+    this.session.own(() => this.releaseDomResources())
     const sessionVersion = this.translationSessionVersion
-
-    beginPageTranslationSession()
+    window.addEventListener("pagehide", this.onPageHide)
+    this.contextPrimed = false
 
     try {
       await sendMessage("setAndNotifyPageTranslationStateChangedByManager", {
@@ -417,12 +300,9 @@ export class PageTranslationManager implements IPageTranslationManager {
       void ensureSiteRuleCSS(document, siteRule.injectedCss)
     }
 
-    // Same predicate `getWebPagePromptContext` uses to decide whether it
-
-    // only moves the Defuddle full-document parse out of setup and into the
-    // first translation call, where it blocks the first visible paragraph
-    // and janks the main thread on a long page.
-    await this.primeDocumentTitleContext(
+    // Capture only source metadata before title translation. Content and
+    // summary preparation begin when the walk discovers its first paragraph.
+    await this.titleTask.prime(
       config.pageTranslation.enableAIContentAware &&
         canResolvedProviderRefGenerateText(providerConfig),
     )
@@ -432,23 +312,17 @@ export class PageTranslationManager implements IPageTranslationManager {
     // The live value, not the config read above: the switch may have been
     // flipped while this start was awaiting.
     if (this.titleTranslationEnabled) {
-      this.startDocumentTitleTracking()
+      this.titleTask.start()
     }
 
     // Listen to existing elements when they enter the viewport
     const walkId = getRandomUUID()
     this.walkId = walkId
-    this.intersectionObserver = new IntersectionObserver((entries, observer) => {
-      const targets: HTMLElement[] = []
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue
-        observer.unobserve(entry.target)
-        if (isHTMLElement(entry.target) && !entry.target.closest(`.${CONTENT_WRAPPER_CLASS}`)) {
-          targets.push(entry.target)
-        }
-      }
-      this.translateIntersectedUnits(targets, walkId)
-    }, this.intersectionOptions)
+    const viewport = new ViewportScheduler(this.intersectionOptions, (units) =>
+      this.translateIntersectedUnits(units, walkId),
+    )
+    this.viewport = viewport
+    this.session?.own(() => viewport.dispose())
 
     // Observe mutations BEFORE the chunked walk: page JS runs between walk
     // slices, and records emitted meanwhile must not be lost. The walk only
@@ -492,9 +366,9 @@ export class PageTranslationManager implements IPageTranslationManager {
       return
     }
     if (enabled) {
-      this.startDocumentTitleTracking()
+      this.titleTask.start()
     } else {
-      this.stopDocumentTitleTracking()
+      this.titleTask.dispose()
     }
   }
 
@@ -508,6 +382,24 @@ export class PageTranslationManager implements IPageTranslationManager {
     if (!this.isPageTranslating) return
     const config = await getLocalConfig()
     if (!config || !this.isPageTranslating) return
+    const url = window.location.href
+    if (
+      this.requestSessionUrl &&
+      this.requestSessionUrl !== url &&
+      !isInPageAnchorChange(this.requestSessionUrl, url)
+    ) {
+      const oldSignal = this.session?.signal
+      const oldSession = replacePageTranslationSession(config)
+      if (oldSession)
+        void cancelTranslationScope(oldSession, oldSignal).catch(() =>
+          logger.warn("Failed to cancel navigation requests"),
+        )
+      this.session = getPageTranslationSession()
+      releaseWebPageContext()
+      this.contextPrimed = false
+      this.titleTask.invalidate()
+    }
+    this.requestSessionUrl = url
 
     const siteRule = getEffectiveSiteRule(config, window.location.href)
     if (siteRule.injectedCss) {
@@ -531,6 +423,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     // is not active yet, so the guard below would no-op this stop and the
     // pending start would activate translation after the user cancelled.
     this.pendingStart = null
+    window.removeEventListener("pagehide", this.onPageHide)
 
     if (!this.isPageTranslating) {
       console.warn("PageTranslationManager is already inactive")
@@ -545,20 +438,24 @@ export class PageTranslationManager implements IPageTranslationManager {
       })
     }
 
-    // Drain this session's queued/in-flight requests in the background —
-
-    // after the user cancels (#1881). Fire-and-forget: the synchronous DOM
+    // Drain this session's queued/in-flight requests after cancellation.
+    // Fire-and-forget: the synchronous DOM
     // cleanup below finishes long before any rejection lands.
+    const endedSignal = this.session?.signal
     const endedSessionId = endPageTranslationSession()
     if (endedSessionId) {
-      void sendMessage("cancelPageTranslationRequests", { sessionId: endedSessionId }).catch(() =>
+      void cancelTranslationScope(endedSessionId, endedSignal).catch(() =>
         logger.warn("Failed to cancel pending translation requests"),
       )
     }
+  }
 
-    this.isPageTranslating = false
-    this.translationSessionVersion += 1
+  private releaseDomResources(): void {
+    window.removeEventListener("pagehide", this.onPageHide)
+    this.session = undefined
     this.walkId = null
+    this.contextPrimed = false
+    this.paragraphChildren = new WeakMap()
     this.walkBlockedElementsCache = new WeakSet()
     this.ancestorsWithWalkBlockedElements = new WeakSet()
     this.refreshingTranslatedSources = new WeakSet()
@@ -568,20 +465,11 @@ export class PageTranslationManager implements IPageTranslationManager {
     this.pendingRetranslateRetries.clear()
     this.retranslateRetries = new WeakMap()
     this.retranslationBudgets = new WeakMap()
-    this.stopDocumentTitleTracking()
+    this.titleTask.dispose()
 
-    if (this.intersectionObserver) {
-      this.intersectionObserver.disconnect()
-      this.intersectionObserver = null
-    }
-    if (this.boxlessUnitObserver) {
-      this.boxlessUnitObserver.disconnect()
-      this.boxlessUnitObserver = null
-    }
-    this.pendingBoxlessUnits = new WeakSet()
-    this.mutationObservers.forEach((observer) => observer.disconnect())
-    this.mutationObservers = []
-    this.observedMutationRoots = new WeakSet()
+    this.viewport?.dispose()
+    this.viewport = undefined
+    this.domObservation.dispose()
 
     removeSiteRuleCSS(document)
     removeAllTranslatedWrapperNodes()
@@ -643,137 +531,12 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
   }
 
-  private shouldManageDocumentTitle(): boolean {
-    return window === window.top
-  }
-
-  private async primeDocumentTitleContext(shouldPrimeWebPageContext: boolean): Promise<void> {
-    if (!this.shouldManageDocumentTitle() || !shouldPrimeWebPageContext) {
-      return
-    }
-
-    try {
-      await getOrCreateWebPageContext()
-    } catch {
-      logger.warn("Failed to prime webpage context before translating document title:")
-    }
-  }
-
-  private startDocumentTitleTracking(): void {
-    if (!this.shouldManageDocumentTitle() || this.lastSourceTitle !== null) {
-      return
-    }
-
-    this.lastSourceTitle = document.title || ""
-    this.lastAppliedTranslatedTitle = null
-
-    this.observeDocumentTitle()
-    void this.syncDocumentTitle(this.lastSourceTitle)
-  }
-
-  private stopDocumentTitleTracking(): void {
-    if (!this.shouldManageDocumentTitle() || this.lastSourceTitle === null) {
-      return
-    }
-
-    const currentTitle = document.title || ""
-    if (currentTitle !== this.lastAppliedTranslatedTitle) {
-      this.lastSourceTitle = currentTitle
-    }
-
-    if (this.titleObserver) {
-      this.titleObserver.disconnect()
-      this.titleObserver = null
-    }
-
-    this.titleRequestVersion++
-
-    if (this.lastSourceTitle !== null && document.title !== this.lastSourceTitle) {
-      document.title = this.lastSourceTitle
-    }
-    clearAppliedDocumentTitleTranslation()
-
-    this.lastSourceTitle = null
-    this.lastAppliedTranslatedTitle = null
-  }
-
-  private observeDocumentTitle(): void {
-    if (!document.head) {
-      return
-    }
-
-    if (this.titleObserver) {
-      this.titleObserver.disconnect()
-    }
-
-    this.titleObserver = new MutationObserver(() => {
-      this.handleDocumentTitleMutation()
-    })
-
-    this.titleObserver.observe(document.head, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-    })
-  }
-
-  private handleDocumentTitleMutation(): void {
-    if (!this.isPageTranslating || !this.shouldManageDocumentTitle()) {
-      return
-    }
-
-    const currentTitle = document.title || ""
-
-    if (currentTitle === this.lastSourceTitle) {
-      return
-    }
-
-    if (currentTitle === this.lastAppliedTranslatedTitle) {
-      return
-    }
-
-    this.lastSourceTitle = currentTitle
-    void this.syncDocumentTitle(currentTitle)
-  }
-
-  private async syncDocumentTitle(sourceTitle: string): Promise<void> {
-    if (!sourceTitle.trim() || !this.isPageTranslating || !this.shouldManageDocumentTitle()) {
-      return
-    }
-
-    const requestVersion = ++this.titleRequestVersion
-
-    try {
-      const translatedTitle = await translateTextForPageTitle(sourceTitle)
-      if (!this.isPageTranslating || requestVersion !== this.titleRequestVersion) {
-        return
-      }
-
-      const nextTitle = translatedTitle || sourceTitle
-      this.lastAppliedTranslatedTitle = nextTitle
-      // Before the write, so no prompt can see the translation without it.
-      setAppliedDocumentTitleTranslation(sourceTitle, nextTitle)
-
-      if (document.title === nextTitle) {
-        return
-      }
-
-      document.title = nextTitle
-    } catch (error) {
-      // A cancelled session's title request rejecting is expected, not noise.
-      if (isTranslationCancelledError(error)) return
-      if (requestVersion === this.titleRequestVersion) {
-        logger.warn("Failed to translate document title:")
-      }
-    }
-  }
-
   private async observeTopLevelParagraphs(
     container: HTMLElement,
     existingConfig?: Config,
     options: { chunked?: boolean } = {},
   ): Promise<void> {
-    const observer = this.intersectionObserver
+    const observer = this.viewport
     // Capture locals: this method awaits, and `this.walkId` may belong to a
     // newer session by the time an await resumes.
     const walkId = this.walkId
@@ -789,17 +552,27 @@ export class PageTranslationManager implements IPageTranslationManager {
     // Skip if container has an ancestor that should not be walked into
     if (hasNoWalkAncestor(container, config)) return
 
+    const discovered: HTMLElement[] = []
+    const onParagraph = (element: HTMLElement) => {
+      discovered.push(element)
+      if (!this.contextPrimed) {
+        this.contextPrimed = true
+        primePageTranslationContext(config)
+      }
+    }
     const onBlockedElement = (element: HTMLElement) => {
       this.cacheWalkBlockedElement(element)
     }
-    if (options.chunked) {
+    if (options.chunked !== false) {
       const result = await walkAndLabelElementChunked(container, walkId, config, {
         onBlockedElement,
+        onParagraph,
+        signal: this.session?.lifetimeSignal,
         shouldContinue: () => this.isPageTranslating && this.walkId === walkId,
       })
       if (result === null || this.walkId !== walkId) return
     } else {
-      walkAndLabelElement(container, walkId, config, { onBlockedElement })
+      walkAndLabelElement(container, walkId, config, { onBlockedElement, onParagraph })
     }
 
     // if container itself has paragraph and the id
@@ -807,19 +580,45 @@ export class PageTranslationManager implements IPageTranslationManager {
       container.hasAttribute("data-read-frog-paragraph") &&
       container.getAttribute("data-read-frog-walked") === walkId
     ) {
-      this.observeParagraphUnit(container, walkId, config, 0)
+      await this.observeParagraphUnit(container, walkId, config, 0)
       return
     }
 
-    const paragraphs = this.collectParagraphElementsDeep(container, walkId)
-    const topLevelParagraphs = paragraphs.filter((el) => {
-      const ancestor = el.parentElement?.closest("[data-read-frog-paragraph]")
-      // keep it if either:
-      //  • no paragraph ancestor at all, or
-      //  • the ancestor is *not* inside container
-      return !ancestor || !container.contains(ancestor)
-    })
-    topLevelParagraphs.forEach((el) => this.observeParagraphUnit(el, walkId, config, 0))
+    const paragraphs = discovered.length
+      ? discovered
+      : this.collectParagraphElementsDeep(container, walkId)
+    await pageLocalScheduler.run(
+      this.registerDiscoveredParagraphs(paragraphs, container, walkId, config),
+      {
+        current: () => this.walkId === walkId,
+        signal: this.session?.lifetimeSignal,
+      },
+    )
+  }
+
+  private *registerDiscoveredParagraphs(
+    paragraphs: HTMLElement[],
+    container: HTMLElement,
+    walkId: string,
+    config: Config,
+  ): Generator<void> {
+    const descendants = new Map<HTMLElement, HTMLElement[]>()
+    for (const paragraph of paragraphs) {
+      yield
+      const parent = paragraph.parentElement?.closest<HTMLElement>("[data-read-frog-paragraph]")
+      if (parent && parent !== paragraph) {
+        const children = descendants.get(parent) ?? []
+        children.push(paragraph)
+        descendants.set(parent, children)
+      }
+    }
+    for (const [parent, children] of descendants) this.paragraphChildren.set(parent, children)
+    for (const paragraph of paragraphs) {
+      yield
+      const ancestor = paragraph.parentElement?.closest("[data-read-frog-paragraph]")
+      if (!ancestor || !container.contains(ancestor))
+        yield* this.expandParagraphUnits(paragraph, walkId, config, 0)
+    }
   }
 
   /**
@@ -843,32 +642,45 @@ export class PageTranslationManager implements IPageTranslationManager {
    * Exception: a newline-preserving flow container is never split into
    * inline descendants — see canSplitParagraphIntoDescendants.
    */
-  private observeParagraphUnit(
+  private async observeParagraphUnit(
     element: HTMLElement,
     walkId: string,
     config: Config,
     depth: number,
-  ): void {
-    const observer = this.intersectionObserver
+  ): Promise<void> {
+    await pageLocalScheduler.run(this.expandParagraphUnits(element, walkId, config, depth), {
+      current: () => this.walkId === walkId,
+      signal: this.session?.lifetimeSignal,
+    })
+  }
+
+  private *expandParagraphUnits(
+    element: HTMLElement,
+    walkId: string,
+    config: Config,
+    depth: number,
+  ): Generator<void> {
+    yield
+    const observer = this.viewport
     if (!observer) return
 
     if (depth >= GIANT_PARAGRAPH_MAX_SPLIT_DEPTH || renderedHeight(element) <= maxUnitHeight()) {
-      this.observeUnit(observer, element, walkId)
+      observer.observe(element)
       return
     }
 
-    const innerTopLevelParagraphs = this.collectParagraphElementsDeep(element, walkId).filter(
-      (paragraph) => {
-        if (paragraph === element) return false
-        const ancestor = paragraph.parentElement?.closest("[data-read-frog-paragraph]")
-        // Keep only paragraphs whose nearest paragraph ancestor is the giant
-        // itself (or that have none inside it, e.g. across shadow roots).
-        return !ancestor || ancestor === element || !element.contains(ancestor)
-      },
-    )
+    const innerTopLevelParagraphs = (
+      this.paragraphChildren.get(element) ?? this.collectParagraphElementsDeep(element, walkId)
+    ).filter((paragraph) => {
+      if (paragraph === element) return false
+      const ancestor = paragraph.parentElement?.closest("[data-read-frog-paragraph]")
+      // Keep only paragraphs whose nearest paragraph ancestor is the giant
+      // itself (or that have none inside it, e.g. across shadow roots).
+      return !ancestor || ancestor === element || !element.contains(ancestor)
+    })
     if (innerTopLevelParagraphs.length === 0) {
       // Unsplittable giant (no nested paragraphs) — observe it whole.
-      this.observeUnit(observer, element, walkId)
+      observer.observe(element)
       return
     }
     if (
@@ -884,7 +696,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       element !== element.ownerDocument.body &&
       !canSplitGiantWithoutStrandingOwnText(element)
     ) {
-      this.observeUnit(observer, element, walkId)
+      observer.observe(element)
       return
     }
     if (!canSplitParagraphIntoDescendants(element, innerTopLevelParagraphs, config)) {
@@ -899,111 +711,11 @@ export class PageTranslationManager implements IPageTranslationManager {
       // rather than here: bilingual can interleave a wrapper at any boundary,
       // while translationOnly has to cut the units apart into whole nodes and
       // therefore keeps per-span observation for the plans it cannot express.
-      this.observeUnit(observer, element, walkId)
+      observer.observe(element)
       return
     }
     for (const paragraph of innerTopLevelParagraphs) {
-      this.observeParagraphUnit(paragraph, walkId, config, depth + 1)
-    }
-  }
-
-  /**
-   * Hand one paragraph unit to the viewport gate.
-   *
-   * A unit with a box is observed directly, as before. A box-less unit
-   * (`display: contents`; Telegram web wraps every message in one) can never
-   * intersect, so it would never translate. It is gated on boxes instead:
-   * preferably the box its content is laid out in, which covers all of it,
-   * plain text included; when what that box lays out is larger than a
-   * split-sized unit (a long column, a scrolling list or row), the unit's own
-   * inner boxes. A unit with neither keeps the direct observation.
-   *
-   * A unit inside a closed menu is box-less too, but it is observed directly
-   * like a rendered one: it intersects once the site shows it. Gating it on a
-   * visible ancestor would translate every closed menu on the page up front,
-   * ahead of the content on screen.
-   */
-  private observeUnit(observer: IntersectionObserver, unit: HTMLElement, walkId: string): void {
-    if (hasBox(unit) || isInHiddenRegion(unit)) {
-      // It may have been box-less when first registered; its old gate must not
-      // translate it a second time.
-      this.pendingBoxlessUnits.delete(unit)
-      observer.observe(unit)
-      return
-    }
-    const layoutBox = findLayoutBox(unit)
-    const boxes =
-      layoutBox && layoutFitsSplitCap(layoutBox) ? [layoutBox] : collectRenderedBoxes(unit)
-    if (boxes.length === 0) {
-      observer.observe(unit)
-      return
-    }
-    this.pendingBoxlessUnits.add(unit)
-    const boxlessUnitObserver = this.getBoxlessUnitObserver(walkId)
-    for (const box of boxes) boxlessUnitObserver.observe(box)
-  }
-
-  /** Run a pending unit's registration again against the page as it is now. */
-  private registerUnitAgain(unit: HTMLElement): void {
-    if (this.intersectionObserver && this.walkId) {
-      this.observeUnit(this.intersectionObserver, unit, this.walkId)
-    }
-  }
-
-  private getBoxlessUnitObserver(walkId: string): IntersectionObserver {
-    this.boxlessUnitObserver ??= new IntersectionObserver((entries, observer) => {
-      const units: HTMLElement[] = []
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue
-        observer.unobserve(entry.target)
-        units.push(...this.takePendingUnitsAt(entry.target))
-      }
-      this.translateIntersectedUnits(units, walkId)
-    }, this.intersectionOptions)
-    return this.boxlessUnitObserver
-  }
-
-  private takePendingUnitsAt(box: Element): HTMLElement[] {
-    const units: HTMLElement[] = []
-    const take = (element: Element) => {
-      if (
-        isHTMLElement(element) &&
-        this.pendingBoxlessUnits.delete(element) &&
-        !element.closest(`.${CONTENT_WRAPPER_CLASS}`)
-      ) {
-        units.push(element)
-      }
-    }
-    for (
-      let element = parentElementAcrossShadow(box);
-      element;
-      element = parentElementAcrossShadow(element)
-    ) {
-      take(element)
-    }
-    // Every match, nested ones included: the box is unobserved after this, so a
-    // pending unit left inside another one would have nothing left to fire it.
-    // Taking them together is only safe while all of it fits a split-sized
-    // unit; a box that grew past that since it was chosen (history loaded in
-    // while it was off-screen) gives each unit a gate of its own instead.
-    if (isHTMLElement(box)) {
-      const inside = deepQueryAllSelector(box, (element) => this.pendingBoxlessUnits.has(element))
-      if (layoutFitsSplitCap(box)) inside.forEach(take)
-      else inside.forEach((unit) => this.registerUnitAgain(unit))
-    }
-    return units
-  }
-
-  /**
-   * Removed subtrees are unobserved whether or not they held a pending unit, so
-   * virtualized or re-rendered content does not stay observed after it is gone.
-   */
-  private unobserveRemovedGates(record: MutationRecord): void {
-    const observer = this.boxlessUnitObserver
-    if (!observer) return
-    for (const node of record.removedNodes) {
-      if (!isHTMLElement(node)) continue
-      for (const removed of deepQueryAllSelector(node, () => true)) observer.unobserve(removed)
+      yield* this.expandParagraphUnits(paragraph, walkId, config, depth + 1)
     }
   }
 
@@ -1018,14 +730,21 @@ export class PageTranslationManager implements IPageTranslationManager {
         return
       }
       if (this.walkId !== walkId) return
-      // One shared pacer bounds the batch's synchronous expansion work;
-      // the liveness check stops paced expansion promptly if the user
-      // cancels mid-flight (#1881).
-      const pacer = createWorkPacer()
+      // All viewport callbacks use the same local scheduler. Only local work
+      // is serialized; each paragraph's network request remains concurrent.
       const isWalkCurrent = () => this.walkId === walkId
-      for (const unit of units) {
-        void translateWalkedElement(unit, walkId, currentConfig, false, pacer, isWalkCurrent)
-      }
+      const signal = this.session?.signal
+      await pageLocalScheduler.run(
+        (function* () {
+          for (const unit of units) {
+            yield
+            void Promise.resolve(
+              translateWalkedElement(unit, walkId, currentConfig, false, isWalkCurrent),
+            ).catch((error) => logger.warn("Viewport translation failed", error))
+          }
+        })(),
+        { current: isWalkCurrent, signal, foreground: true },
+      )
     })()
   }
 
@@ -1129,38 +848,15 @@ export class PageTranslationManager implements IPageTranslationManager {
   }
 
   /**
-   * Initialize walkability state for an element and its descendants
-   */
-  private addWalkBlockedElements(element: HTMLElement, config: Config): void {
-    const walkBlockedElements = deepQueryTopLevelSelector(element, (el) =>
-      this.isWalkBlockedElement(el, config),
-    )
-    walkBlockedElements.forEach((el) => this.cacheWalkBlockedElement(el))
-  }
-
-  /**
    * Start observing mutations for a container and all its shadow roots
    */
-  private observeMutations(container: HTMLElement, config?: Config): void {
-    // Dynamic pages re-add the same subtrees repeatedly; without dedup every
-    // re-added shadow host gained a duplicate subtree observer (#1831).
-    if (!this.observedMutationRoots.has(container)) {
-      this.observedMutationRoots.add(container)
-      const mutationObserver = new MutationObserver((records) => {
-        void this.handleMutationRecords(records, container)
-      })
-
-      mutationObserver.observe(container, {
-        childList: true,
-        subtree: true,
-        characterData: true,
-        attributes: true,
-        attributeFilter: ["style", "class", "hidden", "aria-hidden"],
-      })
-
-      this.mutationObservers.push(mutationObserver)
-    }
-    this.observeIsolatedDescendantsMutations(container, config)
+  private observeMutations(container: HTMLElement, config?: Config, discover = true): void {
+    this.domObservation.observe(container, (records, root) => {
+      void this.handleMutationRecords(records, root).catch((error) =>
+        logger.warn("Mutation processing failed", error),
+      )
+    })
+    if (discover) this.observeIsolatedDescendantsMutations(container, config)
   }
 
   private static readonly SELF_NODE_CLASSES = [
@@ -1182,7 +878,10 @@ export class PageTranslationManager implements IPageTranslationManager {
    * fuel for the next retranslation (#1831). Site-driven removals of our
    * wrappers stay classified as host mutations so they retranslate once.
    */
-  private isSelfInflictedRecord(record: MutationRecord): boolean {
+  private isSelfInflictedRecord(
+    record: MutationRecord,
+    checkedWrappers?: WeakMap<HTMLElement, boolean>,
+  ): boolean {
     // Wrapper classes/styles are set before insertion and data-read-frog-*
     // labels are not observed, so attribute records are never self-caused.
     if (record.type === "attributes") return false
@@ -1204,12 +903,16 @@ export class PageTranslationManager implements IPageTranslationManager {
       // staleness walk so the budgeted retranslation repairs the wrapper. The
       // null snapshot covers the construction window and error-UI wrappers,
       // keeping their churn classified self-inflicted exactly as before.
+      const previous = checkedWrappers?.get(wrapperElement)
+      if (previous !== undefined) return previous
       const state = getBilingualTranslationStateForWrapper(wrapperElement)
-      return !(
+      const own = !(
         state &&
         state.wrapperTextContent !== null &&
         wrapperElement.textContent !== state.wrapperTextContent
       )
+      checkedWrappers?.set(wrapperElement, own)
+      return own
     }
     if (record.type !== "childList") return false
     const added = [...record.addedNodes]
@@ -1324,6 +1027,7 @@ export class PageTranslationManager implements IPageTranslationManager {
   ): Promise<void> {
     const sessionVersion = this.translationSessionVersion
     const hostRecords: MutationRecord[] = []
+    const checkedWrappers = new WeakMap<HTMLElement, boolean>()
     for (const record of records) {
       if (record.type === "childList") {
         // Must run before the first await: carrying is only invisible while
@@ -1333,7 +1037,7 @@ export class PageTranslationManager implements IPageTranslationManager {
         }
         this.cleanupDetachedTranslationArtifacts(record.removedNodes)
       }
-      if (!this.isSelfInflictedRecord(record)) hostRecords.push(record)
+      if (!this.isSelfInflictedRecord(record, checkedWrappers)) hostRecords.push(record)
     }
     if (hostRecords.length === 0) return
 
@@ -1347,11 +1051,13 @@ export class PageTranslationManager implements IPageTranslationManager {
     }
 
     const staleTranslatedSources = new Set<HTMLElement>()
+    const checkedBilingualSources = new WeakMap<HTMLElement, boolean>()
+    const checkedSwapSources = new WeakMap<HTMLElement, boolean>()
     for (const record of hostRecords) {
-      const staleSource = findStaleBilingualLayoutSource(record.target)
+      const staleSource = findStaleBilingualLayoutSource(record.target, checkedBilingualSources)
       if (staleSource) staleTranslatedSources.add(staleSource)
       // In-place-swapped anchors must also recover after host edits.
-      const staleAnchor = findStaleTranslationOnlyAnchor(record.target)
+      const staleAnchor = findStaleTranslationOnlyAnchor(record.target, checkedSwapSources)
       if (staleAnchor) staleTranslatedSources.add(staleAnchor)
     }
     staleTranslatedSources.forEach((source) => {
@@ -1394,9 +1100,10 @@ export class PageTranslationManager implements IPageTranslationManager {
     // Recovery already walked and registered the whole enclosing tree. Still
     // refresh stale translations below, but do not walk each addition again.
     const traversalRecords = revealedRoot ? [] : hostRecords
+    const scannedAdditions = new Set<HTMLElement>()
     for (const rec of traversalRecords) {
       if (rec.type === "childList") {
-        this.unobserveRemovedGates(rec)
+        this.viewport?.unobserveRemovedGates(rec)
         // A node added inside an already-registered bilingual source is that
         // source's business, never a translation unit of its own. Walking it as
         // a fresh walk root recomputes "top-level paragraph" relative to the
@@ -1418,8 +1125,8 @@ export class PageTranslationManager implements IPageTranslationManager {
           continue
         }
         rec.addedNodes.forEach((node) => {
-          if (isHTMLElement(node)) {
-            this.addWalkBlockedElements(node, config)
+          if (isHTMLElement(node) && !scannedAdditions.has(node)) {
+            scannedAdditions.add(node)
             void this.observeTopLevelParagraphs(node, config)
             this.observeIsolatedDescendantsMutations(node, config)
           }
@@ -1585,35 +1292,43 @@ export class PageTranslationManager implements IPageTranslationManager {
     config?: Config,
     options: { scanIsolatedTrees?: boolean } = {},
   ): void {
-    // Always discover observers: external CSS dependencies can reveal a host
-    // without a mutation on the host or its ancestors. Only scanning is gated.
-    const canScan = !config || !hasNoWalkAncestor(element, config)
+    const walkId = this.walkId
+    const iterator = this.discoverIsolatedRoots(element, config, options.scanIsolatedTrees ?? false)
+    void pageLocalScheduler
+      .run(iterator, {
+        current: () => this.walkId === walkId && this.isPageTranslating,
+        signal: this.session?.lifetimeSignal,
+      })
+      .catch((error) => logger.warn("Isolated-root discovery failed", error))
+  }
 
-    const visit = (current: HTMLElement, ancestorsWalkable: boolean): void => {
-      let walkable = ancestorsWalkable
-      if (config && ancestorsWalkable && this.isWalkBlockedElement(current, config)) {
+  private *discoverIsolatedRoots(
+    element: HTMLElement,
+    config: Config | undefined,
+    scan: boolean,
+  ): Generator<void> {
+    const stack = [{ element, walkable: !config || !hasNoWalkAncestor(element, config), scan }]
+    while (stack.length) {
+      yield
+      const entry = stack.pop()!
+      const current = entry.element
+      let walkable = entry.walkable
+      if (config && walkable && this.isWalkBlockedElement(current, config)) {
         this.cacheWalkBlockedElement(current)
         walkable = false
       }
-
       if (current.shadowRoot) {
         for (const child of current.shadowRoot.children) {
-          if (isHTMLElement(child)) {
-            this.observeMutations(child, config)
-            // Only the current-source shortcut needs a separate isolated walk.
-            // The walker already crosses nested shadow roots, so recursive
-            // observer registration above must not scan those subtrees again.
-            if (config && options.scanIsolatedTrees && walkable) {
-              void this.observeTopLevelParagraphs(child, config)
-            }
-          }
+          if (!isHTMLElement(child)) continue
+          this.observeMutations(child, config, false)
+          if (config && entry.scan && walkable) void this.observeTopLevelParagraphs(child, config)
+          stack.push({ element: child, walkable, scan: false })
         }
       }
-
-      for (const child of current.children) {
-        if (isHTMLElement(child)) visit(child, walkable)
+      for (let index = current.children.length - 1; index >= 0; index--) {
+        const child = current.children[index]!
+        if (isHTMLElement(child)) stack.push({ element: child, walkable, scan: entry.scan })
       }
     }
-    visit(element, canScan)
   }
 }

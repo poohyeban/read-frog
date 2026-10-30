@@ -48,6 +48,7 @@ beforeEach(() => {
 afterEach(() => {
   for (const coordinator of coordinators.splice(0)) coordinator.stop()
   vi.resetAllMocks()
+  vi.useRealTimers()
 })
 
 describe("subtitle translation recovery", () => {
@@ -63,10 +64,11 @@ describe("subtitle translation recovery", () => {
     vi.mocked(getLocalConfig).mockRejectedValue(new Error("Extension context invalidated."))
     vi.mocked(translateSubtitles).mockRejectedValue(new Error("Extension context invalidated."))
     const fragments = [{ text: "Still visible after reload", start: 0, end: 10_000 }]
-    const { coordinator, onStateChange } = setup(fragments)
+    const { coordinator, onStateChange, onTranslated } = setup(fragments)
     coordinator.start()
     await vi.waitFor(() => expect(onStateChange).toHaveBeenCalledWith("idle"))
-    expect(fragments[0]).toHaveProperty("translation", "")
+    expect(onTranslated).not.toHaveBeenCalled()
+    expect(fragments[0]?.text).toBe("Still visible after reload")
     expect(getLocalConfig).toHaveBeenCalledTimes(1)
   })
 
@@ -93,7 +95,12 @@ describe("subtitle translation recovery", () => {
         displayMode === "translationOnly" ? fragments[0]!.text : "",
       )
       expect(getLocalConfig).toHaveBeenCalledTimes(1)
-      expect(translateSubtitles).toHaveBeenCalledWith(expect.anything(), expect.anything(), config)
+      expect(translateSubtitles).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        config,
+        expect.objectContaining({ signal: expect.any(AbortSignal) }),
+      )
     },
   )
 
@@ -111,5 +118,56 @@ describe("subtitle translation recovery", () => {
     await Promise.resolve()
     await Promise.resolve()
     expect(translateSubtitles).not.toHaveBeenCalled()
+  })
+})
+
+describe("bounded failure recovery", () => {
+  it("retries only the temporary failed cue after cooldown, preserving successful neighbors", async () => {
+    vi.useFakeTimers()
+    vi.mocked(translateSubtitles).mockImplementation(async (cues) =>
+      cues.map((cue) => ({
+        ...cue,
+        translation: cue.text === "good" ? "translated" : "",
+        translationOutcome:
+          cue.text === "good"
+            ? { status: "success" }
+            : { status: "temporary", message: "network", retryAfterMs: 45_000 },
+      })),
+    )
+    const { coordinator, video } = setup([
+      { text: "good", start: 0, end: 100_000 },
+      { text: "retry", start: 1000, end: 100_000 },
+    ])
+    coordinator.start()
+    await vi.advanceTimersByTimeAsync(0)
+    for (let i = 0; i < 20; i++) video.dispatchEvent(new Event("timeupdate"))
+    await vi.advanceTimersByTimeAsync(44_999)
+    expect(translateSubtitles).toHaveBeenCalledTimes(1)
+    await vi.advanceTimersByTimeAsync(1)
+    expect(translateSubtitles).toHaveBeenCalledTimes(2)
+    expect(vi.mocked(translateSubtitles).mock.calls[1]![0].map((c) => c.text)).toEqual(["retry"])
+    await vi.advanceTimersByTimeAsync(120_000)
+    expect(translateSubtitles).toHaveBeenCalledTimes(2)
+    coordinator.stop()
+    coordinator.clearFailed()
+    coordinator.start()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(translateSubtitles).toHaveBeenCalledTimes(3)
+  })
+  it("never automatically retries a permanent provider failure", async () => {
+    vi.useFakeTimers()
+    vi.mocked(translateSubtitles).mockImplementation(async (cues) =>
+      cues.map((cue) => ({
+        ...cue,
+        translation: "",
+        translationOutcome: { status: "permanent", message: "invalid API key" },
+      })),
+    )
+    const { coordinator, video } = setup([{ text: "original", start: 0, end: 100_000 }])
+    coordinator.start()
+    await vi.advanceTimersByTimeAsync(100_000)
+    video.dispatchEvent(new Event("timeupdate"))
+    await vi.advanceTimersByTimeAsync(0)
+    expect(translateSubtitles).toHaveBeenCalledTimes(1)
   })
 })

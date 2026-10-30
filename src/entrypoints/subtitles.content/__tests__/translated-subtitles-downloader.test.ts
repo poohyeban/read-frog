@@ -130,21 +130,28 @@ describe("translatedSubtitlesDownloader", () => {
     expect(mocks.getLocalConfig).toHaveBeenCalledTimes(1)
     // The summary reuses the export's narrowed session ref instead of
     // re-resolving one of its own.
-    expect(mocks.fetchSubtitlesSummary).toHaveBeenCalledWith(expect.any(Object), config, {
-      kind: "local",
-      config: DEFAULT_PROVIDER_CONFIG.openai,
-    })
+    expect(mocks.fetchSubtitlesSummary).toHaveBeenCalledWith(
+      expect.any(Object),
+      config,
+      {
+        kind: "local",
+        config: DEFAULT_PROVIDER_CONFIG.openai,
+      },
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
+    )
     expect(mocks.translateSubtitles).toHaveBeenNthCalledWith(
       1,
       fragments.slice(0, 5),
       expect.any(Object),
       config,
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
     )
     expect(mocks.translateSubtitles).toHaveBeenNthCalledWith(
       2,
       fragments.slice(5),
       expect.any(Object),
       config,
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
     )
     expect(statuses).toEqual(
       expect.arrayContaining([
@@ -192,12 +199,14 @@ describe("translatedSubtitlesDownloader", () => {
       fragments.slice(0, 5),
       expect.any(Object),
       expect.any(Object),
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
     )
     expect(mocks.translateSubtitles).toHaveBeenNthCalledWith(
       2,
       fragments.slice(5, 10),
       expect.any(Object),
       expect.any(Object),
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
     )
 
     resolvers[1]!(translated(fragments.slice(5, 10)))
@@ -211,6 +220,7 @@ describe("translatedSubtitlesDownloader", () => {
       fragments.slice(10),
       expect.any(Object),
       expect.any(Object),
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
     )
 
     resolvers[2]!(translated(fragments.slice(10)))
@@ -388,9 +398,24 @@ describe("translatedSubtitlesDownloader", () => {
     await createDownloader(source, false).downloader.download()
 
     expect(mocks.aiSegmentBlock).toHaveBeenCalledTimes(3)
-    expect(mocks.aiSegmentBlock).toHaveBeenNthCalledWith(1, source, expect.any(Object))
-    expect(mocks.aiSegmentBlock).toHaveBeenNthCalledWith(2, [source[0]], expect.any(Object))
-    expect(mocks.aiSegmentBlock).toHaveBeenNthCalledWith(3, [source[1]], expect.any(Object))
+    expect(mocks.aiSegmentBlock).toHaveBeenNthCalledWith(
+      1,
+      source,
+      expect.any(Object),
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
+    )
+    expect(mocks.aiSegmentBlock).toHaveBeenNthCalledWith(
+      2,
+      [source[0]],
+      expect.any(Object),
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
+    )
+    expect(mocks.aiSegmentBlock).toHaveBeenNthCalledWith(
+      3,
+      [source[1]],
+      expect.any(Object),
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
+    )
     expect(mocks.downloadSubtitlesAsSrt).toHaveBeenCalledWith(
       expect.objectContaining({
         subtitles: [
@@ -486,6 +511,7 @@ describe("translatedSubtitlesDownloader", () => {
       expect.any(Array),
       expect.objectContaining({ summary: null }),
       expect.any(Object),
+      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
     )
     expect(mocks.downloadSubtitlesAsSrt).toHaveBeenCalled()
   })
@@ -500,5 +526,34 @@ describe("translatedSubtitlesDownloader", () => {
     await vi.runAllTimersAsync()
 
     expect(status()).toEqual({ phase: TranslatedDownloadPhase.Idle, progress: null })
+  })
+  it("rejects duplicate/mismatched results even when their count and nonempty translations match", async () => {
+    const fragments = lines(3)
+    mocks.translateSubtitles.mockResolvedValue([
+      translated(fragments)[0],
+      translated(fragments)[0],
+      translated(fragments)[2],
+    ])
+    const { downloader } = createDownloader(fragments)
+    await downloader.download()
+    expect(mocks.downloadSubtitlesAsSrt).not.toHaveBeenCalled()
+    expect(mocks.toastAdd).toHaveBeenCalledWith(expect.objectContaining({ type: "error" }))
+    downloader.dispose()
+  })
+  it("exports a shuffled source exactly once in timeline order", async () => {
+    const fragments = lines(12)
+    const { downloader } = createDownloader([...fragments].reverse())
+    await downloader.download()
+    const result = mocks.downloadSubtitlesAsSrt.mock.calls[0]![0].subtitles as SubtitlesFragment[]
+    expect(result.map((c) => c.start)).toEqual(fragments.map((c) => c.start))
+    expect(new Set(result.map((c) => c.text)).size).toBe(12)
+    downloader.dispose()
+  })
+  it("fails before model work for nonfinite source timestamps", async () => {
+    const { downloader } = createDownloader([{ text: "invalid", start: NaN, end: Infinity }])
+    await downloader.download()
+    expect(mocks.translateSubtitles).not.toHaveBeenCalled()
+    expect(mocks.downloadSubtitlesAsSrt).not.toHaveBeenCalled()
+    downloader.dispose()
   })
 })

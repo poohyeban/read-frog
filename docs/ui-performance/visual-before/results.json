@@ -1,0 +1,310 @@
+[
+  {
+    "name": "light-en",
+    "height": 472,
+    "overflow": false,
+    "theme": "light",
+    "trace": {
+      "calls": [
+        {
+          "name": "storage.get:readFrogLiteConfig",
+          "start": 242.89999999850988,
+          "end": 248.19999999925494
+        },
+        {
+          "name": "storage.get:theme",
+          "start": 243.09999999776483,
+          "end": 275.3999999985099
+        },
+        {
+          "name": "tabs.query",
+          "start": 243.09999999776483,
+          "end": 288.5
+        },
+        {
+          "name": "message:getEnablePageTranslationByTabId",
+          "start": 291.8999999985099,
+          "end": 302.0999999977648
+        },
+        {
+          "name": "tabs.query",
+          "start": 302.29999999701977,
+          "end": 317.5
+        },
+        {
+          "name": "storage.get:theme",
+          "start": 386.0999999977648,
+          "end": 473.8999999985099
+        },
+        {
+          "name": "storage.get:readFrogLiteConfig",
+          "start": 401.3999999985099,
+          "end": 480.8999999985099
+        },
+        {
+          "name": "message:getDetectedCode",
+          "start": 401.3999999985099,
+          "end": 483.19999999925494
+        }
+      ],
+      "commits": [
+        381.79999999701977,
+        393.29999999701977,
+        397.3999999985099,
+        471.19999999925494,
+        473.19999999925494,
+        485.3999999985099
+      ],
+      "errors": [],
+      "shifts": [
+        0.00011655843098958333
+      ],
+      "longTasks": [
+        {
+          "start": 143.69999999925494,
+          "duration": 100
+        },
+        {
+          "start": 319.19999999925494,
+          "duration": 82
+        },
+        {
+          "start": 401.5999999977648,
+          "duration": 64
+        }
+      ],
+      "meaningful": 398.0999999977648,
+      "interactive": 398.29999999701977,
+      "meaningfulPaint": 474.79999999701977
+    }
+  },
+  {
+    "name": "light-zh-CN",
+    "height": 472,
+    "overflow": false,
+    "theme": "light",
+    "trace": {
+      "calls": [
+        {
+          "name": "storage.get:readFrogLiteConfig",
+          "start": 223,
+          "end": 228.19999999925494
+        },
+        {
+          "name": "storage.get:theme",
+          "start": 223.10000000149012,
+          "end": 249.80000000074506
+        },
+        {
+          "name": "tabs.query",
+          "start": 223.10000000149012,
+          "end": 259.4000000022352
+        },
+        {
+          "name": "message:getEnablePageTranslationByTabId",
+          "start": 262.5,
+          "end": 272.6000000014901
+        },
+        {
+          "name": "tabs.query",
+          "start": 272.80000000074506,
+          "end": 288
+        },
+        {
+          "name": "storage.get:theme",
+          "start": 367.19999999925494,
+          "end": 453.4000000022352
+        },
+        {
+          "name": "storage.get:readFrogLiteConfig",
+          "start": 379.30000000074506,
+          "end": 456.6000000014901
+        },
+        {
+          "name": "message:getDetectedCode",
+          "start": 379.4000000022352,
+          "end": 458.9000000022352
+        }
+      ],
+      "commits": [
+        363,
+        372.9000000022352,
+        376,
+        451.30000000074506,
+        453.1000000014901,
+        462.6000000014901
+      ],
+      "errors": [],
+      "shifts": [],
+      "longTasks": [
+        {
+          "start": 115.10000000149012,
+          "duration": 110
+        },
+        {
+          "start": 289.9000000022352,
+          "duration": 89
+        },
+        {
+          "start": 379.5,
+          "duration": 65
+        }
+      ],
+      "meaningful": 376.6000000014901,
+      "interactive": 376.80000000074506,
+      "meaningfulPaint": 454.30000000074506
+    }
+  },
+  {
+    "name": "dark-en",
+    "height": 472,
+    "overflow": false,
+    "theme": "dark",
+    "trace": {
+      "calls": [
+        {
+          "name": "storage.get:readFrogLiteConfig",
+          "start": 242.60000000149012,
+          "end": 247.80000000074506
+        },
+        {
+          "name": "storage.get:theme",
+          "start": 242.69999999925494,
+          "end": 264.9000000022352
+        },
+        {
+          "name": "tabs.query",
+          "start": 242.80000000074506,
+          "end": 273.6000000014901
+        },
+        {
+          "name": "message:getEnablePageTranslationByTabId",
+          "start": 275.30000000074506,
+          "end": 285.4000000022352
+        },
+        {
+          "name": "tabs.query",
+          "start": 285.5,
+          "end": 300.9000000022352
+        },
+        {
+          "name": "storage.get:theme",
+          "start": 376.5,
+          "end": 440.4000000022352
+        },
+        {
+          "name": "storage.get:readFrogLiteConfig",
+          "start": 390.19999999925494,
+          "end": 447.1000000014901
+        },
+        {
+          "name": "message:getDetectedCode",
+          "start": 390.19999999925494,
+          "end": 448.9000000022352
+        }
+      ],
+      "commits": [
+        371.69999999925494,
+        383.5,
+        387.19999999925494,
+        437.5,
+        439.6000000014901,
+        452.80000000074506
+      ],
+      "errors": [],
+      "shifts": [
+        0.00011655843098958333
+      ],
+      "longTasks": [
+        {
+          "start": 156.80000000074506,
+          "duration": 86
+        },
+        {
+          "start": 302.5,
+          "duration": 87
+        }
+      ],
+      "meaningful": 387.69999999925494,
+      "interactive": 387.9000000022352,
+      "meaningfulPaint": 441.30000000074506
+    }
+  },
+  {
+    "name": "dark-zh-CN",
+    "height": 472,
+    "overflow": false,
+    "theme": "dark",
+    "trace": {
+      "calls": [
+        {
+          "name": "storage.get:readFrogLiteConfig",
+          "start": 210.59999999776483,
+          "end": 215.79999999701977
+        },
+        {
+          "name": "storage.get:theme",
+          "start": 210.69999999925494,
+          "end": 238.09999999776483
+        },
+        {
+          "name": "tabs.query",
+          "start": 210.79999999701977,
+          "end": 250
+        },
+        {
+          "name": "message:getEnablePageTranslationByTabId",
+          "start": 252.39999999850988,
+          "end": 262.3999999985099
+        },
+        {
+          "name": "tabs.query",
+          "start": 262.5999999977648,
+          "end": 277.79999999701977
+        },
+        {
+          "name": "storage.get:theme",
+          "start": 360.3999999985099,
+          "end": 444.79999999701977
+        },
+        {
+          "name": "storage.get:readFrogLiteConfig",
+          "start": 374.0999999977648,
+          "end": 450.5999999977648
+        },
+        {
+          "name": "message:getDetectedCode",
+          "start": 374.0999999977648,
+          "end": 454.0999999977648
+        }
+      ],
+      "commits": [
+        356.29999999701977,
+        367.3999999985099,
+        370.8999999985099,
+        441,
+        444.19999999925494,
+        455.3999999985099
+      ],
+      "errors": [],
+      "shifts": [],
+      "longTasks": [
+        {
+          "start": 123,
+          "duration": 89
+        },
+        {
+          "start": 280.0999999977648,
+          "duration": 94
+        },
+        {
+          "start": 374.29999999701977,
+          "duration": 62
+        }
+      ],
+      "meaningful": 371.3999999985099,
+      "interactive": 371.5999999977648,
+      "meaningfulPaint": 445.5
+    }
+  }
+]

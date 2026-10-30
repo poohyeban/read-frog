@@ -3,6 +3,7 @@ import { franc } from "franc"
 import { langCodeISO6393Schema } from "@/utils/languages"
 
 const DEFAULT_MIN_LENGTH = 10
+const detections = new Map<string, DetectLanguageResult>()
 
 export type DetectionSource = "franc" | "fallback"
 
@@ -33,9 +34,12 @@ export async function detectLanguageWithSource(
     return { code: "und", source: "fallback" }
   }
 
-  // Try LLM detection first if enabled
-
-  // Fallback to franc
+  const cached = detections.get(trimmedText)
+  if (cached) {
+    detections.delete(trimmedText)
+    detections.set(trimmedText, cached)
+    return { ...cached }
+  }
   const francResult = franc(trimmedText)
   if (francResult === "und") {
     return { code: "und", source: "fallback" }
@@ -46,7 +50,12 @@ export async function detectLanguageWithSource(
     return { code: "und", source: "fallback" }
   }
 
-  return { code: parsedFrancResult.data, source: "franc" }
+  const result: DetectLanguageResult = { code: parsedFrancResult.data, source: "franc" }
+  if (trimmedText.length <= 8192) {
+    detections.set(trimmedText, result)
+    if (detections.size > 256) detections.delete(detections.keys().next().value!)
+  }
+  return { ...result }
 }
 
 /**

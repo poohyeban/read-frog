@@ -7,7 +7,6 @@ import { initI18n, setUiLanguage } from "@/utils/i18n"
 import { logger } from "@/utils/logger"
 import { onMessage } from "@/utils/message"
 import { openOptionsPage } from "@/utils/navigation"
-import { runAiSegmentSubtitles } from "./ai-segmentation"
 import { dispatchBackgroundStreamPort } from "./background-stream"
 import { initializeActionIcons, registerActionIconListeners } from "./browser-action-icon"
 import { ensureInitializedConfig } from "./config"
@@ -77,7 +76,6 @@ export default defineBackground({
     setupVideoSummaryHandlers()
     setupTTSPlaybackMessageHandlers()
     setupSpeechHandlers()
-    onMessage("aiSegmentSubtitles", (message) => runAiSegmentSubtitles(message.data))
 
     void setUpDatabaseCleanup()
 

@@ -66,15 +66,21 @@ vi.mock("@/utils/host/translate/node-manipulation", () => ({
   translateWalkedElement: mockTranslateWalkedElement,
 }))
 
-vi.mock("@/utils/host/translate/translate-variants", () => ({
+vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/translate-variants")>()),
+  primePageTranslationContext: () => {},
   translateTextForPageTitle: mockTranslateTextForPageTitle,
 }))
 
-vi.mock("@/utils/host/translate/webpage-context", () => ({
+vi.mock("@/utils/host/translate/webpage-context", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/webpage-context")>()),
+  isWebPageContextCurrent: () => true,
+  notePageContentMutations: () => {},
+  releaseWebPageContext: () => {},
   getOrCreateWebPageContext: mockGetOrCreateWebPageContext,
 }))
 
-vi.mock("@/utils/host/translate/translate-text", () => ({
+vi.mock("@/utils/host/translate/ui/translation-config-feedback", () => ({
   validateTranslationConfigAndToast: mockValidateTranslationConfigAndToast,
 }))
 
@@ -177,13 +183,19 @@ describe("pageTranslationManager title handling", () => {
 
     expect(document.title).toBe("Translated Title")
     expect(mockTranslateTextForPageTitle).toHaveBeenCalledTimes(1)
-    expect(mockTranslateTextForPageTitle).toHaveBeenCalledWith("Original Title")
+    expect(mockTranslateTextForPageTitle).toHaveBeenCalledWith(
+      "Original Title",
+      expect.any(AbortSignal),
+    )
 
     document.title = "Updated Source Title"
     await flushDomUpdates()
 
     expect(mockTranslateTextForPageTitle).toHaveBeenCalledTimes(2)
-    expect(mockTranslateTextForPageTitle).toHaveBeenLastCalledWith("Updated Source Title")
+    expect(mockTranslateTextForPageTitle).toHaveBeenLastCalledWith(
+      "Updated Source Title",
+      expect.any(AbortSignal),
+    )
     expect(document.title).toBe("Translated Updated Title")
 
     manager.stop()
@@ -282,7 +294,10 @@ describe("pageTranslationManager title handling", () => {
     manager.setTitleTranslationEnabled(true)
     await flushDomUpdates()
 
-    expect(mockTranslateTextForPageTitle).toHaveBeenLastCalledWith("Later Source Title")
+    expect(mockTranslateTextForPageTitle).toHaveBeenLastCalledWith(
+      "Later Source Title",
+      expect.any(AbortSignal),
+    )
     expect(document.title).toBe("Translated Later Title")
     expect(getSourceDocumentTitle()).toBe("Later Source Title")
 

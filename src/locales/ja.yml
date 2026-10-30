@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: 「%s」を翻訳
   showOriginal: 原文を表示
 popup:
+  state:
+    loading: ページを確認中…
+    retry: ページ状態を再試行
+    emptyProviders: プロバイダーなし
   autoLang: 自動検出
   sourceLang: ソース言語
   targetLang: 翻訳言語
@@ -1506,3 +1510,6 @@ audioServices:
     service-side detection.
   responseFormat: Response format
   outputFormat: Audio output format
+
+ui:
+  loading: 読み込み中…

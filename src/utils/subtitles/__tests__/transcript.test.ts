@@ -9,7 +9,7 @@ function cue(text: string, start: number, end: number, translation?: string): Su
 const SOURCE = [cue("one", 0, 1000), cue("two", 2000, 3000), cue("three", 4000, 5000)]
 
 describe("buildTranscript", () => {
-  it("pairs translations onto the source line with the same start", () => {
+  it("pairs translations onto the source line with the same identity", () => {
     const lines = buildTranscript(SOURCE, [cue("two", 2000, 3000, "二")])
 
     expect(lines.map((l) => l.translation)).toEqual([undefined, "二", undefined])
@@ -38,6 +38,15 @@ describe("buildTranscript", () => {
     const lines = buildTranscript(SOURCE, [cue("two", 2000, 3000, "two")])
 
     expect(lines[1]!.translation).toBeUndefined()
+  })
+  it("reuses unchanged row references and rejects same-start stale translations", () => {
+    const first = buildTranscript(SOURCE, [])
+    const next = buildTranscript(SOURCE, [cue("two", 2000, 3000, "二")])
+    expect(next[0]).toBe(first[0])
+    expect(next[1]).not.toBe(first[1])
+    expect(next[2]).toBe(first[2])
+    const recut = buildTranscript([cue("new words", 2000, 4000)], [cue("two", 2000, 3000, "旧")])
+    expect(recut[0]?.translation).toBeUndefined()
   })
 })
 

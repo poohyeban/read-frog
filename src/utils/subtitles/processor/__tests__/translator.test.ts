@@ -14,9 +14,18 @@ vi.mock("@/utils/message", () => ({
   sendMessage: sendMessageMock,
 }))
 
-vi.mock("@/utils/prompts/subtitles", () => ({
-  getSubtitlesTranslatePrompt: getSubtitlesTranslatePromptMock,
-}))
+vi.mock("@/utils/prompts/subtitles", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/utils/prompts/subtitles")>()
+  return {
+    ...actual,
+    getSubtitlesTranslatePromptFromConfig: (
+      ...args: Parameters<typeof actual.getSubtitlesTranslatePromptFromConfig>
+    ) => {
+      getSubtitlesTranslatePromptMock(...args.slice(1))
+      return actual.getSubtitlesTranslatePromptFromConfig(...args)
+    },
+  }
+})
 
 /**
  * The enqueue calls only. Translating a fragment also asks the background for

@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: '"%s" mətnini tərcümə et'
   showOriginal: Orijinalı göstər
 popup:
+  state:
+    loading: Səhifə yoxlanılır…
+    retry: Vəziyyəti yenidən yoxla
+    emptyProviders: Provayder yoxdur
   autoLang: Avtomatik
   sourceLang: Mənbə
   targetLang: Hədəf
@@ -1649,3 +1653,6 @@ audioServices:
     service-side detection.
   responseFormat: Response format
   outputFormat: Audio output format
+
+ui:
+  loading: Yüklənir…

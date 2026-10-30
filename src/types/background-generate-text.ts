@@ -6,6 +6,7 @@ export type BackgroundGenerateTextPayload = ProviderRequestRouting<PromptablePro
   prompt: string
 
   maxRetries?: number
+  maxOutputTokens?: number
 }
 
 export interface BackgroundGenerateTextResponse {

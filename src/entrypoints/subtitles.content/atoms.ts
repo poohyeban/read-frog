@@ -6,6 +6,7 @@ import type { StateData, SubtitlesFragment, SubtitlesState } from "@/utils/subti
 import { atom, createStore } from "jotai"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { DEFAULT_SUBTITLE_POSITION, SUBTITLES_SOURCE } from "@/utils/constants/subtitles"
+import { getCueTimeline } from "@/utils/subtitles/cue-timeline"
 import { hasRenderableSubtitleByMode, isAwaitingTranslation } from "@/utils/subtitles/display-rules"
 import { ROOT_VIEW } from "./ui/subtitles-settings-panel/views"
 import { DEFAULT_SECTION_ID } from "./ui/subtitles-sidebar/sections"
@@ -52,7 +53,7 @@ export const displaySubtitleAtom = atom((get): SubtitlesFragment | null => {
     return scheduled
   }
 
-  return get(sourceTrackAtom).find((f) => f.start <= timeMs && f.end > timeMs) ?? null
+  return getCueTimeline(get(sourceTrackAtom)).at(timeMs)
 })
 
 export const subtitlesStateAtom = atom<StateData | null>(null)
@@ -105,8 +106,19 @@ export const subtitlesDisplayAtom = atom((get) => {
   const { style } = get(configFieldsAtomMap.videoSubtitles)
 
   // translationOnly must never fall back to source-only original for "content".
+  const failed =
+    subtitle?.translationOutcome &&
+    !["success", "empty"].includes(subtitle.translationOutcome.status)
+  const readableSubtitle =
+    failed && style.displayMode === "translationOnly" && !subtitle.translation
+      ? { ...subtitle, translation: subtitle.text }
+      : subtitle
   const contentSubtitle =
-    style.displayMode === "translationOnly" ? (subtitle?.translation ? subtitle : null) : subtitle
+    style.displayMode === "translationOnly"
+      ? readableSubtitle?.translation
+        ? readableSubtitle
+        : null
+      : readableSubtitle
 
   return {
     subtitle: contentSubtitle,
@@ -131,12 +143,10 @@ export const subtitlesShowStateAtom = atom((get): Exclude<SubtitlesState, "idle"
 export const subtitlesShowContentAtom = atom((get): boolean => {
   if (get(adPlayingAtom)) return false
 
-  const { subtitle, stateData, isVisible } = get(subtitlesDisplayAtom)
+  const { subtitle, isVisible } = get(subtitlesDisplayAtom)
   const { style } = get(configFieldsAtomMap.videoSubtitles)
 
   if (!isVisible) return false
-
-  if (stateData?.state === "error") return false
 
   return hasRenderableSubtitleByMode(subtitle, style.displayMode)
 })

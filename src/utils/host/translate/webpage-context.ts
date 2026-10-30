@@ -1,7 +1,17 @@
 import type { WebPageContext } from "@/types/content"
+import {
+  CONTENT_WRAPPER_CLASS,
+  REACT_SHADOW_HOST_CLASS,
+  SPINNER_CLASS,
+} from "@/utils/constants/dom-labels"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { getDocumentDescription } from "@/utils/content/metadata"
 import { logger } from "@/utils/logger"
+import { TranslationCancelledError } from "@/utils/request/cancellation"
+import { ContextCoordinator } from "./context-coordinator"
+import { wasNodeRemovedByExtension } from "./core/translation-state"
+import { ResourceScope } from "./resource-scope"
+import { createSourceDocument } from "./source-document"
 import { truncateWebPageContent, WEB_PAGE_CONTENT_CHAR_LIMIT } from "./webpage-content"
 
 export interface CachedWebPageContext extends WebPageContext {
@@ -10,11 +20,148 @@ export interface CachedWebPageContext extends WebPageContext {
 }
 
 let cachedWebPageContext: CachedWebPageContext | null = null
+const extraction = new ContextCoordinator<string>(2, 1000)
+let contentRevision = 0
+let revisionController = new AbortController()
+let lastInvalidatedAt = 0
+let cachedAt = 0
+let documentScope: ResourceScope | undefined
+let documentObserver: MutationObserver | undefined
 
-function createDefuddleSnapshotDocument() {
-  const clonedDoc = document.implementation.createHTMLDocument(document.title)
-  clonedDoc.documentElement.innerHTML = document.documentElement.outerHTML
-  return clonedDoc
+export function getDocumentContextSignal(): AbortSignal {
+  if (!documentScope || documentScope.signal.aborted) {
+    documentScope = new ResourceScope()
+    if (typeof document !== "undefined") {
+      documentObserver = new MutationObserver(notePageContentMutations)
+      documentObserver.observe(document.documentElement, { childList: true, subtree: true })
+      const observer = documentObserver
+      documentScope.own(() => observer.disconnect())
+      window.addEventListener("pagehide", releaseWebPageContext, { once: true })
+      documentScope.own(() => window.removeEventListener("pagehide", releaseWebPageContext))
+    }
+  }
+  return documentScope.signal
+}
+
+export class ContextUnstableError extends Error {
+  readonly code = "CONTEXT_UNSTABLE"
+  readonly retryAfterMs = 1000
+  constructor() {
+    super("Page content keeps changing; retry translation once the article settles")
+    this.name = "ContextUnstableError"
+  }
+}
+
+/** A finite quiet window, used only after an actual document replacement. */
+export function waitForStableWebPageContext(signal?: AbortSignal, maxWaitMs = 1500): Promise<void> {
+  const started = Date.now()
+  return new Promise((resolve, reject) => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const clean = () => {
+      clearTimeout(timer)
+      signal?.removeEventListener("abort", abort)
+    }
+    const abort = () => {
+      clean()
+      reject(new TranslationCancelledError())
+    }
+    const check = () => {
+      if (signal?.aborted) return abort()
+      const quiet = Date.now() - lastInvalidatedAt
+      if (quiet >= 100) {
+        clean()
+        resolve()
+        return
+      }
+      if (Date.now() - started >= maxWaitMs) {
+        clean()
+        reject(new ContextUnstableError())
+        return
+      }
+      timer = setTimeout(check, Math.min(100 - quiet, maxWaitMs - (Date.now() - started)))
+    }
+    signal?.addEventListener("abort", abort, { once: true })
+    check()
+  })
+}
+let contextUrl: string | undefined
+const revisions = new WeakMap<CachedWebPageContext, number>()
+const contextSignals = new WeakMap<CachedWebPageContext, AbortSignal>()
+export function getWebPageContextSignal(context: CachedWebPageContext): AbortSignal | undefined {
+  return contextSignals.get(context)
+}
+
+export function getWebPageContentRevision(): number {
+  return contentRevision
+}
+
+/** Bring lazy route/mutation invalidation forward before a new render guard
+ * captures its revision. Context preparation must not invalidate that same task. */
+export function synchronizeWebPageContext(): void {
+  if (typeof window === "undefined" || typeof document === "undefined") return
+  getDocumentContextSignal()
+  if (documentObserver) notePageContentMutations(documentObserver.takeRecords())
+  const currentUrl = window.location.href
+  if (contextUrl && contextUrl !== currentUrl && !isInPageAnchorChange(contextUrl, currentUrl))
+    invalidateWebPageContext()
+  contextUrl = currentUrl
+  if (cachedWebPageContext && Date.now() - cachedAt > 5 * 60_000) invalidateWebPageContext()
+}
+
+export function invalidateWebPageContext(): void {
+  contentRevision++
+  lastInvalidatedAt = Date.now()
+  revisionController.abort(new TranslationCancelledError())
+  revisionController = new AbortController()
+  cachedWebPageContext = null
+  extraction.clear()
+}
+
+export function releaseWebPageContext(): void {
+  documentScope?.dispose()
+  documentScope = undefined
+  documentObserver = undefined
+  invalidateWebPageContext()
+  contextUrl = undefined
+}
+
+export function isWebPageContextCurrent(context: CachedWebPageContext): boolean {
+  return (
+    revisions.get(context) === contentRevision &&
+    (context.url === window.location.href ||
+      isInPageAnchorChange(context.url, window.location.href))
+  )
+}
+
+const ARTICLE_ROOT = "main, article, [role=main]"
+const UTILITY_SELECTOR = `.${CONTENT_WRAPPER_CLASS}, .${REACT_SHADOW_HOST_CLASS}, .${SPINNER_CLASS}`
+function isSourceNode(node: Node): boolean {
+  if (wasNodeRemovedByExtension(node)) return false
+  if (node instanceof Element) return !node.matches(UTILITY_SELECTOR)
+  return node.nodeType === Node.TEXT_NODE && !!node.textContent?.trim()
+}
+
+/** Appending comments/feeds and editing paragraphs change regions, not the article. */
+export function notePageContentMutations(records: readonly MutationRecord[]): void {
+  for (const record of records) {
+    if (record.type !== "childList") continue
+    const target = record.target instanceof Element ? record.target : record.target.parentElement
+    if (!target || target.closest(`head, ${UTILITY_SELECTOR}`)) continue
+    const removed = [...record.removedNodes].filter(isSourceNode)
+    if (!removed.length) continue
+    const replacesRoot = removed.some(
+      (node) =>
+        node instanceof Element &&
+        (node.matches(`body, ${ARTICLE_ROOT}`) || !!node.querySelector(ARTICLE_ROOT)),
+    )
+    const replacesContents =
+      target.matches(`body, ${ARTICLE_ROOT}`) &&
+      removed.length >= [...target.childNodes].filter(isSourceNode).length
+    if (replacesRoot || replacesContents) {
+      invalidateWebPageContext()
+      return
+    }
+  }
 }
 
 function keepLeadingText(node: Node, budget: number) {
@@ -56,10 +203,12 @@ function prepareMarkdownSource(html: string): string {
   return doc.body.innerHTML
 }
 
-async function extractWebpageContent(): Promise<string> {
+async function extractWebpageContent(signal: AbortSignal): Promise<string> {
+  let snapshotDoc: Document | undefined
   try {
     const { default: Defuddle, createMarkdownContent } = await import("defuddle/full")
-    const snapshotDoc = createDefuddleSnapshotDocument()
+    signal.throwIfAborted()
+    snapshotDoc = createSourceDocument()
     const result = new Defuddle(snapshotDoc, {
       url: window.location.href,
       useAsync: false,
@@ -71,7 +220,8 @@ async function extractWebpageContent(): Promise<string> {
   } catch {
     logger.warn("Defuddle parsing failed, falling back to body text:")
   }
-  return document.body?.textContent || ""
+  signal.throwIfAborted()
+  return (snapshotDoc ?? createSourceDocument()).body?.textContent || ""
 }
 
 function splitUrlFragment(url: string): [base: string, fragment: string] {
@@ -111,7 +261,7 @@ function isInPageFragment(fragment: string): boolean {
  * content, and so re-key the summary and every later paragraph's cache entry.
  * Hash routes (`#/settings`, `#inbox/…`) name no element and still rebuild.
  */
-function isInPageAnchorChange(cachedUrl: string, currentUrl: string): boolean {
+export function isInPageAnchorChange(cachedUrl: string, currentUrl: string): boolean {
   const [cachedBase, cachedFragment] = splitUrlFragment(cachedUrl)
   const [currentBase, currentFragment] = splitUrlFragment(currentUrl)
   return (
@@ -121,23 +271,51 @@ function isInPageAnchorChange(cachedUrl: string, currentUrl: string): boolean {
   )
 }
 
-export async function getOrCreateWebPageContext(): Promise<CachedWebPageContext | null> {
+export async function getOrCreateWebPageContext(
+  includeContent = true,
+  signal?: AbortSignal,
+): Promise<CachedWebPageContext | null> {
   if (typeof window === "undefined" || typeof document === "undefined") return null
 
+  signal?.throwIfAborted()
+  synchronizeWebPageContext()
   const currentUrl = window.location.href
+  const revision = contentRevision
+  if (!includeContent) {
+    const metadata = {
+      url: currentUrl,
+      webTitle: getSourceDocumentTitle(),
+      webDescription: getDocumentDescription(document),
+      webContent: "",
+    }
+    contextSignals.set(metadata, revisionController.signal)
+    revisions.set(metadata, revision)
+    return metadata
+  }
   if (cachedWebPageContext?.url === currentUrl) {
     return cachedWebPageContext
   }
   if (cachedWebPageContext && isInPageAnchorChange(cachedWebPageContext.url, currentUrl)) {
     cachedWebPageContext = { ...cachedWebPageContext, url: currentUrl }
+    contextSignals.set(cachedWebPageContext, revisionController.signal)
+    revisions.set(cachedWebPageContext, revision)
     return cachedWebPageContext
   }
 
-  cachedWebPageContext = {
+  const context = {
     url: currentUrl,
     webTitle: getSourceDocumentTitle(),
     webDescription: getDocumentDescription(document),
-    webContent: truncateWebPageContent(await extractWebpageContent()),
+    webContent: await extraction.get(
+      String(revision),
+      async (taskSignal) => truncateWebPageContent(await extractWebpageContent(taskSignal)),
+      signal,
+    ),
   }
-  return cachedWebPageContext
+  if (revision !== contentRevision) throw new TranslationCancelledError()
+  contextSignals.set(context, revisionController.signal)
+  revisions.set(context, revision)
+  cachedWebPageContext = context
+  cachedAt = Date.now()
+  return context
 }

@@ -12,6 +12,7 @@ import {
   injectHostContentIntoCurrentTabIframesAfterNodeTranslation,
   injectHostContentIntoTabIframes,
 } from "./iframe-injection"
+import { createPageTranslationCommandBridge } from "./page-translation-command"
 import {
   getPageTranslationEnabled,
   getPageTranslationState,
@@ -68,6 +69,9 @@ async function publishAndRefreshActiveTab(tabId: number): Promise<void> {
 }
 
 export function translationMessage() {
+  const commands = createPageTranslationCommandBridge()
+  onMessage("getAppliedPageTranslationStateByTabId", (msg) => commands.request(msg.data))
+  onMessage("applyPageTranslationCommandByTabId", (msg) => commands.request(msg.data))
   onMessage("getEnablePageTranslationByTabId", async (msg) => {
     const { tabId } = msg.data
     return await getTranslationState(tabId)
@@ -219,6 +223,7 @@ export function translationMessage() {
 
   // === Cleanup ===
   browser.tabs.onRemoved.addListener(async (tabId) => {
+    commands.invalidate(tabId)
     await storage.removeItem(getTranslationStateKey(tabId))
     await storage.removeItem(getDetectedCodeStateKey(tabId))
   })
@@ -232,6 +237,7 @@ export function translationMessage() {
   browser.webNavigation.onCommitted.addListener(async (details) => {
     // Only handle main frame navigations, not iframes
     if (details.frameId !== 0) return
+    commands.invalidate(details.tabId)
 
     const state = await getPageTranslationState(details.tabId)
     if (!state) return

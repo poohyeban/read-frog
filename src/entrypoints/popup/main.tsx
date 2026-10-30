@@ -1,11 +1,7 @@
 import "@/utils/zod-config"
-import type { Config } from "@/types/config/config"
-import type { ThemeMode } from "@/types/config/theme"
 import { QueryClientProvider } from "@tanstack/react-query"
-import { Provider as JotaiProvider } from "jotai"
-import { useHydrateAtoms } from "jotai/utils"
+import { createStore, Provider as JotaiProvider } from "jotai"
 import * as React from "react"
-import { browser } from "#imports"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { RecoveryBoundary } from "@/components/recovery/recovery-boundary"
 import { AnchoredToastProvider, ToastProvider } from "@/components/ui/base-ui/toast"
@@ -16,117 +12,73 @@ import { getLocalConfig } from "@/utils/config/storage"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { initI18n } from "@/utils/i18n"
 import { LocaleBoundary } from "@/utils/i18n/locale-boundary"
-import { sendMessage } from "@/utils/message"
 import { renderPersistentReactRoot } from "@/utils/react-root"
 import { queryClient } from "@/utils/tanstack-query"
 import { getLocalThemeMode } from "@/utils/theme"
 import App from "./app"
-import {
-  getIsInPatterns,
-  isCurrentSiteInPatternsAtom,
-  isPageTranslatedAtom,
-} from "./atoms/auto-translate"
-import { isIgnoreTabAtom, isIgnoreUrl } from "./atoms/ignore"
-import {
-  isCurrentSiteInBlacklistAtom,
-  isCurrentSiteInWhitelistAtom,
-  isInSiteControlList,
-} from "./atoms/site-control"
+import { createPopupSession, withDeadline } from "./atoms/session"
 import "@/utils/iconify/local-icons"
 import "@fontsource-variable/inter/index.css"
 import "@/assets/styles/text-small.css"
 import "@/assets/styles/theme.css"
 
-function HydrateAtoms({
-  initialValues,
-  children,
-}: {
-  initialValues: [
-    [typeof configAtom, Config],
-    [typeof isPageTranslatedAtom, boolean],
-    [typeof isCurrentSiteInPatternsAtom, boolean],
-    [typeof isIgnoreTabAtom, boolean],
-    [typeof isCurrentSiteInWhitelistAtom, boolean],
-    [typeof isCurrentSiteInBlacklistAtom, boolean],
-    [typeof baseThemeModeAtom, ThemeMode],
-  ]
-  children: React.ReactNode
-}) {
-  useHydrateAtoms(initialValues)
-  return children
-}
-
 async function initApp() {
   const root = document.getElementById("root")!
   root.className = "text-base antialiased w-[320px] bg-background"
-
-  const [configValue, themeMode, activeTab] = await Promise.all([
-    getLocalConfig(),
-    getLocalThemeMode(),
-    browser.tabs.query({
-      active: true,
-      currentWindow: true,
-    }),
+  const store = createStore()
+  const session = createPopupSession(store)
+  window.addEventListener("pagehide", () => session.dispose(), { once: true })
+  // Page state starts in parallel and cannot block language/provider/settings controls.
+  const pageStateReady = session.start()
+  const [configValue, themeMode] = await Promise.all([
+    withDeadline(getLocalConfig()),
+    withDeadline(getLocalThemeMode()),
   ])
   const config = configValue ?? DEFAULT_CONFIG
-
   await initI18n(config.uiLanguage)
-
-  const tabId = activeTab[0]!.id
-
-  let isPageTranslated: boolean = false
-  if (tabId) {
-    isPageTranslated =
-      (await sendMessage("getEnablePageTranslationByTabId", {
-        tabId,
-      })) ?? false
-  }
-
-  const isInPatterns = tabId ? await getIsInPatterns(config.pageTranslation) : false
-
-  const activeTabUrl = activeTab[0]?.url || ""
-  const isIgnoreTab = isIgnoreUrl(activeTabUrl)
-  const isInWhitelist = activeTabUrl
-    ? isInSiteControlList(config.siteControl.whitelistPatterns, activeTabUrl)
-    : false
-  const isInBlacklist = activeTabUrl
-    ? isInSiteControlList(config.siteControl.blacklistPatterns, activeTabUrl)
-    : false
+  store.set(configAtom, config)
+  store.set(baseThemeModeAtom, themeMode)
+  // Coalesce an already-nearby worker reply before the expensive first render.
+  // Two frames is a hard budget: a slow/unavailable worker still cannot hold
+  // configuration controls behind its full RPC timeout.
+  await withDeadline(pageStateReady, 32).catch(() => {})
 
   renderPersistentReactRoot(
     root,
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <JotaiProvider>
-          <HydrateAtoms
-            initialValues={[
-              [configAtom, config],
-              [isPageTranslatedAtom, isPageTranslated],
-              [isCurrentSiteInPatternsAtom, isInPatterns],
-              [isIgnoreTabAtom, isIgnoreTab],
-              [isCurrentSiteInWhitelistAtom, isInWhitelist],
-              [isCurrentSiteInBlacklistAtom, isInBlacklist],
-              [baseThemeModeAtom, themeMode],
-            ]}
-          >
-            <ThemeProvider>
-              <TooltipProvider>
-                <LocaleBoundary>
-                  <ToastProvider>
-                    <AnchoredToastProvider>
-                      <RecoveryBoundary>
-                        <App />
-                      </RecoveryBoundary>
-                    </AnchoredToastProvider>
-                  </ToastProvider>
-                </LocaleBoundary>
-              </TooltipProvider>
-            </ThemeProvider>
-          </HydrateAtoms>
+        <JotaiProvider store={store}>
+          <ThemeProvider>
+            <TooltipProvider>
+              <LocaleBoundary>
+                <ToastProvider>
+                  <AnchoredToastProvider>
+                    <RecoveryBoundary>
+                      <App />
+                    </RecoveryBoundary>
+                  </AnchoredToastProvider>
+                </ToastProvider>
+              </LocaleBoundary>
+            </TooltipProvider>
+          </ThemeProvider>
         </JotaiProvider>
       </QueryClientProvider>
     </React.StrictMode>,
   )
 }
 
-void initApp()
+void initApp().catch(() => {
+  // Storage may fail before React/i18n exist. Never display editable default
+  // settings over an unread configuration. Native localized recovery remains usable.
+  const root = document.getElementById("root")!
+  const message = document.createElement("p")
+  message.textContent =
+    "Read Frog Lite — " +
+    (navigator.language.startsWith("zh") ? "无法读取设置" : "Could not load settings")
+  const retry = document.createElement("button")
+  retry.type = "button"
+  retry.textContent = navigator.language.startsWith("zh") ? "重试" : "Retry"
+  retry.onclick = () => location.reload()
+  root.replaceChildren(message, retry)
+  root.style.padding = "16px"
+})

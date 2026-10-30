@@ -1,115 +1,88 @@
-/**
- * Utility for batching DOM operations to minimize layout thrashing and style recalculations
- */
-
+/** Frame-aligned writes have a bounded budget independent of network work. */
+export interface DOMCommitOptions {
+  signal?: AbortSignal
+  current?: () => boolean
+  onDiscard?: () => void
+  onError?: (error: unknown) => void
+}
 type DOMOperation = () => void
+type PendingWrite = { operation: DOMOperation; options: DOMCommitOptions; detach: () => void }
 
-class DOMBatcher {
-  private operations: DOMOperation[] = []
+export class DOMBatcher {
+  private operations = new Map<object, PendingWrite>()
   private rafId: number | null = null
   private isProcessing = false
+  constructor(private readonly budgetMs = 4) {}
 
-  /**
-   * Add a DOM operation to the batch queue
-   */
-  queue(operation: DOMOperation): void {
-    this.operations.push(operation)
-    this.scheduleFlush()
-  }
-
-  /**
-   * Schedule a flush using requestAnimationFrame
-   */
-  private scheduleFlush(): void {
-    if (this.rafId !== null || this.isProcessing) return
-
-    this.rafId = requestAnimationFrame(() => {
-      this.flush()
-    })
-  }
-
-  /**
-   * Execute all queued operations in a single batch
-   */
-  private flush(): void {
-    this.rafId = null
-    if (this.operations.length === 0) return
-
-    this.isProcessing = true
-    const ops = this.operations.splice(0)
-
-    // Execute all operations in a single frame
-    for (const op of ops) {
-      try {
-        op()
-      } catch (error) {
-        console.error("Error executing batched DOM operation:", error)
+  queue(operation: DOMOperation, options: DOMCommitOptions = {}): void {
+    if (options.signal?.aborted) {
+      options.onDiscard?.()
+      return
+    }
+    const key = {}
+    const cancel = () => {
+      if (!this.operations.delete(key)) return
+      options.signal?.removeEventListener("abort", cancel)
+      options.onDiscard?.()
+      if (!this.operations.size && this.rafId !== null) {
+        cancelAnimationFrame(this.rafId)
+        this.rafId = null
       }
     }
-
-    this.isProcessing = false
-
-    // If new operations were queued during execution, schedule them
-    if (this.operations.length > 0) {
-      this.scheduleFlush()
+    this.operations.set(key, {
+      operation,
+      options,
+      detach: () => options.signal?.removeEventListener("abort", cancel),
+    })
+    options.signal?.addEventListener("abort", cancel, { once: true })
+    this.scheduleFlush()
+  }
+  get pending(): number {
+    return this.operations.size
+  }
+  private scheduleFlush(): void {
+    if (this.rafId !== null || this.isProcessing) return
+    this.rafId = requestAnimationFrame(() => this.flush())
+  }
+  private flush(immediate = false): void {
+    this.rafId = null
+    this.isProcessing = true
+    const deadline = performance.now() + this.budgetMs
+    try {
+      for (const [key, write] of this.operations) {
+        this.operations.delete(key)
+        write.detach()
+        try {
+          if (write.options.signal?.aborted || write.options.current?.() === false)
+            write.options.onDiscard?.()
+          else write.operation()
+        } catch (error) {
+          write.options.onError?.(error)
+          console.error("Error executing batched DOM operation:", error)
+        }
+        if (!immediate && performance.now() >= deadline) break
+      }
+    } finally {
+      this.isProcessing = false
+      if (this.operations.size) this.scheduleFlush()
     }
   }
-
-  /**
-   * Force flush all pending operations immediately
-   */
   flushImmediate(): void {
     if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId)
       this.rafId = null
     }
-    // Keep flushing until all operations (including newly queued ones) are complete
-    while (this.operations.length > 0) {
-      this.flush()
-    }
+    this.flush(true)
   }
 }
-
-// Singleton instance for the entire application
 const domBatcher = new DOMBatcher()
-
-/**
- * Queue a DOM operation to be executed in a batched manner
- * This helps reduce layout thrashing by grouping DOM writes together
- *
- * @example
- * // Instead of:
- * element.appendChild(child1)
- * element.appendChild(child2)
- * element.appendChild(child3)
- *
- * // Use:
- * batchDOMOperation(() => element.appendChild(child1))
- * batchDOMOperation(() => element.appendChild(child2))
- * batchDOMOperation(() => element.appendChild(child3))
- */
-export function batchDOMOperation(operation: DOMOperation): void {
-  domBatcher.queue(operation)
+export function batchDOMOperation(operation: DOMOperation, options?: DOMCommitOptions): void {
+  domBatcher.queue(operation, options)
 }
-
-/**
- * Force flush all pending batched operations immediately
- * Useful for testing or when you need operations to complete synchronously
- */
+/** Explicit synchronous restoration/testing escape hatch, never the normal render path. */
 export function flushBatchedOperations(): void {
   domBatcher.flushImmediate()
 }
-
-/**
- * Create a DocumentFragment for batch appending multiple nodes
- * This is useful when you need to insert multiple nodes at once
- *
- * @example
- * const fragment = createFragment()
- * fragment.appendChild(child1)
- * fragment.appendChild(child2)
- * batchDOMOperation(() => parent.appendChild(fragment))
- */
 export function createFragment(ownerDocument: Document = document): DocumentFragment {
   return ownerDocument.createDocumentFragment()
 }

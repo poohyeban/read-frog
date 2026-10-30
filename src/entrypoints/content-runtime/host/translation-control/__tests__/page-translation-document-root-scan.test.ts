@@ -50,13 +50,19 @@ vi.mock("@/utils/host/translate/node-manipulation", () => ({
   translateNodesBilingualMode: mockTranslateNodesBilingualMode,
   translateWalkedElement: mockTranslateWalkedElement,
 }))
-vi.mock("@/utils/host/translate/translate-text", () => ({
+vi.mock("@/utils/host/translate/ui/translation-config-feedback", () => ({
   validateTranslationConfigAndToast: mockValidateTranslationConfigAndToast,
 }))
-vi.mock("@/utils/host/translate/translate-variants", () => ({
+vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/translate-variants")>()),
+  primePageTranslationContext: () => {},
   translateTextForPageTitle: mockTranslateTextForPageTitle,
 }))
-vi.mock("@/utils/host/translate/webpage-context", () => ({
+vi.mock("@/utils/host/translate/webpage-context", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/webpage-context")>()),
+  isWebPageContextCurrent: () => true,
+  notePageContentMutations: () => {},
+  releaseWebPageContext: () => {},
   getOrCreateWebPageContext: mockGetOrCreateWebPageContext,
 }))
 vi.mock("@/utils/message", () => ({ sendMessage: mockSendMessage }))

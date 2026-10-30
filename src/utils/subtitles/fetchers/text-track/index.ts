@@ -5,6 +5,7 @@ import {
   TEXT_TRACK_CUE_WAIT_TIMEOUT_MS,
   TEXT_TRACK_NATIVE_REHIDE_DELAY_MS,
 } from "@/utils/constants/subtitles"
+import { Sha256Hex } from "@/utils/hash"
 import { i18n } from "@/utils/i18n"
 import { pollUntil } from "@/utils/poll"
 import { NoSubtitlesError, OverlaySubtitlesError } from "@/utils/subtitles/errors"
@@ -19,6 +20,9 @@ interface TextTrackFetcherOptions {
 const SUBTITLE_KINDS = new Set<TextTrackKind>(["subtitles", "captions"])
 
 export class TextTrackFetcher implements SubtitlesFetcher {
+  private generation = 0
+  private trackIds = new WeakMap<TextTrack, number>()
+  private nextTrackId = 0
   private subtitles: SubtitlesFragment[] = []
   private sourceLanguage = ""
   private cachedTrackHash: string | null = null
@@ -54,14 +58,16 @@ export class TextTrackFetcher implements SubtitlesFetcher {
     }
 
     this.ensureLoading(track)
-    const fragments = cuesToFragments(await this.waitForCues(track))
+    const generation = this.generation
+    const fragments = cuesToFragments(await this.waitForCues(track, generation))
+    if (generation !== this.generation) throw new DOMException("Aborted", "AbortError")
     if (fragments.length === 0) {
       throw new NoSubtitlesError()
     }
 
     this.subtitles = fragments
     this.sourceLanguage = track.language
-    this.cachedTrackHash = trackHash
+    this.cachedTrackHash = this.buildTrackHash(track)
 
     return fragments
   }
@@ -112,6 +118,7 @@ export class TextTrackFetcher implements SubtitlesFetcher {
   }
 
   cleanup(): void {
+    this.generation++
     this.showNativeSubtitles()
     this.subtitles = []
     this.sourceLanguage = ""
@@ -119,7 +126,25 @@ export class TextTrackFetcher implements SubtitlesFetcher {
   }
 
   private buildTrackHash(track: TextTrack): string {
-    return [this.options.getVideoId() ?? "", track.language, track.label, track.kind].join(":")
+    let id = this.trackIds.get(track)
+    if (id === undefined) this.trackIds.set(track, (id = ++this.nextTrackId))
+    // Runs on source/track checks, never on timeupdate. Detect cue edits as well
+    // as same-labelled replacement TextTrack objects.
+    const content = Array.from(track.cues ?? []).map((cue) => [
+      cue.startTime,
+      cue.endTime,
+      "text" in cue ? cue.text : "",
+    ])
+    return Sha256Hex(
+      JSON.stringify([
+        this.options.getVideoId(),
+        id,
+        track.language,
+        track.label,
+        track.kind,
+        content,
+      ]),
+    )
   }
 
   private selectTrack(video: HTMLVideoElement): TextTrack | null {
@@ -187,11 +212,17 @@ export class TextTrackFetcher implements SubtitlesFetcher {
     }
   }
 
-  private async waitForCues(track: TextTrack): Promise<TextTrackCueList> {
-    const cues = await pollUntil(() => (track.cues?.length ? track.cues : null), {
-      timeoutMs: TEXT_TRACK_CUE_WAIT_TIMEOUT_MS,
-      intervalMs: TEXT_TRACK_CUE_POLL_INTERVAL_MS,
-    })
+  private async waitForCues(track: TextTrack, generation: number): Promise<TextTrackCueList> {
+    const cues = await pollUntil(
+      () => {
+        if (generation !== this.generation) throw new DOMException("Aborted", "AbortError")
+        return track.cues?.length ? track.cues : null
+      },
+      {
+        timeoutMs: TEXT_TRACK_CUE_WAIT_TIMEOUT_MS,
+        intervalMs: TEXT_TRACK_CUE_POLL_INTERVAL_MS,
+      },
+    )
     if (!cues) {
       throw new NoSubtitlesError()
     }

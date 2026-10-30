@@ -10,8 +10,8 @@ const cueText = (index) =>
   `Fixture cue number ${index} contains a complete English sentence with enough context to keep it separate from adjacent subtitle sentences.`
 const cues = [
   ...Array.from({ length: 26 }, (_, index) => ({ index, start: index * 6, duration: 5 })),
-  { index: 99, start: 180, duration: 40 },
-  { index: 100, start: 300, duration: 5 },
+  { index: 99, start: 2100, duration: 40 },
+  { index: 100, start: 2400, duration: 5 },
 ]
 
 // Only YouTube's page/player and the paid API are controlled fixtures. The
@@ -78,7 +78,8 @@ test("subtitles retain timing across batches, AI recuts and extension reloads", 
     const extension = resolve(process.env.SUBTITLE_EXTENSION_PATH || ".output/chrome-mv3")
     context = await chromium.launchPersistentContext("", {
       channel: "chromium",
-      headless: !process.env.CI,
+      executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined,
+      headless: process.env.MV3_HEADED !== "1",
       args: [`--disable-extensions-except=${extension}`, `--load-extension=${extension}`],
     })
     await context.tracing.start({ screenshots: true, snapshots: true })
@@ -111,7 +112,7 @@ test("subtitles retain timing across batches, AI recuts and extension reloads", 
       config.videoSubtitles.autoStart.youtube = true
       config.videoSubtitles.aiSegmentation = false
       config.videoSubtitles.requestQueueConfig = { rate: 20, capacity: 20 }
-      config.videoSubtitles.batchQueueConfig.maxItemsPerBatch = 1
+      config.videoSubtitles.batchQueueConfig.maxItemsPerBatch = 5
       config.videoSubtitles.style.displayMode = "bilingual"
       config.pageTranslation.enableAIContentAware = false
       config.language.sourceCode = "eng"
@@ -175,7 +176,7 @@ test("subtitles retain timing across batches, AI recuts and extension reloads", 
     await page.screenshot({ path: `${artifactDir}/continuous-translation.png` })
     // The next cue was never in the prefetch window. Its start is twenty seconds
     // behind the seek destination, but it is still the visible cue.
-    await moveTo(200)
+    await moveTo(2120)
     await expect(translation).toContainText("已翻译字幕 99。")
     await expect(translation).not.toHaveAttribute("data-pending", "true")
     evidence.longCue = {
@@ -184,6 +185,21 @@ test("subtitles retain timing across batches, AI recuts and extension reloads", 
       requested: requests.some((request) => request.indices.includes(99)),
     }
     await page.screenshot({ path: `${artifactDir}/long-active-cue.png` })
+    // A refreshed player begins at zero and restores its saved position later,
+    // without a user seek. The active cue starts twenty seconds before 35:20.
+    await page.reload()
+    await expect(page.locator("#read-frog-subtitles-ui-host")).toBeAttached()
+    await page.locator("video").evaluate((video) => {
+      video.currentTime = 0
+      video.dispatchEvent(new Event("timeupdate"))
+      setTimeout(() => {
+        video.currentTime = 2120
+        video.dispatchEvent(new Event("loadedmetadata"))
+        video.dispatchEvent(new Event("timeupdate"))
+      }, 250)
+    })
+    await expect(translation).toContainText("已翻译字幕 99。")
+    evidence.asyncResume = { from: 0, to: 2120, cueStart: 2100, cueEnd: 2140 }
     const otherTab = await context.newPage()
     await otherTab.goto("chrome://extensions/")
     // This fresh automation profile must enable developer mode for unpacked
@@ -206,7 +222,7 @@ test("subtitles retain timing across batches, AI recuts and extension reloads", 
     const errorsBefore = evidence.pageErrors.length
     await page.bringToFront()
     await page.waitForTimeout(300)
-    await moveTo(301)
+    await moveTo(2401)
     await expect(page.locator("#read-frog-subtitles-ui-host")).toHaveCount(0)
     await expect(page.locator("#read-frog-hide-native-captions")).toHaveCount(0)
     await expect(page.locator(".ytp-caption-window-container")).toBeVisible()

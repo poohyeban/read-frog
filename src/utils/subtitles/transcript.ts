@@ -1,36 +1,56 @@
 import type { SubtitlesFragment } from "./types"
+import { cueIdentity, getCueTimeline } from "./cue-timeline"
 
 export interface TranscriptLine {
+  id?: string
+  sourceLanguage?: string
   start: number
   end: number
   text: string
   translation?: string
 }
 
+const previousLines = new WeakMap<SubtitlesFragment[], Map<string, TranscriptLine>>()
+
 /**
  * The source track is the skeleton: it exists whether or not translation is
  * running, and it is the one the player re-segments. Translations are matched
- * on `start`, which is already how the coordinator identifies a cue.
+ * on complete cue identity; unchanged rows retain their references.
  */
 export function buildTranscript(
   source: SubtitlesFragment[],
   translated: SubtitlesFragment[],
 ): TranscriptLine[] {
-  const translationByStart = new Map(
-    translated.filter((cue) => cue.translation).map((cue) => [cue.start, cue.translation!]),
+  const translationByIdentity = new Map(
+    translated.filter((cue) => cue.translation).map((cue) => [cueIdentity(cue), cue.translation!]),
   )
 
-  return source.map((cue) => {
-    const translation = translationByStart.get(cue.start)
-    return {
+  const previous = previousLines.get(source)
+  const next = new Map<string, TranscriptLine>()
+  const lines = getCueTimeline(source).cues.map((cue) => {
+    const key = cueIdentity(cue)
+    const translatedText = translationByIdentity.get(key)
+    const translation = translatedText === cue.text ? undefined : translatedText
+    const old = previous?.get(key)
+    if (old && old.translation === translation) {
+      next.set(key, old)
+      return old
+    }
+    const line = {
+      id: cue.id,
+      sourceLanguage: cue.sourceLanguage,
       start: cue.start,
       end: cue.end,
       text: cue.text,
       // Passthrough and the error fallback copy the source into `translation`,
       // which would print the line twice.
-      translation: translation === cue.text ? undefined : translation,
+      translation,
     }
+    next.set(key, line)
+    return line
   })
+  previousLines.set(source, next)
+  return lines
 }
 
 /**
@@ -39,7 +59,7 @@ export function buildTranscript(
  * clamping keeps "nothing is being said" distinct from "the first line is".
  */
 export function findActiveLine(lines: TranscriptLine[], timeMs: number): number {
-  return lines.findIndex((line) => line.start <= timeMs && line.end > timeMs)
+  return getCueTimeline(lines).indexAt(timeMs)
 }
 
 export function formatTimestamp(ms: number): string {

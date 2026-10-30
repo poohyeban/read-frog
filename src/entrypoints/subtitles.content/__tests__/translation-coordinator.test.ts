@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
+import { cueIdentity } from "@/utils/subtitles/cue-timeline"
 import { TranslationCoordinator } from "../translation-coordinator"
 
 describe("translation coordinator loading state", () => {
@@ -97,7 +98,7 @@ describe("translation coordinator loading state", () => {
     })
 
     coordinator.start()
-    await vi.waitFor(() => expect(spy).toHaveBeenCalledTimes(1))
+    await vi.waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
 
     coordinator.stop()
     const firstCall = spy.mock.calls[0]!
@@ -107,7 +108,7 @@ describe("translation coordinator loading state", () => {
     await Promise.resolve()
 
     // In-flight call may finish, but stop must not chain another nearby batch.
-    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(2)
     expect(onTranslated).not.toHaveBeenCalled()
 
     spy.mockRestore()
@@ -132,8 +133,7 @@ describe("translation coordinator loading state", () => {
 
     // noteFragmentListChanged is a no-op when inactive.
     ;(coordinator as any).active = true
-    ;(coordinator as any).translatedStarts.add(0)
-    ;(coordinator as any).knownIdentities.set(0, "2000\0hello world")
+    ;(coordinator as any).translated.add(cueIdentity(fragments[0]!))
 
     // AI re-segmentation keeps start=0 but shortens the cue.
     fragments = [
@@ -143,9 +143,10 @@ describe("translation coordinator loading state", () => {
     coordinator.noteFragmentListChanged()
 
     // Old completion must be invalidated so the recut line can be translated again.
-    expect((coordinator as any).translatedStarts.has(0)).toBe(false)
+    expect((coordinator as any).translated.has(cueIdentity(fragments[0]!))).toBe(false)
     // Old baseline identity must not stick around as if still valid.
-    expect((coordinator as any).knownIdentities.get(0)).not.toBe("2000\0hello world")
+    expect((coordinator as any).translated.size).toBe(0)
+    coordinator.stop()
   })
 
   it("does not apply in-flight results after stop then start", async () => {

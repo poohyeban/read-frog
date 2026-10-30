@@ -22,6 +22,7 @@ export interface RequestTask {
   // Per-task timeout override; falls back to QueueOptions.timeoutMs. Large
   // LLM batches need proportionally more time than single requests.
   timeoutMs?: number
+  priority?: number
 }
 
 type QueuedRequestTask = RequestTask & {
@@ -62,7 +63,10 @@ export class RequestQueue {
   // give-up cap (MAX_CONSECUTIVE_RATE_LIMIT_PAUSES).
   private consecutiveRateLimits = 0
 
-  constructor(private options: QueueOptions) {
+  constructor(
+    private options: QueueOptions,
+    private priorityAgingMs?: number,
+  ) {
     this.retryPolicy = options.retryPolicy ?? defaultRequestRetryPolicy
     this.bucketTokens = options.capacity
     this.lastRefill = Date.now()
@@ -74,7 +78,7 @@ export class RequestQueue {
     scheduleAt: number,
     hash: string,
     scopes?: readonly string[],
-    taskOptions?: { timeoutMs?: number },
+    taskOptions?: { timeoutMs?: number; priority?: number },
   ): Promise<T> {
     const duplicateTask = this.duplicateTask(hash)
     if (duplicateTask) {
@@ -84,6 +88,7 @@ export class RequestQueue {
       } else if (duplicateTask.cancelScopes !== null) {
         scopes.forEach((scope) => duplicateTask.cancelScopes!.add(scope))
       }
+      duplicateTask.priority = Math.min(duplicateTask.priority ?? 1, taskOptions?.priority ?? 1)
       return duplicateTask.promise
     }
 
@@ -107,6 +112,7 @@ export class RequestQueue {
       rateLimitRetryCount: 0,
       drained: false,
       timeoutMs: taskOptions?.timeoutMs,
+      priority: Math.min(3, Math.max(0, taskOptions?.priority ?? 1)),
       cancelScopes: scopes?.length ? new Set(scopes) : null,
     }
 
@@ -221,7 +227,21 @@ export class RequestQueue {
     while (this.bucketTokens >= 1 && this.waitingQueue.size() > 0) {
       const now = Date.now()
 
-      const task = this.waitingQueue.peek()
+      let task = this.waitingQueue.peek()
+      // Subtitle admission is bounded. Aging lets old auxiliary work eventually
+      // outrank new current cues without bypassing retry times or provider pauses.
+      if (this.priorityAgingMs && task && task.scheduleAt <= now) {
+        let best = Infinity
+        for (const candidate of this.waitingTasks.values()) {
+          if (candidate.drained || candidate.scheduleAt > now) continue
+          const score =
+            (candidate.priority ?? 1) - (now - candidate.createdAt) / this.priorityAgingMs
+          if (score < best) {
+            task = candidate
+            best = score
+          }
+        }
+      }
       if (task?.drained) {
         // Safety net: a drained task should have been removed from the heap,
         // but never dispatch or let one stall the timer computation below.
@@ -230,7 +250,8 @@ export class RequestQueue {
         continue
       }
       if (task && task.scheduleAt <= now) {
-        this.waitingQueue.pop()
+        if (task === this.waitingQueue.peek()) this.waitingQueue.pop()
+        else this.waitingQueue.removeWhere((candidate) => candidate === task)
         this.waitingTasks.delete(task.hash)
         this.executingTasks.set(task.hash, task)
         this.bucketTokens--

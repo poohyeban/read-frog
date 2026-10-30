@@ -3,19 +3,19 @@ import type {
   BackgroundGenerateTextResponse,
 } from "@/types/background-generate-text"
 import type { Config } from "@/types/config/config"
-import type { TranslationTextFormat } from "@/types/config/translate"
 import type { ProviderRequestRouting } from "@/types/provider-request"
+import type { SubtitleRequestPayload } from "@/types/subtitle-request"
+import type { TranslationRequestPayload } from "@/types/translation-request"
 import type {
   TTSPlaybackStartRequest,
   TTSPlaybackStartResponse,
   TTSPlaybackStopRequest,
 } from "@/types/tts-playback"
 import type { GlossarySnapshot } from "@/utils/glossary/active-matcher"
-import type { MatchedTerm } from "@/utils/glossary/types"
 import type { LangCodeISO6393 } from "@/utils/languages"
 import type { SpeechAudio } from "@/utils/providers/audio/types"
-import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
+import type { SubtitleWireResult } from "@/utils/subtitles/result"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
 interface ProtocolMap {
@@ -33,22 +33,13 @@ interface ProtocolMap {
   ttsOffscreenStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
 
   clearAiSegmentationCache: () => Promise<void>
-  enqueueSubtitlesTranslateRequest: (data: {
-    text: string
-    langConfig: Config["language"]
-    providerRef: SerializableProviderRef
-    scheduleAt: number
-    hash: string
-    webTitle?: string | null
-    webDescription?: string | null
-    summary?: string | null
-    // See `enqueueTranslateRequest`.
-    glossaryTerms?: MatchedTerm[]
-    glossaryRevision?: number
-  }) => Promise<string>
+  enqueueSubtitlesTranslateRequest: (data: SubtitleRequestPayload) => Promise<SubtitleWireResult>
+  cancelSubtitleRequests: (data: { sessionId: string }) => void
   getSubtitlesSummary: (data: {
     videoTitle: string
     subtitlesContext: string
+    sessionId?: string
+    priority?: number
     providerRef: PromptableProviderRef
   }) => Promise<string | null>
   getCachedVideoSummary: (data: {
@@ -64,6 +55,8 @@ interface ProtocolMap {
   }) => Promise<void>
   aiSegmentSubtitles: (data: {
     jsonContent: string
+    sessionId?: string
+    priority?: number
     providerRef: PromptableProviderRef
   }) => Promise<string>
   getGlossarySnapshot: (data: {
@@ -76,6 +69,20 @@ interface ProtocolMap {
   getInitialConfig: () => Config | null
 
   getEnablePageTranslationByTabId: (data: { tabId: number }) => boolean | undefined
+  getAppliedPageTranslationStateByTabId: (data: {
+    tabId: number
+    url: string
+  }) => Promise<{ enabled: boolean; url: string }>
+  applyPageTranslationCommandByTabId: (data: {
+    tabId: number
+    url: string
+    enabled: boolean
+  }) => Promise<{ enabled: boolean; url: string }>
+  getAppliedPageTranslationState: () => { enabled: boolean; url: string }
+  applyPageTranslationCommand: (data: {
+    url: string
+    enabled: boolean
+  }) => Promise<{ enabled: boolean; url: string }>
   getEnablePageTranslationFromContentScript: () => Promise<boolean>
   tryToSetEnablePageTranslationByTabId: (data: { tabId: number; enabled: boolean }) => void
   tryToSetEnablePageTranslationOnContentScript: (data: { enabled: boolean }) => void
@@ -102,41 +109,13 @@ interface ProtocolMap {
     selectionText: string
   }) => void
 
-  enqueueTranslateRequest: (
-    data: ProviderRequestRouting & {
-      glossaryTerms?: MatchedTerm[]
-      glossaryRevision?: number
-      text: string
-      langConfig: Config["language"]
-      scheduleAt: number
-      hash: string
-      textFormat?: TranslationTextFormat
-      // Source line breaks are semantic (newline-preserving container or typed
-      // input); providers whose transport collapses "\n" must protect them.
-      preserveLineBreaks?: boolean
-      webTitle?: string | null
-      webDescription?: string | null
-      webContent?: string | null
-      webSummary?: string | null
-      // Page-translation session this request belongs to; scopes the request
-      // for cancelPageTranslationRequests. Absent for non-page requests
-      // (input/selection translation), which are never cancellable.
-      sessionId?: string
-      forceRetranslation?: boolean
-
-      // scoped elsewhere does not — the background serves every tab and cannot
-      // tell them apart. Passing `[]` means "nothing matched"
-
-      // requests resolved either side of an edit made while the page was still
-      // translating; without this the background would settle a disagreement by
-      // message arrival order
-    },
-  ) => Promise<string>
+  enqueueTranslateRequest: (data: TranslationRequestPayload) => Promise<string>
   cancelPageTranslationRequests: (data: { sessionId: string }) => void
   getOrGenerateWebPageSummary: (
     data: ProviderRequestRouting<PromptableProviderRef> & {
       webTitle: string
       webContent: string
+      sessionId?: string
     },
   ) => Promise<string | null>
 

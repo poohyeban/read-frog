@@ -1,3 +1,4 @@
+import type { SubtitleTaskOptions } from "../session"
 import type { SubtitlesFragment } from "../types"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { PAUSE_TIMEOUT_MS } from "@/utils/constants/subtitles"
@@ -123,6 +124,7 @@ export function parseSimplifiedVttToFragments(vtt: string): SubtitlesFragment[] 
 export async function aiSegmentBlock(
   fragments: SubtitlesFragment[],
   providerRef: PromptableProviderRef,
+  task: SubtitleTaskOptions = {},
 ): Promise<SubtitlesFragment[]> {
   if (fragments.length === 0) {
     return fragments
@@ -136,11 +138,15 @@ export async function aiSegmentBlock(
 
   const jsonContent = formatFragmentsToJson(cleanedFragments)
 
+  task.signal?.throwIfAborted()
   const segmentedVtt = await sendMessage("aiSegmentSubtitles", {
     jsonContent,
     providerRef,
+    sessionId: task.sessionId,
+    priority: task.priority,
   })
 
+  task.signal?.throwIfAborted()
   const segmentedFragments = parseSimplifiedVttToFragments(segmentedVtt)
 
   if (segmentedFragments.length === 0) {

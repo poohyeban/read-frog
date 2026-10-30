@@ -1,7 +1,7 @@
-import type { SupportedUiLocale } from "./resources"
+import type { SupportedUiLocale } from "./locales"
 import type { UiLanguage } from "@/types/config/config"
 import { browser } from "#imports"
-import { DEFAULT_UI_LOCALE, SUPPORTED_UI_LOCALES } from "./resources"
+import { DEFAULT_UI_LOCALE, SUPPORTED_UI_LOCALES } from "./locales"
 
 const SUPPORTED = new Set<string>(SUPPORTED_UI_LOCALES)
 

@@ -40,11 +40,6 @@ export default function TranslationModeSelector() {
   const currentModeIcon = MODE_ICON[currentMode]
   const nextMode = NEXT_MODE[currentMode]
   const tooltipKey = MODE_TOOLTIP_KEY[currentMode]
-  // Entering translationOnly is blocked while the page-translate provider has
-  // no markup support (translation-only-gate.ts). Native `disabled` would
-  // swallow the hover events the tooltip needs, so the button stays focusable
-  // and the click becomes a no-op with the reason shown in the tooltip.
-
   const actionLabel = i18n.t(tooltipKey.action)
   const shortcutParts = isShortcutEmpty(translateConfig.modeShortcut)
     ? []
@@ -63,7 +58,6 @@ export default function TranslationModeSelector() {
             variant="outline"
             size="icon"
             aria-label={actionLabel}
-
             onClick={handleModeToggle}
           />
         }
@@ -74,11 +68,9 @@ export default function TranslationModeSelector() {
         />
       </TooltipTrigger>
       <TooltipContent className="has-data-[slot=kbd]:pr-3">
-        {/* The blocked-reason line is much longer than the mode labels; let it
-            wrap inside the 320px popup instead of forcing one clipped line. */}
         <div>
           <p>{i18n.t(tooltipKey.current)}</p>
-          {<p>{actionLabel}</p>}
+          <p>{actionLabel}</p>
           {shortcutParts.length > 0 && (
             <KbdGroup className="mt-1.5">
               {shortcutParts.map((part) => (

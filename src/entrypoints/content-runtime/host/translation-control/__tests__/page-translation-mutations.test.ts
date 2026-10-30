@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { GIANT_SPLIT_STRANDED_TEXT_MAX_UNITS } from "@/utils/constants/translate"
 import {
@@ -16,6 +16,7 @@ import {
   type BilingualTranslationState,
   type VirtualParagraphGroup,
 } from "@/utils/host/translate/core/translation-state"
+import { pageLocalScheduler } from "@/utils/host/translate/local-scheduler"
 import { PageTranslationManager } from "../page-translation"
 
 const {
@@ -97,15 +98,21 @@ vi.mock("@/utils/host/translate/node-manipulation", () => ({
   translateWalkedElement: mockTranslateWalkedElement,
 }))
 
-vi.mock("@/utils/host/translate/translate-text", () => ({
+vi.mock("@/utils/host/translate/ui/translation-config-feedback", () => ({
   validateTranslationConfigAndToast: mockValidateTranslationConfigAndToast,
 }))
 
-vi.mock("@/utils/host/translate/translate-variants", () => ({
+vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/translate-variants")>()),
+  primePageTranslationContext: () => {},
   translateTextForPageTitle: mockTranslateTextForPageTitle,
 }))
 
-vi.mock("@/utils/host/translate/webpage-context", () => ({
+vi.mock("@/utils/host/translate/webpage-context", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/webpage-context")>()),
+  isWebPageContextCurrent: () => true,
+  notePageContentMutations: () => {},
+  releaseWebPageContext: () => {},
   getOrCreateWebPageContext: mockGetOrCreateWebPageContext,
 }))
 
@@ -161,6 +168,9 @@ class MockIntersectionObserver {
 async function flushDomUpdates(): Promise<void> {
   await Promise.resolve()
   await new Promise((resolve) => setTimeout(resolve, 0))
+  // Mutation discovery may yield across several frame budgets. One timer tick
+  // does not mean every shadow paragraph has been registered on a busy runner.
+  await vi.waitFor(() => expect(pageLocalScheduler.pending).toBe(0), { interval: 1 })
   await Promise.resolve()
 }
 
@@ -271,6 +281,7 @@ function walkAndLabelVisibleParagraphs(
 }
 
 describe("pageTranslationManager mutation re-walk", () => {
+  afterEach(() => vi.restoreAllMocks())
   beforeEach(() => {
     vi.clearAllMocks()
     intersectionObservers.length = 0
@@ -309,7 +320,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         walkId: string,
         _config: unknown,
         options?: { onBlockedElement?: (blocked: HTMLElement) => void },
-      ) => walkAndLabelVisibleParagraphs(element, walkId, options?.onBlockedElement),
+      ) => mockWalkAndLabelElement(element, walkId, _config, options),
     )
     mockTranslateTextForPageTitle.mockResolvedValue("")
     mockTranslateNodesBilingualMode.mockReset().mockResolvedValue(undefined)
@@ -344,8 +355,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         "walk-id",
         DEFAULT_CONFIG,
         false,
-        expect.anything(),
-        expect.anything(),
+        expect.any(Function),
       )
     } finally {
       if (manager.isActive) manager.stop()
@@ -395,8 +405,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         "walk-id",
         DEFAULT_CONFIG,
         false,
-        expect.anything(),
-        expect.anything(),
+        expect.any(Function),
       )
     } finally {
       if (manager.isActive) manager.stop()
@@ -799,8 +808,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       "walk-id",
       DEFAULT_CONFIG,
       false,
-      expect.anything(),
-      expect.anything(),
+      expect.any(Function),
     )
 
     manager.stop()
@@ -836,8 +844,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       "walk-id",
       DEFAULT_CONFIG,
       false,
-      expect.anything(),
-      expect.anything(),
+      expect.any(Function),
     )
 
     manager.stop()
@@ -873,8 +880,7 @@ describe("pageTranslationManager mutation re-walk", () => {
       "walk-id",
       DEFAULT_CONFIG,
       false,
-      expect.anything(),
-      expect.anything(),
+      expect.any(Function),
     )
 
     manager.stop()
@@ -1435,6 +1441,9 @@ describe("pageTranslationManager mutation re-walk", () => {
   ] as const)(
     "handles %s after sibling CSS reveals a depth-%i shadow tree",
     async (mutationType, depth) => {
+      // Force the production scheduler across frame budgets on every runner.
+      let schedulerClock = 0
+      vi.spyOn(performance, "now").mockImplementation(() => (schedulerClock += 10))
       document.head.innerHTML = `<style>.collapsed + [data-shadow-host] { display: none; }</style>`
       document.body.innerHTML = `<p id="summary">Original summary</p>`
       mockIsDontWalkIntoAndDontTranslateAsChildElement.mockImplementation(
@@ -1524,8 +1533,7 @@ describe("pageTranslationManager mutation re-walk", () => {
           "walk-id",
           DEFAULT_CONFIG,
           false,
-          expect.anything(),
-          expect.anything(),
+          expect.any(Function),
         )
 
         const shadowWrapper = document.createElement("span")
@@ -1640,6 +1648,8 @@ describe("pageTranslationManager mutation re-walk", () => {
   it.each(["current source", "new source", "unblocked source"])(
     "walks nested shadow content once under a %s (#2185)",
     async (sourceKind) => {
+      let schedulerClock = 0
+      vi.spyOn(performance, "now").mockImplementation(() => (schedulerClock += 10))
       document.body.innerHTML = `<p id="summary">Original summary</p>`
 
       const manager = new PageTranslationManager()
@@ -1864,8 +1874,7 @@ describe("pageTranslationManager mutation re-walk", () => {
         "walk-id",
         DEFAULT_CONFIG,
         false,
-        expect.anything(),
-        expect.anything(),
+        expect.any(Function),
       )
 
       // Text edits must also reach the stale-source retranslation path.
@@ -2312,11 +2321,14 @@ describe("pageTranslationManager mutation re-walk", () => {
     shadowRoot.append(shadowChild)
     document.body.append(host)
 
+    const observe = vi.spyOn(MutationObserver.prototype, "observe")
+    const disconnect = vi.spyOn(MutationObserver.prototype, "disconnect")
+    const activeObservers = () => observe.mock.calls.length - disconnect.mock.calls.length
     const manager = new PageTranslationManager()
     await manager.start()
     await flushDomUpdates()
 
-    const observerCountAfterStart = (manager as any).mutationObservers.length
+    const observerCountAfterStart = activeObservers()
     expect(observerCountAfterStart).toBeGreaterThan(0)
 
     for (let i = 0; i < 5; i++) {
@@ -2326,9 +2338,11 @@ describe("pageTranslationManager mutation re-walk", () => {
       await flushDomUpdates()
     }
 
-    expect((manager as any).mutationObservers.length).toBe(observerCountAfterStart)
+    expect(activeObservers()).toBe(observerCountAfterStart)
 
     manager.stop()
+    observe.mockRestore()
+    disconnect.mockRestore()
   })
 
   it("splits a pure-container giant into its descendant paragraphs (#1881)", async () => {

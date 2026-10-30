@@ -1,3 +1,4 @@
+import type { SubtitleOutcome } from "./result"
 export type SubtitlesState = "idle" | "loading" | "error"
 
 export interface StateData {
@@ -12,4 +13,5 @@ export interface SubtitlesFragment {
   start: number
   end: number
   translation?: string
+  translationOutcome?: SubtitleOutcome
 }

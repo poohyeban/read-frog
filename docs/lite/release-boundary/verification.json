@@ -1,0 +1,45 @@
+{
+  "baseline": "27297cdaedc6b63e1dc1e3ea7236afb6996c8ac0",
+  "implementationCommits": ["73529d91", "f08411e9"],
+  "tests": {
+    "command": "SKIP_FREE_API=true vitest run",
+    "exitCode": 0,
+    "files": 300,
+    "tests": 2781
+  },
+  "typeAndStaticCheck": {
+    "command": "oxlint --type-aware --type-check",
+    "exitCode": 0,
+    "diagnostics": 0,
+    "note": "lint and type-check package scripts are identical"
+  },
+  "format": {
+    "command": "oxfmt --check .",
+    "exitCode": 0,
+    "files": 1200
+  },
+  "build": {
+    "command": "wxt build",
+    "exitCode": 0,
+    "target": "chrome-mv3",
+    "seconds": 9.827,
+    "sizeMB": 14.82
+  },
+  "browserRegression": {
+    "command": "playwright test e2e/translation-performance.spec.mjs",
+    "exitCode": 0,
+    "tests": 1
+  },
+  "nativeMv3": {
+    "command": "node e2e/mv3-preflight.mjs",
+    "exitCode": 2,
+    "status": "blocked-by-policy",
+    "accepted": false
+  },
+  "diffCheck": {
+    "command": "git diff --check",
+    "exitCode": 0
+  },
+  "unchanged": [".github/workflows", "package.json", "pnpm-lock.yaml", "wxt.config.ts"],
+  "remoteActions": "No push, PR, tag, release, main merge, Actions invocation or workflow edit this round."
+}

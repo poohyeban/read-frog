@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: Translate "%s"
   showOriginal: Show Original
 popup:
+  state:
+    loading: Checking page…
+    retry: Retry page state
+    emptyProviders: No providers
   autoLang: Auto
   sourceLang: Source
   targetLang: Target
@@ -1768,3 +1772,6 @@ audioServices:
     service-side detection.
   responseFormat: Response format
   outputFormat: Audio output format
+
+ui:
+  loading: Loading…

@@ -1,0 +1,35 @@
+{
+  "full_vitest": {
+    "files": 285,
+    "tests": 2687,
+    "seconds": 102.43,
+    "skip_free_api": true
+  },
+  "final_config_contracts": {
+    "files": 2,
+    "tests": 5,
+    "passed": true
+  },
+  "typecheck_and_lint": true,
+  "repository_format": true,
+  "report_and_raw_data_format": true,
+  "wxt_build": {
+    "passed": true,
+    "total_mb": 14.77
+  },
+  "manifest_equal_to_phase1": true,
+  "browser_harness": {
+    "phase1": "passed, 20 samples + 8 compatibility fixtures",
+    "phase2": "passed, 20 samples + 8 compatibility fixtures"
+  },
+  "mv3_e2e": {
+    "passed": false,
+    "reason": "serviceworker timeout; managed Chromium ExtensionInstallBlocklist [*]",
+    "policy_bypassed": false
+  },
+  "github": {
+    "pushed": false,
+    "actions_used": false,
+    "workflows_changed": false
+  }
+}

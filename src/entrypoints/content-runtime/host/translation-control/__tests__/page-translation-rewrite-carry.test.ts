@@ -40,17 +40,23 @@ vi.mock("@/utils/host/translate/filter-small-paragraph", () => ({
 vi.mock("@/utils/host/translate/target-language-skip", () => ({
   shouldSkipAsTargetLanguage: vi.fn<(...args: any[]) => any>().mockResolvedValue(false),
 }))
-vi.mock("@/utils/host/translate/translate-text", () => ({
+vi.mock("@/utils/host/translate/ui/translation-config-feedback", () => ({
   validateTranslationConfigAndToast: mockValidateTranslationConfigAndToast,
 }))
-vi.mock("@/utils/host/translate/translate-variants", () => ({
+vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/translate-variants")>()),
   translateTextForPage: mockTranslateTextForPage,
+  primePageTranslationContext: () => {},
   translateTextForPageTitle: mockTranslateTextForPageTitle,
 }))
 vi.mock("@/utils/host/translate/ui/decorate-translation", () => ({
   decorateTranslationNode: vi.fn<(...args: any[]) => any>().mockResolvedValue(undefined),
 }))
-vi.mock("@/utils/host/translate/webpage-context", () => ({
+vi.mock("@/utils/host/translate/webpage-context", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/webpage-context")>()),
+  isWebPageContextCurrent: () => true,
+  notePageContentMutations: () => {},
+  releaseWebPageContext: () => {},
   getOrCreateWebPageContext: mockGetOrCreateWebPageContext,
 }))
 vi.mock("@/utils/message", () => ({ sendMessage: mockSendMessage }))

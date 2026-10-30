@@ -1,0 +1,12 @@
+? Verifying lockfile against supply-chain policies (1227 entries)...
+
+   ╭──────────────────────────────────────────╮
+   │                                          │
+   │   Update available! 11.25.0 → 12.16.1.   │
+   │   Changelog: https://pnpm.io/v/12.16.1   │
+   │     To update, run: pnpm self-update     │
+   │                                          │
+   ╰──────────────────────────────────────────╯
+
+✓ Lockfile passes supply-chain policies (1227 entries in 12.4s)
+Done in 12.9s using pnpm v11.25.0

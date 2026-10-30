@@ -39,9 +39,10 @@ vi.mock("@/utils/host/dom/find", () => ({
 vi.mock("@/utils/host/dom/traversal", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/utils/host/dom/traversal")>()),
   walkAndLabelElement: mockWalkAndLabelElement,
-  walkAndLabelElementChunked: vi
-    .fn<(...args: any[]) => any>()
-    .mockResolvedValue({ forceBlock: false, isInlineNode: false }),
+  walkAndLabelElementChunked: async (...args: unknown[]) => {
+    mockWalkAndLabelElement(...args)
+    return { forceBlock: false, isInlineNode: false }
+  },
 }))
 
 vi.mock("@/utils/host/translate/node-manipulation", () => ({
@@ -49,15 +50,21 @@ vi.mock("@/utils/host/translate/node-manipulation", () => ({
   translateWalkedElement: mockTranslateWalkedElement,
 }))
 
-vi.mock("@/utils/host/translate/translate-variants", () => ({
+vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/translate-variants")>()),
+  primePageTranslationContext: () => {},
   translateTextForPageTitle: vi.fn<(...args: any[]) => any>().mockResolvedValue(null),
 }))
 
-vi.mock("@/utils/host/translate/webpage-context", () => ({
+vi.mock("@/utils/host/translate/webpage-context", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/host/translate/webpage-context")>()),
+  isWebPageContextCurrent: () => true,
+  notePageContentMutations: () => {},
+  releaseWebPageContext: () => {},
   getOrCreateWebPageContext: vi.fn<(...args: any[]) => any>().mockResolvedValue(null),
 }))
 
-vi.mock("@/utils/host/translate/translate-text", () => ({
+vi.mock("@/utils/host/translate/ui/translation-config-feedback", () => ({
   validateTranslationConfigAndToast: mockValidateTranslationConfigAndToast,
 }))
 

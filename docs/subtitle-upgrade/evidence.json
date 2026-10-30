@@ -1,0 +1,59 @@
+{
+  "baselineCommit": "bad35243a594b01a588fed3eee7a20a63da327d2",
+  "implementationCommit": "ffada246df676aa65032c416199f2d74ece04a53",
+  "recordedAt": "2026-10-30T10:51:38.246740+00:00",
+  "browser": "154.0.8037.57",
+  "node": "v24.19.0",
+  "nativeMV3Verified": false,
+  "paidProviderCalls": 0,
+  "tests": {
+    "files": 299,
+    "passed": 2767
+  },
+  "rawData": {
+    "after/raw.json": {
+      "bytes": 1075777,
+      "sha256": "bfdc3402076908a3b24b4f9c9b65bae8311b99561154e8ea7ed5ea7916606d98"
+    },
+    "before/raw.json": {
+      "bytes": 1304052,
+      "sha256": "7db8a7e563775b5946ce2b584d161a037bdcef5d4f2a5f0ce7f7055cb590842b"
+    },
+    "export-after/raw.json": {
+      "bytes": 4240,
+      "sha256": "f036cc9daa1de1849f821083ddf812ba601c5394b656cd2caab787d46dea64ad"
+    },
+    "export-before/raw.json": {
+      "bytes": 4213,
+      "sha256": "d9bbe557530912907e015d17524e315ba5619e44d8c7d35b07b205c6f17b848c"
+    },
+    "queues-after/raw.json": {
+      "bytes": 126756,
+      "sha256": "4df7865aa4b66e24e190f894e8b4e89690329a079bac4baff59a9f24872a26b2"
+    },
+    "queues-before/raw.json": {
+      "bytes": 126541,
+      "sha256": "e60b78701435e2d94ae3c70cda79131e94f44c96b80d5f419860fb1fec986e36"
+    },
+    "transcript-after/raw.json": {
+      "bytes": 13844,
+      "sha256": "a0ff20802f5d867b67d514770fde2dd419b78b12685d0b28837f44067a2489a3"
+    },
+    "transcript-before/raw.json": {
+      "bytes": 14097,
+      "sha256": "4484312be5a99588a97ba268c22003c6fccad81c178d7c1c99ab352f50386d9f"
+    },
+    "transcript-containment/raw.json": {
+      "bytes": 12295,
+      "sha256": "257f8b90ea7cb1670634fee07941bcc49d4bcb4fe04d195655c5c186cd140ab1"
+    },
+    "transcript-functional/raw.json": {
+      "bytes": 550,
+      "sha256": "522129b79ccc63da980f314650357259146eac0e17763b3d55f688fd047fc2e9"
+    },
+    "ui-locales/raw.json": {
+      "bytes": 4019464,
+      "sha256": "3f1bdc9804bb77dcf709ae7cd3516adf9522b44d727e675ae8f3012eae4a305d"
+    }
+  }
+}

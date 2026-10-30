@@ -47,10 +47,7 @@ function cleanVttResponse(text: string): string {
   return cleaned
 }
 
-/**
- * Run AI segmentation on JSON subtitle content
- */
-export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promise<string> {
+function prepareSegmentation(data: AiSegmentSubtitlesData) {
   const { jsonContent, providerRef } = data
 
   if (!jsonContent) {
@@ -69,8 +66,24 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
     .parse(JSON.parse(jsonContent))
     .map(({ s, e, t }) => ({ start: s, end: e, text: t }))
 
-  const cacheKey = Sha256Hex(Sha256Hex(jsonContent), getProviderCacheIdentity(providerRef))
+  const { systemPrompt, prompt } = getSubtitlesSegmentationPrompt(jsonContent)
+  const cacheKey = Sha256Hex(
+    "subtitle-segmentation-v3:aligned:16384",
+    systemPrompt,
+    prompt,
+    getProviderCacheIdentity(providerRef),
+  )
+  return { source, cacheKey, systemPrompt, prompt, providerRef }
+}
+
+async function readSegmentationCache(
+  plan: ReturnType<typeof prepareSegmentation>,
+  signal?: AbortSignal,
+) {
+  signal?.throwIfAborted()
+  const { source, cacheKey } = plan
   const cached = await db.aiSegmentationCache.get(cacheKey)
+  signal?.throwIfAborted()
   if (cached) {
     if (isSegmentationAligned(source, parseSimplifiedVttToFragments(cached.result))) {
       logger.info("[Background] AI subtitle segmentation cache hit")
@@ -80,17 +93,40 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
     await db.aiSegmentationCache.delete(cacheKey)
   }
 
-  const { systemPrompt, prompt } = getSubtitlesSegmentationPrompt(jsonContent)
+  return null
+}
+
+/** Valid cache hits bypass the network limiter; queued work rechecks for concurrent fills. */
+export async function getCachedAiSegmentation(
+  data: AiSegmentSubtitlesData,
+): Promise<string | null> {
+  return readSegmentationCache(prepareSegmentation(data))
+}
+
+export async function runAiSegmentSubtitles(
+  data: AiSegmentSubtitlesData,
+  options: { signal?: AbortSignal } = {},
+): Promise<string> {
+  options.signal?.throwIfAborted()
+  const plan = prepareSegmentation(data)
+  const cached = await readSegmentationCache(plan, options.signal)
+  if (cached) return cached
+  const { source, cacheKey, systemPrompt, prompt, providerRef } = plan
 
   try {
-    const segmentedVtt = await generateTextForProviderRef({
-      providerRef,
-      // Its own route, not videoSubtitles: segmentation emits a whole WebVTT
-      // block and needs the wider output budget that route reserves.
+    const segmentedVtt = await generateTextForProviderRef(
+      {
+        providerRef,
+        // Its own route, not videoSubtitles: segmentation emits a whole WebVTT
+        // block and needs the wider output budget that route reserves.
 
-      instructions: systemPrompt,
-      prompt,
-    })
+        instructions: systemPrompt,
+        prompt,
+        maxOutputTokens: 16_384,
+      },
+      options,
+    )
+    options.signal?.throwIfAborted()
 
     const result = cleanVttResponse(segmentedVtt)
 
@@ -105,6 +141,7 @@ export async function runAiSegmentSubtitles(data: AiSegmentSubtitlesData): Promi
       throw new Error("AI segmentation does not match the source timeline")
     }
 
+    options.signal?.throwIfAborted()
     await db.aiSegmentationCache.put({
       key: cacheKey,
       result,

@@ -1,0 +1,127 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/entrypoints/popup/atoms/__tests__/session.test.ts (9 tests | 4 failed) 21ms
+   ❯ popup session (9)
+     × retry refreshes the bound tab URL after navigation without switching to another active tab 5ms
+     × invalidates an old receipt and synchronizes after navigation/reload to https://example.com/a 1ms
+     × invalidates an old receipt and synchronizes after navigation/reload to https://example.com/b 1ms
+     × never retargets a closed tab and never writes using a stale URL 1ms
+ ❯ src/entrypoints/background/__tests__/page-translation-command.test.ts (4 tests | 1 failed) 216ms
+   ❯ page command concurrent reads and document generations (4)
+     × multiple readers do not cancel a valid write confirmation 58ms
+ ❯ src/entrypoints/background/__tests__/subtitle-request-contract.test.ts (9 tests | 2 failed) 42ms
+   ❯ subtitle background contracts using real RequestQueue and BatchQueue (9)
+     × caches the complete ordered batch, never reuses one cue with changed neighbours or boundaries 13ms
+     × isolates fallback cache entries from the failed batch and preserves each cue's glossary 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/background/__tests__/page-translation-command.test.ts > page command concurrent reads and document generations > multiple readers do not cancel a valid write confirmation
+Error: Page changed while confirming translation
+ ❯ check src/entrypoints/background/page-translation-command.ts:20:68
+     21|       await check()
+     22|       if (enabled === false) {
+     23|         // Intent must survive a failed delivery so auto-detection can…
+       |       ^
+     24|         await setPageTranslationEnabled(tabId, false, url, true)
+     25|       }
+ ❯ Object.request src/entrypoints/background/page-translation-command.ts:23:4
+ ❯ src/entrypoints/background/__tests__/page-translation-command.test.ts:44:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-request-contract.test.ts > subtitle background contracts using real RequestQueue and BatchQueue > caches the complete ordered batch, never reuses one cue with changed neighbours or boundaries
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/entrypoints/background/__tests__/subtitle-request-contract.test.ts:234:55
+    232|     expect(await single).toBe("solo hello")
+    233|     expect(mocks.execute).toHaveBeenCalledTimes(calls)
+    234|     mocks.execute.mockResolvedValue(`batch hello\n\n${BATCH_SEPARATOR}…
+       |                                                       ^
+    235|     const batch = Promise.all([a, b].map((request) => call("enqueueSub…
+    236|     await vi.advanceTimersByTimeAsync(101)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-request-contract.test.ts > subtitle background contracts using real RequestQueue and BatchQueue > isolates fallback cache entries from the failed batch and preserves each cue's glossary
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/entrypoints/background/__tests__/subtitle-request-contract.test.ts:267:55
+    238|     expect(mocks.execute).toHaveBeenCalledTimes(calls + 1)
+    239|   })
+    240| })
+       |   ^
+    241|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  src/entrypoints/popup/atoms/__tests__/session.test.ts > popup session > retry refreshes the bound tab URL after navigation without switching to another active tab
+AssertionError: expected { id: 7, url: 'https://example.com/a' } to deeply equal { id: 7, url: 'https://example.com/b' }
+
+- Expected
++ Received
+
+  {
+    "id": 7,
+-   "url": "https://example.com/b",
++   "url": "https://example.com/a",
+  }
+
+ ❯ src/entrypoints/popup/atoms/__tests__/session.test.ts:169:77
+    167|       expect(store.get(pageStatusAtom)).toEqual({ phase: "ready", enab…
+    168|       session.dispose()
+    169|       expect(browser.tabs.onUpdated.removeListener).toHaveBeenCalledWi…
+       |                                                                             ^
+    170|     },
+    171|   )
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  src/entrypoints/popup/atoms/__tests__/session.test.ts > popup session > invalidates an old receipt and synchronizes after navigation/reload to https://example.com/a
+ FAIL  src/entrypoints/popup/atoms/__tests__/session.test.ts > popup session > invalidates an old receipt and synchronizes after navigation/reload to https://example.com/b
+TypeError: Cannot read properties of undefined (reading '0')
+ ❯ src/entrypoints/popup/atoms/__tests__/session.test.ts:194:116
+    186|     session.dispose()
+    187|   })
+    188| })
+       |   ^
+    189|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  src/entrypoints/popup/atoms/__tests__/session.test.ts > popup session > never retargets a closed tab and never writes using a stale URL
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/entrypoints/popup/atoms/__tests__/session.test.ts:246:124
+    186|     session.dispose()
+    187|   })
+    188| })
+       |   ^
+    189|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  7 failed | 15 passed (22)
+   Start at  12:20:45
+   Duration  1.33s (transform 43%, setup 29%, tests 15%, import 12%, worker 2%)

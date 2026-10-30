@@ -6,6 +6,10 @@ contextMenu:
   translateSelection: 翻译”%s”
   showOriginal: 显示原文
 popup:
+  state:
+    loading: 正在读取页面状态…
+    retry: 重试页面状态
+    emptyProviders: 未配置服务
   autoLang: 自动检测
   sourceLang: 来源语言
   targetLang: 目标语言
@@ -1495,3 +1499,6 @@ audioServices:
   languageDescription: 可选 ISO 639-1 代码，例如 en 或 zh；留空由服务识别。
   responseFormat: 响应格式
   outputFormat: 音频输出格式
+
+ui:
+  loading: 正在加载…

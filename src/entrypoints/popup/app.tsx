@@ -1,4 +1,6 @@
-import { Icon } from "@iconify/react/offline"
+import { IconSettings } from "@tabler/icons-react"
+import { Button } from "@/components/ui/base-ui/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/base-ui/tooltip"
 import { i18n } from "@/utils/i18n"
 import { openOptionsPage } from "@/utils/navigation"
 import { version } from "../../../package.json"
@@ -13,53 +15,55 @@ import TranslatePromptSelector from "./components/translate-prompt-selector"
 import { TranslationHubButton } from "./components/translation-hub-button"
 import TranslationModeSelector from "./components/translation-mode-selector"
 
-function App() {
+export default function App() {
   return (
-    <>
-      <div className="relative">
-        <div className="flex flex-col gap-4 bg-background px-6 pt-5 pb-4">
-          {/* gap-2 + a non-shrinking icon rail is what bounds the account menu:
-              whatever is left of the 320px popup is its width, and a long display
-              name ellipses inside that instead of pushing the icons off. */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex shrink-0 items-center">
-              <></>
-              <></>
-            </div>
-          </div>
+    <main className="flex flex-col bg-background text-foreground">
+      <header className="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <img src="/icon/32.png" width={24} height={24} alt="" className="shrink-0" />
+          <h1 className="truncate text-sm font-semibold tracking-tight">Read Frog Lite</h1>
+        </div>
+        <nav className="flex shrink-0 items-center gap-0.5" aria-label="Read Frog Lite">
           <TranslationHubButton />
-          <LanguageOptionsSelector />
+          <Tooltip>
+            <TooltipTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={i18n.t("popup.options")}
+                  onClick={() => {
+                    void openOptionsPage()
+                  }}
+                />
+              }
+            >
+              <IconSettings aria-hidden="true" className="size-4" />
+            </TooltipTrigger>
+            <TooltipContent>{i18n.t("popup.options")}</TooltipContent>
+          </Tooltip>
+        </nav>
+      </header>
+      <div className="flex flex-col gap-3 px-4 pb-3">
+        <LanguageOptionsSelector />
+        <div className="flex flex-col gap-2">
           <ProvidersField />
           <TranslatePromptSelector />
-          <div className="flex w-full items-center gap-2">
-            <TranslationModeSelector />
-            <TranslateButton className="min-w-0 flex-1" />
-          </div>
+        </div>
+        <div className="flex w-full items-center gap-2">
+          <TranslationModeSelector />
+          <TranslateButton className="min-w-0 flex-1" />
+        </div>
+        <div className="flex flex-col gap-3 border-t border-border pt-3">
           <SiteControlToggle />
           <AlwaysTranslate />
+        </div>
+        <div className="flex flex-col gap-3 border-t border-border pt-3">
           <Hotkey />
           <AISmartContext />
         </div>
-        {/* Out of flow on purpose: the card appears on its own schedule, and letting it
-            grow the popup would shift every control out from under the user's cursor. */}
-        <></>
       </div>
-      <div className="flex items-center justify-between bg-neutral-200 px-2 py-1 dark:bg-neutral-800">
-        <button
-          type="button"
-          className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 hover:bg-neutral-300 dark:hover:bg-neutral-700"
-          onClick={() => {
-            void openOptionsPage()
-          }}
-        >
-          <Icon icon="tabler:settings" className="size-4" strokeWidth={1.6} />
-          <span className="text-[13px] font-medium">{i18n.t("popup.options")}</span>
-        </button>
-        <span className="text-sm text-neutral-500 dark:text-neutral-400">{version}</span>
-        <></>
-      </div>
-    </>
+      <footer className="px-4 pb-2 text-right text-xs text-muted-foreground">v{version}</footer>
+    </main>
   )
 }
-
-export default App

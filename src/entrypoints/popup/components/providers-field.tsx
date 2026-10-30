@@ -1,36 +1,69 @@
-import type { Config } from "@/types/config/config"
 import type { ProvidersConfig } from "@/types/config/provider"
 import type { ProviderSelectorOption } from "@/utils/providers/provider-display"
 import type { ProviderCapability } from "@/utils/providers/provider-registry"
+import { IconChevronRight } from "@tabler/icons-react"
+import { dequal } from "dequal"
 import { useAtomValue } from "jotai"
-import { useMemo } from "react"
+import { selectAtom } from "jotai/utils"
+import { useMemo, useState } from "react"
 import { HelpTooltip } from "@/components/help-tooltip"
-import { FeatureProviderSelectorList } from "@/components/llm-providers/feature-provider-selector-list"
 import { useTheme } from "@/components/providers/theme-provider"
 import { Avatar, AvatarGroup, AvatarGroupCount, AvatarImage } from "@/components/ui/base-ui/avatar"
 import { Button } from "@/components/ui/base-ui/button"
-import { Drawer, DrawerBody, DrawerContent, DrawerTrigger } from "@/components/ui/base-ui/drawer"
-import { configAtom, configFieldsAtomMap } from "@/utils/atoms/config"
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerTrigger,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerHeader,
+} from "@/components/ui/base-ui/drawer"
+import { configAtom } from "@/utils/atoms/config"
 import { FEATURE_KEYS, FEATURE_PROVIDER_DEFS } from "@/utils/constants/feature-providers"
 import { getSelectionToolbarActions } from "@/utils/custom-actions"
 import { i18n } from "@/utils/i18n"
 import { getProviderLogo, getProviderName } from "@/utils/providers/provider-display"
 import { getSelectableProvidersForCapability } from "@/utils/providers/provider-registry"
 
-const VISIBLE_PROVIDER_COUNT = 5
+type ProviderSelectorsComponent =
+  typeof import("@/components/llm-providers/feature-provider-selector-list").FeatureProviderSelectorList
+let cachedSelectors: ProviderSelectorsComponent | undefined
+const loadProviderSelectors = () =>
+  import("@/components/llm-providers/feature-provider-selector-list").then((module) => {
+    cachedSelectors = module.FeatureProviderSelectorList
+    return cachedSelectors
+  })
+const warmProviderSelectors = () => {
+  void loadProviderSelectors().catch(() => {})
+}
 
-/**
- * The capability travels with the provider because usability is per slot: the
- * same built-in can be runnable for one feature and walled off for another,
- * since the plan funds features individually.
- */
+const VISIBLE_PROVIDER_COUNT = 2
+
 interface SelectedProviderSlot {
   provider: ProviderSelectorOption
   capability: ProviderCapability
 }
 
+const providerSummaryInputAtom = selectAtom(
+  configAtom,
+  (config) => ({
+    providers: config.providersConfig,
+    assignments: [
+      ...FEATURE_KEYS.map((capability) => ({
+        capability: capability as ProviderCapability,
+        providerId: FEATURE_PROVIDER_DEFS[capability].getProviderId(config),
+      })),
+      ...getSelectionToolbarActions(config.selectionToolbar)
+        .filter((action) => action.enabled !== false)
+        .map((action) => ({ capability: "customAction" as const, providerId: action.providerId })),
+    ],
+  }),
+  dequal,
+)
+
 function getSelectedProviderOptions(
-  config: Config,
+  assignments: { capability: ProviderCapability; providerId: string }[],
   providersConfig: ProvidersConfig,
 ): SelectedProviderSlot[] {
   const selectedProviders: SelectedProviderSlot[] = []
@@ -46,16 +79,7 @@ function getSelectedProviderOptions(
     selectedProviders.push({ provider: selectedProvider, capability })
   }
 
-  for (const featureKey of FEATURE_KEYS) {
-    addProvider(featureKey, FEATURE_PROVIDER_DEFS[featureKey].getProviderId(config))
-  }
-
-  for (const action of getSelectionToolbarActions(config.selectionToolbar)) {
-    if (action.enabled === false) {
-      continue
-    }
-    addProvider("customAction", action.providerId)
-  }
+  for (const { capability, providerId } of assignments) addProvider(capability, providerId)
 
   return selectedProviders
 }
@@ -63,25 +87,17 @@ function getSelectedProviderOptions(
 function ProviderAvatarSummary({ slots }: { slots: SelectedProviderSlot[] }) {
   const { theme } = useTheme()
 
-  const visibleSlots = slots.slice(0, VISIBLE_PROVIDER_COUNT)
-  const remainingCount = slots.length - visibleSlots.length
-  const providerKeyCounts = new Map<string, number>()
+  const uniqueSlots = [...new Map(slots.map((slot) => [slot.provider.id, slot])).values()]
+  const visibleSlots = uniqueSlots.slice(0, VISIBLE_PROVIDER_COUNT)
+  const remainingCount = uniqueSlots.length - visibleSlots.length
 
   return (
     <AvatarGroup>
       {visibleSlots.map(({ provider }) => {
         const name = getProviderName(provider)
-        const providerKeyCount = providerKeyCounts.get(provider.id) ?? 0
-        providerKeyCounts.set(provider.id, providerKeyCount + 1)
-        // Same treatment and the same predicate as the dropdowns this button
-        // opens: dimmed on durable account facts only, so a row the user could
-        // fix by signing in or upgrading reads differently from one that is
-
-        // configured" to an account that can run none of them.
-
         return (
           <Avatar
-            key={`${provider.id}-${providerKeyCount}`}
+            key={provider.id}
             size="sm"
             className="items-center justify-center bg-white dark:bg-muted"
           >
@@ -99,32 +115,78 @@ function ProviderAvatarSummary({ slots }: { slots: SelectedProviderSlot[] }) {
 }
 
 export default function ProvidersField() {
-  const config = useAtomValue(configAtom)
-  const providersConfig = useAtomValue(configFieldsAtomMap.providersConfig)
+  const { assignments, providers } = useAtomValue(providerSummaryInputAtom)
+  const [Selectors, setSelectors] = useState<ProviderSelectorsComponent | undefined>(
+    () => cachedSelectors,
+  )
+  const [loadFailed, setLoadFailed] = useState(false)
+  const prepareSelectors = () => {
+    if (cachedSelectors) {
+      setSelectors(() => cachedSelectors)
+      return
+    }
+    setLoadFailed(false)
+    void loadProviderSelectors().then(
+      (component) => setSelectors(() => component),
+      () => setLoadFailed(true),
+    )
+  }
 
   const selectedProviders = useMemo(
-    () => getSelectedProviderOptions(config, providersConfig),
-    [config, providersConfig],
+    () => getSelectedProviderOptions(assignments, providers),
+    [assignments, providers],
   )
 
   return (
-    <Drawer>
+    <Drawer
+      onOpenChange={(open) => {
+        if (open) prepareSelectors()
+      }}
+    >
       <div className="flex items-center justify-between gap-2">
         <span className="flex items-center gap-1.5 text-[13px] font-medium">
           {i18n.t("popup.providers.title")}
           <HelpTooltip>{i18n.t("popup.providers.description")}</HelpTooltip>
         </span>
         <DrawerTrigger
+          onPointerEnter={warmProviderSelectors}
+          onFocus={warmProviderSelectors}
           render={
-            <Button type="button" variant="ghost" aria-label={i18n.t("popup.providers.open")} />
+            <Button
+              type="button"
+              variant="ghost"
+              className="max-w-[180px] min-w-0 gap-1.5 px-1.5"
+              aria-label={i18n.t("popup.providers.open")}
+            />
           }
         >
           <ProviderAvatarSummary slots={selectedProviders} />
+          <span className="min-w-0 truncate text-xs text-muted-foreground">
+            {selectedProviders.length
+              ? [
+                  ...new Set(selectedProviders.map(({ provider }) => getProviderName(provider))),
+                ].join(", ")
+              : i18n.t("popup.state.emptyProviders")}
+          </span>
+          <IconChevronRight
+            className="size-3.5 shrink-0 text-muted-foreground"
+            aria-hidden="true"
+          />
         </DrawerTrigger>
       </div>
       <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>{i18n.t("popup.providers.title")}</DrawerTitle>
+          <DrawerDescription>{i18n.t("popup.providers.description")}</DrawerDescription>
+        </DrawerHeader>
         <DrawerBody className="p-4" data-base-ui-swipe-ignore="">
-          <FeatureProviderSelectorList providerSelectorTriggerSize="sm" />
+          {Selectors ? (
+            <Selectors providerSelectorTriggerSize="sm" />
+          ) : loadFailed ? (
+            <Button onClick={prepareSelectors}>{i18n.t("options.autosave.retry")}</Button>
+          ) : (
+            <p role="status">{i18n.t("ui.loading")}</p>
+          )}
         </DrawerBody>
       </DrawerContent>
     </Drawer>

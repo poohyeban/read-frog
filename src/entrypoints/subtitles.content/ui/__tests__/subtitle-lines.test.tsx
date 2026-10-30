@@ -149,4 +149,26 @@ describe("subtitle lines", () => {
     const line = screen.getByText("你好")
     expect(line).not.toHaveClass("animate-subtitle-fade-in")
   })
+  it("keeps a failed original readable after switching to translation-only display", () => {
+    const store = createStoreWithLanguage("eng")
+    store.set(currentTimeMsAtom, 500)
+    store.set(currentSubtitleAtom, {
+      text: "Keep this original",
+      start: 0,
+      end: 1000,
+      translation: "",
+      translationOutcome: { status: "temporary", message: "offline" },
+    })
+    store.set(mockedAtoms.videoSubtitlesAtom, {
+      ...DEFAULT_CONFIG.videoSubtitles,
+      style: { ...DEFAULT_CONFIG.videoSubtitles.style, displayMode: "translationOnly" },
+    })
+    const { container } = render(
+      <Provider store={store}>
+        <TranslationSubtitle />
+      </Provider>,
+    )
+    expect(screen.getByText("Keep this original")).toBeTruthy()
+    expect(container.querySelector("[data-pending='true']")).toBeNull()
+  })
 })
