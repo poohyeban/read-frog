@@ -10,6 +10,7 @@ import {
 } from "../../../constants/dom-labels"
 import { isHTMLElement, isNaturalBlockTransNode, isNaturalInlineTransNode } from "../../dom/filter"
 import { getOwnerDocument } from "../../dom/node"
+import { captureCommitGate } from "../commit-gate"
 import { pageLocalScheduler } from "../local-scheduler"
 import { decorateTranslationNode } from "../ui/decorate-translation"
 import { isForceInlineTranslation, isShortInlineTranslationText } from "../ui/translation-utils"
@@ -141,11 +142,20 @@ export async function insertTranslatedNodeIntoWrapper(
   config: Config,
   forceBlock = false,
 ): Promise<void> {
-  await pageLocalScheduler.schedule(
-    () => insertContent(wrapper, context, text, style, config, forceBlock),
-    context.isCurrent,
-    context.signal,
-  )
+  const gate = captureCommitGate(context.isCurrent)
+  const commit = gate.beginCommit()
+  try {
+    await pageLocalScheduler.schedule(
+      () => insertContent(wrapper, context, text, style, config, forceBlock),
+      context.isCurrent,
+      context.signal,
+    )
+    if (gate.isCurrent()) commit.complete()
+    else commit.discard()
+  } catch (error) {
+    commit.discard()
+    throw error
+  }
 }
 
 async function insertContent(

@@ -33,6 +33,7 @@ import {
   wasNodeRemovedByExtension,
 } from "@/utils/host/translate/core/translation-state"
 import { canSplitParagraphIntoDescendants } from "@/utils/host/translate/dom/paragraph-segmentation"
+import { translationActivity, type TranslationEngine } from "@/utils/host/translate/engine-state"
 import { pageLocalScheduler } from "@/utils/host/translate/local-scheduler"
 import {
   removeAllTranslatedWrapperNodes,
@@ -129,7 +130,9 @@ interface IPageTranslationManager {
   registerPageTranslationTriggers: () => () => void
 }
 
-export class PageTranslationManager implements IPageTranslationManager {
+export class PageTranslationManager implements IPageTranslationManager, TranslationEngine {
+  readonly getSnapshot = translationActivity.getSnapshot
+  readonly subscribe = translationActivity.subscribe
   private static readonly MAX_DURATION = 500
   private static readonly MOVE_THRESHOLD = 30 * 30
   /** Max synchronous passes of the retranslation loop per invocation. */

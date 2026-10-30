@@ -161,6 +161,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     options.signal ?? (sessionId ? getPageTranslationSession()?.signal : getDocumentContextSignal())
   const result = await executeTranslationPlan(plan, {
     signal,
+    activitySessionId: sessionId,
     isCurrent: () =>
       isLocationCurrent() &&
       (sessionId === undefined || getPageTranslationSessionId() === sessionId),

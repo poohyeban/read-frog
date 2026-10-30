@@ -10,6 +10,7 @@ import {
 import { flushBatchedOperations } from "../../dom/batch-dom"
 import { translateNodes } from "../core/translation-modes"
 import { removeAllTranslatedWrapperNodes } from "../dom/translation-cleanup"
+import { translationActivity } from "../engine-state"
 import { clearInMemoryTranslationCache } from "../in-memory-translation-cache"
 import { assertTranslationPlanIdentity } from "../translation-plan"
 import { beginPageTranslationSession, endPageTranslationSession } from "../translation-session"
@@ -109,6 +110,12 @@ it.each(["bilingual", "translationOnly"] as const)(
     })
     expect(io.provider.mock.calls[0]![2]).toEqual(io.requests[0].providerRef.config)
     expect(source.textContent).toContain("这是一段")
+    expect(translationActivity.getSnapshot()).toMatchObject({
+      phase: "settled",
+      completedRequests: 1,
+      committedResults: 1,
+      pending: { context: 0, request: 0, render: 0 },
+    })
     removeAllTranslatedWrapperNodes()
     expect(source.textContent).toBe(original)
     expect(source.firstChild).toBe(originalNode)

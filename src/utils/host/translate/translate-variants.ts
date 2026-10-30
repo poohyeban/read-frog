@@ -20,6 +20,7 @@ import {
   TranslationCancelledError,
 } from "@/utils/request/cancellation"
 import { getLocalConfig } from "../../config/storage"
+import { translationActivity } from "./engine-state"
 import { shouldSkipAsTargetLanguage } from "./target-language-skip"
 import { prepareTranslationText } from "./text-preparation"
 import {
@@ -54,25 +55,33 @@ async function getWebPagePromptContext(
   args[4] = session
   const url = window.location.href
   const signal = session?.signal ?? getDocumentContextSignal()
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const revision = getWebPageContentRevision()
-    try {
-      return await prepareWebPagePromptContext(...args)
-    } catch (error) {
-      // An unaffected visible paragraph must not be stranded when another
-      // region changes while its context is pending. Retry only content
-      // invalidation, never a stopped session, navigation or provider error.
-      if (
-        !isTranslationCancelledError(error) ||
-        session?.signal.aborted ||
-        revision === getWebPageContentRevision() ||
-        (url !== window.location.href && !isInPageAnchorChange(url, window.location.href))
-      )
-        throw error
-      await waitForStableWebPageContext(signal)
+  const finish = translationActivity.track("context", session?.id)
+  try {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const revision = getWebPageContentRevision()
+      try {
+        return await prepareWebPagePromptContext(...args)
+      } catch (error) {
+        // An unaffected visible paragraph must not be stranded when another
+        // region changes while its context is pending. Retry only content
+        // invalidation, never a stopped session, navigation or provider error.
+        if (
+          !isTranslationCancelledError(error) ||
+          session?.signal.aborted ||
+          revision === getWebPageContentRevision() ||
+          (url !== window.location.href && !isInPageAnchorChange(url, window.location.href))
+        )
+          throw error
+        await waitForStableWebPageContext(signal)
+      }
     }
+    throw new ContextUnstableError()
+  } catch (error) {
+    finish(error)
+    throw error
+  } finally {
+    finish()
   }
-  throw new ContextUnstableError()
 }
 
 async function prepareWebPagePromptContext(

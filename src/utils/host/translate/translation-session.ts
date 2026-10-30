@@ -1,5 +1,6 @@
 import type { Config } from "@/types/config/config"
 import { logger } from "@/utils/logger"
+import { translationActivity } from "./engine-state"
 import { ResourceScope } from "./resource-scope"
 
 /** Captured task epoch. Routing replaces it; document resources survive until stop. */
@@ -46,6 +47,7 @@ function activate(
     own: (dispose: () => void) => resources.own(dispose),
   })
   state = { status: "active", session, tasks, resources, readRevision }
+  translationActivity.begin(id)
   return id
 }
 export function beginPageTranslationSession(
@@ -68,6 +70,7 @@ export function endPageTranslationSession(): string | null {
   if (state.status === "idle") return null
   const previous = state
   state = { status: "idle" }
+  translationActivity.end(previous.session.id)
   generation++
   const errors = [...previous.tasks.dispose(), ...previous.resources.dispose()]
   if (errors.length) logger.warn("Session resource cleanup failed", errors)

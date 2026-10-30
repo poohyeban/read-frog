@@ -2,6 +2,7 @@ import type { TranslationPlan } from "./translation-plan"
 import { isNoTranslationSentinel } from "@/utils/constants/prompt"
 import { sendMessage } from "@/utils/message"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
+import { translationActivity } from "./engine-state"
 import {
   assertHtmlAttributeMarkerIntegrity,
   isHtmlAttributeMarkerIntegrityError,
@@ -42,41 +43,62 @@ export function validateTranslationResult(
 /** Network and cache execution know nothing about DOM wrappers or UI components. */
 export async function executeTranslationPlan(
   plan: TranslationPlan,
-  lifetime: { signal?: AbortSignal; isCurrent: () => boolean },
+  lifetime: { signal?: AbortSignal; isCurrent: () => boolean; activitySessionId?: string },
 ): Promise<ValidatedTranslationResult> {
   const assertCurrent = () => {
     if (lifetime.signal?.aborted || !lifetime.isCurrent())
       throw new TranslationCancelledError(plan.scope.id)
   }
-  assertCurrent()
-  const { hash, forceRetranslation } = plan.request
-  if (plan.scope.kind === "page" && !forceRetranslation) {
-    const hit = getInMemoryTranslation(hash)
-    if (hit !== undefined) {
-      try {
-        const result = validateTranslationResult(plan, hit, "memory")
-        if (result.cacheable) return result
-      } catch (error) {
-        if (!isHtmlAttributeMarkerIntegrityError(error)) throw error
-      }
-      removeInMemoryTranslation(hash)
-    }
-  }
-  const cancel = () => {
-    void sendMessage("cancelPageTranslationRequests", { sessionId: plan.scope.id }).catch(() => {})
-  }
-  lifetime.signal?.addEventListener("abort", cancel, { once: true })
+  const finish = translationActivity.track(
+    "request",
+    lifetime.activitySessionId ?? (plan.scope.kind === "page" ? plan.scope.id : undefined),
+  )
   try {
-    const text = await sendMessage("enqueueTranslateRequest", {
-      ...structuredClone(plan.request),
-      scheduleAt: Date.now(),
-    })
     assertCurrent()
-    const result = validateTranslationResult(plan, text, "provider")
-    if (plan.scope.kind === "page" && result.cacheable)
-      storeInMemoryTranslation(hash, result.rawText)
-    return result
+    const { hash, forceRetranslation } = plan.request
+    if (plan.scope.kind === "page" && !forceRetranslation) {
+      const hit = getInMemoryTranslation(hash)
+      if (hit !== undefined) {
+        try {
+          const result = validateTranslationResult(plan, hit, "memory")
+          if (result.cacheable) return result
+        } catch (error) {
+          if (!isHtmlAttributeMarkerIntegrityError(error)) throw error
+        }
+        removeInMemoryTranslation(hash)
+      }
+    }
+    let rejectCancelled!: (error: Error) => void
+    const cancelled = new Promise<never>((_, reject) => {
+      rejectCancelled = reject
+    })
+    const cancel = () => {
+      rejectCancelled(new TranslationCancelledError(plan.scope.id))
+      void sendMessage("cancelPageTranslationRequests", { sessionId: plan.scope.id }).catch(
+        () => {},
+      )
+    }
+    lifetime.signal?.addEventListener("abort", cancel, { once: true })
+    try {
+      const text = await Promise.race([
+        cancelled,
+        sendMessage("enqueueTranslateRequest", {
+          ...structuredClone(plan.request),
+          scheduleAt: Date.now(),
+        }),
+      ])
+      assertCurrent()
+      const result = validateTranslationResult(plan, text, "provider")
+      if (plan.scope.kind === "page" && result.cacheable)
+        storeInMemoryTranslation(hash, result.rawText)
+      return result
+    } finally {
+      lifetime.signal?.removeEventListener("abort", cancel)
+    }
+  } catch (error) {
+    finish(error)
+    throw error
   } finally {
-    lifetime.signal?.removeEventListener("abort", cancel)
+    finish()
   }
 }

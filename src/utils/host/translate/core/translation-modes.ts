@@ -1167,12 +1167,21 @@ async function translateTranslationOnlyRun(
     // Preferred strategy: swap the translation into the site's OWN text nodes,
     // leaving element identity (framework fibers, listeners) untouched. The
     // wrapper was only the spinner vehicle and is removed.
+    const commit = gate.beginCommit()
+    const renderOptions = {
+      ...commitOptions,
+      onDiscard: () => {
+        commit.discard()
+        trackedUnit.dispose()
+      },
+    }
     const swapPlan = await pageLocalScheduler.schedule(
       () => planInPlaceTextSwap(transNodes, translatedText, ownerDoc),
       isRunCurrent,
       gate.signal,
     )
     if (!isRunCurrent()) {
+      commit.discard()
       trackedUnit.dispose()
       return
     }
@@ -1220,7 +1229,8 @@ async function translateTranslationOnlyRun(
               endVirtualTranslationOnlyGeneration(parentNode)
           }
         }
-      }, commitOptions)
+        commit.complete()
+      }, renderOptions)
       return
     }
 
@@ -1261,7 +1271,8 @@ async function translateTranslationOnlyRun(
         removeTranslatedWrapperWithRestore(translatedWrapperNode)
         disposeGeneration?.()
       }
-    }, commitOptions)
+      commit.complete()
+    }, renderOptions)
   } finally {
     nodes.forEach((node) => translatingNodes.delete(node))
   }

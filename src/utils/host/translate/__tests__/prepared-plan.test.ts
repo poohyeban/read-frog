@@ -111,8 +111,9 @@ describe("prepared plan execution contract", () => {
     expect(sendMessage).toHaveBeenLastCalledWith("cancelPageTranslationRequests", {
       sessionId: plan.scope.id,
     })
-    complete("Late result")
     expect(await task).toMatchObject({ name: "TranslationCancelledError" })
+    complete("Late result")
+    await Promise.resolve()
     expect(getInMemoryTranslation(plan.request.hash)).toBeUndefined()
   })
 })
