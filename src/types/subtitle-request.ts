@@ -15,4 +15,5 @@ export interface SubtitleRequestPayload {
   glossaryRevision?: number
   promptConfig?: Pick<Config["videoSubtitles"], "customPromptsConfig">
   sessionId?: string
+  priority?: number
 }

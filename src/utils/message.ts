@@ -38,6 +38,7 @@ interface ProtocolMap {
     videoTitle: string
     subtitlesContext: string
     sessionId?: string
+    priority?: number
     providerRef: PromptableProviderRef
   }) => Promise<string | null>
   getCachedVideoSummary: (data: {
@@ -54,6 +55,7 @@ interface ProtocolMap {
   aiSegmentSubtitles: (data: {
     jsonContent: string
     sessionId?: string
+    priority?: number
     providerRef: PromptableProviderRef
   }) => Promise<string>
   getGlossarySnapshot: (data: {

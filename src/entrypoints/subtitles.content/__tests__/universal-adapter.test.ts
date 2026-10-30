@@ -1,10 +1,16 @@
+import type { Config } from "@/types/config/config"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { storage } from "#imports"
+import { DEFAULT_CONFIG, CONFIG_STORAGE_KEY } from "@/utils/constants/config"
+import { GLOSSARY_REVISION_KEY } from "@/utils/constants/glossary"
 import { SUBTITLES_SOURCE } from "@/utils/constants/subtitles"
+import { subtitleConfigIdentity } from "@/utils/subtitles/config-identity"
 import {
   NoSubtitlesError,
   OverlaySubtitlesError,
   ToastSubtitlesError,
 } from "@/utils/subtitles/errors"
+import { SubtitleSession } from "@/utils/subtitles/session"
 import {
   adPlayingAtom,
   currentTimeMsAtom,
@@ -922,5 +928,71 @@ describe("universalVideoAdapter", () => {
       { text: "recut", start: 1000, end: 2000 },
       { text: "after", start: 2000, end: 3000 },
     ])
+  })
+  it("invalidates running translation on semantic config/glossary changes but keeps originals and export ownership", () => {
+    const callbacks = new Map<string, (next: any, old: any) => void>()
+    const unwatch = vi.fn<() => void>()
+    const watch = vi.spyOn(storage, "watch").mockImplementation((key, callback) => {
+      callbacks.set(key, callback)
+      return unwatch
+    })
+    const { adapter } = createAdapter([])
+    const a = adapter as any
+    const source = [{ text: "original", start: 0, end: 1000 }]
+    attachScheduler(adapter, true)
+    a.sourceProcessedSubtitles = source
+    a.configIdentity = subtitleConfigIdentity(DEFAULT_CONFIG)
+    const session = new SubtitleSession(),
+      oldTask = session.begin("playback", "old")
+    a.subtitleSession = session
+    const exportSession = new SubtitleSession(),
+      exportTask = exportSession.begin("export", "all")
+    const restart = vi.spyOn(a, "startTranslation").mockResolvedValue(true)
+    a.watchTranslationConfig()
+    const configChanged = callbacks.get(`local:${CONFIG_STORAGE_KEY}`)!
+    const style: Config = {
+      ...DEFAULT_CONFIG,
+      videoSubtitles: {
+        ...DEFAULT_CONFIG.videoSubtitles,
+        style: { ...DEFAULT_CONFIG.videoSubtitles.style, displayMode: "originalOnly" },
+      },
+    }
+    configChanged(style, DEFAULT_CONFIG)
+    expect(oldTask.isCurrent()).toBe(true)
+    expect(restart).not.toHaveBeenCalled()
+    const language = structuredClone(style)
+    language.language.targetCode = "jpn"
+    configChanged(language, style)
+    expect(oldTask.signal.aborted).toBe(true)
+    expect(restart).toHaveBeenCalledTimes(1)
+    expect(subtitlesStore.get(sourceTrackAtom)).toEqual(source)
+    expect(subtitlesStore.get(translatedTrackAtom)).toEqual([])
+    callbacks.get(GLOSSARY_REVISION_KEY)!(2, 1)
+    expect(restart).toHaveBeenCalledTimes(2)
+    expect(exportTask.isCurrent()).toBe(true)
+    a.destroyed = true
+    callbacks.get(GLOSSARY_REVISION_KEY)!(3, 2)
+    expect(restart).toHaveBeenCalledTimes(2)
+    exportSession.dispose()
+    session.dispose()
+    watch.mockRestore()
+  })
+
+  it("stopping while configuration is loading prevents a late playback start", async () => {
+    let finish!: (value: typeof DEFAULT_CONFIG) => void
+    mocks.getLocalConfig.mockReturnValue(
+      new Promise((resolve) => {
+        finish = resolve
+      }),
+    )
+    const { adapter, subtitlesFetcher } = createAdapter([])
+    const scheduler = attachScheduler(adapter, true)
+    Object.assign(scheduler, { hide: vi.fn<() => void>() })
+    vi.spyOn(adapter as any, "showNativeSubtitles").mockImplementation(() => {})
+    const pending = (adapter as any).startTranslation()
+    adapter.toggleSubtitlesManually(false)
+    finish(DEFAULT_CONFIG)
+    await expect(pending).resolves.toBe(false)
+    expect(subtitlesFetcher.fetch).not.toHaveBeenCalled()
   })
 })

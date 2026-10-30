@@ -28,6 +28,7 @@ export async function getOrGenerateTranslationContextSummary(
     cacheKeyParts: string[]
     requestQueue: RequestQueue
     scope?: string
+    priority?: number
     isScopeCancelled?: (scope: string) => boolean
   },
 ): Promise<string | null> {
@@ -81,6 +82,7 @@ export async function getOrGenerateTranslationContextSummary(
       Date.now(),
       taskKey,
       scope ? [scope] : undefined,
+      { priority: args.priority },
     )
     assertCurrent()
     return summary || null

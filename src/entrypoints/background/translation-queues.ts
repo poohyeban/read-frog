@@ -237,6 +237,7 @@ export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & 
   // Cancellation scope (`${tabId}:${sessionId}`); absent = uncancellable.
   scope?: string
   promptConfig?: Pick<Config["pageTranslation"], "customPromptsConfig">
+  priority?: number
   subtitlePromptConfig?: Pick<Config["videoSubtitles"], "customPromptsConfig">
 }
 
@@ -284,13 +285,16 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     )
   }
 
-  const requestQueue = new RequestQueue({
-    rate,
-    capacity,
-    timeoutMs: 20_000,
-    maxRetries: 2,
-    baseRetryDelayMs: 1_000,
-  })
+  const requestQueue = new RequestQueue(
+    {
+      rate,
+      capacity,
+      timeoutMs: 20_000,
+      maxRetries: 2,
+      baseRetryDelayMs: 1_000,
+    },
+    queueName === "subtitles" ? 30_000 : undefined,
+  )
   const batchQueue = new BatchQueue<TranslateBatchData<TContext>, string>({
     maxCharactersPerBatch,
     maxItemsPerBatch,
@@ -300,7 +304,13 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     // Narrow port, not the whole queue: while the rate limiter has no free
     // slot, pending batches keep filling to maxItems/maxChars instead of
     // flushing tiny every batchDelay (they'd only freeze in the queue).
-    dispatchGate: { nextDispatchEtaMs: () => requestQueue.nextDispatchEtaMs() },
+    // Subtitle producers admit at most two batches. Flush after the normal 100ms
+    // aggregation window so current cues can enter the priority queue ahead of
+    // already waiting summaries/exports. Page batching keeps its pressure gate.
+    dispatchGate:
+      queueName === "subtitles"
+        ? undefined
+        : { nextDispatchEtaMs: () => requestQueue.nextDispatchEtaMs() },
     getBatchKey: (data) => {
       return Sha256Hex(
         `${data.langConfig.sourceCode}-${data.langConfig.targetCode}-${getQueuedProviderId(data.provider)}`,
@@ -340,7 +350,10 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
         return await executeBatchTranslation(dataList, promptResolver, signal)
       }
 
-      return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, { timeoutMs })
+      return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, {
+        timeoutMs,
+        priority: Math.min(...dataList.map((d) => d.priority ?? 1)),
+      })
     },
     executeIndividual: async (data) => {
       const { text, langConfig, hash, scheduleAt, context, scope, glossaryTerms } = data
@@ -367,7 +380,9 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
           },
         )
       }
-      return requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined)
+      return requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined, {
+        priority: data.priority,
+      })
     },
     onError: (error, context) => {
       const errorType = context.isFallback ? "Individual request" : "Batch request"

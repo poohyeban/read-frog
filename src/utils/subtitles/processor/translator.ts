@@ -12,6 +12,7 @@ import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
 import { normalizePromptContextValue } from "@/utils/prompts/context"
+import { subtitlesPromptNeedsSummary } from "@/utils/prompts/subtitles"
 import {
   canResolvedProviderRefGenerateText,
   getProviderCacheIdentity,
@@ -49,7 +50,8 @@ export interface SubtitlesVideoContext {
 }
 
 export function buildSubtitlesSummaryContextHash(
-  videoContext: Pick<SubtitlesVideoContext, "subtitlesTextContent">,
+  videoContext: Pick<SubtitlesVideoContext, "subtitlesTextContent"> &
+    Partial<Pick<SubtitlesVideoContext, "videoTitle">>,
   providerRef?: SerializableProviderRef,
 ): string | undefined {
   const preparedText = cleanText(videoContext.subtitlesTextContent)
@@ -57,7 +59,7 @@ export function buildSubtitlesSummaryContextHash(
     return undefined
   }
 
-  const textHash = Sha256Hex(preparedText)
+  const textHash = Sha256Hex(videoContext.videoTitle ?? "", preparedText)
   return Sha256Hex(textHash, providerRef ? getProviderCacheIdentity(providerRef) : "")
 }
 
@@ -94,6 +96,7 @@ async function translateSingleSubtitle(
     promptConfig: { customPromptsConfig: config.videoSubtitles.customPromptsConfig },
     scheduleAt: Date.now(),
     sessionId: task.sessionId,
+    priority: task.priority,
     webTitle: context.webTitle,
     webDescription: context.webDescription,
     summary: config.pageTranslation.enableAIContentAware ? context.videoSummary : undefined,
@@ -187,7 +190,10 @@ export async function fetchSubtitlesSummary(
   }
 
   const config = configOverride ?? (await getLocalConfig())
-  if (!config?.pageTranslation.enableAIContentAware) {
+  if (
+    !config?.pageTranslation.enableAIContentAware ||
+    !subtitlesPromptNeedsSummary(config.videoSubtitles)
+  ) {
     return null
   }
 
@@ -203,6 +209,7 @@ export async function fetchSubtitlesSummary(
   task.signal?.throwIfAborted()
   return await sendMessage("getSubtitlesSummary", {
     sessionId: task.sessionId,
+    priority: task.priority,
     videoTitle: videoContext.videoTitle,
     subtitlesContext: videoContext.subtitlesTextContent,
     providerRef: ref,

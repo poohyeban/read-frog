@@ -170,7 +170,11 @@ export class SegmentationPipeline {
       return true
     }
 
-    const task = this.session.begin("segmentation", String(chunk[0]!.start))
+    const task = this.session.begin(
+      "segmentation",
+      String(chunk[0]!.start),
+      chunk.some((c) => c.start <= currentTimeMs && c.end > currentTimeMs) ? 1 : 3,
+    )
     this.task = task
     this.processingChunk = chunk
     try {

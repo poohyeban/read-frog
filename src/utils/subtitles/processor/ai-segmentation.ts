@@ -143,6 +143,7 @@ export async function aiSegmentBlock(
     jsonContent,
     providerRef,
     sessionId: task.sessionId,
+    priority: task.priority,
   })
 
   task.signal?.throwIfAborted()

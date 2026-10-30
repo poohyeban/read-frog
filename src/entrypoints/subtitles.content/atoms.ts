@@ -106,8 +106,19 @@ export const subtitlesDisplayAtom = atom((get) => {
   const { style } = get(configFieldsAtomMap.videoSubtitles)
 
   // translationOnly must never fall back to source-only original for "content".
+  const failed =
+    subtitle?.translationOutcome &&
+    !["success", "empty"].includes(subtitle.translationOutcome.status)
+  const readableSubtitle =
+    failed && style.displayMode === "translationOnly" && !subtitle.translation
+      ? { ...subtitle, translation: subtitle.text }
+      : subtitle
   const contentSubtitle =
-    style.displayMode === "translationOnly" ? (subtitle?.translation ? subtitle : null) : subtitle
+    style.displayMode === "translationOnly"
+      ? readableSubtitle?.translation
+        ? readableSubtitle
+        : null
+      : readableSubtitle
 
   return {
     subtitle: contentSubtitle,
@@ -132,12 +143,10 @@ export const subtitlesShowStateAtom = atom((get): Exclude<SubtitlesState, "idle"
 export const subtitlesShowContentAtom = atom((get): boolean => {
   if (get(adPlayingAtom)) return false
 
-  const { subtitle, stateData, isVisible } = get(subtitlesDisplayAtom)
+  const { subtitle, isVisible } = get(subtitlesDisplayAtom)
   const { style } = get(configFieldsAtomMap.videoSubtitles)
 
   if (!isVisible) return false
-
-  if (stateData?.state === "error") return false
 
   return hasRenderableSubtitleByMode(subtitle, style.displayMode)
 })

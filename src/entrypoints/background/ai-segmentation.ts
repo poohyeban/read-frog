@@ -73,7 +73,13 @@ export async function runAiSegmentSubtitles(
     .parse(JSON.parse(jsonContent))
     .map(({ s, e, t }) => ({ start: s, end: e, text: t }))
 
-  const cacheKey = Sha256Hex(Sha256Hex(jsonContent), getProviderCacheIdentity(providerRef))
+  const { systemPrompt, prompt } = getSubtitlesSegmentationPrompt(jsonContent)
+  const cacheKey = Sha256Hex(
+    "subtitle-segmentation-v3:aligned:16384",
+    systemPrompt,
+    prompt,
+    getProviderCacheIdentity(providerRef),
+  )
   const cached = await db.aiSegmentationCache.get(cacheKey)
   options.signal?.throwIfAborted()
   if (cached) {
@@ -84,8 +90,6 @@ export async function runAiSegmentSubtitles(
     // Old caches can contain parseable but shifted/missing cues too.
     await db.aiSegmentationCache.delete(cacheKey)
   }
-
-  const { systemPrompt, prompt } = getSubtitlesSegmentationPrompt(jsonContent)
 
   try {
     const segmentedVtt = await generateTextForProviderRef(

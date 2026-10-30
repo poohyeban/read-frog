@@ -138,22 +138,21 @@ export class TranslationCoordinator {
     this.updateLoadingStateAt(timeMs, fragments)
     clearTimeout(this.retryTimer)
     let nextRetry = Infinity
-    for (const [key, failure] of this.failed) {
-      const cue = timeline.get(key)
-      if (cue && relevant(cue) && failure.phase === "cooling" && failure.retryAt > Date.now())
+    const window = timeline.window(timeMs, timeMs + ahead + 1)
+    for (const cue of window) {
+      const failure = this.failed.get(cueIdentity(cue))
+      if (failure?.phase === "cooling" && failure.retryAt > Date.now())
         nextRetry = Math.min(nextRetry, failure.retryAt)
     }
     if (Number.isFinite(nextRetry))
       this.retryTimer = setTimeout(this.requestTick, nextRetry - Date.now())
-    const candidates = timeline
-      .window(timeMs, timeMs + ahead + 1)
-      .filter(
-        (c) =>
-          !this.translated.has(cueIdentity(c)) &&
-          !this.pendingKeys.has(cueIdentity(c)) &&
-          this.failed.get(cueIdentity(c))?.phase !== "permanent" &&
-          (this.failed.get(cueIdentity(c))?.retryAt ?? 0) <= Date.now(),
-      )
+    const candidates = window.filter(
+      (c) =>
+        !this.translated.has(cueIdentity(c)) &&
+        !this.pendingKeys.has(cueIdentity(c)) &&
+        this.failed.get(cueIdentity(c))?.phase !== "permanent" &&
+        (this.failed.get(cueIdentity(c))?.retryAt ?? 0) <= Date.now(),
+    )
     // Window returns all currently covering cues first (including long cues), then future cues.
     if (
       candidates[0] &&
@@ -165,7 +164,11 @@ export class TranslationCoordinator {
     }
     while (this.pending.size < MAX_PENDING_BATCHES && candidates.length) {
       const cues = candidates.splice(0, TRANSLATION_BATCH_SIZE)
-      const task = this.session.begin("playback", cues.map(cueIdentity).join("|"))
+      const task = this.session.begin(
+        "playback",
+        cues.map(cueIdentity).join("|"),
+        cues[0]!.start <= timeMs ? 0 : cues[0]!.start <= timeMs + 10_000 ? 1 : 2,
+      )
       const batch = { task, cues }
       this.pending.add(batch)
       for (const cue of cues) this.pendingKeys.add(cueIdentity(cue))

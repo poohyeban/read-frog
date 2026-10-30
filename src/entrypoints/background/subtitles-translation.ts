@@ -73,6 +73,7 @@ export function setupSubtitlesTranslationHandlers(): void {
         glossaryRevision,
         scope,
         subtitlePromptConfig: promptConfig,
+        priority: request.priority,
       })
     } else {
       const thunk = (signal?: AbortSignal) =>
@@ -84,7 +85,9 @@ export function setupSubtitlesTranslationHandlers(): void {
             getSubtitlesTranslatePromptFromConfig(promptConfig, language, input, options),
           { signal, glossaryTerms },
         )
-      result = await requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined)
+      result = await requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined, {
+        priority: request.priority,
+      })
     }
     assertCurrent(scope)
     if (!result.trim() && text.trim()) throw new Error("Empty subtitle translation")
@@ -106,7 +109,7 @@ export function setupSubtitlesTranslationHandlers(): void {
       Date.now(),
       key,
       scope ? [scope] : undefined,
-      { timeoutMs: 60_000 },
+      { timeoutMs: 60_000, priority: message.data.priority ?? 1 },
     )
     assertCurrent(scope)
     return result
@@ -121,9 +124,10 @@ export function setupSubtitlesTranslationHandlers(): void {
       title: videoTitle,
       textContent: subtitlesContext,
       providerRef,
-      cacheKeyParts: [Sha256Hex(cleanText(subtitlesContext))],
+      cacheKeyParts: [Sha256Hex(videoTitle, cleanText(subtitlesContext))],
       requestQueue,
       scope,
+      priority: 3,
       isScopeCancelled: (key) => cancelledScopes.has(key),
     })
   })

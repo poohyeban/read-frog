@@ -96,3 +96,15 @@ ${DEFAULT_BATCH_TRANSLATE_PROMPT}`
     prompt: replaceTokens(prompt),
   }
 }
+
+/** A selected template without the summary token must not incur a summary request. */
+export function subtitlesPromptNeedsSummary(
+  config: Pick<Config["videoSubtitles"], "customPromptsConfig">,
+): boolean {
+  const marker = "__READ_FROG_SUMMARY_DEPENDENCY__"
+  const rendered = getSubtitlesTranslatePromptFromConfig(config, "", "", {
+    context: { videoSummary: marker },
+    glossaryTerms: [],
+  })
+  return rendered.systemPrompt.includes(marker) || rendered.prompt.includes(marker)
+}

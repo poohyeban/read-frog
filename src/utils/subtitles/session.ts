@@ -6,6 +6,7 @@ export type SubtitleTaskKind = "playback" | "segmentation" | "context" | "export
 export interface SubtitleTaskOptions {
   sessionId?: string
   signal?: AbortSignal
+  priority?: number
 }
 export interface SubtitleTask extends SubtitleTaskOptions {
   readonly sessionId: string
@@ -45,7 +46,11 @@ export class SubtitleSession {
       this.epoch++
     }
   }
-  begin(kind: SubtitleTaskKind, key: string): SubtitleTask {
+  begin(
+    kind: SubtitleTaskKind,
+    key: string,
+    priority = kind === "playback" ? 0 : kind === "segmentation" ? 1 : 3,
+  ): SubtitleTask {
     if (!this.active || this.disposed) throw new TranslationCancelledError(this.id)
     const epoch = this.epoch
     const controller = new AbortController()
@@ -53,6 +58,7 @@ export class SubtitleSession {
     let completed = false
     const task: SubtitleTask = {
       sessionId,
+      priority,
       kind,
       key,
       signal: controller.signal,

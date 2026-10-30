@@ -5,8 +5,11 @@ import type { SubtitlesSource } from "@/utils/constants/subtitles"
 import type { SubtitlesFetcher } from "@/utils/subtitles/fetchers/types"
 import type { SubtitlesVideoContext } from "@/utils/subtitles/processor/translator"
 import type { SubtitlesFragment } from "@/utils/subtitles/types"
+import { storage } from "#imports"
 import { toastManager } from "@/components/ui/base-ui/toast"
 import { getLocalConfig } from "@/utils/config/storage"
+import { CONFIG_STORAGE_KEY } from "@/utils/constants/config"
+import { GLOSSARY_REVISION_KEY } from "@/utils/constants/glossary"
 import {
   HIDE_NATIVE_CAPTIONS_STYLE_ID,
   NAVIGATION_HANDLER_DELAY,
@@ -21,6 +24,7 @@ import { isExtensionContextInvalidatedError } from "@/utils/error/extension-cont
 import { i18n } from "@/utils/i18n"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { removeReactShadowHost } from "@/utils/react-shadow-host/create-shadow-host"
+import { subtitleConfigIdentity } from "@/utils/subtitles/config-identity"
 import { NoSubtitlesError, ToastSubtitlesError } from "@/utils/subtitles/errors"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
 import {
@@ -99,6 +103,8 @@ export interface SubtitlesProvidersAdapter {
 }
 
 export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
+  private unwatchConfig: (() => void)[] = []
+  private configIdentity: string | undefined
   private subtitleSession: SubtitleSession | null = null
   private config: PlatformConfig
   private subtitlesScheduler: SubtitlesScheduler | null = null
@@ -172,6 +178,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
   }
 
   async initialize() {
+    this.watchTranslationConfig()
     this.publishVideoId()
     this.initializeTranslatedSubtitlesDownloader()
     void this.restorePosition()
@@ -195,6 +202,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
   destroy() {
     if (this.destroyed) return
     this.destroyed = true
+    for (const unwatch of this.unwatchConfig.splice(0)) unwatch()
     this.switchOperationId++
     this.hasPendingNavigationReset = false
 
@@ -727,6 +735,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     if (enabled) {
       void this.switchSubtitlesFetcher(SUBTITLES_SOURCE.NATIVE, options)
     } else {
+      this.switchOperationId++
       this.subtitlesScheduler?.hide()
       this.showNativeSubtitles()
       this.translationCoordinator?.stop()
@@ -799,8 +808,9 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       return
     }
 
+    const trackCheckOperation = this.switchOperationId
     const useSameTrack = await this.fetcher.shouldUseSameTrack()
-    if (useSameTrack || this.destroyed) {
+    if (useSameTrack || this.destroyed || trackCheckOperation !== this.switchOperationId) {
       return
     }
 
@@ -819,6 +829,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       return
     }
 
+    this.switchOperationId++
     this.clearRuntimeSession()
     this.clearSourceCache()
     this.fetcher.cleanup()
@@ -866,6 +877,33 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     this.isNativeSubtitlesHidden = true
   }
 
+  private watchTranslationConfig() {
+    if (this.unwatchConfig.length) return
+    this.unwatchConfig.push(
+      storage.watch<Config>(`local:${CONFIG_STORAGE_KEY}`, (config, previous) => {
+        const identity = subtitleConfigIdentity(config)
+        const prior = this.configIdentity ?? subtitleConfigIdentity(previous)
+        this.configIdentity = identity
+        if (identity !== prior) this.invalidateTranslationConfig()
+      }),
+      storage.watch<number>(GLOSSARY_REVISION_KEY, (revision, previous) => {
+        if (revision !== previous) this.invalidateTranslationConfig()
+      }),
+    )
+  }
+
+  private invalidateTranslationConfig() {
+    if (this.destroyed) return
+    const restart = !!this.subtitlesScheduler?.isActive()
+    this.switchOperationId++
+    this.clearRuntimeSession()
+    this.subtitlesScheduler?.reset()
+    subtitlesStore.set(translatedTrackAtom, [])
+    // Keep the original available to both playback and the learning sidebar.
+    this.publishSourceTrack(this.sourceProcessedSubtitles)
+    if (restart) void this.startTranslation()
+  }
+
   private async startTranslation({ quiet = false }: SubtitlesStartOptions = {}) {
     const operationId = this.switchOperationId
     this.adOverlappedLoad = subtitlesStore.get(adPlayingAtom)
@@ -873,8 +911,11 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     let loadingSource = false
 
     try {
-      const config = await getLocalConfig()
+      const loadedConfig = await getLocalConfig()
+      const config = loadedConfig ? structuredClone(loadedConfig) : null
       if (this.destroyed || operationId !== this.switchOperationId) return false
+
+      this.configIdentity = subtitleConfigIdentity(config)
 
       // Resolve through the capability registry, not providersConfig: Built-in
       // AI is synthesized by the registry and is never a row there, so the
