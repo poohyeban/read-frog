@@ -1,0 +1,27 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/entrypoints/background/__tests__/subtitle-request-contract.test.ts (14 tests | 1 failed) 70ms
+   ❯ subtitle background contracts using real RequestQueue and BatchQueue (14)
+     × keeps a legal five-cue planned batch in one Provider call 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-request-contract.test.ts > subtitle background contracts using real RequestQueue and BatchQueue > keeps a legal five-cue planned batch in one Provider call
+AssertionError: expected "vi.fn()" to be called 1 times, but got 2 times
+ ❯ src/entrypoints/background/__tests__/subtitle-request-contract.test.ts:119:51
+    118|     expect(mocks.put.mock.calls[0]![0].key).not.toBe(request.hash)
+    119|   })
+    120|   it("ignores a different tab's cancellation, aborts the real model si…
+       |                                              ^
+    121|     let signal: AbortSignal | undefined
+    122|     mocks.execute.mockImplementation((_text, _lang, _provider, _resolv…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  15:34:06
+   Duration  1.24s (transform 60%, import 18%, setup 13%, tests 7%, worker 1%)
+

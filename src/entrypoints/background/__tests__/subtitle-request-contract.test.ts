@@ -76,6 +76,16 @@ describe("subtitle background contracts using real RequestQueue and BatchQueue",
     setupSubtitlesTranslationHandlers()
   })
   afterEach(() => vi.useRealTimers())
+  it("keeps a legal five-cue planned batch in one Provider call", async () => {
+    mocks.execute.mockImplementation(async (text) => text.split(BATCH_SEPARATOR).map((part: string) => `T:${part.trim()}`).join(`\n${BATCH_SEPARATOR}\n`))
+    const requests = Array.from({ length: 5 }, (_, i) => createSubtitleTranslationPlan({
+      ...plan(), text: `cue-${i}`, promptConfig: DEFAULT_CONFIG.videoSubtitles,
+    }).request)
+    const pending = Promise.all(requests.map(request => call("enqueueSubtitlesTranslateRequest", request)))
+    await vi.advanceTimersByTimeAsync(101)
+    expect(await pending).toHaveLength(5)
+    expect(mocks.execute).toHaveBeenCalledTimes(1)
+  })
   it("starts zero Provider requests after root lease revocation acknowledgement", async () => {
     const pending = call("enqueueSubtitlesTranslateRequest", plan("pending")).catch(
       (error) => error,
