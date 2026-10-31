@@ -60,3 +60,13 @@ describe("CueTimeline", () => {
     expect(next.at(2)).toBe(original)
   })
 })
+
+
+it("keeps normal dialogue visible under a two-hour overlapping cue", () => {
+  const long = { start: 0, end: 7200000, text: "long" }
+  const dialogue = Array.from({ length: 5000 }, (_, i) => ({ start: i * 1000 + 1, end: i * 1000 + 900, text: `dialogue-${i}` }))
+  const timeline = new CueTimeline([long, ...dialogue])
+  for (const i of [0, 4999, 12, 2333, 2]) expect(timeline.at(dialogue[i]!.start + 1)).toBe(dialogue[i])
+  expect(timeline.at(999)).toBe(long)
+  expect(timeline.window(0, 1000)).toHaveLength(2)
+})

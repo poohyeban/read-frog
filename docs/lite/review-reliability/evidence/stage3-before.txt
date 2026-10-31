@@ -1,0 +1,60 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/subtitles/__tests__/cue-timeline.test.ts (6 tests | 1 failed) 157ms
+   × keeps normal dialogue visible under a two-hour overlapping cue 8ms
+ ❯ src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts (10 tests | 1 failed) 253ms
+   × reaches eligible members beyond the first 128 already settled candidates 14ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts > reaches eligible members beyond the first 128 already settled candidates
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts:248:109
+    246|   coordinator.start()
+    247|   await vi.advanceTimersByTimeAsync(0)
+    248|   expect(vi.mocked(translateSubtitles).mock.calls.flatMap(call => call…
+       |                                                                                                             ^
+    249| })
+    250|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/utils/subtitles/__tests__/cue-timeline.test.ts > keeps normal dialogue visible under a two-hour overlapping cue
+AssertionError: expected { start: +0, end: 7200000, …(1) } to be { start: 1, end: 900, …(1) } // Object.is equality
+
+- Expected
++ Received
+
+  {
+-   "end": 900,
+-   "start": 1,
+-   "text": "dialogue-0",
++   "end": 7200000,
++   "start": 0,
++   "text": "long",
+  }
+
+ ❯ src/utils/subtitles/__tests__/cue-timeline.test.ts:69:87
+     67|   const dialogue = Array.from({ length: 5000 }, (_, i) => ({ start: i …
+     68|   const timeline = new CueTimeline([long, ...dialogue])
+     69|   for (const i of [0, 4999, 12, 2333, 2]) expect(timeline.at(dialogue[…
+       |                                                                                       ^
+     70|   expect(timeline.at(999)).toBe(long)
+     71|   expect(timeline.window(0, 1000)).toHaveLength(2)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 14 passed (16)
+   Start at  15:39:19
+   Duration  2.79s (transform 32%, import 29%, environment 18%, tests 13%, setup 8%)
+
