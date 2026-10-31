@@ -5,7 +5,11 @@ import type { SubtitlesFetcher } from "@/utils/subtitles/fetchers/types"
 import type { SubtitlesVideoContext } from "@/utils/subtitles/processor/translator"
 import type { SubtitlesFragment } from "@/utils/subtitles/types"
 import { toastManager } from "@/components/ui/base-ui/toast"
-import { getPerformanceSnapshot, initializePerformance } from "@/utils/config/performance"
+import {
+  getPerformanceSnapshot,
+  getPerformanceOverrides,
+  initializePerformance,
+} from "@/utils/config/performance"
 import { getLocalConfig } from "@/utils/config/storage"
 import { MAX_GAP_MS } from "@/utils/constants/subtitles"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
@@ -353,7 +357,12 @@ export class TranslatedSubtitlesDownloader {
   }
 
   private buildTranslationBatches(fragments: SubtitlesFragment[]): SubtitlesFragment[][] {
-    return chunkSubtitleWork(fragments, getPerformanceSnapshot().subtitles.batchSize)
+    const overrides = getPerformanceOverrides().batches?.subtitles
+    return chunkSubtitleWork(
+      fragments,
+      Math.min(getPerformanceSnapshot().subtitles.batchSize, overrides?.maxItemsPerBatch ?? 32),
+      overrides?.maxCharactersPerBatch,
+    )
   }
 
   private degradedChunks = 0

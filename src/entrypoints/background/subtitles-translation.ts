@@ -1,4 +1,5 @@
 import type { SubtitlePromptContext } from "@/types/content"
+import type { SubtitleRequestPayload } from "@/types/subtitle-request"
 import { browser } from "#imports"
 import { getPerformanceSnapshot, initializePerformance } from "@/utils/config/performance"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
@@ -98,7 +99,10 @@ export function setupSubtitlesTranslationHandlers(): void {
     const scope = scopeFor(sender, data.sessionId)
     if (scope) subtitleWorkRuntime.release(scope)
   })
-  onMessage("enqueueSubtitlesTranslateRequest", async (message) => {
+  const handleSingle = async (message: {
+    data: SubtitleRequestPayload
+    sender: { tab?: { id?: number } }
+  }) => {
     const translate = async () => {
       const scope = scopeFor(message.sender, message.data.sessionId)
       admit(message.sender, scope, message.data.work)
@@ -190,6 +194,78 @@ export function setupSubtitlesTranslationHandlers(): void {
     } catch (error) {
       // Legacy content scripts still receive their original string/error protocol.
       if (message.data.resultFormat !== "outcome") throw error
+      return { outcome: subtitleFailure(error) }
+    }
+  }
+  onMessage("enqueueSubtitlesTranslateRequest", handleSingle)
+  onMessage("enqueueSubtitlesTranslateBatch", async (message) => {
+    try {
+      const { members, ...snapshot } = message.data
+      const scope = scopeFor(message.sender, snapshot.sessionId)
+      admit(message.sender, scope, snapshot.work)
+      if (
+        !Array.isArray(members) ||
+        !members.length ||
+        members.length > SUBTITLE_WORK_LIMITS.cues ||
+        members.some((member) => typeof member.text !== "string") ||
+        members.reduce((sum, member) => sum + member.text.length, 0) >
+          SUBTITLE_WORK_LIMITS.sourceCharacters
+      )
+        throw new SubtitleWorkRejected("input-limit")
+      const { requestQueue: _requestQueue, batchQueue } = await queuesPromise
+      assertCurrent(scope)
+      const promptConfig =
+        snapshot.promptConfig ??
+        (await ensureInitializedConfig())?.videoSubtitles ??
+        DEFAULT_CONFIG.videoSubtitles
+      const requests = members.map(
+        (member) => createSubtitleTranslationPlan({ ...snapshot, ...member, promptConfig }).request,
+      )
+      if (!shouldUseBatchQueue(snapshot.providerRef)) {
+        return {
+          results: await Promise.all(
+            requests.map((data) =>
+              handleSingle({ ...message, data: { ...data, resultFormat: "outcome" } }),
+            ),
+          ),
+        }
+      }
+      const results = await batchQueue.enqueueBatch(
+        requests.map((request) => ({
+          text: request.text,
+          langConfig: request.langConfig,
+          provider: request.providerRef,
+          hash: request.hash,
+          scheduleAt: Date.now(),
+          context: {
+            webTitle: request.webTitle,
+            webDescription: request.webDescription,
+            videoSummary: request.summary,
+          },
+          glossaryTerms: request.glossaryTerms,
+          glossaryRevision: request.glossaryRevision,
+          scope,
+          subtitlePromptConfig: promptConfig,
+          priority: request.priority,
+          work: snapshot.work,
+        })),
+      )
+      assertCurrent(scope)
+      return {
+        results: results.map((result) => {
+          if (result.status === "rejected") return { outcome: subtitleFailure(result.reason) }
+          const value =
+            typeof result.value === "string" ? { translation: result.value } : result.value
+          return {
+            ...value,
+            glossaryRevision: snapshot.glossaryRevision ?? 0,
+            outcome: {
+              status: value.translation.trim() ? ("success" as const) : ("empty" as const),
+            },
+          }
+        }),
+      }
+    } catch (error) {
       return { outcome: subtitleFailure(error) }
     }
   })

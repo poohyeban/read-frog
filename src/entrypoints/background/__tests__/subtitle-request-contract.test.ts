@@ -1,3 +1,4 @@
+import { writeFileSync } from "node:fs"
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest"
 import { browser, storage } from "#imports"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
@@ -6,6 +7,7 @@ import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
 import { attachRequestErrorMeta } from "@/utils/request/retry-policy"
 import { unwrapSubtitleResult, subtitleFailure } from "@/utils/subtitles/result"
 import { createSubtitleTranslationPlan } from "@/utils/subtitles/translation-plan"
+import { chunkSubtitleWork } from "@/utils/subtitles/work-policy"
 import { subtitleWorkRuntime, SubtitleWorkRuntime } from "../subtitle-work"
 const mocks = vi.hoisted(() => ({
   handlers: new Map<string, (msg: any) => Promise<any>>(),
@@ -36,7 +38,12 @@ const leases = new Map<number, string>()
 const call = async (type: string, data: any, tab = 7) => {
   const sender = { tab: { id: tab }, frameId: 0 }
   if (
-    ["enqueueSubtitlesTranslateRequest", "aiSegmentSubtitles", "getSubtitlesSummary"].includes(type)
+    [
+      "enqueueSubtitlesTranslateRequest",
+      "enqueueSubtitlesTranslateBatch",
+      "aiSegmentSubtitles",
+      "getSubtitlesSummary",
+    ].includes(type)
   ) {
     let lease = leases.get(tab)
     if (!lease) {
@@ -77,14 +84,186 @@ describe("subtitle background contracts using real RequestQueue and BatchQueue",
   })
   afterEach(() => vi.useRealTimers())
   it("keeps a legal five-cue planned batch in one Provider call", async () => {
-    mocks.execute.mockImplementation(async (text) => text.split(BATCH_SEPARATOR).map((part: string) => `T:${part.trim()}`).join(`\n${BATCH_SEPARATOR}\n`))
-    const requests = Array.from({ length: 5 }, (_, i) => createSubtitleTranslationPlan({
-      ...plan(), text: `cue-${i}`, promptConfig: DEFAULT_CONFIG.videoSubtitles,
-    }).request)
-    const pending = Promise.all(requests.map(request => call("enqueueSubtitlesTranslateRequest", request)))
+    mocks.execute.mockImplementation(async (text) =>
+      text
+        .split(BATCH_SEPARATOR)
+        .map((part: string) => `T:${part.trim()}`)
+        .join(`\n${BATCH_SEPARATOR}\n`),
+    )
+    const requests = Array.from(
+      { length: 5 },
+      (_, i) =>
+        createSubtitleTranslationPlan({
+          ...plan(),
+          text: `cue-${i}`,
+          promptConfig: DEFAULT_CONFIG.videoSubtitles,
+        }).request,
+    )
+    const pending = call("enqueueSubtitlesTranslateBatch", {
+      ...requests[0],
+      members: requests.map(({ text }) => ({ text })),
+    })
     await vi.advanceTimersByTimeAsync(101)
-    expect(await pending).toHaveLength(5)
+    expect((await pending).results).toHaveLength(5)
     expect(mocks.execute).toHaveBeenCalledTimes(1)
+  })
+  it.each([5, 10, 20, 32])(
+    "executes %i legal short members atomically and caches the complete prompt",
+    async (size) => {
+      const cache = new Map<string, any>()
+      mocks.get.mockImplementation(async (key) => cache.get(key))
+      mocks.put.mockImplementation(async (row) => cache.set(row.key, row))
+      mocks.execute.mockImplementation(async (text) =>
+        text
+          .split(BATCH_SEPARATOR)
+          .map((part: string) => `T:${part.trim()}`)
+          .join(`\n${BATCH_SEPARATOR}\n`),
+      )
+      const request = {
+        ...plan(),
+        members: Array.from({ length: size }, (_, i) => ({ text: `cue-${i}` })),
+      }
+      const first = await call("enqueueSubtitlesTranslateBatch", request)
+      expect(first.results).toHaveLength(size)
+      expect(first.results.every((r: any) => r.outcome.status === "success")).toBe(true)
+      expect(mocks.execute).toHaveBeenCalledTimes(1)
+      expect(mocks.execute.mock.calls[0]![0].split(BATCH_SEPARATOR)).toHaveLength(size)
+      await call("enqueueSubtitlesTranslateBatch", { ...request, sessionId: "next-tab" }, 8)
+      expect(mocks.execute).toHaveBeenCalledTimes(1)
+      expect(first.results[0].batchKey).toBe(first.results[size - 1].batchKey)
+    },
+  )
+  it("retains four successes while recovering only the invalid fifth member", async () => {
+    mocks.execute.mockImplementation(async (text) => {
+      const parts = text.split(BATCH_SEPARATOR)
+      return parts
+        .map((part: string, i: number) => (parts.length === 5 && i === 2 ? "" : `T:${part.trim()}`))
+        .join(`\n${BATCH_SEPARATOR}\n`)
+    })
+    const result = await call("enqueueSubtitlesTranslateBatch", {
+      ...plan(),
+      members: Array.from({ length: 5 }, (_, i) => ({ text: `cue-${i}` })),
+    })
+    expect(result.results.every((r: any) => r.outcome.status === "success")).toBe(true)
+    expect(mocks.execute.mock.calls.map((c) => c[0].split(BATCH_SEPARATOR).length)).toEqual([5, 1])
+    expect(mocks.execute.mock.calls[1]![0]).toBe("cue-2")
+  })
+  it("shares concurrent complete batches across tabs and retains the surviving subscriber", async () => {
+    let finish!: (value: string) => void
+    let signal: AbortSignal | undefined
+    mocks.execute.mockImplementation((_text, _lang, _provider, _resolver, options) => {
+      signal = options.signal
+      return new Promise<string>((resolve) => {
+        finish = resolve
+      })
+    })
+    const request = { ...plan(), members: [{ text: "A" }, { text: "B" }] }
+    const first = call("enqueueSubtitlesTranslateBatch", request)
+    await vi.advanceTimersByTimeAsync(0)
+    const second = call("enqueueSubtitlesTranslateBatch", { ...request, sessionId: "second" }, 8)
+    await vi.advanceTimersByTimeAsync(0)
+    await call("cancelSubtitleRequests", { sessionId: request.sessionId })
+    expect(signal?.aborted).toBe(false)
+    finish(`T:A\n${BATCH_SEPARATOR}\nT:B`)
+    expect((await first).outcome.status).toBe("cancelled")
+    expect((await second).results).toHaveLength(2)
+    expect(mocks.execute).toHaveBeenCalledTimes(1)
+  })
+  it("rejects illegal character and member bounds before dispatch", async () => {
+    for (const members of [
+      [{ text: "x".repeat(2401) }],
+      Array.from({ length: 33 }, () => ({ text: "x" })),
+    ]) {
+      expect(
+        (await call("enqueueSubtitlesTranslateBatch", { ...plan(), members })).outcome,
+      ).toMatchObject({ status: "permanent", code: "input-limit" })
+    }
+    expect(mocks.execute).not.toHaveBeenCalled()
+  })
+  it("measures actual queue factory batching with deterministic mock transport latency", async () => {
+    const rows: unknown[] = []
+    for (const size of [5, 10, 20, 32])
+      for (const chars of [16, 200])
+        for (const latency of [5, 200])
+          for (const mode of ["legacy", "planned"] as const) {
+            const starts: {
+              members: number
+              promptCharacters: number
+              estimatedInputTokens: number
+            }[] = []
+            mocks.execute.mockImplementation(async (text, _lang, _provider, resolver, options) => {
+              const prompt = await resolver("Chinese", text, options)
+              const rendered = prompt.systemPrompt + prompt.prompt
+              starts.push({
+                members: text.split(BATCH_SEPARATOR).length,
+                promptCharacters: rendered.length,
+                estimatedInputTokens: new TextEncoder().encode(rendered).length + 64,
+              })
+              await new Promise((resolve) => setTimeout(resolve, latency))
+              return text
+                .split(BATCH_SEPARATOR)
+                .map((part: string) => `T:${part.trim()}`)
+                .join(`\n${BATCH_SEPARATOR}\n`)
+            })
+            const source = Array.from({ length: size }, (_, i) => ({
+              text: `${i}:`.padEnd(chars, "x"),
+              start: i * 100,
+              end: i * 100 + 90,
+            }))
+            const chunks = chunkSubtitleWork(source, size)
+            const stamp = Date.now()
+            const ready: number[] = []
+            let ipc = 0,
+              index = 0
+            const pending = chunks.flatMap((chunk) => {
+              if (mode === "legacy")
+                return chunk.map((member) => {
+                  const memberIndex = index++
+                  ipc++
+                  const request = createSubtitleTranslationPlan({
+                    ...plan(`metrics-${stamp}`),
+                    text: member.text,
+                    promptConfig: DEFAULT_CONFIG.videoSubtitles,
+                  }).request
+                  return call("enqueueSubtitlesTranslateRequest", request).then(() => {
+                    ready[memberIndex] = Date.now() - stamp
+                  })
+                })
+              const offset = index
+              index += chunk.length
+              ipc++
+              return [
+                call("enqueueSubtitlesTranslateBatch", {
+                  ...plan(`metrics-${stamp}`),
+                  members: chunk.map(({ text }) => ({ text })),
+                }).then((result) => {
+                  expect(result.results).toHaveLength(chunk.length)
+                  chunk.forEach((_, i) => {
+                    ready[offset + i] = Date.now() - stamp
+                  })
+                }),
+              ]
+            })
+            await vi.advanceTimersByTimeAsync(5000)
+            await Promise.all(pending)
+            rows.push({
+              size,
+              chars,
+              latency,
+              mode,
+              ipc,
+              providerStarts: starts.length,
+              requests: starts,
+              firstMs: ready[0],
+              fifthMs: ready[4],
+              actualUsage: null,
+              actualHttpRequests: null,
+              note: "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement.",
+            })
+          }
+    if (process.env.SUBTITLE_REVIEW_METRICS)
+      writeFileSync(process.env.SUBTITLE_REVIEW_METRICS, JSON.stringify(rows, null, 2))
+    expect(rows).toHaveLength(32)
   })
   it("starts zero Provider requests after root lease revocation acknowledgement", async () => {
     const pending = call("enqueueSubtitlesTranslateRequest", plan("pending")).catch(

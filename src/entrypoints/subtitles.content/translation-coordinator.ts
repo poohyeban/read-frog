@@ -329,7 +329,12 @@ export class TranslationCoordinator {
         const future = pending.filter((b) => b.cues.every((c) => c.start > timeMs)).at(-1)
         if (future) this.cancelBatch(future)
       }
-      const batches = chunkSubtitleWork(candidates, policy.batchSize)
+      const batchOverrides = getPerformanceOverrides().batches?.subtitles
+      const batches = chunkSubtitleWork(
+        candidates,
+        Math.min(policy.batchSize, batchOverrides?.maxItemsPerBatch ?? 32),
+        batchOverrides?.maxCharactersPerBatch,
+      )
       for (const cues of batches) {
         if ([...this.pending].filter((b) => b.lane === lane).length >= policy.maxPendingBatches)
           break

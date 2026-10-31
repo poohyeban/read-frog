@@ -93,6 +93,7 @@ export function boundedSourceCues(cues: readonly SubtitlesFragment[]): Subtitles
 export function chunkSubtitleWork(
   cues: readonly SubtitlesFragment[],
   maxItems: number = SUBTITLE_WORK_LIMITS.cues,
+  maxCharacters: number = SUBTITLE_WORK_LIMITS.sourceCharacters,
 ): SubtitlesFragment[][] {
   const chunks: SubtitlesFragment[][] = []
   let current: SubtitlesFragment[] = [],
@@ -102,7 +103,8 @@ export function chunkSubtitleWork(
     if (
       current.length &&
       (current.length >= Math.min(maxItems, SUBTITLE_WORK_LIMITS.cues) ||
-        characters + cue.text.length > SUBTITLE_WORK_LIMITS.sourceCharacters ||
+        characters + cue.text.length >
+          Math.min(maxCharacters, SUBTITLE_WORK_LIMITS.sourceCharacters) ||
         Math.max(end, cue.end) - current[0]!.start > SUBTITLE_WORK_LIMITS.mediaMs)
     ) {
       chunks.push(current)

@@ -4,7 +4,7 @@ import type {
 } from "@/types/background-generate-text"
 import type { Config } from "@/types/config/config"
 import type { ProviderRequestRouting } from "@/types/provider-request"
-import type { SubtitleRequestPayload } from "@/types/subtitle-request"
+import type { SubtitleRequestPayload, SubtitleBatchRequestPayload } from "@/types/subtitle-request"
 import type { TranslationRequestPayload } from "@/types/translation-request"
 import type {
   TTSPlaybackStartRequest,
@@ -43,6 +43,12 @@ interface ProtocolMap {
   ttsOffscreenStop: (data: TTSPlaybackStopRequest) => Promise<{ ok: true }>
 
   clearAiSegmentationCache: () => Promise<void>
+  enqueueSubtitlesTranslateBatch: (
+    data: SubtitleBatchRequestPayload,
+  ) => Promise<
+    | { results: SubtitleWireResult[] }
+    | { outcome: import("@/utils/subtitles/result").SubtitleOutcome }
+  >
   enqueueSubtitlesTranslateRequest: (data: SubtitleRequestPayload) => Promise<SubtitleWireResult>
   cancelSubtitleRequests: (data: { sessionId: string }) => Promise<void>
   releaseSubtitleTask: (data: { sessionId: string }) => void

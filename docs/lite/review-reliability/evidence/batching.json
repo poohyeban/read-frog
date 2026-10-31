@@ -1,0 +1,952 @@
+[
+  {
+    "size": 5,
+    "chars": 16,
+    "latency": 5,
+    "mode": "legacy",
+    "ipc": 5,
+    "providerStarts": 2,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 1,
+        "promptCharacters": 1702,
+        "estimatedInputTokens": 1766
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 105,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 5,
+    "chars": 16,
+    "latency": 5,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 5,
+        "promptCharacters": 1790,
+        "estimatedInputTokens": 1854
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 5,
+    "chars": 16,
+    "latency": 200,
+    "mode": "legacy",
+    "ipc": 5,
+    "providerStarts": 2,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 1,
+        "promptCharacters": 1702,
+        "estimatedInputTokens": 1766
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 300,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 5,
+    "chars": 16,
+    "latency": 200,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 5,
+        "promptCharacters": 1790,
+        "estimatedInputTokens": 1854
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 5,
+    "chars": 200,
+    "latency": 5,
+    "mode": "legacy",
+    "ipc": 5,
+    "providerStarts": 2,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 1,
+        "promptCharacters": 1886,
+        "estimatedInputTokens": 1950
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 105,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 5,
+    "chars": 200,
+    "latency": 5,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 5,
+        "promptCharacters": 2710,
+        "estimatedInputTokens": 2774
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 5,
+    "chars": 200,
+    "latency": 200,
+    "mode": "legacy",
+    "ipc": 5,
+    "providerStarts": 2,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 1,
+        "promptCharacters": 1886,
+        "estimatedInputTokens": 1950
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 300,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 5,
+    "chars": 200,
+    "latency": 200,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 5,
+        "promptCharacters": 2710,
+        "estimatedInputTokens": 2774
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 10,
+    "chars": 16,
+    "latency": 5,
+    "mode": "legacy",
+    "ipc": 10,
+    "providerStarts": 3,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 2,
+        "promptCharacters": 1724,
+        "estimatedInputTokens": 1788
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 10,
+    "chars": 16,
+    "latency": 5,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 10,
+        "promptCharacters": 1900,
+        "estimatedInputTokens": 1964
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 10,
+    "chars": 16,
+    "latency": 200,
+    "mode": "legacy",
+    "ipc": 10,
+    "providerStarts": 3,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 2,
+        "promptCharacters": 1724,
+        "estimatedInputTokens": 1788
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 10,
+    "chars": 16,
+    "latency": 200,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 10,
+        "promptCharacters": 1900,
+        "estimatedInputTokens": 1964
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 10,
+    "chars": 200,
+    "latency": 5,
+    "mode": "legacy",
+    "ipc": 10,
+    "providerStarts": 3,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 2,
+        "promptCharacters": 2092,
+        "estimatedInputTokens": 2156
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 10,
+    "chars": 200,
+    "latency": 5,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 10,
+        "promptCharacters": 3740,
+        "estimatedInputTokens": 3804
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 10,
+    "chars": 200,
+    "latency": 200,
+    "mode": "legacy",
+    "ipc": 10,
+    "providerStarts": 3,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 2,
+        "promptCharacters": 2092,
+        "estimatedInputTokens": 2156
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 10,
+    "chars": 200,
+    "latency": 200,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 10,
+        "promptCharacters": 3740,
+        "estimatedInputTokens": 3804
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 20,
+    "chars": 16,
+    "latency": 5,
+    "mode": "legacy",
+    "ipc": 20,
+    "providerStarts": 5,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 20,
+    "chars": 16,
+    "latency": 5,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 20,
+        "promptCharacters": 2120,
+        "estimatedInputTokens": 2184
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 20,
+    "chars": 16,
+    "latency": 200,
+    "mode": "legacy",
+    "ipc": 20,
+    "providerStarts": 5,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 20,
+    "chars": 16,
+    "latency": 200,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 20,
+        "promptCharacters": 2120,
+        "estimatedInputTokens": 2184
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 20,
+    "chars": 200,
+    "latency": 5,
+    "mode": "legacy",
+    "ipc": 20,
+    "providerStarts": 5,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 20,
+    "chars": 200,
+    "latency": 5,
+    "mode": "planned",
+    "ipc": 2,
+    "providerStarts": 2,
+    "requests": [
+      {
+        "members": 12,
+        "promptCharacters": 4152,
+        "estimatedInputTokens": 4216
+      },
+      {
+        "members": 8,
+        "promptCharacters": 3328,
+        "estimatedInputTokens": 3392
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 20,
+    "chars": 200,
+    "latency": 200,
+    "mode": "legacy",
+    "ipc": 20,
+    "providerStarts": 5,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 20,
+    "chars": 200,
+    "latency": 200,
+    "mode": "planned",
+    "ipc": 2,
+    "providerStarts": 2,
+    "requests": [
+      {
+        "members": 12,
+        "promptCharacters": 4152,
+        "estimatedInputTokens": 4216
+      },
+      {
+        "members": 8,
+        "promptCharacters": 3328,
+        "estimatedInputTokens": 3392
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 32,
+    "chars": 16,
+    "latency": 5,
+    "mode": "legacy",
+    "ipc": 32,
+    "providerStarts": 8,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 32,
+    "chars": 16,
+    "latency": 5,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 32,
+        "promptCharacters": 2384,
+        "estimatedInputTokens": 2448
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 32,
+    "chars": 16,
+    "latency": 200,
+    "mode": "legacy",
+    "ipc": 32,
+    "providerStarts": 8,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      },
+      {
+        "members": 4,
+        "promptCharacters": 1768,
+        "estimatedInputTokens": 1832
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 32,
+    "chars": 16,
+    "latency": 200,
+    "mode": "planned",
+    "ipc": 1,
+    "providerStarts": 1,
+    "requests": [
+      {
+        "members": 32,
+        "promptCharacters": 2384,
+        "estimatedInputTokens": 2448
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 32,
+    "chars": 200,
+    "latency": 5,
+    "mode": "legacy",
+    "ipc": 32,
+    "providerStarts": 8,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 32,
+    "chars": 200,
+    "latency": 5,
+    "mode": "planned",
+    "ipc": 3,
+    "providerStarts": 3,
+    "requests": [
+      {
+        "members": 12,
+        "promptCharacters": 4152,
+        "estimatedInputTokens": 4216
+      },
+      {
+        "members": 12,
+        "promptCharacters": 4152,
+        "estimatedInputTokens": 4216
+      },
+      {
+        "members": 8,
+        "promptCharacters": 3328,
+        "estimatedInputTokens": 3392
+      }
+    ],
+    "firstMs": 5,
+    "fifthMs": 5,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 32,
+    "chars": 200,
+    "latency": 200,
+    "mode": "legacy",
+    "ipc": 32,
+    "providerStarts": 8,
+    "requests": [
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      },
+      {
+        "members": 4,
+        "promptCharacters": 2504,
+        "estimatedInputTokens": 2568
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  },
+  {
+    "size": 32,
+    "chars": 200,
+    "latency": 200,
+    "mode": "planned",
+    "ipc": 3,
+    "providerStarts": 3,
+    "requests": [
+      {
+        "members": 12,
+        "promptCharacters": 4152,
+        "estimatedInputTokens": 4216
+      },
+      {
+        "members": 12,
+        "promptCharacters": 4152,
+        "estimatedInputTokens": 4216
+      },
+      {
+        "members": 8,
+        "promptCharacters": 3328,
+        "estimatedInputTokens": 3392
+      }
+    ],
+    "firstMs": 200,
+    "fifthMs": 200,
+    "actualUsage": null,
+    "actualHttpRequests": null,
+    "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
+  }
+]

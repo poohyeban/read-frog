@@ -6,7 +6,7 @@ import type { PromptableProviderRef, SerializableProviderRef } from "@/utils/pro
 import { getLocalConfig } from "@/utils/config/storage"
 import { cleanText } from "@/utils/content/utils"
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
-import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
+import { resolveGlossaryBatch, resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
 import { Sha256Hex } from "@/utils/hash"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { logger } from "@/utils/logger"
@@ -291,11 +291,57 @@ export async function translateSubtitles(
       Math.min(...fragments.map((f) => f.start)),
       Math.max(...fragments.map((f) => f.end)),
     ))
-  const translationPromises = fragments.map((fragment) =>
-    translateSingleSubtitle(fragment.text, config, providerRef, videoContext, { ...task, work }),
-  )
-
-  const results = await Promise.allSettled(translationPromises)
+  let results: PromiseSettledResult<Awaited<ReturnType<typeof translateSingleSubtitle>>>[]
+  if (work) {
+    const context = normalizeSubtitlePromptContext(videoContext)
+    const glossary = await resolveGlossaryBatch(
+      fragments.map((f) => prepareTranslationText(f.text)),
+      config.glossary.enabled,
+      config.language.targetCode,
+    )
+    const response = await runSubtitleRequest(task, work, async (currentWork) => {
+      const wire = await sendMessage("enqueueSubtitlesTranslateBatch", {
+        members: fragments.map((fragment, index) => ({
+          text: fragment.text,
+          glossaryTerms: glossary.terms[index],
+        })),
+        resultFormat: "outcome",
+        langConfig: config.language,
+        providerRef,
+        promptConfig: { customPromptsConfig: config.videoSubtitles.customPromptsConfig },
+        scheduleAt: Date.now(),
+        sessionId: task.sessionId,
+        work: currentWork,
+        priority: task.priority,
+        webTitle: context.webTitle,
+        webDescription: context.webDescription,
+        summary: config.pageTranslation.enableAIContentAware ? context.videoSummary : undefined,
+        glossaryRevision: glossary.revision,
+      })
+      if ("outcome" in wire) {
+        unwrapSubtitleResult(wire)
+        throw new Error("Missing batch results")
+      }
+      return wire.results
+    })
+    results = await Promise.allSettled(
+      fragments.map(async (_fragment, index) => {
+        const wire = response[index]
+        if (wire === undefined) throw new Error("Missing subtitle batch member")
+        return {
+          ...(typeof wire === "string" ? {} : wire),
+          translation: unwrapSubtitleResult(wire),
+        }
+      }),
+    )
+  } else {
+    // Legacy standalone callers retain their original wire contract.
+    results = await Promise.allSettled(
+      fragments.map((fragment) =>
+        translateSingleSubtitle(fragment.text, config, providerRef, videoContext, task),
+      ),
+    )
+  }
 
   task.signal?.throwIfAborted()
   const invalidated = results.find(

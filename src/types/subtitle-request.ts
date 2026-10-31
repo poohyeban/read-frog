@@ -19,3 +19,11 @@ export interface SubtitleRequestPayload {
   priority?: number
   resultFormat?: "outcome"
 }
+
+/** Common snapshot is serialized once. Background owns all prompt planning. */
+export type SubtitleBatchRequestPayload = Omit<
+  SubtitleRequestPayload,
+  "text" | "hash" | "glossaryTerms"
+> & {
+  members: { text: string; glossaryTerms?: MatchedTerm[] }[]
+}

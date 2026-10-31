@@ -62,6 +62,48 @@ describe("subtitles translator", () => {
     sendMessageMock.mockResolvedValue("translated subtitle")
   })
 
+  it("sends five planned members with one IPC and no content-side prompt construction", async () => {
+    const { translateSubtitles } = await import("../translator")
+    sendMessageMock.mockImplementation(async (type, data) => {
+      if (type === "enqueueSubtitlesTranslateBatch")
+        return {
+          results: data.members.map((m: any) => ({
+            translation: `T:${m.text}`,
+            outcome: { status: "success" },
+          })),
+        }
+      return { revision: 0, scopeKey: "none", entries: [] }
+    })
+    const config = {
+      ...DEFAULT_CONFIG,
+      glossary: { ...DEFAULT_CONFIG.glossary, enabled: false },
+      videoSubtitles: { ...DEFAULT_CONFIG.videoSubtitles, providerId: "openai-default" },
+    }
+    const fragments = Array.from({ length: 5 }, (_, i) => ({
+      text: `cue-${i}`,
+      start: i * 1000,
+      end: i * 1000 + 900,
+    }))
+    const result = await translateSubtitles(
+      fragments,
+      { videoTitle: "test", subtitlesTextContent: "" },
+      config,
+      {
+        sessionId: "task",
+        work: {
+          lease: "lease",
+          lane: "fast",
+          urgent: true,
+          logicalKey: "batch",
+          start: 0,
+          end: 4900,
+        },
+      },
+    )
+    expect(result.every((c) => c.translationOutcome?.status === "success")).toBe(true)
+    expect(sendMessageMock).toHaveBeenCalledTimes(1)
+    expect(getSubtitlesTranslatePromptMock).not.toHaveBeenCalled()
+  })
   it("includes summary in subtitle requests and uses it in the cache hash", async () => {
     const { translateSubtitles } = await import("../translator")
 

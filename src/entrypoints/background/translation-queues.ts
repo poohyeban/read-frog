@@ -351,6 +351,10 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     TranslateBatchData<TContext>,
     string | { translation: string; batchKey: string; batchIndex: number }
   >({
+    onFlush: (reason, members) => {
+      subtitleWorkRuntime.note(`flush:${queueName}:${reason}`)
+      subtitleWorkRuntime.note(`flush-members:${queueName}`, undefined, members)
+    },
     maxCharactersPerBatch:
       queueName === "subtitles"
         ? Math.min(maxCharactersPerBatch, SUBTITLE_WORK_LIMITS.sourceCharacters)

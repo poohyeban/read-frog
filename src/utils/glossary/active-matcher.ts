@@ -255,6 +255,20 @@ export async function resolveGlossaryTerms(
   return { terms: matcher.match(input), revision }
 }
 
+/** One immutable glossary revision for every member of a planned subtitle batch. */
+export async function resolveGlossaryBatch(
+  inputs: string[],
+  enabled: boolean,
+  targetLang: LangCodeISO6393,
+) {
+  if (!enabled) return { terms: inputs.map(() => [] as MatchedTerm[]), revision: 0 }
+  const { matcher, revision } = await getActiveGlossary(targetLang)
+  return {
+    terms: inputs.map((input) => (matcher.size && input.trim() ? matcher.match(input) : [])),
+    revision,
+  }
+}
+
 /** Drops the compiled matcher. Called after a write so the next match recompiles. */
 export function invalidateActiveGlossaryMatcher(): void {
   cached = null

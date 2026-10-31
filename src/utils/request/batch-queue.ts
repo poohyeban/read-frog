@@ -52,6 +52,7 @@ export interface BatchExecutionMeta {
 }
 
 export interface BatchOptions<T, R> {
+  onFlush?: (reason: "planned" | "items" | "characters" | "delay", members: number) => void
   maxPending?: number
   maxCharactersPerBatch: number
   maxItemsPerBatch: number
@@ -75,6 +76,7 @@ export interface BatchOptions<T, R> {
 }
 
 export class BatchQueue<T, R> {
+  private onFlush?: BatchOptions<T, R>["onFlush"]
   private maxPending: number
   private outstanding = 0
   private pendingBatchMap = new Map<string, PendingBatch<T, R>>()
@@ -98,6 +100,7 @@ export class BatchQueue<T, R> {
   ) => void
 
   constructor(config: BatchOptions<T, R>) {
+    this.onFlush = config.onFlush
     this.maxPending = config.maxPending ?? 128
     this.maxCharactersPerBatch = config.maxCharactersPerBatch
     this.maxItemsPerBatch = config.maxItemsPerBatch
@@ -180,6 +183,44 @@ export class BatchQueue<T, R> {
     this.schedule()
 
     return promise
+  }
+
+  /** An already planned business batch. Generic timed aggregation remains unchanged. */
+  enqueueBatch(dataList: T[]): Promise<PromiseSettledResult<R>[]> {
+    if (!dataList.length || this.outstanding + dataList.length > this.maxPending)
+      return Promise.reject(new ResourceRejected("queue-full"))
+    const batchKey = this.getBatchKey(dataList[0]!)
+    if (dataList.some((data) => this.getBatchKey(data) !== batchKey))
+      return Promise.reject(new ResourceRejected("input-limit"))
+    const tasks: BatchTask<T, R>[] = []
+    const promises = dataList.map(
+      (data) =>
+        new Promise<R>((resolve, reject) => {
+          const scope = this.getScope?.(data)
+          tasks.push({
+            memberId: this.getDedupKey?.(data) ?? getRandomUUID(),
+            data,
+            resolve,
+            reject,
+            cancelScopes: scope ? new Set([scope]) : null,
+            flushed: true,
+          })
+        }),
+    )
+    this.outstanding += tasks.length
+    const result = Promise.allSettled(promises).then((results) => {
+      this.outstanding -= tasks.length
+      return results
+    })
+    const scopes = tasks.some((task) => task.cancelScopes === null)
+      ? undefined
+      : [...new Set(tasks.flatMap((task) => [...task.cancelScopes!]))]
+    this.onFlush?.("planned", tasks.length)
+    void this.executeBatchWithRecovery(tasks, batchKey, {
+      scopes,
+      attempts: AttemptContext.create(tasks.map((task) => task.memberId)),
+    })
+    return result
   }
 
   /**
@@ -282,7 +323,7 @@ export class BatchQueue<T, R> {
         existingBatch.tasks.push(task)
         existingBatch.totalCharacters += characters
       } else {
-        this.flushPendingBatchByKey(batchKey)
+        this.flushPendingBatchByKey(batchKey, "characters")
         this.createNewPendingBatch(task, batchKey)
       }
     } else {
@@ -310,13 +351,22 @@ export class BatchQueue<T, R> {
     this.pendingBatchMap.set(batchKey, pendingBatch)
   }
 
-  private flushPendingBatchByKey(batchKey: string) {
+  private flushPendingBatchByKey(batchKey: string, cause?: "characters") {
     const pendingBatch = this.pendingBatchMap.get(batchKey)
     if (!pendingBatch) return
 
     this.pendingBatchMap.delete(batchKey)
 
     const { tasks } = pendingBatch
+    this.onFlush?.(
+      cause ??
+        (tasks.length >= this.maxItemsPerBatch
+          ? "items"
+          : pendingBatch.totalCharacters >= this.maxCharactersPerBatch
+            ? "characters"
+            : "delay"),
+      tasks.length,
+    )
     // Freeze the batch: from here its downstream scope snapshot is fixed, so
     // enqueue() must stop letting late subscribers dedup into these tasks.
     for (const task of tasks) task.flushed = true
