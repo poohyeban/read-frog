@@ -62,3 +62,37 @@ describe("SubtitleSession and existing RequestQueue cancellation", () => {
     expect(() => session.start()).toThrow(/cancelled/)
   })
 })
+
+
+describe("worker lease failure reproduction", () => {
+  it("does not cache a rejected lease acquisition forever", async () => {
+    let opens = 0
+    rpc.cancel.mockImplementation(async (type) => {
+      if (type === "openSubtitleLease") {
+        if (++opens === 1) throw new Error("worker unavailable")
+        return "recovered"
+      }
+    })
+    const session = new SubtitleSession()
+    const first = session.begin("playback", "first")
+    await expect(first.prepareWork!("fast", 0, 1000)).rejects.toThrow("worker unavailable")
+    first.complete()
+    const next = session.begin("playback", "next")
+    await expect(next.prepareWork!("fast", 1000, 2000)).resolves.toMatchObject({ lease: "recovered" })
+    await session.stop()
+    session.dispose()
+  })
+  it("retries failed revocation without poisoning every later stop", async () => {
+    let revokes = 0
+    rpc.cancel.mockImplementation(async (type) => {
+      if (type === "openSubtitleLease") return "lease"
+      if (type === "revokeSubtitleLease" && ++revokes === 1) throw new Error("worker unavailable")
+    })
+    const session = new SubtitleSession()
+    await session.begin("playback", "first").prepareWork!("fast", 0, 1000)
+    await expect(session.stop()).rejects.toThrow("worker unavailable")
+    await expect(session.stop()).resolves.toBeUndefined()
+    expect(revokes).toBe(2)
+    session.dispose()
+  })
+})

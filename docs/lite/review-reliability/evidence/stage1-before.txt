@@ -1,0 +1,63 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/subtitles/__tests__/session.test.ts (4 tests | 2 failed) 21ms
+   ❯ worker lease failure reproduction (2)
+     × does not cache a rejected lease acquisition forever 7ms
+     × retries failed revocation without poisoning every later stop 2ms
+ ❯ src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts (9 tests | 1 failed) 233ms
+   × recovers a temporary intake failure after its retry-after, preserving successful members 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts > recovers a temporary intake failure after its retry-after, preserving successful members
+AssertionError: expected "vi.fn()" to be called 2 times, but got 1 times
+ ❯ src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts:221:30
+    219|   expect(translateSubtitles).toHaveBeenCalledTimes(1)
+    220|   await vi.advanceTimersByTimeAsync(1)
+    221|   expect(translateSubtitles).toHaveBeenCalledTimes(2)
+       |                              ^
+    222|   expect(vi.mocked(translateSubtitles).mock.calls[1]![0].map(c => c.te…
+    223| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/utils/subtitles/__tests__/session.test.ts > worker lease failure reproduction > does not cache a rejected lease acquisition forever
+AssertionError: promise rejected "Error: worker unavailable" instead of resolving
+ ❯ src/utils/subtitles/__tests__/session.test.ts:81:56
+     79|     first.complete()
+     80|     const next = session.begin("playback", "next")
+     81|     await expect(next.prepareWork!("fast", 1000, 2000)).resolves.toMat…
+       |                                                        ^
+     82|     await session.stop()
+     83|     session.dispose()
+
+Caused by: Error: worker unavailable
+ ❯ src/utils/subtitles/__tests__/session.test.ts:72:34
+ ❯ Object.prepareWork src/utils/subtitles/session.ts:74:52
+ ❯ src/utils/subtitles/__tests__/session.test.ts:78:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/utils/subtitles/__tests__/session.test.ts > worker lease failure reproduction > retries failed revocation without poisoning every later stop
+AssertionError: promise rejected "Error: worker unavailable" instead of resolving
+ ❯ src/utils/subtitles/__tests__/session.test.ts:94:33
+     92|     await session.begin("playback", "first").prepareWork!("fast", 0, 1…
+     93|     await expect(session.stop()).rejects.toThrow("worker unavailable")
+     94|     await expect(session.stop()).resolves.toBeUndefined()
+       |                                 ^
+     95|     expect(revokes).toBe(2)
+     96|     session.dispose()
+
+Caused by: Error: worker unavailable
+ ❯ src/utils/subtitles/__tests__/session.test.ts:89:68
+ ❯ src/utils/subtitles/session.ts:114:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 10 passed (13)
+   Start at  15:29:38
+   Duration  2.91s (import 31%, transform 29%, environment 22%, setup 9%, tests 8%)
+

@@ -201,3 +201,23 @@ describe("bounded failure recovery", () => {
     expect(translateSubtitles).toHaveBeenCalledTimes(1)
   })
 })
+
+
+it("recovers a temporary intake failure after its retry-after, preserving successful members", async () => {
+  vi.useFakeTimers()
+  vi.mocked(translateSubtitles).mockImplementationOnce(async (cues) => cues.map((cue) => ({
+    ...cue, translation: cue.text === "good" ? "ok" : "",
+    translationOutcome: cue.text === "good" ? { status: "success" } : {
+      status: "temporary", message: "background unavailable before dispatch", retryAfterMs: 2000,
+    },
+  })))
+  const { coordinator } = setup([
+    { text: "good", start: 0, end: 10000 }, { text: "retry", start: 100, end: 10000 },
+  ])
+  coordinator.start()
+  await vi.advanceTimersByTimeAsync(1999)
+  expect(translateSubtitles).toHaveBeenCalledTimes(1)
+  await vi.advanceTimersByTimeAsync(1)
+  expect(translateSubtitles).toHaveBeenCalledTimes(2)
+  expect(vi.mocked(translateSubtitles).mock.calls[1]![0].map(c => c.text)).toEqual(["retry"])
+})
