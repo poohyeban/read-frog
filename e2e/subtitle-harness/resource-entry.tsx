@@ -120,7 +120,12 @@ const tick = () => new Promise((resolve) => setTimeout(resolve, 0))
       overrides = value
       writes++
     },
-    context: async () => ({ identities: new Map([["a", "account"]]), providerIds: new Set(["a"]) }),
+    context: async () => ({
+      identities: new Map([["a", "account"]]),
+      configuredIdentities: new Map([["a", "account"]]),
+      providerIds: new Set(["a"]),
+      isCurrent: () => true,
+    }),
   })
   await writer.patch({ kind: "reset", target: { section: "provider", id: "a" } })
   checks.defaultResetDoesNotWrite = writes === 0

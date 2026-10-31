@@ -1,5 +1,6 @@
 import type { ProvidersConfig } from "@/types/config/provider"
 import type { PerformanceOverrides } from "@/utils/request/performance-config"
+import type { PerformancePatch } from "@/utils/request/performance-patch"
 import { useState } from "react"
 import { Button } from "@/components/ui/base-ui/button"
 import {
@@ -25,7 +26,9 @@ export function PerformanceGroups({
   identities: Record<string, string>
   groups?: PerformanceOverrides["groups"]
 }) {
-  const [editing, setEditing] = useState<string | null>(null)
+  const [editing, setEditing] = useState<{ id: string; name: string; members: string[] } | null>(
+    null,
+  )
   const [name, setName] = useState("")
   const [members, setMembers] = useState<string[]>([])
   const [error, setError] = useState("")
@@ -37,9 +40,11 @@ export function PerformanceGroups({
     resources.set(resource, [...(resources.get(resource) ?? []), provider.name])
   }
   function edit(id: string) {
-    setEditing(id)
-    setName(groups[id]?.name ?? "")
-    setMembers((groups[id]?.members ?? []).filter((member) => resources.has(member)))
+    const group = groups[id]
+    const initial = { id, name: group?.name ?? "", members: [...(group?.members ?? [])] }
+    setEditing(initial)
+    setName(initial.name)
+    setMembers(initial.members)
     setError("")
   }
   return (
@@ -60,13 +65,20 @@ export function PerformanceGroups({
                 .join(", ") || i18n.t("options.performance.unavailable")}
             </p>
             <div className="flex gap-2">
-              <Button type="button" size="sm" variant="outline" onClick={() => edit(id)}>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={saving}
+                onClick={() => edit(id)}
+              >
                 {i18n.t("options.performance.editGroup")}
               </Button>
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
+                disabled={saving}
                 onClick={() => {
                   void sendMessage("patchPerformanceConfiguration", {
                     kind: "delete-group",
@@ -85,7 +97,13 @@ export function PerformanceGroups({
           </CollapsibleContent>
         </Collapsible>
       ))}
-      <Button type="button" size="sm" variant="outline" onClick={() => edit("new")}>
+      <Button
+        type="button"
+        size="sm"
+        variant="outline"
+        disabled={saving}
+        onClick={() => edit("new")}
+      >
         {i18n.t("options.performance.createGroup")}
       </Button>
       {editing !== null && (
@@ -93,6 +111,7 @@ export function PerformanceGroups({
           <Input
             aria-label={i18n.t("options.performance.groupName")}
             value={name}
+            disabled={saving}
             onChange={(event) => setName(event.target.value)}
             maxLength={80}
             onKeyDown={(event) => {
@@ -101,7 +120,7 @@ export function PerformanceGroups({
           />
           {[...resources].map(([resource, names]) => {
             const assignedElsewhere = Object.entries(groups).some(
-              ([id, group]) => id !== editing && group.members.includes(resource),
+              ([id, group]) => id !== editing.id && group.members.includes(resource),
             )
             return (
               <label key={resource} className="flex items-center gap-2 text-sm">
@@ -128,15 +147,22 @@ export function PerformanceGroups({
             <Button
               type="button"
               size="sm"
-              disabled={saving || !name.trim() || !members.length}
+              disabled={saving || !name.trim() || (editing.id === "new" && !members.length)}
               onClick={() => {
                 setSaving(true)
-                void sendMessage("patchPerformanceConfiguration", {
-                  kind: editing === "new" ? "create-group" : "edit-group",
-                  id: editing === "new" ? getRandomUUID() : editing,
-                  name,
-                  members,
-                })
+                const patch: PerformancePatch =
+                  editing.id === "new"
+                    ? { kind: "create-group", id: getRandomUUID(), name, members }
+                    : {
+                        kind: "edit-group",
+                        id: editing.id,
+                        ...(name.trim() !== editing.name ? { name } : {}),
+                        addMembers: members.filter((member) => !editing.members.includes(member)),
+                        removeMembers: editing.members.filter(
+                          (member) => !members.includes(member),
+                        ),
+                      }
+                void sendMessage("patchPerformanceConfiguration", patch)
                   .then(
                     () => setEditing(null),
                     () => setError(i18n.t("options.performance.invalid")),
@@ -146,7 +172,13 @@ export function PerformanceGroups({
             >
               {i18n.t("options.performance.save")}
             </Button>
-            <Button type="button" size="sm" variant="outline" onClick={() => setEditing(null)}>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              disabled={saving}
+              onClick={() => setEditing(null)}
+            >
               {i18n.t("options.performance.cancel")}
             </Button>
           </div>

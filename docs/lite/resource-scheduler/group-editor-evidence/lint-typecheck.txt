@@ -1,0 +1,2 @@
+$ ./node_modules/.bin/oxlint --type-aware --type-check
+Exit code: 0

@@ -14,9 +14,12 @@ export function setupPerformanceSettings() {
   })
   onMessage("getPerformanceConfiguration", async () => {
     await initializePerformance()
-    const { identities } = await getProviderResourceSnapshot()
+    const { configuredIdentities } = await getProviderResourceSnapshot()
     // Opaque identities only; no endpoint, auth fingerprint or installation secret.
-    return { overrides: getPerformanceOverrides(), identities: Object.fromEntries(identities) }
+    return {
+      overrides: getPerformanceOverrides(),
+      identities: Object.fromEntries(configuredIdentities),
+    }
   })
   onMessage("patchPerformanceConfiguration", ({ data }) => resourcePerformanceWriter.patch(data))
 }

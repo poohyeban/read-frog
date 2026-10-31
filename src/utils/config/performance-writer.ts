@@ -12,7 +12,10 @@ interface WriterStorage {
   write: (value: PerformanceOverrides) => Promise<void>
   context: () => Promise<{
     identities: ReadonlyMap<string, string>
+    /** Verified membership candidates, including disabled providers. */
+    configuredIdentities: ReadonlyMap<string, string>
     providerIds: ReadonlySet<string>
+    isCurrent: () => boolean
     /** All configured identities, including disabled aliases. Absent on resolution failure. */
     resourceIds?: ReadonlySet<string>
   }>
@@ -28,12 +31,18 @@ export function createPerformanceWriter(storage: WriterStorage) {
         stored === null || stored === undefined
           ? emptyPerformanceOverrides()
           : validatePerformanceOverrides(stored)
-      const { identities, providerIds, resourceIds } =
+      const { identities, configuredIdentities, providerIds, resourceIds, isCurrent } =
         patch?.kind === "reset-all"
-          ? { identities: new Map<string, string>(), providerIds: new Set<string>() }
+          ? {
+              identities: new Map<string, string>(),
+              configuredIdentities: new Map<string, string>(),
+              providerIds: new Set<string>(),
+              isCurrent: () => true,
+            }
           : await storage.context()
+      if (!isCurrent()) throw new Error("Resource identity changed; reload the available providers")
       const next = patch
-        ? applyPerformancePatch(current, patch, identities, providerIds)
+        ? applyPerformancePatch(current, patch, configuredIdentities, providerIds)
         : reconcile(current, providerIds, resourceIds)
       if (!next) return current
       // Validate inherited group/alias constraints as well as each sparse record.

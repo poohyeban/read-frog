@@ -194,7 +194,7 @@ async function waitForCurrentResources() {
     } catch (error) {
       if (pending === updates) throw error
     }
-    if (pending === updates) return { configs, identities, resourceIds }
+    if (pending === updates) return { configs, identities, configuredIdentities, resourceIds }
   }
 }
 
@@ -213,8 +213,11 @@ export async function getProviderResourceSnapshot() {
   const snapshot = await waitForCurrentResources()
   return {
     identities: new Map(snapshot.identities),
+    configuredIdentities: new Map(snapshot.configuredIdentities),
     providerIds: new Set(snapshot.configs.keys()),
     resourceIds: snapshot.resourceIds && new Set(snapshot.resourceIds),
+    isCurrent: () =>
+      snapshot.configs === configs && snapshot.configuredIdentities === configuredIdentities,
   }
 }
 

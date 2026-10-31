@@ -11,6 +11,11 @@ const mock = vi.hoisted(() => ({
   watchers: new Map<string, Set<(value: unknown) => void>>(),
   reads: vi.fn<(key: string) => void>(),
   writes: vi.fn<(key: string) => void>(),
+  handlers: new Map<string, (message: any) => Promise<any>>(),
+}))
+vi.mock("@/utils/message", () => ({
+  onMessage: (name: string, handler: (message: any) => Promise<any>) =>
+    mock.handlers.set(name, handler),
 }))
 vi.mock("wxt/utils/storage", () => ({
   storage: {
@@ -69,6 +74,7 @@ beforeEach(() => {
   vi.resetModules()
   mock.data.clear()
   mock.watchers.clear()
+  mock.handlers.clear()
   mock.reads.mockClear()
   mock.writes.mockClear()
   configSchema.parse(config())
@@ -85,6 +91,199 @@ afterEach(() => {
 })
 
 describe("background provider authority", () => {
+  it("keeps AB through disable B, rename/add C, re-enable, and explicit detach through settings handlers", async () => {
+    const b = { ...alias, apiKey: "account-b" },
+      c = { ...provider, id: "c", name: "Mock C", apiKey: "account-c" }
+    configSchema.parse(config([provider, b, c]))
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, b, c]))
+    const runtime = await import("../resource-runtime")
+    const { setupPerformanceSettings } =
+      await import("@/entrypoints/background/performance-settings")
+    setupPerformanceSettings()
+    const read = () => mock.handlers.get("getPerformanceConfiguration")!({})
+    const patch = (data: import("@/utils/request/performance-patch").PerformancePatch) =>
+      mock.handlers.get("patchPerformanceConfiguration")!({ data })
+    const original = await read()
+    const [aId, bId, cId] = ["a", "b", "c"].map((id) => original.identities[id] as string)
+    const id = "11111111-1111-4111-8111-111111111111"
+    await patch({ kind: "create-group", id, name: "AB", members: [aId!, bId!] })
+    await patch({ kind: "set", target: { section: "group", id }, field: "maxInFlight", value: 4 })
+    const beforeDisable = await runtime.getProviderResourceSnapshot()
+    expect(beforeDisable.isCurrent()).toBe(true)
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, { ...b, enabled: false }, c]))
+    expect(beforeDisable.isCurrent()).toBe(false)
+    const disabled = await read()
+    expect(disabled.identities.b).toBe(bId)
+    expect(runtime.getResourceIdentities().has("b")).toBe(false)
+    expect(
+      await mock.handlers.get("getProviderResourcePolicy")!({ data: { providerId: "b" } }),
+    ).toBeNull()
+    await expect(runtime.getResourceProvider("b")).rejects.toThrow("configuration-changed")
+    expect(
+      (
+        await patch({
+          kind: "set",
+          target: { section: "provider", id: "b" },
+          field: "maxInFlight",
+          value: 4,
+        })
+      ).providers?.b,
+    ).toBeUndefined()
+    await patch({ kind: "edit-group", id, name: "Renamed" })
+    await patch({ kind: "edit-group", id, addMembers: [cId!] })
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, b, c]))
+    await runtime.resourcePerformanceWriter.reconcile()
+    expect((await read()).overrides.groups[id]).toMatchObject({
+      name: "Renamed",
+      members: [aId, bId, cId],
+    })
+    expect(
+      await mock.handlers.get("getProviderResourcePolicy")!({ data: { providerId: "b" } }),
+    ).toMatchObject({ maxInFlight: 4 })
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, { ...b, enabled: false }, c]))
+    await patch({ kind: "edit-group", id, removeMembers: [bId!] })
+    expect((await read()).overrides.groups[id].members).toEqual([aId, cId])
+    // Disabled, configured identities remain valid for explicit user rebinding.
+    await patch({ kind: "edit-group", id, addMembers: [bId!, bId!] })
+    expect((await read()).overrides.groups[id].members).toEqual([aId, cId, bId])
+    await patch({ kind: "edit-group", id, removeMembers: [bId!] })
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, b, c]))
+    await runtime.resourcePerformanceWriter.reconcile()
+    expect((await read()).overrides.groups[id].members).toEqual([aId, cId])
+    expect(
+      await mock.handlers.get("getProviderResourcePolicy")!({ data: { providerId: "b" } }),
+    ).toMatchObject({ maxInFlight: 2 })
+    await expect(patch({ kind: "edit-group", id, addMembers: ["forged"] })).rejects.toThrow(
+      "identity changed",
+    )
+  })
+
+  it("serializes delayed group persistence with provider deletion and a concurrent member addition", async () => {
+    const b = { ...alias, apiKey: "account-b" },
+      c = { ...provider, id: "c", name: "Mock C", apiKey: "account-c" }
+    configSchema.parse(config([provider, b, c]))
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, b, c]))
+    const runtime = await import("../resource-runtime")
+    const { identities } = await runtime.getProviderResourceSnapshot()
+    const aId = identities.get("a")!,
+      bId = identities.get("b")!,
+      cId = identities.get("c")!
+    const id = "11111111-1111-4111-8111-111111111111"
+    await runtime.resourcePerformanceWriter.patch({
+      kind: "create-group",
+      id,
+      name: "AB",
+      members: [aId, bId],
+    })
+    await runtime.resourcePerformanceWriter.patch({
+      kind: "set",
+      target: { section: "group", id },
+      field: "rate",
+      value: 3,
+    })
+    await runtime.resourcePerformanceWriter.reconcile()
+    const entered = deferred(),
+      release = deferred()
+    const original = storage.setItem.bind(storage)
+    let held = false
+    const hook = vi.spyOn(storage, "setItem").mockImplementation(async (key, value) => {
+      if (
+        !held &&
+        key === "local:performanceOverrides" &&
+        (value as import("@/utils/request/performance-config").PerformanceOverrides).groups?.[id]
+          ?.name === "Concurrent rename"
+      ) {
+        held = true
+        entered.resolve()
+        await release.promise
+      }
+      return original(key, value)
+    })
+    try {
+      const rename = runtime.resourcePerformanceWriter.patch({
+        kind: "edit-group",
+        id,
+        name: "Concurrent rename",
+      })
+      await entered.promise
+      const add = runtime.resourcePerformanceWriter.patch({
+        kind: "edit-group",
+        id,
+        addMembers: [cId],
+      })
+      await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, c]))
+      release.resolve()
+      await Promise.all([rename, add])
+      const result = await runtime.resourcePerformanceWriter.reconcile()
+      expect(result.groups?.[id]).toEqual({
+        name: "Concurrent rename",
+        members: [aId, cId],
+        policy: { rate: 3 },
+      })
+      expect(result.providers?.a).toEqual({ maxInFlight: 1, maxAttempts: 1 })
+      await expect(
+        runtime.resourcePerformanceWriter.patch({ kind: "edit-group", id, addMembers: [bId] }),
+      ).rejects.toThrow("identity changed")
+    } finally {
+      release.resolve()
+      hook.mockRestore()
+    }
+  })
+
+  it("preserves an identity until its last alias is deleted, rejects deleted/rotated identities, and retains edits", async () => {
+    const b = { ...alias, apiKey: "account-b" },
+      bAlias = {
+        ...alias,
+        id: "b-alias",
+        name: "Disabled B alias",
+        apiKey: "account-b",
+        enabled: false,
+      }
+    configSchema.parse(config([provider, b, bAlias]))
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, b, bAlias]))
+    const runtime = await import("../resource-runtime")
+    const snapshot = await runtime.getProviderResourceSnapshot()
+    const aId = snapshot.identities.get("a")!,
+      bId = snapshot.identities.get("b")!
+    const id = "11111111-1111-4111-8111-111111111111"
+    await runtime.resourcePerformanceWriter.patch({
+      kind: "create-group",
+      id,
+      name: "AB",
+      members: [aId, bId, bId],
+    })
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, bAlias]))
+    await runtime.resourcePerformanceWriter.reconcile()
+    await runtime.resourcePerformanceWriter.patch({
+      kind: "edit-group",
+      id,
+      name: "Disabled alias remains",
+    })
+    const read = () =>
+      storage.getItem<import("@/utils/request/performance-config").PerformanceOverrides>(
+        "local:performanceOverrides",
+      )
+    expect((await read())?.groups?.[id]?.members).toEqual([aId, bId])
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider, { ...bAlias, apiKey: "rotated-b" }]))
+    await runtime.resourcePerformanceWriter.reconcile()
+    expect((await read())?.groups?.[id]).toMatchObject({
+      name: "Disabled alias remains",
+      members: [aId],
+    })
+    await expect(
+      runtime.resourcePerformanceWriter.patch({ kind: "edit-group", id, addMembers: [bId] }),
+    ).rejects.toThrow("identity changed")
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([provider]))
+    await runtime.resourcePerformanceWriter.reconcile()
+    await expect(
+      runtime.resourcePerformanceWriter.patch({
+        kind: "create-group",
+        id: "22222222-2222-4222-8222-222222222222",
+        name: "Deleted",
+        members: [bId],
+      }),
+    ).rejects.toThrow("identity changed")
+  })
   it("preserves tuning while the root configuration is unavailable and reconciles after recovery", async () => {
     const runtime = await import("../resource-runtime")
     await runtime.initializeProviderResources()

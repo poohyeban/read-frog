@@ -11,7 +11,12 @@ const identities = new Map([
   ["alias", "resource-a"],
   ["other", "resource-b"],
 ])
-const context = async () => ({ identities, providerIds: new Set(identities.keys()) })
+const context = async () => ({
+  identities,
+  configuredIdentities: identities,
+  providerIds: new Set(identities.keys()),
+  isCurrent: () => true,
+})
 const create = () =>
   createPerformanceWriter({ read: async () => structuredClone(stored), write, context })
 const groupId = "11111111-1111-4111-8111-111111111111"
@@ -20,6 +25,135 @@ beforeEach(() => {
   write.mockClear()
 })
 describe("Defaults + Sparse Overrides serialized writer", () => {
+  it("merges independent group edits, keeps inherited tuning, and never resurrects a concurrently removed member", async () => {
+    stored = {
+      version: 1,
+      revision: 1,
+      groups: {
+        [groupId]: {
+          name: "AB",
+          members: ["resource-a", "resource-b"],
+          policy: { maxInFlight: 4 },
+        },
+      },
+    }
+    const all = new Map([...identities, ["third", "resource-c"], ["fourth", "resource-d"]])
+    const writer = createPerformanceWriter({
+      read: async () => structuredClone(stored),
+      write,
+      context: async () => ({
+        identities: all,
+        configuredIdentities: all,
+        providerIds: new Set(all.keys()),
+        isCurrent: () => true,
+      }),
+    })
+    await Promise.all([
+      writer.patch({ kind: "edit-group", id: groupId, name: "Renamed" }),
+      writer.patch({ kind: "edit-group", id: groupId, addMembers: ["resource-c"] }),
+      writer.patch({ kind: "edit-group", id: groupId, removeMembers: ["resource-b"] }),
+      writer.patch({ kind: "edit-group", id: groupId, addMembers: ["resource-d"] }),
+    ])
+    expect(stored?.groups?.[groupId]).toEqual({
+      name: "Renamed",
+      members: ["resource-a", "resource-c", "resource-d"],
+      policy: { maxInFlight: 4 },
+    })
+    const count = write.mock.calls.length
+    await writer.patch({
+      kind: "edit-group",
+      id: groupId,
+      name: "Renamed",
+      addMembers: ["resource-c"],
+      removeMembers: ["resource-b"],
+    })
+    expect(write).toHaveBeenCalledTimes(count)
+  })
+
+  it("validates additions against configured accounts and rejects conflicting or obsolete replacement payloads", async () => {
+    stored = {
+      version: 1,
+      revision: 1,
+      groups: { [groupId]: { name: "A", members: ["resource-a"] } },
+    }
+    const writer = create()
+    await expect(
+      writer.patch({ kind: "edit-group", id: groupId, addMembers: ["forged"] }),
+    ).rejects.toThrow("identity changed")
+    await expect(
+      writer.patch({
+        kind: "edit-group",
+        id: groupId,
+        addMembers: ["resource-b"],
+        removeMembers: ["resource-b"],
+      }),
+    ).rejects.toThrow("Cannot add and remove")
+    await expect(
+      writer.patch({
+        kind: "edit-group",
+        id: groupId,
+        name: "Old client",
+        members: ["resource-b"],
+      } as unknown as import("@/utils/request/performance-patch").PerformancePatch),
+    ).rejects.toThrow("Unrecognized key")
+    expect(write).not.toHaveBeenCalled()
+  })
+
+  it("rejects edits to a concurrently deleted group without recreating it", async () => {
+    const writer = create()
+    await writer.patch({
+      kind: "create-group",
+      id: groupId,
+      name: "AB",
+      members: ["resource-a", "resource-b"],
+    })
+    const deleted = writer.patch({ kind: "delete-group", id: groupId })
+    const stale = writer.patch({
+      kind: "edit-group",
+      id: groupId,
+      name: "Stale",
+      addMembers: ["resource-b"],
+    })
+    await deleted
+    await expect(stale).rejects.toThrow("Resource group changed")
+    expect(stored?.groups).toBeUndefined()
+  })
+
+  it("rejects an identity snapshot invalidated before persistence without changing valid user settings", async () => {
+    stored = {
+      version: 1,
+      revision: 1,
+      groups: {
+        [groupId]: { name: "AB", members: ["resource-a", "resource-b"], policy: { rate: 3 } },
+      },
+    }
+    let resume!: () => void
+    const gate = new Promise<void>((resolve) => {
+      resume = resolve
+    })
+    let current = true
+    const writer = createPerformanceWriter({
+      read: async () => structuredClone(stored),
+      write,
+      context: async () => {
+        await gate
+        return { ...(await context()), isCurrent: () => current }
+      },
+    })
+    const result = writer.patch({ kind: "edit-group", id: groupId, name: "Stale" })
+    current = false
+    resume()
+    await expect(result).rejects.toThrow("identity changed")
+    expect(write).not.toHaveBeenCalled()
+    expect(stored?.groups?.[groupId]?.name).toBe("AB")
+    current = true
+    await writer.patch({ kind: "edit-group", id: groupId, name: "Fresh" })
+    expect(stored?.groups?.[groupId]).toEqual({
+      name: "Fresh",
+      members: ["resource-a", "resource-b"],
+      policy: { rate: 3 },
+    })
+  })
   it("cleans only unreferenced identities/deleted providers and preserves disabled aliases and group policy", async () => {
     stored = {
       version: 1,
@@ -36,8 +170,13 @@ describe("Defaults + Sparse Overrides serialized writer", () => {
       write,
       context: async () => ({
         identities: new Map([["provider", "resource-new"]]),
+        configuredIdentities: new Map([
+          ["provider", "resource-new"],
+          ["disabled", "resource-a"],
+        ]),
         providerIds: new Set(["provider", "disabled"]),
         resourceIds: resources,
+        isCurrent: () => true,
       }),
     })
     await Promise.all([
@@ -76,9 +215,16 @@ describe("Defaults + Sparse Overrides serialized writer", () => {
     const writer = createPerformanceWriter({
       read: async () => stored,
       write,
-      context: async () => ({ identities: new Map(), providerIds: new Set(["provider"]) }),
+      context: async () => ({
+        identities: new Map(),
+        configuredIdentities: new Map(),
+        providerIds: new Set(["provider"]),
+        isCurrent: () => true,
+      }),
     })
     await writer.reconcile()
+    await writer.patch({ kind: "edit-group", id: "shared", name: "Keep renamed" })
+    expect(stored?.groups?.shared?.name).toBe("Keep renamed")
     expect(stored?.providers).toBeUndefined()
     expect(stored?.groups?.shared?.members).toEqual(["resource-a"])
   })

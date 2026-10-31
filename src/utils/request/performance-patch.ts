@@ -31,12 +31,15 @@ export const performancePatchSchema = z.discriminatedUnion("kind", [
     name: z.string().trim().min(1).max(80),
     members: z.array(z.string()).min(1).max(128),
   }),
-  z.object({
-    kind: z.literal("edit-group"),
-    id: z.string(),
-    name: z.string().trim().min(1).max(80),
-    members: z.array(z.string()).min(1).max(128),
-  }),
+  z
+    .object({
+      kind: z.literal("edit-group"),
+      id: z.string(),
+      name: z.string().trim().min(1).max(80).optional(),
+      addMembers: z.array(z.string().min(1).max(128)).max(128).optional(),
+      removeMembers: z.array(z.string().min(1).max(128)).max(128).optional(),
+    })
+    .strict(),
   z.object({ kind: z.literal("delete-group"), id: z.string() }),
 ])
 export type PerformancePatch = z.infer<typeof performancePatchSchema>
@@ -64,13 +67,27 @@ export function applyPerformancePatch(
       delete next[key]
   } else if (patch.kind === "create-group" || patch.kind === "edit-group") {
     const available = new Set(identities.values())
-    if (patch.members.some((id) => !available.has(id)))
+    const added = patch.kind === "create-group" ? patch.members : (patch.addMembers ?? [])
+    if (added.some((id) => !available.has(id)))
       throw new Error("Resource identity changed; reload the available providers")
     const group = next.groups?.[patch.id]
     if ((patch.kind === "create-group") === Boolean(group))
       throw new Error("Resource group changed; reload settings")
     next.groups ??= {}
-    next.groups[patch.id] = { ...group, name: patch.name, members: [...new Set(patch.members)] }
+    if (patch.kind === "create-group")
+      next.groups[patch.id] = { name: patch.name, members: [...new Set(added)] }
+    else {
+      const removed = new Set(patch.removeMembers ?? [])
+      if (added.some((id) => removed.has(id)))
+        throw new Error("Cannot add and remove the same resource")
+      // Apply intent to the latest persisted group. Renames and stale editor
+      // snapshots must not overwrite another editor's membership or policy.
+      next.groups[patch.id] = {
+        ...group!,
+        name: patch.name ?? group!.name,
+        members: [...new Set([...group!.members.filter((id) => !removed.has(id)), ...added])],
+      }
+    }
   } else if (patch.kind === "delete-group") {
     delete next.groups?.[patch.id]
   } else {

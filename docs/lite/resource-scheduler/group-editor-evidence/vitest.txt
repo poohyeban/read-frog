@@ -1,0 +1,19 @@
+$ SKIP_FREE_API=true ./node_modules/.bin/vitest run
+Exit code: 0
+
+RUN  v5.0.3 /workspace/read-frog
+
+Not implemented: navigation to another Document
+(node:84865) Warning: AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84865) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+(node:84865) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+
+ Test Files  318 passed (318)
+      Tests  2872 passed (2872)
+   Start at  14:09:54
+   Duration  208.70s (environment 33%, import 25%, tests 19%, setup 14%, transform 8%, worker 1%)
+
+     Import  994 modules were evaluated 14453 times · 140.64s total, 25% of tracked time
+             ~40.55s faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+             learn more: https://vitest.dev/guide/improving-performance#test-isolation
