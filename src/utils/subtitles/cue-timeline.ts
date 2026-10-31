@@ -89,7 +89,11 @@ export class CueTimeline<T extends SubtitlesFragment = SubtitlesFragment> {
       }
       while (left < items.length) merged.push(items[left++]!)
       while (right < incoming.length) merged.push(incoming[right++]!)
-      return new CueTimeline(merged, true)
+      const next = new CueTimeline(merged, true)
+      // Mutation timelines will be updated again. Pay their identity-index cost with
+      // the insertion, while read-only source timelines keep lazy lookup indexes.
+      next.identityIndex()
+      return next
     }
     const next = new CueTimeline<T>([])
     next.items = items
