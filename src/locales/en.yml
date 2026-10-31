@@ -1693,7 +1693,7 @@ subtitles:
     diagnostics: "Collect bounded diagnostic events"
     status: "Used: $1 requests; $2 estimated token units; $3 reported tokens."
     exportDiagnostics: "Download diagnostics"
-    exportConfirm: "Export this complete subtitle track? Estimated $1 model requests and $2 token units before retries. Hard limits for this export: $3 attempts and $4 conservative token units. Actual charges depend on your provider; cache hits reduce calls. Work is sent in bounded chunks. Source text: $5 characters."
+    exportConfirm: "Export this complete subtitle track? Approximately $1 model requests before retries; source text: $2 characters. Cached results are reused. Processing uses bounded chunks and can be cancelled."
     exportFailed: "Export incomplete. No complete SRT was saved."
     cancelled: "Export cancelled"
     cancelExport: "Cancel export"

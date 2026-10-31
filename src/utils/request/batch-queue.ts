@@ -1,7 +1,7 @@
 import { batchQueueConfigSchema } from "@/types/config/translate"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
-import { SubtitleWorkRejected } from "@/utils/subtitles/work-policy"
 import { TranslationCancelledError } from "./cancellation"
+import { ResourceRejected } from "./resource-error"
 
 export class BatchCountMismatchError extends Error {
   constructor(expected: number, got: number, _results: unknown[]) {
@@ -155,7 +155,7 @@ export class BatchQueue<T, R> {
     }
 
     if (this.outstanding >= this.maxPending)
-      return Promise.reject(new SubtitleWorkRejected("queue-full"))
+      return Promise.reject(new ResourceRejected("queue-full"))
     this.outstanding++
     let resolve!: (value: R) => void
     let reject!: (error: Error) => void

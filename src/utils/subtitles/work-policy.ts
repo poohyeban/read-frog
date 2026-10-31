@@ -1,4 +1,5 @@
 import type { SubtitlesFragment } from "./types"
+import { ResourceRejected } from "@/utils/request/resource-error"
 
 /** Independent of playback speed, queue settings, and source track length. */
 export const SUBTITLE_WORK_LIMITS = Object.freeze({
@@ -7,22 +8,10 @@ export const SUBTITLE_WORK_LIMITS = Object.freeze({
   promptCharacters: 12000,
   mediaMs: 60_000,
   outputTokens: 4096,
-  attempts: 3,
   queued: 64,
   batchMembers: 128,
 })
 
-export const DEFAULT_SUBTITLE_BUDGET = Object.freeze({
-  requests: 3000,
-  estimatedTokens: 12_000_000,
-  emergencyPercent: 20,
-  maxInFlight: 2,
-  diagnostics: false,
-})
-
-export type SubtitleBudgetLimits = typeof DEFAULT_SUBTITLE_BUDGET extends infer T
-  ? { [K in keyof T]: T[K] extends boolean ? boolean : number }
-  : never
 export type SubtitleLane = "fast" | "quality" | "segmentation" | "context" | "export"
 export interface SubtitleWorkContext {
   lease: string
@@ -42,21 +31,7 @@ export interface SubtitleModelGuard {
   onDispatch?: () => void
 }
 
-export class SubtitleWorkRejected extends Error {
-  readonly isRetryable = false
-  constructor(
-    readonly code:
-      | "hard-budget"
-      | "soft-budget"
-      | "attempts"
-      | "input-limit"
-      | "lease"
-      | "queue-full",
-  ) {
-    super(`Subtitle work stopped: ${code}`)
-    this.name = "SubtitleWorkRejected"
-  }
-}
+export class SubtitleWorkRejected extends ResourceRejected {}
 
 /** UTF-8 bytes deliberately overestimate ordinary text tokenizers; not a currency guarantee. */
 export function estimateInputTokens(input: string): number {

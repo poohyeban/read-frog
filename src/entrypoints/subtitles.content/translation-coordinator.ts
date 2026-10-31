@@ -7,19 +7,17 @@ import type {
   SubtitlesFragment,
   SubtitlesState,
 } from "@/utils/subtitles/types"
+import { getPerformanceOverrides } from "@/utils/config/performance"
 import { getLocalConfig } from "@/utils/config/storage"
 import { TRANSLATE_LOOK_AHEAD_MS, TRANSLATION_BATCH_SIZE } from "@/utils/constants/subtitles"
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
+import { RESOURCE_DEFAULTS } from "@/utils/request/resource-policy"
 import { continuousReadyMs, SubtitleBufferController } from "@/utils/subtitles/continuous-buffer"
 import { cueIdentity, getCueTimeline } from "@/utils/subtitles/cue-timeline"
 import { translateSubtitles, fetchSubtitlesSummary } from "@/utils/subtitles/processor/translator"
 import { subtitleFailure, type SubtitleOutcome } from "@/utils/subtitles/result"
 import { SubtitleSession, type SubtitleTask } from "@/utils/subtitles/session"
-import {
-  boundedSourceCues,
-  chunkSubtitleWork,
-  DEFAULT_SUBTITLE_BUDGET,
-} from "@/utils/subtitles/work-policy"
+import { boundedSourceCues, chunkSubtitleWork } from "@/utils/subtitles/work-policy"
 import { adPlayingAtom, subtitlesStore } from "./atoms"
 
 export interface TranslationCoordinatorOptions {
@@ -80,13 +78,11 @@ export class TranslationCoordinator {
   private cacheTask: SubtitleTask | null = null
   private readyList = { fast: [] as SubtitlesFragment[], quality: [] as SubtitlesFragment[] }
   private buffer = new SubtitleBufferController()
-  private speculativeBlocked = false
-  private hardBlocked = false
   private contextWindows = new Set<string>()
   private contextTask: SubtitleTask | null = null
   private failed = new Map<
     string,
-    { phase: "cooling" | "permanent" | "soft"; attempts: number; retryAt: number }
+    { phase: "cooling" | "permanent"; attempts: number; retryAt: number }
   >()
   private retryTimer: ReturnType<typeof setTimeout> | undefined
   private tickQueued = false
@@ -159,10 +155,6 @@ export class TranslationCoordinator {
   }
   clearFailed() {
     this.failed.clear()
-    // Explicit user resume may follow a budget increase. The persistent dispatch
-    // ledger still decides admission; clearing these local latches grants no credit.
-    this.hardBlocked = false
-    this.speculativeBlocked = false
   }
   private detach() {
     if (this.video)
@@ -192,18 +184,13 @@ export class TranslationCoordinator {
     return globalThis.document?.visibilityState === "hidden"
   }
   private canPrepareQuality() {
-    if (
-      !this.active ||
-      this.speculativeBlocked ||
-      this.isHidden() ||
-      subtitlesStore.get(adPlayingAtom)
-    )
-      return false
+    if (!this.active || this.isHidden() || subtitlesStore.get(adPlayingAtom)) return false
     const video = this.options.getVideoElement()
     if (!video) return false
     const concurrency =
-      this.options.configSnapshot?.videoSubtitles.workBudget?.maxInFlight ??
-      DEFAULT_SUBTITLE_BUDGET.maxInFlight
+      getPerformanceOverrides().providers?.[
+        this.options.configSnapshot?.videoSubtitles.providerId ?? ""
+      ]?.maxInFlight ?? RESOURCE_DEFAULTS.maxInFlight
     if (concurrency > 1) return true
     const rate = Math.min(4, Math.max(0.25, video.playbackRate || 1))
     const ready = [...this.readyList.fast, ...this.readyList.quality]
@@ -213,7 +200,7 @@ export class TranslationCoordinator {
     return coverage >= this.buffer.qualityEstimateMs + this.buffer.lowMs
   }
   private handleTranslationTick = () => {
-    if (!this.active || !this.session.isActive || this.hardBlocked) return
+    if (!this.active || !this.session.isActive) return
     if (subtitlesStore.get(adPlayingAtom)) {
       for (const batch of [...this.pending]) this.cancelBatch(batch)
       this.options.segmentationPipeline?.stop()
@@ -228,8 +215,7 @@ export class TranslationCoordinator {
     const source = this.getFastFragments()
     const qualityCoverage = continuousReadyMs(source, this.readyList.quality, timeMs, ahead)
     const wasSpeculating = this.buffer.fastSpeculation
-    const allowFastSpeculation =
-      this.buffer.update(qualityCoverage, rate) && !this.speculativeBlocked && !this.isHidden()
+    const allowFastSpeculation = this.buffer.update(qualityCoverage, rate) && !this.isHidden()
     this.trace("buffer", "quality", qualityCoverage)
     if (wasSpeculating !== this.buffer.fastSpeculation)
       this.trace(this.buffer.fastSpeculation ? "fast-resume" : "fast-suspend", "fast")
@@ -244,7 +230,7 @@ export class TranslationCoordinator {
       if (!relevant || speculativeFast) this.cancelBatch(batch)
     }
     for (const lane of ["fast", "quality"] as const) {
-      if (lane === "quality" && (this.speculativeBlocked || this.isHidden())) continue
+      if (lane === "quality" && this.isHidden()) continue
       const fragments =
         lane === "fast" ? source : (this.options.segmentationPipeline?.processedFragments ?? [])
       const timeline = getCueTimeline(fragments)
@@ -342,13 +328,7 @@ export class TranslationCoordinator {
   }
   private prepareContext(timeMs: number, ahead: number) {
     const config = this.options.configSnapshot
-    if (
-      !config?.pageTranslation.enableAIContentAware ||
-      this.contextTask ||
-      this.speculativeBlocked ||
-      this.isHidden()
-    )
-      return
+    if (!config?.pageTranslation.enableAIContentAware || this.contextTask || this.isHidden()) return
     const cues = chunkSubtitleWork(
       getCueTimeline(this.getFastFragments()).window(timeMs, timeMs + ahead, 32),
     )[0]
@@ -490,17 +470,6 @@ export class TranslationCoordinator {
   }
   private recordFailure(key: string, outcome: SubtitleOutcome) {
     if (outcome.status === "success" || outcome.status === "empty") return
-    if (outcome.message.includes("soft-budget")) {
-      this.speculativeBlocked = true
-      // A speculative denial spends no attempt. It may later use the explicit urgent reserve.
-      this.failed.set(key, { phase: "soft", attempts: 0, retryAt: 0 })
-      return
-    }
-    if (outcome.message.includes("hard-budget")) {
-      this.hardBlocked = true
-      this.options.segmentationPipeline?.stop()
-      this.options.onStateChange("error", { message: outcome.message })
-    }
     const attempts = (this.failed.get(key)?.attempts ?? 0) + 1
     const permanent = outcome.status === "permanent" || attempts >= 2
     this.failed.set(key, {

@@ -1424,7 +1424,7 @@ subtitles:
     diagnostics: "記錄有大小限制的診斷事件"
     status: "已消耗：$1 次請求；$2 估算 Token；$3 已回報 Token。"
     exportDiagnostics: "下載診斷紀錄"
-    exportConfirm: "匯出完整字幕？重試前預計 $1 次模型請求、$2 Token。此次匯出的硬上限為 $3 次嘗試、$4 保守估算 Token。實際費用取決於供應商，快取命中會減少呼叫。所有請求均以有界小批次傳送。 原始字幕：$5 字符。"
+    exportConfirm: "匯出完整字幕？重試前預計 $1 次模型請求，原始字幕共 $2 字符。將重用快取並按有界小批次處理，可隨時取消。"
     exportFailed: "匯出未完成，未儲存為完整 SRT。"
     cancelled: "匯出已取消"
     cancelExport: "取消匯出"

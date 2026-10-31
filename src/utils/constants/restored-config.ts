@@ -1,4 +1,3 @@
-import { DEFAULT_SUBTITLE_BUDGET } from "@/utils/subtitles/work-policy"
 import { BUILT_IN_DICTIONARY_ACTION_ID } from "./custom-action"
 import { DEFAULT_SUBTITLE_TRANSLATE_PROMPTS_CONFIG } from "./prompt"
 import { DEFAULT_TRANSLATE_PROVIDER_ID } from "./providers"
@@ -33,7 +32,6 @@ export const DEFAULT_FLOATING_BUTTON_CONFIG = {
 } as const
 
 export const DEFAULT_VIDEO_SUBTITLES_CONFIG = {
-  workBudget: { ...DEFAULT_SUBTITLE_BUDGET },
   enabled: true,
   autoStart: { youtube: false, xcom: false, netflix: false },
   toggleShortcut: DEFAULT_SUBTITLES_TOGGLE_SHORTCUT_KEY,

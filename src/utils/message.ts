@@ -50,13 +50,9 @@ interface ProtocolMap {
   recordSubtitleDiagnostics: (
     data: import("@/utils/subtitles/diagnostics").SubtitleTrace & { sessionId: string },
   ) => void
-  openSubtitleLease: (data: {
-    traceId?: string
-    exportLimits?: { requests: number; estimatedTokens: number }
-  }) => string
+  openSubtitleLease: (data: { traceId?: string }) => string
   revokeSubtitleLease: (data: { lease: string }) => void
-  getSubtitleBudgetStatus: () => {
-    ledger: import("@/utils/subtitles/work-budget").BudgetLedger
+  getSubtitleDiagnostics: () => {
     counters: Record<string, number>
     events: import("@/entrypoints/background/subtitle-work").SubtitleDiagnosticEvent[]
   }

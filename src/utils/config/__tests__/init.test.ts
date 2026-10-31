@@ -100,8 +100,12 @@ describe("initializeConfig", () => {
       getMetaMock.mockResolvedValueOnce({ schemaVersion: 4, lastModifiedAt: 123 })
       const { initializeConfig } = await import("../init")
       await expect(initializeConfig()).resolves.toEqual({ isFreshInstall: false })
-      expect(setItemMock).toHaveBeenCalledOnce()
-      const saved = setItemMock.mock.calls[0]![1] as Config
+      expect(
+        setItemMock.mock.calls.filter(([key]) => key === "local:readFrogLiteConfig"),
+      ).toHaveLength(1)
+      const saved = setItemMock.mock.calls.find(
+        ([key]) => key === "local:readFrogLiteConfig",
+      )![1] as Config
       expect(saved.providersConfig.find((item) => item.id === provider.id)).toEqual({
         ...provider,
         provider: "deepseek",
@@ -113,7 +117,7 @@ describe("initializeConfig", () => {
       const { configSchema } = await import("@/types/config/config")
       expect(configSchema.safeParse(saved).success).toBe(true)
       expect(setMetaMock).toHaveBeenCalledWith("local:readFrogLiteConfig", {
-        schemaVersion: 5,
+        schemaVersion: CONFIG_SCHEMA_VERSION,
         lastModifiedAt: 123,
       })
     },
@@ -138,7 +142,9 @@ describe("initializeConfig", () => {
     getMetaMock.mockResolvedValueOnce({ schemaVersion: 4, lastModifiedAt: 123 })
     const { initializeConfig } = await import("../init")
     await initializeConfig()
-    const saved = setItemMock.mock.calls[0]![1] as Config
+    const saved = setItemMock.mock.calls.find(
+      ([key]) => key === "local:readFrogLiteConfig",
+    )![1] as Config
     expect(saved.providersConfig).toEqual(config.providersConfig)
   })
 

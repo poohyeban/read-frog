@@ -1,53 +1,11 @@
 import { describe, expect, it } from "vitest"
 import { continuousReadyMs, SubtitleBufferController } from "../continuous-buffer"
-import { emptyBudget, reserveBudget, type BudgetReservation } from "../work-budget"
 import {
   chunkSubtitleWork,
   assertSubtitleWindow,
   subtitleOutputLimit,
   SUBTITLE_WORK_LIMITS,
 } from "../work-policy"
-
-const request: BudgetReservation = {
-  budget: "playback",
-  keys: ["cue"],
-  tokens: 100,
-  urgent: false,
-  maxRequests: 5,
-  maxTokens: 500,
-  emergencyPercent: 20,
-}
-
-describe("cumulative subtitle budget", () => {
-  it("reserves emergency credit but refuses even urgent work at the hard cap", () => {
-    const ledger = emptyBudget("playback")
-    for (let i = 0; i < 4; i++) reserveBudget(ledger, [{ key: String(i), count: 0 }], request)
-    expect(() => reserveBudget(ledger, [], request)).toThrow("soft-budget")
-    reserveBudget(ledger, [], { ...request, urgent: true })
-    expect(() => reserveBudget(ledger, [], { ...request, urgent: true })).toThrow("hard-budget")
-    expect(ledger.requests).toBe(5)
-    expect(ledger.estimatedTokens).toBe(500)
-  })
-  it("all retry and split fallback paths share each member's three-attempt ceiling", () => {
-    const ledger = emptyBudget("playback")
-    const members = Array.from({ length: 4 }, (_, i) => ({ key: String(i), count: 0 }))
-    const allowance = { ...request, maxRequests: 100, maxTokens: 100_000 }
-    reserveBudget(ledger, members, allowance)
-    for (const member of members) {
-      reserveBudget(ledger, [member], allowance)
-      reserveBudget(ledger, [member], allowance)
-      expect(() => reserveBudget(ledger, [member], allowance)).toThrow("attempts")
-    }
-    expect(ledger.requests).toBe(9)
-  })
-  it("a reconstructed ledger retains its consumed token limit", () => {
-    const ledger = emptyBudget("playback")
-    reserveBudget(ledger, [], { ...request, urgent: true, tokens: 499 })
-    const reloaded = JSON.parse(JSON.stringify(ledger))
-    expect(() => reserveBudget(reloaded, [], { ...request, urgent: true })).toThrow("hard-budget")
-    expect(reloaded.requests).toBe(1)
-  })
-})
 
 describe("independent model input boundaries", () => {
   it("chunks three hours, dense captions, oversized cues and long timestamps without losing text", () => {

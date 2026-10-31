@@ -7,6 +7,7 @@ import type { SubtitlesVideoContext } from "@/utils/subtitles/processor/translat
 import type { SubtitlesFragment } from "@/utils/subtitles/types"
 import { storage } from "#imports"
 import { toastManager } from "@/components/ui/base-ui/toast"
+import { getPerformanceSnapshot, initializePerformance } from "@/utils/config/performance"
 import { getLocalConfig } from "@/utils/config/storage"
 import { CONFIG_STORAGE_KEY } from "@/utils/constants/config"
 import { GLOSSARY_REVISION_KEY } from "@/utils/constants/glossary"
@@ -1167,10 +1168,8 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       this.configIdentity ?? "",
       JSON.stringify(videoContext),
     )
-    const trace = createSubtitleTrace(
-      config?.videoSubtitles.workBudget?.diagnostics ?? false,
-      session.id,
-    )
+    await initializePerformance()
+    const trace = createSubtitleTrace(getPerformanceSnapshot().subtitles.diagnostics, session.id)
     scheduler.setDiagnostics(trace)
     this.segmentationPipeline?.setDiagnostics(trace)
     this.translationCoordinator = new TranslationCoordinator({

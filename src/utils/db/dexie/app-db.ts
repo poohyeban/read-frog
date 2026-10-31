@@ -1,5 +1,4 @@
 import type { EntityTable } from "dexie"
-import type { BudgetLedger, BudgetAttempt } from "@/utils/subtitles/work-budget"
 import { Dexie } from "dexie"
 import AiSegmentationCache from "./tables/ai-segmentation-cache"
 import ArticleSummaryCache from "./tables/article-summary-cache"
@@ -8,8 +7,6 @@ import GlossaryTerm from "./tables/glossary-term"
 import TranslationCache from "./tables/translation-cache"
 export default class AppDB extends Dexie {
   subtitleCandidates!: EntityTable<import("@/utils/subtitles/types").SubtitleCandidateBundle, "key">
-  subtitleBudget!: EntityTable<BudgetLedger, "key">
-  subtitleAttempt!: EntityTable<BudgetAttempt, "key">
   translationCache!: EntityTable<TranslationCache, "key">
   articleSummaryCache!: EntityTable<ArticleSummaryCache, "key">
 
@@ -37,6 +34,8 @@ export default class AppDB extends Dexie {
     })
     this.version(4).stores({ subtitleBudget: "key", subtitleAttempt: "key" })
     this.version(5).stores({ subtitleCandidates: "key,trackKey,createdAt" })
+    // Retain the historical upgrade chain. Only obsolete internal accounting is removed.
+    this.version(6).stores({ subtitleBudget: null, subtitleAttempt: null })
     this.aiSegmentationCache.mapToClass(AiSegmentationCache)
     this.glossary.mapToClass(Glossary)
     this.glossaryTerm.mapToClass(GlossaryTerm)

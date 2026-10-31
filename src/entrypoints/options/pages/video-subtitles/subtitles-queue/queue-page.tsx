@@ -3,7 +3,6 @@ import { ConfigDetailSection } from "../../../components/config-detail-section"
 import { PageLayout } from "../../../components/page-layout"
 import { BatchTranslationItems } from "./batch-items"
 import { RequestRateItems } from "./request-rate-items"
-import { SubtitleWorkBudgetItems } from "./work-budget-items"
 
 /**
  * Drilled into from the Video Subtitles page: how fast subtitle requests go out and how many
@@ -23,7 +22,6 @@ export function SubtitlesQueuePage() {
       >
         <RequestRateItems />
         <BatchTranslationItems />
-        <SubtitleWorkBudgetItems />
       </ConfigDetailSection>
     </PageLayout>
   )

@@ -35,10 +35,7 @@ export class SubtitleSession {
   private stopping: Promise<void> = Promise.resolve()
   readonly identity: Readonly<{ videoId: string; trackId: string; revision: number }>
 
-  constructor(
-    identity = { videoId: "", trackId: "", revision: 0 },
-    private exportLimits?: { requests: number; estimatedTokens: number },
-  ) {
+  constructor(identity = { videoId: "", trackId: "", revision: 0 }) {
     this.identity = Object.freeze({ ...identity })
     if (typeof window !== "undefined") window.addEventListener("pagehide", this.dispose)
   }
@@ -75,7 +72,6 @@ export class SubtitleSession {
       prepareWork: async (lane, start, end) => {
         if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
         const lease = await (this.leasePromise ??= sendMessage("openSubtitleLease", {
-          exportLimits: this.exportLimits,
           traceId: this.id,
         }))
         if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)

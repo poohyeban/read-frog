@@ -108,9 +108,6 @@ export class TranslatedSubtitlesDownloader {
         !window.confirm(
           i18n.t("subtitles.work.exportConfirm", [
             String(estimate.requests),
-            String(estimate.estimatedTokens),
-            String(estimate.hardRequests),
-            String(estimate.hardTokens),
             String(estimate.inputCharacters),
           ]),
         )
@@ -120,10 +117,11 @@ export class TranslatedSubtitlesDownloader {
       }
       this.assertActive(operationId)
       this.session?.dispose()
-      this.session = new SubtitleSession(
-        { videoId: videoId ?? "", trackId: `export:${operationId}`, revision: operationId },
-        { requests: estimate.hardRequests, estimatedTokens: estimate.hardTokens },
-      )
+      this.session = new SubtitleSession({
+        videoId: videoId ?? "",
+        trackId: `export:${operationId}`,
+        revision: operationId,
+      })
       this.task = this.session.begin("export", "complete-srt")
       this.setStatus(TranslatedDownloadPhase.Preparing, 0)
 

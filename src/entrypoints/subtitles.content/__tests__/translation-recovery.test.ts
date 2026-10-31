@@ -122,13 +122,13 @@ describe("subtitle translation recovery", () => {
 })
 
 describe("bounded failure recovery", () => {
-  it("can resume after a user raises the budget without polling an exhausted budget", async () => {
+  it("can explicitly resume a repaired provider without polling a permanent failure", async () => {
     vi.useFakeTimers()
     vi.mocked(translateSubtitles).mockImplementation(async (cues) =>
       cues.map((cue) => ({
         ...cue,
         translation: "",
-        translationOutcome: { status: "permanent", message: "hard-budget" },
+        translationOutcome: { status: "permanent", message: "invalid API key" },
       })),
     )
     const { coordinator, video, onTranslated } = setup([{ text: "resume", start: 0, end: 2000 }])

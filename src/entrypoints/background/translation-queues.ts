@@ -31,8 +31,8 @@ import { BatchCountMismatchError, BatchQueue } from "@/utils/request/batch-queue
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
 import { providerExecutionSlots } from "@/utils/request/execution-slots"
 import { RequestQueue } from "@/utils/request/request-queue"
+import { RESOURCE_DEFAULTS } from "@/utils/request/resource-policy"
 import {
-  DEFAULT_SUBTITLE_BUDGET,
   subtitleOutputLimit,
   SUBTITLE_WORK_LIMITS,
   type SubtitleModelGuard,
@@ -372,7 +372,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       timeoutMs: 20_000,
       maxRetries: 2,
       baseRetryDelayMs: 1_000,
-      maxInFlight: maxInFlight ?? DEFAULT_SUBTITLE_BUDGET.maxInFlight,
+      maxInFlight: maxInFlight ?? RESOURCE_DEFAULTS.maxInFlight,
       maxQueued: SUBTITLE_WORK_LIMITS.queued,
       slots: providerExecutionSlots,
       onDeduplicate: () => subtitleWorkRuntime.note(`deduplicated:${queueName}`),
@@ -595,8 +595,7 @@ function watchQueueConfig(
         if (json === lastAppliedJson) return
         requestQueue.setQueueOptions({
           ...selected.requestQueueConfig,
-          maxInFlight:
-            newConfig.videoSubtitles.workBudget?.maxInFlight ?? DEFAULT_SUBTITLE_BUDGET.maxInFlight,
+          maxInFlight: RESOURCE_DEFAULTS.maxInFlight,
         })
         batchQueue.setBatchConfig(
           queueName === "subtitles"
@@ -624,8 +623,7 @@ function watchQueueConfig(
 const selectWebPageQueueConfig = (config: Config) => ({
   requestQueueConfig: {
     ...config.pageTranslation.requestQueueConfig,
-    maxInFlight:
-      config.videoSubtitles.workBudget?.maxInFlight ?? DEFAULT_SUBTITLE_BUDGET.maxInFlight,
+    maxInFlight: RESOURCE_DEFAULTS.maxInFlight,
   },
   batchQueueConfig: config.pageTranslation.batchQueueConfig,
 })
@@ -664,8 +662,7 @@ export function createWebPageTranslationQueues() {
 const selectSubtitlesQueueConfig = (config: Config) => ({
   requestQueueConfig: {
     ...config.videoSubtitles.requestQueueConfig,
-    maxInFlight:
-      config.videoSubtitles.workBudget?.maxInFlight ?? DEFAULT_SUBTITLE_BUDGET.maxInFlight,
+    maxInFlight: RESOURCE_DEFAULTS.maxInFlight,
   },
   batchQueueConfig: config.videoSubtitles.batchQueueConfig,
 })

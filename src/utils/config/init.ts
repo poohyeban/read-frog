@@ -11,6 +11,7 @@ import {
   DEFAULT_CONFIG,
 } from "../constants/config"
 import { logger } from "../logger"
+import { migratePerformanceConfig } from "./performance-migration"
 
 export interface InitializeConfigResult {
   /**
@@ -48,6 +49,7 @@ export async function initializeConfig(): Promise<InitializeConfigResult> {
     currentVersion = configMeta?.schemaVersion ?? 1
   }
 
+  if (storedConfig) await migratePerformanceConfig(config, currentVersion)
   const parsedConfig = configSchema.safeParse(config)
   if (parsedConfig.success) {
     // Stored as every reader gets it: defaults filled in, the selection

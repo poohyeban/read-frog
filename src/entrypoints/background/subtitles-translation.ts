@@ -1,5 +1,6 @@
 import type { SubtitlePromptContext } from "@/types/content"
 import { browser } from "#imports"
+import { getPerformanceSnapshot, initializePerformance } from "@/utils/config/performance"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { cleanText } from "@/utils/content/utils"
 import { db } from "@/utils/db/dexie/db"
@@ -34,8 +35,8 @@ import {
 export function setupSubtitlesTranslationHandlers(): void {
   setupSubtitleCandidateHandlers()
   onMessage("recordSubtitleDiagnostics", async ({ sender, data }) => {
-    const config = await ensureInitializedConfig()
-    const enabled = config?.videoSubtitles.workBudget?.diagnostics ?? false
+    await initializePerformance()
+    const enabled = getPerformanceSnapshot().subtitles.diagnostics
     subtitleWorkRuntime.setDiagnostics(enabled)
     if (
       !enabled ||
@@ -58,7 +59,7 @@ export function setupSubtitlesTranslationHandlers(): void {
     return sender.tab.id
   }
   onMessage("openSubtitleLease", ({ sender, data }) =>
-    subtitleWorkRuntime.open(tabFor(sender), data.exportLimits, data.traceId),
+    subtitleWorkRuntime.open(tabFor(sender), data.traceId),
   )
   onMessage("revokeSubtitleLease", async ({ sender, data }) => {
     const scopes = subtitleWorkRuntime.revoke(tabFor(sender), data.lease)
@@ -69,7 +70,7 @@ export function setupSubtitlesTranslationHandlers(): void {
       requestQueue.cancelByScope(scope)
     }
   })
-  onMessage("getSubtitleBudgetStatus", () => subtitleWorkRuntime.status())
+  onMessage("getSubtitleDiagnostics", () => subtitleWorkRuntime.snapshot())
   const scopeFor = (sender: { tab?: { id?: number } } | undefined, sessionId?: string) => {
     const scope = buildTranslationScopeKey(sender, sessionId)
     if (sessionId && !scope) throw new Error("Subtitle scope requires a sender tab")

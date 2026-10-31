@@ -1,10 +1,5 @@
 import type { SubtitlesFragment } from "./types"
-import {
-  chunkSubtitleWork,
-  estimateInputTokens,
-  subtitleOutputLimit,
-  SUBTITLE_WORK_LIMITS,
-} from "./work-policy"
+import { chunkSubtitleWork, estimateInputTokens, subtitleOutputLimit } from "./work-policy"
 
 export function estimateSubtitleExport(
   source: readonly SubtitlesFragment[],
@@ -36,18 +31,11 @@ export function estimateSubtitleExport(
     ? source.reduce((n, c) => Math.max(n, c.end), 0) -
       source.reduce((n, c) => Math.min(n, c.start), Infinity)
     : 0
-  // Covers network and format retries; never an unlimited authorization.
-  const hardRequests = Math.max(1, requests * SUBTITLE_WORK_LIMITS.attempts)
-  const hardTokens =
-    hardRequests *
-    (SUBTITLE_WORK_LIMITS.promptCharacters * 4 + 64 + SUBTITLE_WORK_LIMITS.outputTokens)
   return {
     requests,
     inputCharacters,
     estimatedTokens,
     durationMs,
-    hardRequests,
-    hardTokens,
-    needsConfirmation: durationMs > 10 * 60_000 || requests > 20 || estimatedTokens > 100_000,
+    needsConfirmation: durationMs > 10 * 60_000 || requests > 20,
   }
 }

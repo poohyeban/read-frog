@@ -2,10 +2,10 @@ import type { RequestRetryPolicy } from "./retry-policy"
 import { deepmerge } from "deepmerge-ts"
 import { requestQueueConfigSchema } from "@/types/config/translate"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
-import { SubtitleWorkRejected } from "@/utils/subtitles/work-policy"
 import { TranslationCancelledError } from "./cancellation"
 import { ExecutionSlots } from "./execution-slots"
 import { BinaryHeapPQ } from "./priority-queue"
+import { ResourceRejected } from "./resource-error"
 import { defaultRequestRetryPolicy } from "./retry-policy"
 
 export interface RequestTask {
@@ -105,7 +105,7 @@ export class RequestQueue {
     }
 
     if (this.waitingTasks.size >= (this.options.maxQueued ?? Infinity))
-      return Promise.reject(new SubtitleWorkRejected("queue-full"))
+      return Promise.reject(new ResourceRejected("queue-full"))
     this.unwatchSlots ??= this.slots.watch(() => this.schedule())
 
     let resolve!: (value: T) => void
