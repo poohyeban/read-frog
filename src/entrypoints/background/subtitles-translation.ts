@@ -194,66 +194,76 @@ export function setupSubtitlesTranslationHandlers(): void {
     }
   })
   onMessage("aiSegmentSubtitles", async (message) => {
-    const scope = scopeFor(message.sender, message.data.sessionId)
-    admit(message.sender, scope, message.data.work)
-    const { requestQueue } = await queuesPromise
-    assertCurrent(scope)
-    const cached = await getCachedAiSegmentation(message.data)
-    assertCurrent(scope)
-    if (cached) {
-      subtitleWorkRuntime.note("segmentation-cache-hit")
-      return cached
-    }
-    const key = Sha256Hex(
-      "subtitle-segmentation-v2",
-      message.data.jsonContent,
-      JSON.stringify(message.data.providerRef),
-    )
-    const result = await requestQueue.enqueue(
-      (signal, liveScopes) =>
-        runAiSegmentSubtitles(message.data, {
-          signal,
-          modelGuard: subtitleWorkRuntime.guard(
-            liveScopes ?? (() => (scope ? [scope] : undefined)),
-            [key],
+    try {
+      const scope = scopeFor(message.sender, message.data.sessionId)
+      admit(message.sender, scope, message.data.work)
+      const { requestQueue } = await queuesPromise
+      assertCurrent(scope)
+      const cached = await getCachedAiSegmentation(message.data)
+      assertCurrent(scope)
+      if (cached) {
+        subtitleWorkRuntime.note("segmentation-cache-hit")
+        return cached
+      }
+      const key = Sha256Hex(
+        "subtitle-segmentation-v2",
+        message.data.jsonContent,
+        JSON.stringify(message.data.providerRef),
+      )
+      const result = await requestQueue.enqueue(
+        (signal, liveScopes) =>
+          runAiSegmentSubtitles(message.data, {
             signal,
-          ),
-        }),
-      Date.now(),
-      key,
-      scope ? [scope] : undefined,
-      {
-        priority: message.data.priority ?? 1,
-      },
-    )
-    assertCurrent(scope)
-    return result
+            modelGuard: subtitleWorkRuntime.guard(
+              liveScopes ?? (() => (scope ? [scope] : undefined)),
+              [key],
+              signal,
+            ),
+          }),
+        Date.now(),
+        key,
+        scope ? [scope] : undefined,
+        {
+          priority: message.data.priority ?? 1,
+        },
+      )
+      assertCurrent(scope)
+      return result
+    } catch (error) {
+      if (message.data.resultFormat !== "outcome") throw error
+      return { outcome: subtitleFailure(error) }
+    }
   })
   onMessage("getSubtitlesSummary", async (message) => {
-    const scope = scopeFor(message.sender, message.data.sessionId)
-    admit(message.sender, scope, message.data.work)
-    if (message.data.subtitlesContext.length > SUBTITLE_WORK_LIMITS.sourceCharacters)
-      throw new SubtitleWorkRejected("input-limit")
-    const { requestQueue } = await queuesPromise
-    assertCurrent(scope)
-    const { videoTitle, subtitlesContext, providerRef } = message.data
-    if (!videoTitle || !subtitlesContext || !canProviderRefGenerateText(providerRef)) return null
-    return getOrGenerateTranslationContextSummary({
-      title: videoTitle,
-      textContent: subtitlesContext,
-      providerRef,
-      cacheKeyParts: [Sha256Hex(videoTitle, cleanText(subtitlesContext))],
-      requestQueue,
-      scope,
-      priority: 3,
-      isScopeCancelled: (key) => cancelledScopes.has(key),
-      modelGuard: (liveScopes, signal) =>
-        subtitleWorkRuntime.guard(
-          liveScopes,
-          [Sha256Hex("context", videoTitle, subtitlesContext)],
-          signal,
-        ),
-    })
+    try {
+      const scope = scopeFor(message.sender, message.data.sessionId)
+      admit(message.sender, scope, message.data.work)
+      if (message.data.subtitlesContext.length > SUBTITLE_WORK_LIMITS.sourceCharacters)
+        throw new SubtitleWorkRejected("input-limit")
+      const { requestQueue } = await queuesPromise
+      assertCurrent(scope)
+      const { videoTitle, subtitlesContext, providerRef } = message.data
+      if (!videoTitle || !subtitlesContext || !canProviderRefGenerateText(providerRef)) return null
+      return await getOrGenerateTranslationContextSummary({
+        title: videoTitle,
+        textContent: subtitlesContext,
+        providerRef,
+        cacheKeyParts: [Sha256Hex(videoTitle, cleanText(subtitlesContext))],
+        requestQueue,
+        scope,
+        priority: 3,
+        isScopeCancelled: (key) => cancelledScopes.has(key),
+        modelGuard: (liveScopes, signal) =>
+          subtitleWorkRuntime.guard(
+            liveScopes,
+            [Sha256Hex("context", videoTitle, subtitlesContext)],
+            signal,
+          ),
+      })
+    } catch (error) {
+      if (message.data.resultFormat !== "outcome") throw error
+      return { outcome: subtitleFailure(error) }
+    }
   })
   onMessage("cancelSubtitleRequests", async (message) => {
     const scope = scopeFor(message.sender, message.data.sessionId)

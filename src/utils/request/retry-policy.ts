@@ -7,6 +7,7 @@ export type RequestErrorKind =
   | "unknown"
 
 export interface RequestErrorMeta {
+  retryExhausted?: boolean
   statusCode?: number
   responseHeaders?: Headers | Record<string, string>
   isRetryable?: boolean
@@ -99,6 +100,7 @@ export function getRequestErrorMeta(error: unknown): RequestErrorMeta {
     isRetryable,
     kind,
     rateLimitScope: attachedMeta?.rateLimitScope,
+    retryExhausted: attachedMeta?.retryExhausted,
   })
 }
 

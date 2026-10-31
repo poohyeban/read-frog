@@ -6,6 +6,7 @@ export class ResourceRejected extends Error {
       | "attempts"
       | "input-limit"
       | "lease"
+      | "lease-expired"
       | "queue-full"
       | "identity"
       | "configuration-changed",

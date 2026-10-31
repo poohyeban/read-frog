@@ -21,6 +21,7 @@ interface RegisteredWork {
 
 /** Boot-local execution authority. A worker restart invalidates every old lease. */
 export class SubtitleWorkRuntime extends SubtitleDiagnostics {
+  private boot = getRandomUUID()
   private leases = new Map<string, Lease>()
   private work = new Map<string, RegisteredWork>()
   hasLease(tab: number | undefined, id: string) {
@@ -29,7 +30,7 @@ export class SubtitleWorkRuntime extends SubtitleDiagnostics {
 
   open(tab: number, traceId?: string): string {
     if (this.leases.size >= 256) throw new SubtitleWorkRejected("queue-full")
-    const id = getRandomUUID()
+    const id = `${this.boot}:${getRandomUUID()}`
     this.leases.set(id, { trace: this.traceIdentity(tab, traceId ?? id), tab })
     return id
   }
@@ -40,7 +41,17 @@ export class SubtitleWorkRuntime extends SubtitleDiagnostics {
     )
       throw new SubtitleWorkRejected("input-limit")
     const lease = this.leases.get(context.lease)
-    if (!lease || lease.tab !== tab) throw new SubtitleWorkRejected("lease")
+    if (!lease || lease.tab !== tab) {
+      // Only intake can prove that no Provider request was sent. Same-boot revoked
+      // leases and another tab's lease must never authorize recovery.
+      if (
+        !lease &&
+        context.lease.split(":").length === 2 &&
+        !context.lease.startsWith(`${this.boot}:`)
+      )
+        throw new SubtitleWorkRejected("lease-expired")
+      throw new SubtitleWorkRejected("lease")
+    }
     if (!this.work.has(scope) && this.work.size >= 512) throw new SubtitleWorkRejected("queue-full")
     this.work.set(scope, {
       scope,

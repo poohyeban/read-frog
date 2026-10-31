@@ -68,13 +68,14 @@ interface ProtocolMap {
     events: import("@/entrypoints/background/subtitle-work").SubtitleDiagnosticEvent[]
   }
   getSubtitlesSummary: (data: {
+    resultFormat?: "outcome"
     work?: import("@/utils/subtitles/work-policy").SubtitleWorkContext
     videoTitle: string
     subtitlesContext: string
     sessionId?: string
     priority?: number
     providerRef: PromptableProviderRef
-  }) => Promise<string | null>
+  }) => Promise<SubtitleWireResult | null>
   getCachedVideoSummary: (data: {
     transcript: string
     targetLanguage: string
@@ -87,12 +88,13 @@ interface ProtocolMap {
     summary: string
   }) => Promise<void>
   aiSegmentSubtitles: (data: {
+    resultFormat?: "outcome"
     work?: import("@/utils/subtitles/work-policy").SubtitleWorkContext
     jsonContent: string
     sessionId?: string
     priority?: number
     providerRef: PromptableProviderRef
-  }) => Promise<string>
+  }) => Promise<SubtitleWireResult>
   getGlossarySnapshot: (data: {
     url: string | undefined
     targetLang: LangCodeISO6393

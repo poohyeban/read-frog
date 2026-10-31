@@ -7,7 +7,7 @@ import { bindExecutionContext, type RequestExecutionContext } from "./execution-
 import { BinaryHeapPQ } from "./priority-queue"
 import { ResourceRejected } from "./resource-error"
 import { RESOURCE_DEFAULTS } from "./resource-policy"
-import { defaultRequestRetryPolicy } from "./retry-policy"
+import { attachRequestErrorMeta, defaultRequestRetryPolicy } from "./retry-policy"
 
 export interface QueueOptions {
   onDeduplicate?: () => void
@@ -189,7 +189,9 @@ export class RequestQueue {
       })
       if (decision.action === "fail" || !task.attempts.canStart(maxAttempts)) {
         task.drained = true
-        task.reject(error)
+        task.reject(
+          error instanceof Error ? attachRequestErrorMeta(error, { retryExhausted: true }) : error,
+        )
       } else {
         const delay = decision.action === "retry" ? decision.delayMs : decision.pauseMs
         this.options.onRetry?.(delay, decision.action === "pause-and-retry")

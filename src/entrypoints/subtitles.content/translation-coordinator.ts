@@ -18,6 +18,7 @@ import { RESOURCE_DEFAULTS } from "@/utils/request/resource-policy"
 import { continuousReadyMs, SubtitleBufferController } from "@/utils/subtitles/continuous-buffer"
 import { cueIdentity, getCueTimeline } from "@/utils/subtitles/cue-timeline"
 import { translateSubtitles, fetchSubtitlesSummary } from "@/utils/subtitles/processor/translator"
+import { SubtitleFailures } from "@/utils/subtitles/recovery"
 import { subtitleFailure, type SubtitleOutcome } from "@/utils/subtitles/result"
 import { SubtitleSession, type SubtitleTask } from "@/utils/subtitles/session"
 import { boundedSourceCues, chunkSubtitleWork } from "@/utils/subtitles/work-policy"
@@ -111,7 +112,9 @@ export class TranslationCoordinator {
   }
   private contextWindows = new Set<string>()
   private contextTask: SubtitleTask | null = null
-  private failed = new Set<string>()
+  private failed = new SubtitleFailures()
+  private contextFailures = new SubtitleFailures()
+  private recoveryTimer?: ReturnType<typeof setTimeout>
   private tickQueued = false
   private lastEmittedState: SubtitlesState = "idle"
   private videoContext: SubtitlesVideoContext = { videoTitle: "", subtitlesTextContent: "" }
@@ -154,6 +157,8 @@ export class TranslationCoordinator {
   }
   stop(): Promise<void> {
     this.active = false
+    clearTimeout(this.recoveryTimer)
+    this.recoveryTimer = undefined
     this.policyRevision++
     this.unwatchPerformance?.()
     this.unwatchPerformance = undefined
@@ -191,6 +196,21 @@ export class TranslationCoordinator {
   }
   clearFailed() {
     this.failed.clear()
+    this.contextFailures.clear()
+    this.requestTick()
+  }
+  private scheduleRecovery() {
+    clearTimeout(this.recoveryTimer)
+    this.recoveryTimer = undefined
+    const next = Math.min(this.failed.nextRetryAt(), this.contextFailures.nextRetryAt())
+    if (this.active && Number.isFinite(next))
+      this.recoveryTimer = setTimeout(
+        () => {
+          this.recoveryTimer = undefined
+          this.requestTick()
+        },
+        Math.max(1, next - Date.now()),
+      )
   }
   private detach() {
     if (this.video)
@@ -298,7 +318,7 @@ export class TranslationCoordinator {
             c.end - Math.max(timeMs, c.start)
         )
           return false
-        return !this.translated.has(key) && !this.pendingKeys.has(key) && !this.failed.has(key)
+        return !this.translated.has(key) && !this.pendingKeys.has(key) && !this.failed.blocked(key)
       })
       const pending = [...this.pending].filter((b) => b.lane === lane)
       if (
@@ -435,7 +455,7 @@ export class TranslationCoordinator {
     )[0]
     if (!cues?.length) return
     const key = String(Math.floor(timeMs / 60_000))
-    if (this.contextWindows.has(key)) return
+    if (this.contextWindows.has(key) || this.contextFailures.blocked(key)) return
     this.contextWindows.add(key)
     if (this.contextWindows.size > 256)
       this.contextWindows.delete(this.contextWindows.values().next().value!)
@@ -452,8 +472,11 @@ export class TranslationCoordinator {
       .then((summary) => {
         if (task.isCurrent() && summary) this.videoContext = { ...this.videoContext, summary }
       })
-      .catch(() => {
-        /* Context is optional; translation continues without it. */
+      .catch((error) => {
+        if (!task.isCurrent()) return
+        this.contextWindows.delete(key)
+        this.contextFailures.record(key, subtitleFailure(error))
+        this.scheduleRecovery()
       })
       .finally(() => {
         task.complete()
@@ -571,8 +594,8 @@ export class TranslationCoordinator {
   }
   private recordFailure(key: string, outcome: SubtitleOutcome) {
     if (outcome.status === "success" || outcome.status === "empty") return
-    // The shared request path owns all attempts. A business timer must not mint new credits.
-    this.failed.add(key)
+    this.failed.record(key, outcome)
+    this.scheduleRecovery()
   }
 
   private updateLoadingStateAt(timeMs: number, fragments: SubtitlesFragment[]) {

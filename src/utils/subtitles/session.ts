@@ -11,6 +11,7 @@ export interface SubtitleTaskOptions {
   signal?: AbortSignal
   priority?: number
   work?: SubtitleWorkContext
+  recoverWork?: (work: SubtitleWorkContext) => Promise<SubtitleWorkContext>
   prepareWork?: (lane: SubtitleLane, start: number, end: number) => Promise<SubtitleWorkContext>
 }
 export interface SubtitleTask extends SubtitleTaskOptions {
@@ -32,6 +33,7 @@ export class SubtitleSession {
   private tasks = new Set<SubtitleTask>()
   private disposers = new Set<() => void>()
   private leasePromise?: Promise<string>
+  private revocations = new Set<Promise<string>>()
   private stopping: Promise<void> = Promise.resolve()
   readonly identity: Readonly<{ videoId: string; trackId: string; revision: number }>
 
@@ -53,6 +55,16 @@ export class SubtitleSession {
       this.epoch++
     }
   }
+  private acquireLease(): Promise<string> {
+    if (!this.leasePromise) {
+      const pending = sendMessage("openSubtitleLease", { traceId: this.id })
+      this.leasePromise = pending
+      void pending.catch(() => {
+        if (this.leasePromise === pending) this.leasePromise = undefined
+      })
+    }
+    return this.leasePromise
+  }
   begin(
     kind: SubtitleTaskKind,
     key: string,
@@ -71,11 +83,20 @@ export class SubtitleSession {
       signal: controller.signal,
       prepareWork: async (lane, start, end) => {
         if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
-        const lease = await (this.leasePromise ??= sendMessage("openSubtitleLease", {
-          traceId: this.id,
-        }))
+        const lease = await this.acquireLease()
         if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
         return { lease, lane, start, end, urgent: priority === 0, logicalKey: key }
+      },
+      recoverWork: async (work) => {
+        if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
+        const pending = this.leasePromise
+        const current = await pending
+        if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
+        // Compare the promise too: concurrent stale replies join the same replacement.
+        if (current === work.lease && this.leasePromise === pending) this.leasePromise = undefined
+        const lease = await this.acquireLease()
+        if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
+        return { ...work, lease }
       },
       isCurrent: () =>
         !completed &&
@@ -109,10 +130,20 @@ export class SubtitleSession {
     this.cancel()
     const lease = this.leasePromise
     this.leasePromise = undefined
-    this.stopping = Promise.all([
-      this.stopping,
-      lease?.then((id) => sendMessage("revokeSubtitleLease", { lease: id })),
-    ]).then(() => {})
+    if (lease) this.revocations.add(lease)
+    const revocations = [...this.revocations]
+    this.stopping = this.stopping
+      .catch(() => {})
+      .then(async () => {
+        await Promise.all(
+          revocations.map(async (pending) => {
+            // A rejected open never furnished authority to any request.
+            const id = await pending.catch(() => undefined)
+            if (id) await sendMessage("revokeSubtitleLease", { lease: id })
+            this.revocations.delete(pending)
+          }),
+        )
+      })
     // Callers can await confirmation; fire-and-forget destruction must not leak rejections.
     void this.stopping.catch(() => {})
     return this.stopping

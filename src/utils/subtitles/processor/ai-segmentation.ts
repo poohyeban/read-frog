@@ -3,6 +3,8 @@ import type { SubtitlesFragment } from "../types"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { PAUSE_TIMEOUT_MS } from "@/utils/constants/subtitles"
 import { sendMessage } from "@/utils/message"
+import { runSubtitleRequest } from "../recovery"
+import { unwrapSubtitleResult } from "../result"
 import { assertSubtitleWindow, SUBTITLE_WORK_LIMITS } from "../work-policy"
 
 const NEWLINE_PATTERN = /\n/g
@@ -198,19 +200,25 @@ export async function aiSegmentBlock(
   assertSubtitleWindow(cleanedFragments)
 
   task.signal?.throwIfAborted()
-  const segmentedVtt = await sendMessage("aiSegmentSubtitles", {
-    work:
-      task.work ??
-      (await task.prepareWork?.(
-        "segmentation",
-        Math.min(...cleanedFragments.map((c) => c.start)),
-        Math.max(...cleanedFragments.map((c) => c.end)),
-      )),
-    jsonContent,
-    providerRef,
-    sessionId: task.sessionId,
-    priority: task.priority,
-  })
+  const work =
+    task.work ??
+    (await task.prepareWork?.(
+      "segmentation",
+      Math.min(...cleanedFragments.map((c) => c.start)),
+      Math.max(...cleanedFragments.map((c) => c.end)),
+    ))
+  const segmentedVtt = await runSubtitleRequest(task, work, async (currentWork) =>
+    unwrapSubtitleResult(
+      await sendMessage("aiSegmentSubtitles", {
+        resultFormat: "outcome",
+        work: currentWork,
+        jsonContent,
+        providerRef,
+        sessionId: task.sessionId,
+        priority: task.priority,
+      }),
+    ),
+  )
 
   task.signal?.throwIfAborted()
   const segmentedFragments = parseSimplifiedVttToFragments(segmentedVtt)

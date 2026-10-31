@@ -19,6 +19,7 @@ import {
   serializeProviderRef,
 } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
+import { runSubtitleRequest } from "../recovery"
 import { subtitleFailure, unwrapSubtitleResult } from "../result"
 import { createSubtitleTranslationPlan } from "../translation-plan"
 import { assertSubtitleWindow, SUBTITLE_WORK_LIMITS } from "../work-policy"
@@ -111,8 +112,13 @@ async function translateSingleSubtitle(
     glossaryTerms,
     glossaryRevision,
   })
-  const response = await sendMessage("enqueueSubtitlesTranslateRequest", plan.request)
-  const translation = unwrapSubtitleResult(response)
+  const { response, translation } = await runSubtitleRequest(task, task.work, async (work) => {
+    const wire = await sendMessage("enqueueSubtitlesTranslateRequest", {
+      ...plan.request,
+      work,
+    })
+    return { response: wire, translation: unwrapSubtitleResult(wire) }
+  })
   return {
     translation,
     ...(typeof response === "string"
@@ -229,13 +235,18 @@ export async function fetchSubtitlesSummary(
   if (videoContext.subtitlesTextContent.length > SUBTITLE_WORK_LIMITS.sourceCharacters) {
     throw new Error("Subtitle context exceeds the bounded playback window")
   }
-  return await sendMessage("getSubtitlesSummary", {
-    work: task.work ?? (await task.prepareWork?.("context", 0, 0)),
-    sessionId: task.sessionId,
-    priority: task.priority,
-    videoTitle: videoContext.videoTitle,
-    subtitlesContext: videoContext.subtitlesTextContent,
-    providerRef: ref,
+  const work = task.work ?? (await task.prepareWork?.("context", 0, 0))
+  return runSubtitleRequest(task, work, async (currentWork) => {
+    const result = await sendMessage("getSubtitlesSummary", {
+      resultFormat: "outcome",
+      work: currentWork,
+      sessionId: task.sessionId,
+      priority: task.priority,
+      videoTitle: videoContext.videoTitle,
+      subtitlesContext: videoContext.subtitlesTextContent,
+      providerRef: ref,
+    })
+    return result === null ? null : unwrapSubtitleResult(result)
   })
 }
 

@@ -12,6 +12,8 @@ import {
   cleanFragmentsForAi,
 } from "@/utils/subtitles/processor/ai-segmentation"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
+import { SubtitleFailures } from "@/utils/subtitles/recovery"
+import { subtitleFailure } from "@/utils/subtitles/result"
 import { SubtitleSession, type SubtitleTask } from "@/utils/subtitles/session"
 import { chunkSubtitleWork, SUBTITLE_WORK_LIMITS } from "@/utils/subtitles/work-policy"
 
@@ -117,7 +119,8 @@ export class SegmentationPipeline {
   private chunks: SubtitlesFragment[][]
   private chunkTimeline: CueTimeline
   private completed = new Set<string>()
-  private failed = new Set<string>()
+  private failed = new SubtitleFailures()
+  private recoveryTimer?: ReturnType<typeof setTimeout>
   private processingChunk: SubtitlesFragment[] | null = null
   private session: SubtitleSession
   private task: SubtitleTask | null = null
@@ -189,6 +192,8 @@ export class SegmentationPipeline {
 
   stop() {
     this.stopped = true
+    clearTimeout(this.recoveryTimer)
+    this.recoveryTimer = undefined
     this.generation++
     this.running = false
     this.task?.cancel()
@@ -215,7 +220,6 @@ export class SegmentationPipeline {
   }
 
   clearFailedStarts() {
-    for (const key of this.failed) this.completed.delete(key)
     this.failed.clear()
   }
 
@@ -291,11 +295,21 @@ export class SegmentationPipeline {
       this.onLatency?.(Date.now() - started)
       const optimized = segmented
       this.completed.add(key)
+      this.failed.delete(key)
       this.replaceProcessedChunk(chunk, optimized)
-    } catch {
+    } catch (error) {
       if (this.stopped || generation !== this.generation || !task.isCurrent()) return false
-      this.failed.add(key)
-      this.completed.add(key)
+      this.failed.record(key, subtitleFailure(error))
+      clearTimeout(this.recoveryTimer)
+      const next = this.failed.nextRetryAt()
+      if (Number.isFinite(next))
+        this.recoveryTimer = setTimeout(
+          () => {
+            this.recoveryTimer = undefined
+            if (!this.stopped) void this.runLoop()
+          },
+          Math.max(1, next - Date.now()),
+        )
       // Invalid/failed AI results never become Quality Ready; Fast remains independent.
     } finally {
       task.complete()
@@ -329,7 +343,8 @@ export class SegmentationPipeline {
     const ahead = this.lookAhead(this.getVideoElement()?.playbackRate)
     for (const window of this.chunkTimeline.window(currentTimeMs, currentTimeMs + ahead + 1)) {
       const chunk = this.chunks[Number(window.text)]!
-      if (!this.completed.has(this.chunkKey(chunk))) return chunk
+      if (!this.completed.has(this.chunkKey(chunk)) && !this.failed.blocked(this.chunkKey(chunk)))
+        return chunk
     }
     return []
   }
