@@ -60,7 +60,9 @@ describe("runAiSegmentSubtitles result validation", () => {
 
     const { runAiSegmentSubtitles } = await import("../ai-segmentation")
 
-    await expect(runAiSegmentSubtitles({ jsonContent, providerRef })).rejects.toThrow(/unparseable/)
+    await expect(runAiSegmentSubtitles({ jsonContent, providerRef })).rejects.toThrow(
+      /source timeline|unparseable/,
+    )
     expect(cachePutMock).not.toHaveBeenCalled()
   })
 

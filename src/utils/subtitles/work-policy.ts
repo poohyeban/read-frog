@@ -39,6 +39,7 @@ export interface SubtitleModelUsage {
 export interface SubtitleModelGuard {
   beforeCall: (input: string, outputTokens: number) => Promise<void>
   usage: (usage: SubtitleModelUsage) => Promise<void>
+  onDispatch?: () => void
 }
 
 export class SubtitleWorkRejected extends Error {

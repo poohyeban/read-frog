@@ -1684,6 +1684,22 @@ dataTypes:
   string: Text
   number: Number
 subtitles:
+  work:
+    title: "Playback model budget"
+    description: "Cumulative limits for this extension installation. Refreshing, seeking and restarting do not reset consumption. The final 20% is reserved for urgent captions. Raising a limit authorizes additional work; clearing translation caches does not reset this ledger. Token figures are conservative estimates, not a currency limit."
+    requests: "Total request limit"
+    tokens: "Total estimated token limit"
+    concurrency: "Maximum simultaneous requests per provider"
+    diagnostics: "Collect bounded diagnostic events"
+    status: "Used: $1 requests; $2 estimated token units; $3 reported tokens."
+    exportDiagnostics: "Download diagnostics"
+    exportConfirm: "Export this complete subtitle track? Estimated $1 model requests and $2 token units before retries. Hard limits for this export: $3 attempts and $4 conservative token units. Actual charges depend on your provider; cache hits reduce calls. Work is sent in bounded chunks. Source text: $5 characters."
+    exportFailed: "Export incomplete. No complete SRT was saved."
+    cancelled: "Export cancelled"
+    cancelExport: "Cancel export"
+    stopping: "Stopping…"
+    stopFailed: "Stop could not be confirmed. Reload this page."
+    degraded: "AI segmentation failed for $1 export window(s); local segmentation was used."
   sidebar:
     close: Close the learning panel
     needsSubtitles: This video has no subtitles — try generating AI subtitles first.

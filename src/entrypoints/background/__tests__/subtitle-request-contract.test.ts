@@ -3,9 +3,11 @@ import { browser, storage } from "#imports"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { BATCH_SEPARATOR } from "@/utils/constants/prompt"
 import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
+import { providerExecutionSlots, ExecutionSlots } from "@/utils/request/execution-slots"
 import { attachRequestErrorMeta } from "@/utils/request/retry-policy"
 import { unwrapSubtitleResult, subtitleFailure } from "@/utils/subtitles/result"
 import { createSubtitleTranslationPlan } from "@/utils/subtitles/translation-plan"
+import { subtitleWorkRuntime, SubtitleWorkRuntime } from "../subtitle-work"
 const mocks = vi.hoisted(() => ({
   handlers: new Map<string, (msg: any) => Promise<any>>(),
   get: vi.fn<(...args: any[]) => any>(),
@@ -31,8 +33,24 @@ vi.mock("@/utils/db/dexie/db", () => ({
   },
 }))
 import { setupSubtitlesTranslationHandlers } from "../subtitles-translation"
-const call = (type: string, data: any, tab = 7) =>
-  mocks.handlers.get(type)!({ data, sender: { tab: { id: tab }, frameId: 0 } })
+const leases = new Map<number, string>()
+const call = async (type: string, data: any, tab = 7) => {
+  const sender = { tab: { id: tab }, frameId: 0 }
+  if (
+    ["enqueueSubtitlesTranslateRequest", "aiSegmentSubtitles", "getSubtitlesSummary"].includes(type)
+  ) {
+    let lease = leases.get(tab)
+    if (!lease) {
+      lease = await mocks.handlers.get("openSubtitleLease")!({ data: {}, sender })
+      leases.set(tab, lease!)
+    }
+    data = {
+      ...data,
+      work: { lease, lane: "fast", urgent: true, logicalKey: "test", start: 0, end: 1000 },
+    }
+  }
+  return mocks.handlers.get(type)!({ data, sender })
+}
 const plan = (sessionId = "scope") =>
   createSubtitleTranslationPlan({
     text: "hello",
@@ -46,9 +64,12 @@ const plan = (sessionId = "scope") =>
 
 describe("subtitle background contracts using real RequestQueue and BatchQueue", () => {
   beforeEach(() => {
+    Object.assign(providerExecutionSlots, new ExecutionSlots())
+    Object.assign(subtitleWorkRuntime, new SubtitleWorkRuntime())
     vi.useFakeTimers()
     vi.resetAllMocks()
     mocks.handlers.clear()
+    leases.clear()
     mocks.config.mockResolvedValue(structuredClone(DEFAULT_CONFIG))
     mocks.get.mockResolvedValue(undefined)
     mocks.put.mockResolvedValue(undefined)
@@ -57,6 +78,20 @@ describe("subtitle background contracts using real RequestQueue and BatchQueue",
     setupSubtitlesTranslationHandlers()
   })
   afterEach(() => vi.useRealTimers())
+  it("starts zero Provider requests after root lease revocation acknowledgement", async () => {
+    const pending = call("enqueueSubtitlesTranslateRequest", plan("pending")).catch(
+      (error) => error,
+    )
+    await vi.advanceTimersByTimeAsync(0)
+    await call("revokeSubtitleLease", { lease: leases.get(7) })
+    await vi.advanceTimersByTimeAsync(60000)
+    expect(mocks.execute).not.toHaveBeenCalled()
+    expect(await pending).toMatchObject({ name: "TranslationCancelledError" })
+    for (let i = 0; i < 100; i++)
+      await call("enqueueSubtitlesTranslateRequest", plan(`after-${i}`)).catch(() => {})
+    await vi.advanceTimersByTimeAsync(60000)
+    expect(mocks.execute).not.toHaveBeenCalled()
+  })
   it("passes an immutable prompt snapshot through batch execution without re-reading config", async () => {
     let built: any
     mocks.execute.mockImplementation(async (text, _lang, _provider, resolver, options) => {
@@ -129,7 +164,7 @@ describe("subtitle background contracts using real RequestQueue and BatchQueue",
     }).catch((error) => error)
     await vi.advanceTimersByTimeAsync(1)
     expect(mocks.generate).toHaveBeenCalledWith(
-      expect.objectContaining({ maxOutputTokens: 16384 }),
+      expect.objectContaining({ maxOutputTokens: expect.any(Number) }),
       expect.anything(),
     )
     await call("cancelSubtitleRequests", { sessionId: "segment" })

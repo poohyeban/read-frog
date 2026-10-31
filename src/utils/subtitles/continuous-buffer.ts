@@ -17,14 +17,16 @@ export function continuousReadyMs(
         (!c.translationOutcome || c.translationOutcome.status === "success"),
     )
   let index = 0
+  let coveredThrough = time
   for (const cue of getCueTimeline(source).window(time, end)) {
-    let cursor = Math.max(time, cue.start)
+    let cursor = Math.max(time, cue.start, coveredThrough)
     const requiredEnd = Math.min(end, cue.end)
     while (cursor < requiredEnd) {
       while (index < candidates.length && candidates[index]!.end <= cursor) index++
       if (!candidates[index] || candidates[index]!.start > cursor) return Math.max(0, cursor - time)
       cursor = Math.max(cursor, candidates[index]!.end)
     }
+    coveredThrough = Math.max(coveredThrough, requiredEnd)
   }
   return horizon
 }

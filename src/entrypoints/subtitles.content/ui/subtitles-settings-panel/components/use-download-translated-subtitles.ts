@@ -22,7 +22,7 @@ function getMessageTone(
 
 export function useDownloadTranslatedSubtitles() {
   const status = useAtomValue(translatedSubtitlesDownloadStatusAtom)
-  const { downloadTranslatedSubtitles } = useSubtitlesUI()
+  const { downloadTranslatedSubtitles, cancelTranslatedSubtitles } = useSubtitlesUI()
   const [showPreparingMessage, setShowPreparingMessage] = useState(false)
   const shouldShowPreparingMessageAfterDelay =
     status.phase === TranslatedDownloadPhase.Checking ||
@@ -54,6 +54,8 @@ export function useDownloadTranslatedSubtitles() {
     ),
     [TranslatedDownloadPhase.Complete]: i18n.t("subtitles.actions.downloadTranslatedComplete"),
     [TranslatedDownloadPhase.Idle]: null,
+    [TranslatedDownloadPhase.Failed]: i18n.t("subtitles.work.exportFailed"),
+    [TranslatedDownloadPhase.Cancelled]: i18n.t("subtitles.work.cancelled"),
     [TranslatedDownloadPhase.Checking]: preparingMessage,
   }[status.phase]
   const messageTone = getMessageTone(status.phase, message)
@@ -68,5 +70,6 @@ export function useDownloadTranslatedSubtitles() {
     progress: status.phase === TranslatedDownloadPhase.Translating ? status.progress : null,
     isRunning,
     download: downloadTranslatedSubtitles,
+    cancel: cancelTranslatedSubtitles,
   }
 }

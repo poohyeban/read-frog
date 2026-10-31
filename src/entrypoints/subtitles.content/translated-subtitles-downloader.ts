@@ -6,16 +6,13 @@ import type { SubtitlesVideoContext } from "@/utils/subtitles/processor/translat
 import type { SubtitlesFragment } from "@/utils/subtitles/types"
 import { toastManager } from "@/components/ui/base-ui/toast"
 import { getLocalConfig } from "@/utils/config/storage"
-import {
-  MAX_GAP_MS,
-  PROCESS_LOOK_AHEAD_MS,
-  TRANSLATION_BATCH_SIZE,
-} from "@/utils/constants/subtitles"
+import { MAX_GAP_MS, TRANSLATION_BATCH_SIZE } from "@/utils/constants/subtitles"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { resolveLanguageCodeFromLocale } from "@/utils/content/page-language"
 import { i18n } from "@/utils/i18n"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { cueIdentity } from "@/utils/subtitles/cue-timeline"
+import { estimateSubtitleExport } from "@/utils/subtitles/export-estimate"
 import { aiSegmentBlock } from "@/utils/subtitles/processor/ai-segmentation"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
 import {
@@ -26,6 +23,7 @@ import {
 } from "@/utils/subtitles/processor/translator"
 import { SubtitleSession, type SubtitleTask } from "@/utils/subtitles/session"
 import { downloadSubtitlesAsSrt } from "@/utils/subtitles/srt"
+import { boundedSourceCues, chunkSubtitleWork } from "@/utils/subtitles/work-policy"
 import {
   subtitlesStore,
   TranslatedDownloadPhase,
@@ -80,10 +78,15 @@ export class TranslatedSubtitlesDownloader {
         throw new Error(i18n.t("subtitles.errors.translatedExportFailed"))
       }
 
+      this.degradedChunks = 0
       const sourceSubtitles = [...(await this.fetcher.fetch())].sort(
         (a, b) => a.start - b.start || a.end - b.end,
       )
-      if (sourceSubtitles.some((c) => !Number.isFinite(c.start) || !Number.isFinite(c.end)))
+      if (
+        sourceSubtitles.some(
+          (c) => !Number.isFinite(c.start) || !Number.isFinite(c.end) || c.end <= c.start,
+        )
+      )
         throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
       this.assertActive(operationId)
       if (sourceSubtitles.length === 0) {
@@ -91,6 +94,37 @@ export class TranslatedSubtitlesDownloader {
       }
 
       this.assertDifferentTargetLanguage(configSnapshot)
+      const estimate = estimateSubtitleExport(
+        sourceSubtitles,
+        configSnapshot.videoSubtitles.aiSegmentation,
+        Math.min(
+          TRANSLATION_BATCH_SIZE,
+          configSnapshot.videoSubtitles.batchQueueConfig.maxItemsPerBatch,
+        ),
+        configSnapshot.pageTranslation.enableAIContentAware,
+      )
+      if (
+        estimate.needsConfirmation &&
+        !window.confirm(
+          i18n.t("subtitles.work.exportConfirm", [
+            String(estimate.requests),
+            String(estimate.estimatedTokens),
+            String(estimate.hardRequests),
+            String(estimate.hardTokens),
+            String(estimate.inputCharacters),
+          ]),
+        )
+      ) {
+        this.setStatus(TranslatedDownloadPhase.Cancelled, null)
+        return
+      }
+      this.assertActive(operationId)
+      this.session?.dispose()
+      this.session = new SubtitleSession(
+        { videoId: videoId ?? "", trackId: `export:${operationId}`, revision: operationId },
+        { requests: estimate.hardRequests, estimatedTokens: estimate.hardTokens },
+      )
+      this.task = this.session.begin("export", "complete-srt")
       this.setStatus(TranslatedDownloadPhase.Preparing, 0)
 
       const sourceProcessedSubtitles = this.fetcher.isPreSegmented?.()
@@ -116,6 +150,11 @@ export class TranslatedSubtitlesDownloader {
       })
       this.assertActive(operationId)
 
+      if (this.degradedChunks)
+        toastManager.add({
+          type: "warning",
+          title: i18n.t("subtitles.work.degraded", [String(this.degradedChunks)]),
+        })
       this.setStatus(TranslatedDownloadPhase.Complete, null)
       this.successTimeout = setTimeout(() => {
         if (!this.isActive(operationId)) {
@@ -132,13 +171,37 @@ export class TranslatedSubtitlesDownloader {
         type: "error",
         title: error instanceof Error ? error.message : String(error),
       })
-      this.setStatus(TranslatedDownloadPhase.Idle, null)
+      this.setStatus(TranslatedDownloadPhase.Failed, null)
     } finally {
       if (this.isActive(operationId)) {
         this.session?.dispose()
         this.task = null
         this.isDownloading = false
         this.snapshotFetcher = null
+      }
+    }
+  }
+
+  cancel = async (): Promise<void> => {
+    const cancelledOperation = ++this.operationId
+    this.task?.cancel()
+    const session = this.session
+    this.session = null
+    this.task = null
+    this.snapshotFetcher = null
+    this.clearSuccessTimeout()
+    try {
+      await session?.stop()
+      session?.dispose()
+      if (this.operationId === cancelledOperation) {
+        this.isDownloading = false
+        this.setStatus(TranslatedDownloadPhase.Cancelled, null)
+      }
+    } catch {
+      if (this.operationId === cancelledOperation) {
+        this.isDownloading = false
+        this.setStatus(TranslatedDownloadPhase.Failed, null)
+        toastManager.add({ type: "error", title: i18n.t("subtitles.work.stopFailed") })
       }
     }
   }
@@ -204,65 +267,63 @@ export class TranslatedSubtitlesDownloader {
     const promptableProviderRef =
       providerRef && canProviderRefGenerateText(providerRef) ? providerRef : null
     this.assertActive(operationId)
-    const fragments = await this.buildExportProcessedSubtitles(
-      sourceSubtitles,
-      sourceProcessedSubtitles,
-      config,
-      operationId,
-      promptableProviderRef,
-    )
-    this.assertActive(operationId)
-    const videoContext = await this.buildExportVideoContext(
-      sourceSubtitles,
-      config,
-      operationId,
-      pageTitle,
-      promptableProviderRef,
-    )
-    this.assertActive(operationId)
+    const useAi =
+      config.videoSubtitles.aiSegmentation &&
+      !this.fetcher.isPreSegmented?.() &&
+      !!promptableProviderRef
+    const chunks = chunkSubtitleWork(useAi ? sourceSubtitles : sourceProcessedSubtitles)
     const translatedFragments: SubtitlesFragment[] = []
-    let translatedCount = 0
-    const batches = this.buildTranslationBatches(fragments)
-
-    for (let index = 0; index < batches.length; index += TRANSLATED_EXPORT_BATCH_CONCURRENCY) {
-      const batchWindow = batches.slice(index, index + TRANSLATED_EXPORT_BATCH_CONCURRENCY)
-      const translatedBatchWindow = await Promise.all(
-        batchWindow.map(async (batch) => {
-          const translatedBatch = await translateSubtitles(
-            batch,
-            videoContext,
-            config,
-            this.taskFor(operationId),
-          )
-          this.assertActive(operationId)
-          if (
-            !this.matchesRequestedCues(batch, translatedBatch) ||
-            this.hasIncompleteTranslatedFragments(translatedBatch)
-          ) {
-            throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
-          }
-
-          return translatedBatch
-        }),
-      )
+    for (const [chunkIndex, chunk] of chunks.entries()) {
       this.assertActive(operationId)
-      for (const translatedBatch of translatedBatchWindow) {
-        translatedFragments.push(...translatedBatch)
-        translatedCount += translatedBatch.length
+      const fragments = boundedSourceCues(
+        useAi
+          ? await this.buildExportProcessedChunk(chunk, promptableProviderRef, operationId)
+          : chunk,
+      )
+      const videoContext = await this.buildExportVideoContext(
+        chunk,
+        config,
+        operationId,
+        pageTitle,
+        promptableProviderRef,
+      )
+      const batches = this.buildTranslationBatches(fragments)
+      for (let index = 0; index < batches.length; index += TRANSLATED_EXPORT_BATCH_CONCURRENCY) {
+        this.assertActive(operationId)
+        const results = await Promise.all(
+          batches.slice(index, index + TRANSLATED_EXPORT_BATCH_CONCURRENCY).map(async (batch) => {
+            const translated = await translateSubtitles(
+              batch,
+              videoContext,
+              config,
+              this.taskFor(operationId),
+            )
+            this.assertActive(operationId)
+            if (
+              !this.matchesRequestedCues(batch, translated) ||
+              this.hasIncompleteTranslatedFragments(translated)
+            )
+              throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
+            return translated
+          }),
+        )
+        for (const batch of results) translatedFragments.push(...batch)
         this.setStatus(
           TranslatedDownloadPhase.Translating,
-          Math.min(100, Math.round((translatedCount / fragments.length) * 100)),
+          Math.round(
+            (100 *
+              (chunkIndex +
+                Math.min(1, (index + TRANSLATED_EXPORT_BATCH_CONCURRENCY) / batches.length))) /
+              chunks.length,
+          ),
         )
       }
     }
-
     if (
-      translatedFragments.length !== fragments.length ||
-      this.hasIncompleteTranslatedFragments(translatedFragments)
-    ) {
+      this.hasIncompleteTranslatedFragments(translatedFragments) ||
+      this.hasTimingCoverageGap(sourceSubtitles, translatedFragments)
+    )
       throw new Error(i18n.t("subtitles.errors.translatedExportIncomplete"))
-    }
-
     return translatedFragments.sort((a, b) => a.start - b.start || a.end - b.end)
   }
 
@@ -294,38 +355,10 @@ export class TranslatedSubtitlesDownloader {
   }
 
   private buildTranslationBatches(fragments: SubtitlesFragment[]): SubtitlesFragment[][] {
-    const batches: SubtitlesFragment[][] = []
-
-    for (let index = 0; index < fragments.length; index += TRANSLATION_BATCH_SIZE) {
-      batches.push(fragments.slice(index, index + TRANSLATION_BATCH_SIZE))
-    }
-
-    return batches
+    return chunkSubtitleWork(fragments, TRANSLATION_BATCH_SIZE)
   }
 
-  private async buildExportProcessedSubtitles(
-    sourceSubtitles: SubtitlesFragment[],
-    sourceProcessedSubtitles: SubtitlesFragment[],
-    config: Config,
-    operationId: number,
-    providerRef: PromptableProviderRef | null,
-  ): Promise<SubtitlesFragment[]> {
-    // No ref means AI segmentation cannot run (no provider, no model to
-
-    // same rule-based result the feature-off path produces.
-    if (!config.videoSubtitles.aiSegmentation || this.fetcher.isPreSegmented?.() || !providerRef) {
-      return [...sourceProcessedSubtitles]
-    }
-
-    const result: SubtitlesFragment[] = []
-
-    for (const chunk of this.buildSourceSubtitleChunks(sourceSubtitles)) {
-      result.push(...(await this.buildExportProcessedChunk(chunk, providerRef, operationId)))
-      this.assertActive(operationId)
-    }
-
-    return result.sort((a, b) => a.start - b.start)
-  }
+  private degradedChunks = 0
 
   private async buildExportProcessedChunk(
     chunk: SubtitlesFragment[],
@@ -339,41 +372,18 @@ export class TranslatedSubtitlesDownloader {
       segmented = await aiSegmentBlock(chunk, providerRef, this.taskFor(operationId))
       this.assertActive(operationId)
     } catch {
+      this.assertActive(operationId)
+      this.degradedChunks++
       return optimizeSubtitles(chunk, sourceLanguage)
     }
 
-    const optimized = optimizeSubtitles(segmented, sourceLanguage)
+    const optimized = segmented
 
     if (!this.hasUnsafeSegmentedExportTiming(chunk, segmented, optimized)) {
       return optimized
     }
 
-    const retryChunks = this.buildSourceSubtitleChunks(chunk, PROCESS_LOOK_AHEAD_MS / 2)
-    if (retryChunks.length > 1) {
-      const retryResult: SubtitlesFragment[] = []
-
-      for (const retryChunk of retryChunks) {
-        let retrySegmented: SubtitlesFragment[]
-
-        try {
-          retrySegmented = await aiSegmentBlock(retryChunk, providerRef, this.taskFor(operationId))
-          this.assertActive(operationId)
-        } catch {
-          return optimizeSubtitles(chunk, sourceLanguage)
-        }
-
-        const retryOptimized = optimizeSubtitles(retrySegmented, sourceLanguage)
-
-        if (this.hasUnsafeSegmentedExportTiming(retryChunk, retrySegmented, retryOptimized)) {
-          return optimizeSubtitles(chunk, sourceLanguage)
-        }
-
-        retryResult.push(...retryOptimized)
-      }
-
-      return retryResult
-    }
-
+    this.degradedChunks++
     return optimizeSubtitles(chunk, sourceLanguage)
   }
 
@@ -394,29 +404,6 @@ export class TranslatedSubtitlesDownloader {
     return (
       this.hasInvalidTimingShape(source, segmented) || this.hasUnsafeExportTiming(source, optimized)
     )
-  }
-
-  private buildSourceSubtitleChunks(
-    subtitles: SubtitlesFragment[],
-    maxDurationMs = PROCESS_LOOK_AHEAD_MS,
-  ): SubtitlesFragment[][] {
-    const chunks: SubtitlesFragment[][] = []
-    let index = 0
-
-    while (index < subtitles.length) {
-      const chunkStart = subtitles[index]!.start
-      const chunkEnd = chunkStart + maxDurationMs
-      const chunk: SubtitlesFragment[] = []
-
-      while (index < subtitles.length && subtitles[index]!.start < chunkEnd) {
-        chunk.push(subtitles[index]!)
-        index++
-      }
-
-      chunks.push(chunk)
-    }
-
-    return chunks
   }
 
   private hasTimingCoverageGap(

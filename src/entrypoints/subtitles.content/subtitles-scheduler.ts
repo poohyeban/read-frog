@@ -1,3 +1,4 @@
+import type { SubtitleTraceSink } from "@/utils/subtitles/diagnostics"
 import type { StateData, SubtitlesFragment, SubtitlesState } from "@/utils/subtitles/types"
 import { CueTimeline, cueIdentity } from "@/utils/subtitles/cue-timeline"
 import {
@@ -18,6 +19,12 @@ const ERROR_STATE_AUTO_HIDE_MS = 5_000
 export class SubtitlesScheduler {
   private videoElement: HTMLVideoElement
   private timeline = new CueTimeline()
+  private qualityTimeline = new CueTimeline()
+  private trace?: SubtitleTraceSink
+  setDiagnostics(trace?: SubtitleTraceSink) {
+    this.trace = trace
+  }
+  private selected: SubtitlesFragment | null = null
   private get subtitles() {
     return this.timeline.cues
   }
@@ -45,13 +52,21 @@ export class SubtitlesScheduler {
   /**
    * Upsert translated cues by start. New cues are inserted; existing cues get translation updates.
    */
-  supplementSubtitles(subtitles: SubtitlesFragment[]) {
+  supplementSubtitles(subtitles: SubtitlesFragment[], lane: "fast" | "quality" = "fast") {
+    subtitles = subtitles.filter(
+      (c) =>
+        c.translation !== undefined &&
+        (!c.translationOutcome ||
+          c.translationOutcome.status === "success" ||
+          c.translationOutcome.status === "empty"),
+    )
     if (subtitles.length === 0) {
       return
     }
 
     const previous = this.currentIndex >= 0 ? this.subtitles[this.currentIndex] : null
-    this.timeline = this.timeline.upsert(subtitles)
+    if (lane === "quality") this.qualityTimeline = this.qualityTimeline.upsert(subtitles)
+    else this.timeline = this.timeline.upsert(subtitles)
     this.publishTranslatedTrack()
     this.updateSubtitles(this.videoElement.currentTime)
     if (previous !== this.subtitles[this.currentIndex]) this.updateCurrentSubtitle()
@@ -167,6 +182,8 @@ export class SubtitlesScheduler {
   reset() {
     this.setState("idle")
     this.timeline = new CueTimeline()
+    this.qualityTimeline = new CueTimeline()
+    this.selected = null
     this.publishTranslatedTrack()
     this.currentIndex = -1
     this.updateCurrentSubtitle()
@@ -175,11 +192,15 @@ export class SubtitlesScheduler {
   private attachListeners() {
     this.videoElement.addEventListener("timeupdate", this.handleTimeUpdate)
     this.videoElement.addEventListener("seeking", this.handleSeeking)
+    this.videoElement.addEventListener("playing", this.handleSeeking)
+    this.videoElement.addEventListener("seeked", this.handleSeeking)
   }
 
   private detachListeners() {
     this.videoElement.removeEventListener("timeupdate", this.handleTimeUpdate)
     this.videoElement.removeEventListener("seeking", this.handleSeeking)
+    this.videoElement.removeEventListener("playing", this.handleSeeking)
+    this.videoElement.removeEventListener("seeked", this.handleSeeking)
   }
 
   private handleTimeUpdate = () => {
@@ -205,19 +226,27 @@ export class SubtitlesScheduler {
 
     const newIndex = this.timeline.indexAt(timeMs)
 
-    if (newIndex !== this.currentIndex) {
+    const selected = this.qualityTimeline.at(timeMs) ?? this.timeline.at(timeMs)
+    if (selected !== this.selected) {
+      this.trace?.({
+        event: "selected",
+        lane: this.qualityTimeline.at(timeMs) ? "quality" : "fast",
+        mediaTimeMs: timeMs,
+        value: selected ? 1 : 0,
+      })
+      this.selected = selected
       this.currentIndex = newIndex
       this.updateCurrentSubtitle()
     }
   }
 
   private publishTranslatedTrack() {
-    subtitlesStore.set(translatedTrackAtom, [...this.subtitles])
+    subtitlesStore.set(translatedTrackAtom, [...this.qualityTimeline.cues, ...this.subtitles])
   }
 
   private updateCurrentSubtitle() {
-    const currentSubtitle = this.currentIndex >= 0 ? this.subtitles[this.currentIndex] : null
-    subtitlesStore.set(currentSubtitleAtom, currentSubtitle!)
+    const currentSubtitle = this.selected
+    subtitlesStore.set(currentSubtitleAtom, currentSubtitle)
   }
 
   private updateState() {

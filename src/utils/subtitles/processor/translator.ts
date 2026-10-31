@@ -21,6 +21,7 @@ import {
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { subtitleFailure, unwrapSubtitleResult } from "../result"
 import { createSubtitleTranslationPlan } from "../translation-plan"
+import { assertSubtitleWindow, SUBTITLE_WORK_LIMITS } from "../work-policy"
 
 /**
  * One toast for the whole run, not one per batch: the provider is re-resolved
@@ -79,9 +80,14 @@ async function translateSingleSubtitle(
   providerRef: SerializableProviderRef,
   videoContext: SubtitlesVideoContext,
   task: SubtitleTaskOptions,
-): Promise<string> {
+): Promise<{
+  translation: string
+  batchKey?: string
+  batchIndex?: number
+  glossaryRevision?: number
+}> {
   task.signal?.throwIfAborted()
-  if (!text.trim()) return ""
+  if (!text.trim()) return { translation: "" }
   const context = normalizeSubtitlePromptContext(videoContext)
   const { terms: glossaryTerms, revision: glossaryRevision } = await resolveGlossaryTerms(
     prepareTranslationText(text),
@@ -97,6 +103,7 @@ async function translateSingleSubtitle(
     promptConfig: { customPromptsConfig: config.videoSubtitles.customPromptsConfig },
     scheduleAt: Date.now(),
     sessionId: task.sessionId,
+    work: task.work,
     priority: task.priority,
     webTitle: context.webTitle,
     webDescription: context.webDescription,
@@ -104,7 +111,18 @@ async function translateSingleSubtitle(
     glossaryTerms,
     glossaryRevision,
   })
-  return unwrapSubtitleResult(await sendMessage("enqueueSubtitlesTranslateRequest", plan.request))
+  const response = await sendMessage("enqueueSubtitlesTranslateRequest", plan.request)
+  const translation = unwrapSubtitleResult(response)
+  return {
+    translation,
+    ...(typeof response === "string"
+      ? {}
+      : {
+          batchKey: response.batchKey,
+          batchIndex: response.batchIndex,
+          glossaryRevision: response.glossaryRevision,
+        }),
+  }
 }
 
 export type SubtitlesProviderResolution<
@@ -208,7 +226,11 @@ export async function fetchSubtitlesSummary(
   }
 
   task.signal?.throwIfAborted()
+  if (videoContext.subtitlesTextContent.length > SUBTITLE_WORK_LIMITS.sourceCharacters) {
+    throw new Error("Subtitle context exceeds the bounded playback window")
+  }
   return await sendMessage("getSubtitlesSummary", {
+    work: task.work ?? (await task.prepareWork?.("context", 0, 0)),
     sessionId: task.sessionId,
     priority: task.priority,
     videoTitle: videoContext.videoTitle,
@@ -223,6 +245,7 @@ export async function translateSubtitles(
   configOverride?: Config,
   task: SubtitleTaskOptions = {},
 ): Promise<SubtitlesFragment[]> {
+  assertSubtitleWindow(fragments)
   const loadedConfig = configOverride ?? (await getLocalConfig())
   const config = loadedConfig ? structuredClone(loadedConfig) : null
   videoContext = { ...videoContext }
@@ -250,8 +273,15 @@ export async function translateSubtitles(
     }))
   }
 
+  const work =
+    task.work ??
+    (await task.prepareWork?.(
+      task.lane ?? (task.kind === "export" ? "export" : "fast"),
+      Math.min(...fragments.map((f) => f.start)),
+      Math.max(...fragments.map((f) => f.end)),
+    ))
   const translationPromises = fragments.map((fragment) =>
-    translateSingleSubtitle(fragment.text, config, providerRef, videoContext, task),
+    translateSingleSubtitle(fragment.text, config, providerRef, videoContext, { ...task, work }),
   )
 
   const results = await Promise.allSettled(translationPromises)
@@ -263,11 +293,21 @@ export async function translateSubtitles(
   if (invalidated?.status === "rejected") throw invalidated.reason
   return fragments.map((fragment, index): SubtitlesFragment => {
     const result = results[index]!
-    if (result.status === "fulfilled" && (result.value.trim() || !fragment.text.trim())) {
+    if (
+      result.status === "fulfilled" &&
+      (result.value.translation.trim() || !fragment.text.trim())
+    ) {
       return {
         ...fragment,
-        translation: result.value,
-        translationOutcome: { status: result.value.trim() ? "success" : "empty" },
+        translation: result.value.translation,
+        ...(result.value.batchKey
+          ? {
+              translationBatchKey: result.value.batchKey,
+              translationBatchIndex: result.value.batchIndex,
+              glossaryRevision: result.value.glossaryRevision,
+            }
+          : {}),
+        translationOutcome: { status: result.value.translation.trim() ? "success" : "empty" },
       }
     }
     const error =

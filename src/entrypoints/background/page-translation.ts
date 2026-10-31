@@ -30,6 +30,7 @@ import {
   getLocalProviderConfig,
   getQueuedTranslationRouting,
   shouldUseBatchQueue,
+  providerExecutionKey,
 } from "./translation-queues"
 
 async function getValidatedCachedTranslation(
@@ -152,7 +153,8 @@ export function setupPageTranslationHandlers(): void {
           scope,
           promptConfig,
         }
-        result = await batchQueue.enqueue(data)
+        const queued = await batchQueue.enqueue(data)
+        result = typeof queued === "string" ? queued : queued.translation
       } else {
         const localProvider = getLocalProviderConfig(providerRef)
         if (!localProvider) {
@@ -165,7 +167,9 @@ export function setupPageTranslationHandlers(): void {
             preserveLineBreaks,
             signal,
           })
-        result = await requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined)
+        result = await requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined, {
+          providerKey: providerExecutionKey(providerRef),
+        })
       }
 
       if (validateHtmlAttributeMarkers) {

@@ -9,6 +9,7 @@ import {
   MIN_FONT_SCALE,
   MIN_FONT_WEIGHT,
 } from "@/utils/constants/subtitles"
+import { DEFAULT_SUBTITLE_BUDGET } from "@/utils/subtitles/work-policy"
 import { shortcutSchema } from "./shortcut"
 import {
   batchQueueConfigSchema,
@@ -58,6 +59,15 @@ export const subtitlePositionSchema = z.object({
 })
 
 export const videoSubtitlesSchema = z.object({
+  workBudget: z
+    .object({
+      requests: z.number().int().min(0).max(1_000_000),
+      estimatedTokens: z.number().int().min(0).max(1_000_000_000),
+      emergencyPercent: z.number().int().min(0).max(90),
+      maxInFlight: z.number().int().min(1).max(4),
+      diagnostics: z.boolean(),
+    })
+    .default({ ...DEFAULT_SUBTITLE_BUDGET }),
   enabled: z.boolean(),
   autoStart: subtitlesAutoStartSchema,
   toggleShortcut: shortcutSchema,

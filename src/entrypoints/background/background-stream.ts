@@ -28,6 +28,7 @@ import { logger } from "@/utils/logger"
 import { buildLocalGenerateTextParams } from "@/utils/providers/generate-params"
 import { getLanguageModelForConfig, getModelById } from "@/utils/providers/model"
 import { attachRequestErrorMeta, getRequestErrorMeta } from "@/utils/request/retry-policy"
+import { SubtitleWorkRejected } from "@/utils/subtitles/work-policy"
 
 const invalidStreamStartPayloadMessage = "Invalid stream start payload"
 const aiStreamProtocolErrorMessage = "Invalid AI stream response."
@@ -552,7 +553,10 @@ async function createLocalTextPartStream(
 
 export async function generateTextForProviderRef(
   payload: BackgroundGenerateTextPayload,
-  options: { signal?: AbortSignal } = {},
+  options: {
+    signal?: AbortSignal
+    modelGuard?: import("@/utils/subtitles/work-policy").SubtitleModelGuard
+  } = {},
 ): Promise<string> {
   const { providerRef, instructions, prompt, maxRetries, maxOutputTokens } = payload
   const { signal } = options
@@ -577,24 +581,29 @@ export async function generateTextForProviderRef(
   // for a row deleted from another tab while the config was already in hand.
   const model = getLanguageModelForConfig(providerRef.config)
   try {
-    const { text, finishReason } = await generateText({
+    await options.modelGuard?.beforeCall(`${instructions}\n${prompt}`, maxOutputTokens!)
+    signal?.throwIfAborted()
+    options.modelGuard?.onDispatch?.()
+    const { text, finishReason, usage } = await generateText({
       model,
       instructions,
       prompt,
       // maxRetries: 0 — retries belong to the RequestQueue, which meters them
       // against the token bucket; ai-sdk's hidden default (2) would issue extra
       // HTTP attempts invisible to the rate limiter.
-      maxRetries: maxRetries ?? 0,
+      maxRetries: options.modelGuard ? 0 : (maxRetries ?? 0),
       maxOutputTokens,
       abortSignal: signal,
       ...buildLocalGenerateTextParams(providerRef.config),
     })
+    await options.modelGuard?.usage(usage)
     signal?.throwIfAborted()
     if (maxOutputTokens !== undefined && finishReason === "length") {
       throw new Error("Article summary output budget exhausted")
     }
     return text.trim()
   } catch (error) {
+    if (error instanceof SubtitleWorkRejected) throw error
     if (signal?.aborted) throw signal.reason
     if (isAbortLikeError(error)) throw error
     throw attachRequestErrorMeta(

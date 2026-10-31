@@ -9,21 +9,67 @@ import { onMessage } from "@/utils/message"
 import { getSubtitlesTranslatePromptFromConfig } from "@/utils/prompts/subtitles"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
+import { SUBTITLE_TRACE_EVENTS } from "@/utils/subtitles/diagnostics"
 import { subtitleFailure } from "@/utils/subtitles/result"
 import { createSubtitleTranslationPlan } from "@/utils/subtitles/translation-plan"
+import {
+  SUBTITLE_WORK_LIMITS,
+  SubtitleWorkRejected,
+  type SubtitleWorkContext,
+} from "@/utils/subtitles/work-policy"
 import { getCachedAiSegmentation, runAiSegmentSubtitles } from "./ai-segmentation"
 import { ensureInitializedConfig } from "./config"
+import { setupSubtitleCandidateHandlers } from "./subtitle-candidates"
+import { subtitleWorkRuntime } from "./subtitle-work"
 import { getOrGenerateTranslationContextSummary } from "./translation-context-summary"
 import {
   buildTranslationScopeKey,
   createSubtitlesTranslationQueues,
   getLocalProviderConfig,
   shouldUseBatchQueue,
+  providerExecutionKey,
 } from "./translation-queues"
 
 /** Register synchronously; all model work shares the existing subtitle queues. */
 export function setupSubtitlesTranslationHandlers(): void {
+  setupSubtitleCandidateHandlers()
+  onMessage("recordSubtitleDiagnostics", async ({ sender, data }) => {
+    const config = await ensureInitializedConfig()
+    const enabled = config?.videoSubtitles.workBudget?.diagnostics ?? false
+    subtitleWorkRuntime.setDiagnostics(enabled)
+    if (
+      !enabled ||
+      typeof sender.tab?.id !== "number" ||
+      !SUBTITLE_TRACE_EVENTS.includes(data.event) ||
+      (data.lane && !["fast", "quality", "segmentation"].includes(data.lane)) ||
+      !Number.isFinite(data.mediaTimeMs) ||
+      (data.value !== undefined && !Number.isFinite(data.value)) ||
+      !/^[a-f0-9-]{36}$/i.test(data.sessionId)
+    )
+      return
+    subtitleWorkRuntime.note(data.event, data.lane, data.value ?? 1, {
+      mediaTimeMs: data.mediaTimeMs,
+      scope: subtitleWorkRuntime.traceIdentity(sender.tab.id, data.sessionId),
+    })
+  })
   const { queuesPromise, cancelledScopes } = createSubtitlesTranslationQueues()
+  const tabFor = (sender: { tab?: { id?: number } } | undefined) => {
+    if (typeof sender?.tab?.id !== "number") throw new SubtitleWorkRejected("lease")
+    return sender.tab.id
+  }
+  onMessage("openSubtitleLease", ({ sender, data }) =>
+    subtitleWorkRuntime.open(tabFor(sender), data.exportLimits, data.traceId),
+  )
+  onMessage("revokeSubtitleLease", async ({ sender, data }) => {
+    const scopes = subtitleWorkRuntime.revoke(tabFor(sender), data.lease)
+    scopes.forEach((scope) => cancelledScopes.markScope(scope))
+    const { batchQueue, requestQueue } = await queuesPromise
+    for (const scope of scopes) {
+      batchQueue.cancelByScope(scope)
+      requestQueue.cancelByScope(scope)
+    }
+  })
+  onMessage("getSubtitleBudgetStatus", () => subtitleWorkRuntime.status())
   const scopeFor = (sender: { tab?: { id?: number } } | undefined, sessionId?: string) => {
     const scope = buildTranslationScopeKey(sender, sessionId)
     if (sessionId && !scope) throw new Error("Subtitle scope requires a sender tab")
@@ -32,9 +78,32 @@ export function setupSubtitlesTranslationHandlers(): void {
   const assertCurrent = (scope?: string) => {
     if (scope && cancelledScopes.has(scope)) throw new TranslationCancelledError(scope)
   }
+  const admit = (
+    sender: { tab?: { id?: number } } | undefined,
+    scope: string | undefined,
+    work?: SubtitleWorkContext,
+  ) => {
+    assertCurrent(scope)
+    if (!scope || !work) throw new SubtitleWorkRejected("lease")
+    if (
+      !Number.isFinite(work.start) ||
+      !Number.isFinite(work.end) ||
+      work.end < work.start ||
+      work.end - work.start > SUBTITLE_WORK_LIMITS.mediaMs
+    )
+      throw new SubtitleWorkRejected("input-limit")
+    subtitleWorkRuntime.register(tabFor(sender), scope, work)
+  }
+  onMessage("releaseSubtitleTask", ({ sender, data }) => {
+    const scope = scopeFor(sender, data.sessionId)
+    if (scope) subtitleWorkRuntime.release(scope)
+  })
   onMessage("enqueueSubtitlesTranslateRequest", async (message) => {
     const translate = async () => {
       const scope = scopeFor(message.sender, message.data.sessionId)
+      admit(message.sender, scope, message.data.work)
+      if (message.data.text.length > SUBTITLE_WORK_LIMITS.sourceCharacters)
+        throw new SubtitleWorkRejected("input-limit")
       const { requestQueue, batchQueue } = await queuesPromise
       assertCurrent(scope)
       // Old content scripts get one intake snapshot; execution never re-reads config.
@@ -64,10 +133,11 @@ export function setupSubtitlesTranslationHandlers(): void {
       if (cached?.translation) return cached.translation
       const context: SubtitlePromptContext = { webTitle, webDescription, videoSummary: summary }
       let result: string
+      let batchIdentity: { batchKey: string; batchIndex: number } | undefined
       // Timestamp is owned by the background; a sender cannot jump other tabs' work.
       const scheduleAt = Date.now()
       if (useBatch) {
-        result = await batchQueue.enqueue({
+        const batchResult = await batchQueue.enqueue({
           text,
           langConfig,
           provider: providerRef,
@@ -79,7 +149,10 @@ export function setupSubtitlesTranslationHandlers(): void {
           scope,
           subtitlePromptConfig: promptConfig,
           priority: request.priority,
+          work: message.data.work,
         })
+        result = typeof batchResult === "string" ? batchResult : batchResult.translation
+        if (typeof batchResult !== "string") batchIdentity = batchResult
       } else {
         const thunk = (signal?: AbortSignal) =>
           executeTranslate<SubtitlePromptContext>(
@@ -92,18 +165,25 @@ export function setupSubtitlesTranslationHandlers(): void {
           )
         result = await requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined, {
           priority: request.priority,
+          providerKey: providerExecutionKey(providerRef),
         })
       }
       assertCurrent(scope)
       if (!result.trim() && text.trim()) throw new Error("Empty subtitle translation")
       if (result && !useBatch)
         await db.translationCache.put({ key: hash, translation: result, createdAt: new Date() })
-      return result
+      return {
+        translation: result,
+        ...batchIdentity,
+        glossaryRevision: message.data.glossaryRevision ?? 0,
+      }
     }
     try {
-      const translation = await translate()
+      const result = await translate()
+      const translation = typeof result === "string" ? result : result.translation
       return message.data.resultFormat === "outcome"
         ? {
+            ...(typeof result === "string" ? {} : result),
             translation,
             outcome: { status: translation.trim() ? ("success" as const) : ("empty" as const) },
           }
@@ -116,28 +196,47 @@ export function setupSubtitlesTranslationHandlers(): void {
   })
   onMessage("aiSegmentSubtitles", async (message) => {
     const scope = scopeFor(message.sender, message.data.sessionId)
+    admit(message.sender, scope, message.data.work)
     const { requestQueue } = await queuesPromise
     assertCurrent(scope)
     const cached = await getCachedAiSegmentation(message.data)
     assertCurrent(scope)
-    if (cached) return cached
+    if (cached) {
+      subtitleWorkRuntime.note("segmentation-cache-hit")
+      return cached
+    }
     const key = Sha256Hex(
       "subtitle-segmentation-v2",
       message.data.jsonContent,
       JSON.stringify(message.data.providerRef),
     )
     const result = await requestQueue.enqueue(
-      (signal) => runAiSegmentSubtitles(message.data, { signal }),
+      (signal, liveScopes) =>
+        runAiSegmentSubtitles(message.data, {
+          signal,
+          modelGuard: subtitleWorkRuntime.guard(
+            liveScopes ?? (() => (scope ? [scope] : undefined)),
+            [key],
+            signal,
+          ),
+        }),
       Date.now(),
       key,
       scope ? [scope] : undefined,
-      { timeoutMs: 60_000, priority: message.data.priority ?? 1 },
+      {
+        timeoutMs: 60_000,
+        priority: message.data.priority ?? 1,
+        providerKey: providerExecutionKey(message.data.providerRef),
+      },
     )
     assertCurrent(scope)
     return result
   })
   onMessage("getSubtitlesSummary", async (message) => {
     const scope = scopeFor(message.sender, message.data.sessionId)
+    admit(message.sender, scope, message.data.work)
+    if (message.data.subtitlesContext.length > SUBTITLE_WORK_LIMITS.sourceCharacters)
+      throw new SubtitleWorkRejected("input-limit")
     const { requestQueue } = await queuesPromise
     assertCurrent(scope)
     const { videoTitle, subtitlesContext, providerRef } = message.data
@@ -151,17 +250,25 @@ export function setupSubtitlesTranslationHandlers(): void {
       scope,
       priority: 3,
       isScopeCancelled: (key) => cancelledScopes.has(key),
+      modelGuard: (liveScopes, signal) =>
+        subtitleWorkRuntime.guard(
+          liveScopes,
+          [Sha256Hex("context", videoTitle, subtitlesContext)],
+          signal,
+        ),
     })
   })
   onMessage("cancelSubtitleRequests", async (message) => {
     const scope = scopeFor(message.sender, message.data.sessionId)
     if (!scope) return
+    subtitleWorkRuntime.release(scope, true)
     cancelledScopes.markScope(scope)
     const { requestQueue, batchQueue } = await queuesPromise
     batchQueue.cancelByScope(scope)
     requestQueue.cancelByScope(scope)
   })
   browser.tabs.onRemoved.addListener((tabId) => {
+    subtitleWorkRuntime.closeTab(tabId)
     const prefix = `${tabId}:`
     cancelledScopes.markPrefix(prefix)
     void queuesPromise

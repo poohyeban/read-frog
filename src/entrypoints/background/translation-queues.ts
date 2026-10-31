@@ -29,8 +29,17 @@ import {
 import { getTranslatePrompt, getTranslatePromptFromConfig } from "@/utils/prompts/translate"
 import { BatchCountMismatchError, BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
+import { providerExecutionSlots } from "@/utils/request/execution-slots"
 import { RequestQueue } from "@/utils/request/request-queue"
+import {
+  DEFAULT_SUBTITLE_BUDGET,
+  subtitleOutputLimit,
+  SUBTITLE_WORK_LIMITS,
+  type SubtitleModelGuard,
+  type SubtitleWorkContext,
+} from "@/utils/subtitles/work-policy"
 import { ensureInitializedConfig } from "./config"
+import { subtitleWorkRuntime } from "./subtitle-work"
 
 type QueuedTranslationProvider = ProviderConfig | SerializableProviderRef
 
@@ -50,6 +59,15 @@ function getQueuedProviderId(provider: QueuedTranslationProvider): string {
   return getLocalProviderConfig(provider).id
 }
 
+export function providerExecutionKey(provider: QueuedTranslationProvider): string {
+  const config = getLocalProviderConfig(provider)
+  return Sha256Hex(
+    config.provider,
+    JSON.stringify("baseURL" in config ? config.baseURL : ""),
+    JSON.stringify("apiKey" in config ? config.apiKey : ""),
+  )
+}
+
 async function executeQueuedTranslation<TContext>(
   text: string,
   langConfig: Config["language"],
@@ -61,6 +79,8 @@ async function executeQueuedTranslation<TContext>(
     textFormat?: import("@/types/config/translate").TranslationTextFormat
     preserveLineBreaks?: boolean
     signal?: AbortSignal
+    modelGuard?: SubtitleModelGuard
+    maxOutputTokens?: number
 
     glossaryTerms?: readonly MatchedTerm[]
   } = {},
@@ -180,6 +200,8 @@ export async function executeBatchTranslation<TContext>(
   dataList: TranslateBatchData<TContext>[],
   promptResolver: PromptResolver<TContext>,
   signal?: AbortSignal,
+  modelGuard?: SubtitleModelGuard,
+  batchIdentity?: (key: string) => void,
 ): Promise<string[]> {
   const { langConfig, context, promptConfig, subtitlePromptConfig } = dataList[0]!
   const texts = dataList.map((d) => d.text)
@@ -206,13 +228,23 @@ export async function executeBatchTranslation<TContext>(
       prompt.systemPrompt,
       prompt.prompt,
     )
+    batchIdentity?.(cacheKey)
     resolver = async () => prompt
     const cached = await db.translationCache.get(cacheKey)
     signal?.throwIfAborted()
     if (cached?.translation) {
       const parsed = parseBatchResult(cached.translation)
-      if (parsed.length === texts.length && parsed.every((text, i) => text || !texts[i]!.trim()))
+      if (parsed.length === texts.length && parsed.every((text, i) => text || !texts[i]!.trim())) {
+        subtitleWorkRuntime.note("cache-hit")
+        if (!cached.subtitleInputs)
+          await db.translationCache.put({
+            key: cached.key,
+            translation: cached.translation,
+            createdAt: cached.createdAt,
+            subtitleInputs: texts,
+          })
         return parsed
+      }
     }
   }
   const result = await executeQueuedTranslation(batchText, langConfig, dataList[0]!, resolver, {
@@ -221,8 +253,11 @@ export async function executeBatchTranslation<TContext>(
     signal,
 
     glossaryTerms,
+    modelGuard,
+    maxOutputTokens: subtitlePromptConfig ? subtitleOutputLimit(batchText) : undefined,
   })
   const parsed = parseBatchResult(result)
+  if (subtitlePromptConfig) subtitleWorkRuntime.note("batch-results", undefined, parsed.length)
   if (cacheKey) {
     signal?.throwIfAborted()
     // Let BatchQueue own count-mismatch retries, without spending the network
@@ -230,7 +265,12 @@ export async function executeBatchTranslation<TContext>(
     if (parsed.length !== texts.length) return parsed
     if (parsed.some((text, i) => !text && texts[i]!.trim()))
       throw new Error("Empty subtitle translation")
-    await db.translationCache.put({ key: cacheKey, translation: result, createdAt: new Date() })
+    await db.translationCache.put({
+      key: cacheKey,
+      translation: result,
+      subtitleInputs: texts,
+      createdAt: new Date(),
+    })
   }
   return parsed
 }
@@ -260,6 +300,7 @@ function snapshotPromptResolver<TContext>(
 }
 
 export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & {
+  work?: SubtitleWorkContext
   text: string
   langConfig: Config["language"]
   hash: string
@@ -305,7 +346,9 @@ interface TranslationQueueSetupConfig<TContext = unknown> {
 }
 
 async function createTranslationQueues<TContext>(config: TranslationQueueSetupConfig<TContext>) {
-  const { rate, capacity } = config.requestQueueConfig
+  const { rate, capacity, maxInFlight } = config.requestQueueConfig as RequestQueueConfig & {
+    maxInFlight?: number
+  }
   const { maxCharactersPerBatch, maxItemsPerBatch } = config.batchQueueConfig
   const { promptResolver, isScopeCancelled, queueName, configSource } = config
 
@@ -329,14 +372,34 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       timeoutMs: 20_000,
       maxRetries: 2,
       baseRetryDelayMs: 1_000,
+      maxInFlight: maxInFlight ?? DEFAULT_SUBTITLE_BUDGET.maxInFlight,
+      maxQueued: SUBTITLE_WORK_LIMITS.queued,
+      slots: providerExecutionSlots,
+      onDeduplicate: () => subtitleWorkRuntime.note(`deduplicated:${queueName}`),
+      onRetry: (delay, rateLimited) =>
+        subtitleWorkRuntime.note(
+          rateLimited ? `rate-limit-backoff-ms:${queueName}` : `retry-backoff-ms:${queueName}`,
+          undefined,
+          delay,
+        ),
     },
     queueName === "subtitles" ? 30_000 : undefined,
   )
-  const batchQueue = new BatchQueue<TranslateBatchData<TContext>, string>({
-    maxCharactersPerBatch,
-    maxItemsPerBatch,
+  const batchQueue = new BatchQueue<
+    TranslateBatchData<TContext>,
+    string | { translation: string; batchKey: string; batchIndex: number }
+  >({
+    maxCharactersPerBatch:
+      queueName === "subtitles"
+        ? Math.min(maxCharactersPerBatch, SUBTITLE_WORK_LIMITS.sourceCharacters)
+        : maxCharactersPerBatch,
+    maxItemsPerBatch:
+      queueName === "subtitles"
+        ? Math.min(maxItemsPerBatch, SUBTITLE_WORK_LIMITS.cues)
+        : maxItemsPerBatch,
+    maxPending: queueName === "subtitles" ? SUBTITLE_WORK_LIMITS.batchMembers : 4096,
     batchDelay: 100,
-    maxRetries: 3,
+    maxRetries: queueName === "subtitles" ? 1 : 3,
     enableFallbackToIndividual: true,
     // Narrow port, not the whole queue: while the rate limiter has no free
     // slot, pending batches keep filling to maxItems/maxChars instead of
@@ -355,6 +418,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
         JSON.stringify(data.provider),
         JSON.stringify(data.promptConfig ?? null),
         JSON.stringify(data.subtitlePromptConfig ?? null),
+        data.work ? `${data.work.start}:${data.work.end}` : "",
 
         // Not the terms — the REVISION. The terms differ per paragraph and
         // keying on them would end batching for glossary users; the revision is
@@ -386,12 +450,34 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
         MAX_BATCH_TIMEOUT_MS,
       )
 
-      const batchThunk = async (signal?: AbortSignal): Promise<string[]> => {
-        return await executeBatchTranslation(dataList, promptResolver, signal)
+      const batchThunk = async (
+        signal?: AbortSignal,
+        liveScopes?: () => readonly string[] | undefined,
+      ) => {
+        let batchKey: string | undefined
+        const results = await executeBatchTranslation(
+          dataList,
+          promptResolver,
+          signal,
+          queueName === "subtitles"
+            ? subtitleWorkRuntime.guard(
+                liveScopes ?? (() => meta.scopes),
+                dataList.map((d) => d.hash),
+                signal,
+              )
+            : undefined,
+          (key) => {
+            batchKey = key
+          },
+        )
+        return results.map((translation, batchIndex) =>
+          batchKey ? { translation, batchKey, batchIndex } : translation,
+        )
       }
 
       return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, {
         timeoutMs,
+        providerKey: providerExecutionKey(dataList[0]!.provider),
         priority: Math.min(...dataList.map((d) => d.priority ?? 1)),
       })
     },
@@ -400,11 +486,23 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       // This individual fallback is its own model call, but any automatic
       // retries of its RequestQueue thunk reuse the same idempotency key.
 
-      const thunk = async (signal?: AbortSignal) => {
+      const thunk = async (
+        signal?: AbortSignal,
+        liveScopes?: () => readonly string[] | undefined,
+      ) => {
         if (data.subtitlePromptConfig) {
-          const results = await executeBatchTranslation([data], promptResolver, signal)
+          let batchKey = ""
+          const results = await executeBatchTranslation(
+            [data],
+            promptResolver,
+            signal,
+            subtitleWorkRuntime.guard(liveScopes ?? (() => meta.scopes), [hash], signal),
+            (key) => {
+              batchKey = key
+            },
+          )
           if (results.length !== 1) throw new BatchCountMismatchError(1, results.length, results)
-          return results[0]!
+          return { translation: results[0]!, batchKey, batchIndex: 0 }
         }
         return executeQueuedTranslation(
           text,
@@ -427,6 +525,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       }
       return requestQueue.enqueue(thunk, scheduleAt, hash, meta.scopes, {
         priority: data.priority,
+        providerKey: providerExecutionKey(data.provider),
       })
     },
     onError: (error, context) => {
@@ -494,8 +593,25 @@ function watchQueueConfig(
         const selected = selectConfig(newConfig)
         const json = JSON.stringify(selected)
         if (json === lastAppliedJson) return
-        requestQueue.setQueueOptions(selected.requestQueueConfig)
-        batchQueue.setBatchConfig(selected.batchQueueConfig)
+        requestQueue.setQueueOptions({
+          ...selected.requestQueueConfig,
+          maxInFlight:
+            newConfig.videoSubtitles.workBudget?.maxInFlight ?? DEFAULT_SUBTITLE_BUDGET.maxInFlight,
+        })
+        batchQueue.setBatchConfig(
+          queueName === "subtitles"
+            ? {
+                maxCharactersPerBatch: Math.min(
+                  selected.batchQueueConfig.maxCharactersPerBatch,
+                  SUBTITLE_WORK_LIMITS.sourceCharacters,
+                ),
+                maxItemsPerBatch: Math.min(
+                  selected.batchQueueConfig.maxItemsPerBatch,
+                  SUBTITLE_WORK_LIMITS.cues,
+                ),
+              }
+            : selected.batchQueueConfig,
+        )
         lastAppliedJson = json
         logger.info(`[translation-queues] ${queueName} queue config updated`, selected)
       } catch {
@@ -506,7 +622,11 @@ function watchQueueConfig(
 }
 
 const selectWebPageQueueConfig = (config: Config) => ({
-  requestQueueConfig: config.pageTranslation.requestQueueConfig,
+  requestQueueConfig: {
+    ...config.pageTranslation.requestQueueConfig,
+    maxInFlight:
+      config.videoSubtitles.workBudget?.maxInFlight ?? DEFAULT_SUBTITLE_BUDGET.maxInFlight,
+  },
   batchQueueConfig: config.pageTranslation.batchQueueConfig,
 })
 
@@ -542,7 +662,11 @@ export function createWebPageTranslationQueues() {
  */
 
 const selectSubtitlesQueueConfig = (config: Config) => ({
-  requestQueueConfig: config.videoSubtitles.requestQueueConfig,
+  requestQueueConfig: {
+    ...config.videoSubtitles.requestQueueConfig,
+    maxInFlight:
+      config.videoSubtitles.workBudget?.maxInFlight ?? DEFAULT_SUBTITLE_BUDGET.maxInFlight,
+  },
   batchQueueConfig: config.videoSubtitles.batchQueueConfig,
 })
 export function createSubtitlesTranslationQueues() {

@@ -95,7 +95,7 @@ describe("article context queue integration", () => {
     expect(mocks.generate).toHaveBeenCalledTimes(1)
     expect(mocks.put).not.toHaveBeenCalled()
   })
-  it("aborts each timed-out attempt before retry and preserves timeout classification", async () => {
+  it("aborts an uncooperative timed-out attempt without dispatching overlapping retries", async () => {
     const signals: AbortSignal[] = []
     mocks.generate.mockImplementation((_payload, options) => {
       signals.push(options.signal)
@@ -106,7 +106,7 @@ describe("article context queue integration", () => {
       .catch((error) => error)
     await vi.advanceTimersByTimeAsync(17000)
     expect(getRequestErrorMeta(await failed).kind).toBe("timeout")
-    expect(signals).toHaveLength(3)
+    expect(signals).toHaveLength(1)
     expect(signals.every((signal) => signal.aborted)).toBe(true)
     expect(mocks.put).not.toHaveBeenCalled()
   })

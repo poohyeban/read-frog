@@ -34,8 +34,34 @@ interface ProtocolMap {
 
   clearAiSegmentationCache: () => Promise<void>
   enqueueSubtitlesTranslateRequest: (data: SubtitleRequestPayload) => Promise<SubtitleWireResult>
-  cancelSubtitleRequests: (data: { sessionId: string }) => void
+  cancelSubtitleRequests: (data: { sessionId: string }) => Promise<void>
+  releaseSubtitleTask: (data: { sessionId: string }) => void
+  getSubtitleCandidates: (data: {
+    trackKey: string
+    start: number
+    end: number
+  }) => import("@/utils/subtitles/types").SubtitleCandidateBundle[]
+  saveSubtitleCandidates: (data: {
+    trackKey: string
+    lane: "fast" | "quality"
+    cues: import("@/utils/subtitles/types").SubtitlesFragment[]
+    lease: string
+  }) => void
+  recordSubtitleDiagnostics: (
+    data: import("@/utils/subtitles/diagnostics").SubtitleTrace & { sessionId: string },
+  ) => void
+  openSubtitleLease: (data: {
+    traceId?: string
+    exportLimits?: { requests: number; estimatedTokens: number }
+  }) => string
+  revokeSubtitleLease: (data: { lease: string }) => void
+  getSubtitleBudgetStatus: () => {
+    ledger: import("@/utils/subtitles/work-budget").BudgetLedger
+    counters: Record<string, number>
+    events: import("@/entrypoints/background/subtitle-work").SubtitleDiagnosticEvent[]
+  }
   getSubtitlesSummary: (data: {
+    work?: import("@/utils/subtitles/work-policy").SubtitleWorkContext
     videoTitle: string
     subtitlesContext: string
     sessionId?: string
@@ -54,6 +80,7 @@ interface ProtocolMap {
     summary: string
   }) => Promise<void>
   aiSegmentSubtitles: (data: {
+    work?: import("@/utils/subtitles/work-policy").SubtitleWorkContext
     jsonContent: string
     sessionId?: string
     priority?: number

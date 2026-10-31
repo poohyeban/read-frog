@@ -46,7 +46,7 @@ beforeEach(() => {
   )
 })
 afterEach(() => {
-  for (const coordinator of coordinators.splice(0)) coordinator.stop()
+  for (const coordinator of coordinators.splice(0)) void coordinator.stop()
   vi.resetAllMocks()
   vi.useRealTimers()
 })
@@ -113,7 +113,7 @@ describe("subtitle translation recovery", () => {
     )
     const { coordinator } = setup([{ text: "stopped", start: 0, end: 1000 }])
     coordinator.start()
-    coordinator.stop()
+    void coordinator.stop()
     finishConfig(DEFAULT_CONFIG)
     await Promise.resolve()
     await Promise.resolve()
@@ -135,8 +135,8 @@ describe("bounded failure recovery", () => {
       })),
     )
     const { coordinator, video } = setup([
-      { text: "good", start: 0, end: 100_000 },
-      { text: "retry", start: 1000, end: 100_000 },
+      { text: "good", start: 0, end: 60_000 },
+      { text: "retry", start: 1000, end: 60_000 },
     ])
     coordinator.start()
     await vi.advanceTimersByTimeAsync(0)
@@ -148,7 +148,7 @@ describe("bounded failure recovery", () => {
     expect(vi.mocked(translateSubtitles).mock.calls[1]![0].map((c) => c.text)).toEqual(["retry"])
     await vi.advanceTimersByTimeAsync(120_000)
     expect(translateSubtitles).toHaveBeenCalledTimes(2)
-    coordinator.stop()
+    void coordinator.stop()
     coordinator.clearFailed()
     coordinator.start()
     await vi.advanceTimersByTimeAsync(0)
@@ -163,7 +163,7 @@ describe("bounded failure recovery", () => {
         translationOutcome: { status: "permanent", message: "invalid API key" },
       })),
     )
-    const { coordinator, video } = setup([{ text: "original", start: 0, end: 100_000 }])
+    const { coordinator, video } = setup([{ text: "original", start: 0, end: 60_000 }])
     coordinator.start()
     await vi.advanceTimersByTimeAsync(100_000)
     video.dispatchEvent(new Event("timeupdate"))

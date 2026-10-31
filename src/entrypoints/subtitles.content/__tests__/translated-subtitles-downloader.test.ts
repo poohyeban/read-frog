@@ -94,6 +94,7 @@ function status() {
 
 describe("translatedSubtitlesDownloader", () => {
   beforeEach(() => {
+    vi.unstubAllGlobals()
     vi.clearAllMocks()
     vi.useRealTimers()
     vi.stubGlobal("document", { title: "Test video" })
@@ -112,6 +113,51 @@ describe("translatedSubtitlesDownloader", () => {
     mocks.translateSubtitles.mockImplementation(async (fragments: SubtitlesFragment[]) =>
       translated(fragments),
     )
+  })
+
+  it("preflights a three-hour track, bounds every batch and cancels before the next chunk", async () => {
+    const source = lines(5400).map((c, i) => ({ ...c, start: i * 2000, end: i * 2000 + 1800 }))
+    const confirm = vi.fn<(...args: any[]) => any>().mockReturnValue(true)
+    vi.stubGlobal("window", {
+      confirm,
+      addEventListener: vi.fn<() => void>(),
+      removeEventListener: vi.fn<() => void>(),
+    })
+    const finishes: ((cues: SubtitlesFragment[]) => void)[] = []
+    mocks.translateSubtitles.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finishes.push(resolve)
+        }),
+    )
+    const { downloader } = createDownloader(source)
+    const download = downloader.download()
+    await vi.waitFor(() => expect(mocks.translateSubtitles).toHaveBeenCalledTimes(2))
+    expect(confirm).toHaveBeenCalledOnce()
+    const before = mocks.translateSubtitles.mock.calls.length
+    await downloader.cancel()
+    for (const [i, finish] of finishes.entries())
+      finish(translated(mocks.translateSubtitles.mock.calls[i]![0]))
+    await download
+    expect(mocks.translateSubtitles).toHaveBeenCalledTimes(before)
+    expect(mocks.downloadSubtitlesAsSrt).not.toHaveBeenCalled()
+    expect(status().phase).toBe(TranslatedDownloadPhase.Cancelled)
+    for (const [batch] of mocks.translateSubtitles.mock.calls) {
+      expect(batch.length).toBeLessThanOrEqual(5)
+      expect(batch.at(-1).end - batch[0].start).toBeLessThanOrEqual(60000)
+    }
+  })
+
+  it("declining full export confirmation performs zero model requests", async () => {
+    vi.stubGlobal("window", {
+      confirm: () => false,
+      addEventListener: vi.fn<() => void>(),
+      removeEventListener: vi.fn<() => void>(),
+    })
+    await createDownloader(lines(5400)).downloader.download()
+    expect(mocks.translateSubtitles).not.toHaveBeenCalled()
+    expect(mocks.aiSegmentBlock).not.toHaveBeenCalled()
+    expect(status().phase).toBe(TranslatedDownloadPhase.Cancelled)
   })
 
   it("uses one config snapshot while reporting batch progress and downloading the full SRT", async () => {
@@ -157,7 +203,6 @@ describe("translatedSubtitlesDownloader", () => {
       expect.arrayContaining([
         { phase: TranslatedDownloadPhase.Checking, progress: null },
         { phase: TranslatedDownloadPhase.Preparing, progress: 0 },
-        { phase: TranslatedDownloadPhase.Translating, progress: 83 },
         { phase: TranslatedDownloadPhase.Translating, progress: 100 },
         { phase: TranslatedDownloadPhase.Complete, progress: null },
       ]),
@@ -255,11 +300,11 @@ describe("translatedSubtitlesDownloader", () => {
 
     expect(mocks.downloadSubtitlesAsSrt).not.toHaveBeenCalled()
     expect(mocks.toastAdd).toHaveBeenCalledWith({ type: "error", title: "Batch failed" })
-    expect(status()).toEqual({ phase: TranslatedDownloadPhase.Idle, progress: null })
+    expect(status()).toEqual({ phase: TranslatedDownloadPhase.Failed, progress: null })
 
     finishSlowBatch(translated(fragments.slice(5)))
     await vi.waitFor(() =>
-      expect(status()).toEqual({ phase: TranslatedDownloadPhase.Idle, progress: null }),
+      expect(status()).toEqual({ phase: TranslatedDownloadPhase.Failed, progress: null }),
     )
   })
 
@@ -281,7 +326,7 @@ describe("translatedSubtitlesDownloader", () => {
       type: "error",
       title: "subtitles.errors.translatedExportIncomplete",
     })
-    expect(status()).toEqual({ phase: TranslatedDownloadPhase.Idle, progress: null })
+    expect(status()).toEqual({ phase: TranslatedDownloadPhase.Failed, progress: null })
   })
 
   it("rejects same-language export before showing the preparing state", async () => {
@@ -301,7 +346,7 @@ describe("translatedSubtitlesDownloader", () => {
     })
     expect(statuses).toEqual([
       { phase: TranslatedDownloadPhase.Checking, progress: null },
-      { phase: TranslatedDownloadPhase.Idle, progress: null },
+      { phase: TranslatedDownloadPhase.Failed, progress: null },
     ])
   })
 
@@ -374,53 +419,23 @@ describe("translatedSubtitlesDownloader", () => {
     )
   })
 
-  it("retries unsafe AI segmentation with smaller chunks before falling back", async () => {
+  it("records one local downgrade without nested segmentation retries", async () => {
     const source = [
-      {
-        text: "The first half of this transcript segment has enough words to stay readable.",
-        start: 0,
-        end: 29000,
-      },
-      {
-        text: "The second half should be exported with its original safe timing after retry.",
-        start: 30000,
-        end: 59000,
-      },
+      { text: "First half.", start: 0, end: 29000 },
+      { text: "Second half.", start: 30000, end: 59000 },
     ]
-    const retryFirst = [{ ...source[0], text: "Retried first half." }]
-    const retrySecond = [{ ...source[1], text: "Retried second half." }]
     mocks.getLocalConfig.mockResolvedValue(createConfig({ aiSegmentation: true }))
-    mocks.aiSegmentBlock
-      .mockResolvedValueOnce([{ text: "Collapsed.", start: 0, end: 1 }])
-      .mockResolvedValueOnce(retryFirst)
-      .mockResolvedValueOnce(retrySecond)
-
+    mocks.aiSegmentBlock.mockResolvedValueOnce([{ text: "Collapsed.", start: 0, end: 1 }])
     await createDownloader(source, false).downloader.download()
-
-    expect(mocks.aiSegmentBlock).toHaveBeenCalledTimes(3)
-    expect(mocks.aiSegmentBlock).toHaveBeenNthCalledWith(
-      1,
-      source,
-      expect.any(Object),
-      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
-    )
-    expect(mocks.aiSegmentBlock).toHaveBeenNthCalledWith(
-      2,
-      [source[0]],
-      expect.any(Object),
-      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
-    )
-    expect(mocks.aiSegmentBlock).toHaveBeenNthCalledWith(
-      3,
-      [source[1]],
-      expect.any(Object),
-      expect.objectContaining({ kind: "export", signal: expect.any(AbortSignal) }),
-    )
+    expect(mocks.aiSegmentBlock).toHaveBeenCalledTimes(1)
+    expect(mocks.toastAdd).toHaveBeenCalledWith({
+      type: "warning",
+      title: "subtitles.work.degraded",
+    })
     expect(mocks.downloadSubtitlesAsSrt).toHaveBeenCalledWith(
       expect.objectContaining({
         subtitles: [
-          { text: "zh:Retried first half.", start: 0, end: 29000 },
-          { text: "zh:Retried second half.", start: 30000, end: 59000 },
+          expect.objectContaining({ start: 0, end: 59000, text: "zh:First half. Second half." }),
         ],
       }),
     )

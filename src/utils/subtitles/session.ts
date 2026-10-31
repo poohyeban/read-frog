@@ -1,12 +1,17 @@
+import type { SubtitleLane, SubtitleWorkContext } from "./work-policy"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { sendMessage } from "@/utils/message"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
 
 export type SubtitleTaskKind = "playback" | "segmentation" | "context" | "export"
 export interface SubtitleTaskOptions {
+  kind?: SubtitleTaskKind
+  lane?: SubtitleLane
   sessionId?: string
   signal?: AbortSignal
   priority?: number
+  work?: SubtitleWorkContext
+  prepareWork?: (lane: SubtitleLane, start: number, end: number) => Promise<SubtitleWorkContext>
 }
 export interface SubtitleTask extends SubtitleTaskOptions {
   readonly sessionId: string
@@ -26,9 +31,14 @@ export class SubtitleSession {
   private disposed = false
   private tasks = new Set<SubtitleTask>()
   private disposers = new Set<() => void>()
+  private leasePromise?: Promise<string>
+  private stopping: Promise<void> = Promise.resolve()
   readonly identity: Readonly<{ videoId: string; trackId: string; revision: number }>
 
-  constructor(identity = { videoId: "", trackId: "", revision: 0 }) {
+  constructor(
+    identity = { videoId: "", trackId: "", revision: 0 },
+    private exportLimits?: { requests: number; estimatedTokens: number },
+  ) {
     this.identity = Object.freeze({ ...identity })
     if (typeof window !== "undefined") window.addEventListener("pagehide", this.dispose)
   }
@@ -62,6 +72,15 @@ export class SubtitleSession {
       kind,
       key,
       signal: controller.signal,
+      prepareWork: async (lane, start, end) => {
+        if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
+        const lease = await (this.leasePromise ??= sendMessage("openSubtitleLease", {
+          exportLimits: this.exportLimits,
+          traceId: this.id,
+        }))
+        if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
+        return { lease, lane, start, end, urgent: priority === 0, logicalKey: key }
+      },
       isCurrent: () =>
         !completed &&
         this.active &&
@@ -71,6 +90,7 @@ export class SubtitleSession {
       complete: () => {
         completed = true
         this.tasks.delete(task)
+        void sendMessage("releaseSubtitleTask", { sessionId }).catch(() => {})
       },
       cancel: () => {
         if (completed) return
@@ -87,14 +107,23 @@ export class SubtitleSession {
   cancel(kind?: SubtitleTaskKind) {
     for (const task of [...this.tasks]) if (!kind || task.kind === kind) task.cancel()
   }
-  stop() {
+  stop(): Promise<void> {
     this.active = false
     this.epoch++
     this.cancel()
+    const lease = this.leasePromise
+    this.leasePromise = undefined
+    this.stopping = Promise.all([
+      this.stopping,
+      lease?.then((id) => sendMessage("revokeSubtitleLease", { lease: id })),
+    ]).then(() => {})
+    // Callers can await confirmation; fire-and-forget destruction must not leak rejections.
+    void this.stopping.catch(() => {})
+    return this.stopping
   }
   dispose = () => {
     if (this.disposed) return
-    this.stop()
+    void this.stop()
     this.disposed = true
     for (const dispose of this.disposers) dispose()
     this.disposers.clear()

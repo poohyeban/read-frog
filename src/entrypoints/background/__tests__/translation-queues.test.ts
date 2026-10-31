@@ -824,6 +824,9 @@ describe("translation queue helpers", () => {
     navigate(7, { status: "loading" }, {} as Parameters<typeof navigate>[2])
     expect(await old).toMatchObject({ name: "TranslationCancelledError" })
     expect(signals[0]!.aborted).toBe(true)
+    // An uncooperative transport must settle before this identity can be dispatched again.
+    finish("Discard this cancelled response")
+    await new Promise((resolve) => setTimeout(resolve, 0))
     const next = summary({ sender: { tab: { id: 7 } }, data: { ...data, sessionId: "new" } })
     await vi.waitFor(() => expect(signals).toHaveLength(2))
     finish("New document summary")

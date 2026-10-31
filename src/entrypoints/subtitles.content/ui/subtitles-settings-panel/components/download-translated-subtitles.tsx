@@ -1,4 +1,4 @@
-import { IconDownload, IconLanguage, IconLoader2 } from "@tabler/icons-react"
+import { IconDownload, IconLanguage, IconPlayerStop } from "@tabler/icons-react"
 import { cva } from "class-variance-authority"
 import { Button } from "@/components/ui/base-ui/button"
 import { i18n } from "@/utils/i18n"
@@ -23,7 +23,8 @@ const downloadTranslatedSubtitlesMessageVariants = cva(
 )
 
 export function DownloadTranslatedSubtitles() {
-  const { message, messageTone, progress, isRunning, download } = useDownloadTranslatedSubtitles()
+  const { message, messageTone, progress, isRunning, download, cancel } =
+    useDownloadTranslatedSubtitles()
   const buttonId = "read-frog-download-translated-subtitles"
   const title = i18n.t("subtitles.actions.downloadTranslated")
 
@@ -60,11 +61,12 @@ export function DownloadTranslatedSubtitles() {
         type="button"
         variant="ghost-secondary"
         size="icon-sm"
-        onClick={download}
-        disabled={isRunning}
+        onClick={isRunning ? cancel : download}
+        aria-label={isRunning ? i18n.t("subtitles.work.cancelExport") : title}
+        disabled={isRunning && !cancel}
       >
         {isRunning ? (
-          <IconLoader2 className="size-3.5 animate-spin" />
+          <IconPlayerStop className="size-3.5" />
         ) : (
           <IconDownload className="size-3.5" />
         )}

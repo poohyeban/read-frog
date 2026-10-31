@@ -30,7 +30,7 @@ export const currentSubtitleAtom = atom<SubtitlesFragment | null>(null)
 
 export const sourceLanguageAtom = atom<LangCodeISO6393 | null>(null)
 
-/** Best original track (baseline or AI-segmented). Read-only for display/coordinator consumers. */
+/** Immutable local baseline. Quality candidates never replace this source publication. */
 export const sourceTrackAtom = atom<SubtitlesFragment[]>([])
 
 /** The scheduler's translated cues, for consumers that need the whole track
@@ -59,6 +59,7 @@ export const displaySubtitleAtom = atom((get): SubtitlesFragment | null => {
 export const subtitlesStateAtom = atom<StateData | null>(null)
 
 export const subtitlesVisibleAtom = atom<boolean>(false)
+export const subtitleStopPhaseAtom = atom<"idle" | "stopping" | "stopped" | "failed">("idle")
 
 export const subtitlesSourceAtom = atom<SubtitlesSource>(SUBTITLES_SOURCE.NATIVE)
 
@@ -78,6 +79,8 @@ export const TranslatedDownloadPhase = {
   Preparing: "preparing",
   Translating: "translating",
   Complete: "complete",
+  Failed: "failed",
+  Cancelled: "cancelled",
 } as const
 
 // eslint-disable-next-line ts/no-redeclare

@@ -1,4 +1,5 @@
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
+import type { SubtitleTraceSink } from "@/utils/subtitles/diagnostics"
 import type { SubtitlesFragment } from "@/utils/subtitles/types"
 import { PROCESS_LOOK_AHEAD_MS } from "@/utils/constants/subtitles"
 import { freezeData } from "@/utils/immutable"
@@ -7,6 +8,7 @@ import { effectiveLookAheadMs } from "@/utils/subtitles/lookahead"
 import { aiSegmentBlock } from "@/utils/subtitles/processor/ai-segmentation"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
 import { SubtitleSession, type SubtitleTask } from "@/utils/subtitles/session"
+import { chunkSubtitleWork } from "@/utils/subtitles/work-policy"
 
 export type ChunkSegmentedHandler = (
   chunk: SubtitlesFragment[],
@@ -17,6 +19,10 @@ export class SegmentationPipeline {
   // Segmented results, read by translation pipeline
   processedFragments: SubtitlesFragment[] = []
 
+  private processedChunks = new Map<string, SubtitlesFragment[]>()
+  restore(cues: SubtitlesFragment[]) {
+    this.processedFragments = [...new CueTimeline(this.processedFragments).upsert(cues).cues]
+  }
   private chunks: SubtitlesFragment[][]
   private chunkTimeline: CueTimeline
   private completed = new Set<string>()
@@ -27,6 +33,18 @@ export class SegmentationPipeline {
   private generation = 0
   private running = false
   private stopped = false
+  private admission: () => boolean = () => true
+  private trace?: SubtitleTraceSink
+  setDiagnostics(trace?: SubtitleTraceSink) {
+    this.trace = trace
+  }
+  private onLatency?: (ms: number) => void
+  setLatencyObserver(observer: (ms: number) => void) {
+    this.onLatency = observer
+  }
+  setAdmission(admission: () => boolean) {
+    this.admission = admission
+  }
 
   private getVideoElement: () => HTMLVideoElement | null
   private getSourceLanguage: () => string
@@ -48,22 +66,7 @@ export class SegmentationPipeline {
     this.session = options.session ?? new SubtitleSession()
     this.session.own(() => this.stop())
     const raw = [...getCueTimeline(options.rawFragments).cues]
-    const baseline = getCueTimeline(options.baselineFragments ?? raw)
-    this.chunks = []
-    let chunk: SubtitlesFragment[] = []
-    for (const cue of raw) {
-      const crossing = baseline.at(cue.start)
-      if (
-        chunk.length &&
-        cue.start >= chunk[0]!.start + PROCESS_LOOK_AHEAD_MS &&
-        !(crossing && crossing.start < cue.start)
-      ) {
-        this.chunks.push(chunk)
-        chunk = []
-      }
-      chunk.push(cue)
-    }
-    if (chunk.length) this.chunks.push(chunk)
+    this.chunks = chunkSubtitleWork(raw)
     this.chunkTimeline = new CueTimeline(
       this.chunks.map((c, index) => ({
         start: c[0]!.start,
@@ -71,7 +74,7 @@ export class SegmentationPipeline {
         text: String(index),
       })),
     )
-    this.processedFragments = [...(options.baselineFragments ?? [])]
+    this.processedFragments = []
     this.getVideoElement = options.getVideoElement
     this.getSourceLanguage = options.getSourceLanguage
     this.providerRef = freezeData(structuredClone(options.providerRef))
@@ -81,14 +84,6 @@ export class SegmentationPipeline {
 
   get isRunning(): boolean {
     return this.running
-  }
-
-  /** Future cues wait for their recut; currently visible originals can translate immediately. */
-  isAwaitingSegmentation(cue: SubtitlesFragment): boolean {
-    if (this.preSegmented || !this.providerRef) return false
-    const window = this.chunkTimeline.at(cue.start)
-    const chunk = window ? this.chunks[Number(window.text)] : undefined
-    return !!chunk?.[0] && !this.completed.has(cueIdentity(chunk[0]))
   }
 
   hasUnprocessedChunks(): boolean {
@@ -117,7 +112,7 @@ export class SegmentationPipeline {
   /** Reuse the active window; cancel only work that no longer serves this position. */
   reprioritize() {
     const video = this.getVideoElement()
-    if (!video) return
+    if (!video || !this.admission()) return
     const time = video.currentTime * 1000
     const ahead = effectiveLookAheadMs(PROCESS_LOOK_AHEAD_MS, video.playbackRate)
     if (
@@ -158,7 +153,7 @@ export class SegmentationPipeline {
     currentTimeMs: number,
     generation = this.generation,
   ): Promise<boolean> {
-    if (this.stopped) return false
+    if (this.stopped || !this.admission()) return false
 
     const chunk = this.findNextChunk(currentTimeMs)
     if (chunk.length === 0) return false
@@ -185,19 +180,32 @@ export class SegmentationPipeline {
     )
     this.task = task
     this.processingChunk = chunk
+    const started = Date.now()
+    this.trace?.({
+      event: "segmentation-start",
+      lane: "segmentation",
+      mediaTimeMs: currentTimeMs,
+      value: chunk.length,
+    })
     try {
       const segmented = await aiSegmentBlock(chunk, this.providerRef, task)
       // Session may have been torn down while the AI call was in flight.
       if (this.stopped || generation !== this.generation || !task.isCurrent()) return false
-      const optimized = optimizeSubtitles(segmented, this.getSourceLanguage())
+      this.trace?.({
+        event: "segmentation-complete",
+        lane: "segmentation",
+        mediaTimeMs: currentTimeMs,
+        value: segmented.length,
+      })
+      this.onLatency?.(Date.now() - started)
+      const optimized = segmented
       this.completed.add(key)
       this.replaceProcessedChunk(chunk, optimized)
     } catch {
       if (this.stopped || generation !== this.generation || !task.isCurrent()) return false
       this.failed.add(key)
-      const optimized = optimizeSubtitles(chunk, this.getSourceLanguage())
       this.completed.add(key)
-      this.replaceProcessedChunk(chunk, optimized)
+      // Invalid/failed AI results never become Quality Ready; Fast remains independent.
     } finally {
       task.complete()
       if (this.task === task) {
@@ -213,16 +221,9 @@ export class SegmentationPipeline {
     // Do not mutate processed fragments or notify the adapter after stop().
     if (this.stopped) return
 
-    const chunkStart = chunk[0]!.start
-    const chunkEnd = chunk.reduce((end, cue) => Math.max(end, cue.end), 0)
-
-    // Drop any cue that overlaps the window (not just cues whose start falls inside it).
-    // Half-open: keep if end <= chunkStart || start >= chunkEnd.
-    this.processedFragments = this.processedFragments.filter(
-      (fragment) => fragment.end <= chunkStart || fragment.start >= chunkEnd,
-    )
-    this.processedFragments.push(...nextFragments)
-    this.processedFragments.sort((a, b) => a.start - b.start)
+    this.processedChunks.set(cueIdentity(chunk[0]!), nextFragments)
+    // Chunk ownership, rather than overlapping timestamps, preserves dense parallel cues.
+    this.restore([...this.processedChunks.values()].flat())
 
     this.onChunkSegmented?.(chunk, nextFragments)
   }

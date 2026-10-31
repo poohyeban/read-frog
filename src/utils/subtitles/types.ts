@@ -14,4 +14,17 @@ export interface SubtitlesFragment {
   end: number
   translation?: string
   translationOutcome?: SubtitleOutcome
+  translationBatchKey?: string
+  translationBatchIndex?: number
+  glossaryRevision?: number
+}
+
+export interface SubtitleCandidateBundle {
+  key: string
+  trackKey: string
+  lane: "fast" | "quality"
+  cues: SubtitlesFragment[]
+  start: number
+  end: number
+  createdAt: Date
 }

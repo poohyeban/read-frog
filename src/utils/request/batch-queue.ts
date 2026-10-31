@@ -1,12 +1,11 @@
 import { batchQueueConfigSchema } from "@/types/config/translate"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { SubtitleWorkRejected } from "@/utils/subtitles/work-policy"
 import { TranslationCancelledError } from "./cancellation"
 
 export class BatchCountMismatchError extends Error {
-  constructor(expected: number, got: number, results: unknown[]) {
-    super(
-      `Batch result count mismatch: expected ${expected}, got ${got}.\nResults: ["${results.join('",\n"')}"]`,
-    )
+  constructor(expected: number, got: number, _results: unknown[]) {
+    super(`Batch result count mismatch: expected ${expected}, got ${got}.`)
     this.name = "BatchCountMismatchError"
   }
 }
@@ -66,6 +65,7 @@ export interface BatchExecutionMeta {
 }
 
 export interface BatchOptions<T, R> {
+  maxPending?: number
   maxCharactersPerBatch: number
   maxItemsPerBatch: number
   batchDelay: number
@@ -88,6 +88,9 @@ export interface BatchOptions<T, R> {
 }
 
 export class BatchQueue<T, R> {
+  private backoffs = new Set<{ tasks: BatchTask<T, R>[]; wake: () => void }>()
+  private maxPending: number
+  private outstanding = 0
   private pendingBatchMap = new Map<string, PendingBatch<T, R>>()
   private inFlightTasks = new Map<string, { promise: Promise<R>; task: BatchTask<T, R> }>()
   private nextScheduleTimer: NodeJS.Timeout | null = null
@@ -110,6 +113,7 @@ export class BatchQueue<T, R> {
   ) => void
 
   constructor(config: BatchOptions<T, R>) {
+    this.maxPending = config.maxPending ?? 4096
     this.maxCharactersPerBatch = config.maxCharactersPerBatch
     this.maxItemsPerBatch = config.maxItemsPerBatch
     this.batchDelay = config.batchDelay
@@ -150,12 +154,23 @@ export class BatchQueue<T, R> {
       }
     }
 
+    if (this.outstanding >= this.maxPending)
+      return Promise.reject(new SubtitleWorkRejected("queue-full"))
+    this.outstanding++
     let resolve!: (value: R) => void
     let reject!: (error: Error) => void
     const promise = new Promise<R>((res, rej) => {
       resolve = res
       reject = rej
     })
+    void promise.then(
+      () => {
+        this.outstanding--
+      },
+      () => {
+        this.outstanding--
+      },
+    )
 
     const batchKey = this.getBatchKey(data)
     const task: BatchTask<T, R> = {
@@ -228,6 +243,12 @@ export class BatchQueue<T, R> {
     if (this.pendingBatchMap.size === 0 && this.nextScheduleTimer) {
       clearTimeout(this.nextScheduleTimer)
       this.nextScheduleTimer = null
+    }
+    for (const wait of this.backoffs) {
+      for (const task of wait.tasks)
+        for (const scope of task.cancelScopes ?? [])
+          if (scopeMatches(scope)) task.cancelScopes?.delete(scope)
+      if (wait.tasks.every((task) => task.cancelScopes?.size === 0)) wait.wake()
     }
     return cancelled
   }
@@ -378,7 +399,7 @@ export class BatchQueue<T, R> {
       // Only retry on count mismatch errors (LLM returned wrong number of results)
       if (retryCount < this.maxRetries && err instanceof BatchCountMismatchError) {
         const delay = this.calculateBackoffDelay(retryCount)
-        await this.sleep(delay)
+        await this.sleep(delay, tasks)
         // During the backoff this batch lived in NO cancellable structure
         // (its RequestQueue task already completed, it left pendingBatchMap at
         // flush) — a cancel that arrived meanwhile drained nothing, so re-check
@@ -445,8 +466,19 @@ export class BatchQueue<T, R> {
     return Math.min(BASE_BACKOFF_DELAY_MS * 2 ** retryCount, MAX_BACKOFF_DELAY_MS)
   }
 
-  private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms))
+  private sleep(ms: number, tasks: BatchTask<T, R>[]): Promise<void> {
+    return new Promise((resolve) => {
+      const wait = {
+        tasks,
+        wake: () => {
+          clearTimeout(timer)
+          this.backoffs.delete(wait)
+          resolve()
+        },
+      }
+      const timer = setTimeout(wait.wake, ms)
+      this.backoffs.add(wait)
+    })
   }
 
   setBatchConfig(

@@ -87,6 +87,7 @@ function attachScheduler(adapter: UniversalVideoAdapter, active: boolean, curren
     isActive: vi.fn<(...args: any[]) => any>(() => active),
     reset: vi.fn<(...args: any[]) => any>(),
     stop: vi.fn<(...args: any[]) => any>(),
+    setDiagnostics: vi.fn<() => void>(),
     setState: vi.fn<(...args: any[]) => any>(),
     supplementSubtitles: vi.fn<(...args: any[]) => any>(),
     reconcileTranslatedCuesAfterRecut: vi.fn<(...args: any[]) => any>(),
@@ -272,7 +273,7 @@ describe("universalVideoAdapter", () => {
       setAdPlaying(adapter, true)
 
       await (adapter as any).switchSubtitlesFetcher(SUBTITLES_SOURCE.NATIVE)
-      adapter.toggleSubtitlesManually(false)
+      void adapter.toggleSubtitlesManually(false)
       scheduler.isActive.mockReturnValue(false)
       const retry = vi.spyOn(adapter as any, "switchSubtitlesFetcher")
       setAdPlaying(adapter, false)
@@ -915,7 +916,7 @@ describe("universalVideoAdapter", () => {
         .mockResolvedValue(undefined)
 
       ;(adapter as any).toggleSubtitlesWithSource(true, "auto")
-      adapter.toggleSubtitlesManually(true)
+      void adapter.toggleSubtitlesManually(true)
 
       expect(switchSpy.mock.calls.map((call) => (call[1] as any).quiet)).toEqual([true, false])
     })
@@ -932,25 +933,6 @@ describe("universalVideoAdapter", () => {
     })
   })
 
-  it("replaceSourceTrackWindow drops cues that overlap the window by interval", () => {
-    const { adapter } = createAdapter([])
-    attachScheduler(adapter, true)
-
-    // Spans into the replace window even though its start is before windowStart.
-    subtitlesStore.set(sourceTrackAtom, [
-      { text: "overlap", start: 0, end: 1500 },
-      { text: "after", start: 2000, end: 3000 },
-    ])
-
-    ;(adapter as any).replaceSourceTrackWindow(1000, 2000, [
-      { text: "recut", start: 1000, end: 2000 },
-    ])
-
-    expect(subtitlesStore.get(sourceTrackAtom)).toEqual([
-      { text: "recut", start: 1000, end: 2000 },
-      { text: "after", start: 2000, end: 3000 },
-    ])
-  })
   it("invalidates running translation on semantic config/glossary changes but keeps originals and export ownership", () => {
     const callbacks = new Map<string, (next: any, old: any) => void>()
     const unwatch = vi.fn<() => void>()
@@ -1012,7 +994,7 @@ describe("universalVideoAdapter", () => {
     Object.assign(scheduler, { hide: vi.fn<() => void>() })
     vi.spyOn(adapter as any, "showNativeSubtitles").mockImplementation(() => {})
     const pending = (adapter as any).startTranslation()
-    adapter.toggleSubtitlesManually(false)
+    void adapter.toggleSubtitlesManually(false)
     finish(DEFAULT_CONFIG)
     await expect(pending).resolves.toBe(false)
     expect(subtitlesFetcher.fetch).not.toHaveBeenCalled()

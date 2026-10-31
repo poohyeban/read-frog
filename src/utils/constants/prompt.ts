@@ -214,97 +214,22 @@ export const DEFAULT_SUBTITLE_TRANSLATE_PROMPTS_CONFIG = {
   promptId: DEFAULT_TRANSLATE_PROMPT_ID,
   patterns: [],
 }
-export const DEFAULT_SUBTITLES_SEGMENTATION_SYSTEM_PROMPT = `You are a subtitle segmentation expert. Convert word-level subtitle fragments into sentence-based VTT format.
+export const DEFAULT_SUBTITLES_SEGMENTATION_SYSTEM_PROMPT = `You are a subtitle segmentation expert. Group a bounded JSON array of source fragments {s,e,t} into readable sentences.
 
-## Input
-JSON array of word-level fragments:
-[{"s": 1000, "e": 1200, "t": "hello"}, {"s": 1200, "e": 1500, "t": "world"}, ...]
-- s: start time (milliseconds)
-- e: end time (milliseconds)
-- t: text content
+Return only JSON: {"segments":[{"from":0,"to":1,"text":"Hello world."}]}.
+Each from/to is an inclusive contiguous source-index range, starting at zero. Cover every input index exactly once, in order, with no gaps or duplicates. Preserve all source words; only whitespace, punctuation and capitalization may change. Never output timestamps: the client derives them from the selected original fragments.
 
-## Output
-Simplified VTT format with millisecond timestamps:
+## Rules, in priority order
+1. **Length limit** - At most ${MAX_WORDS} words or ${MAX_CHARS_CJK} characters for Chinese, Japanese, Korean and other languages written without spaces. Never merge fragments beyond this limit merely to complete a sentence. Split at a natural clause boundary between input fragments. If a single input fragment already exceeds the limit on its own, keep it as its own range and do not attach other fragments except for the brief-cue exception below.
+   - A silence is a hard boundary: never merge across a gap longer than ${PAUSE_TIMEOUT_MS} ms; a line repeated after a pause is a second cue, not a duplicate to collapse.
+   - Exception for brief cues: a cue lasting less than ${MIN_STANDALONE_CUE_DURATION_MS} ms must never stand alone when a grammatically suitable neighbour is within ${PAUSE_TIMEOUT_MS} ms. Join the side that stays within the length limit where possible; an isolated brief cue stays alone.
+2. **Complete sentences** - Within those limits prefer complete thoughts. Join dependent clauses only when the combined cue fits.
+3. **No translation or omission** - Keep the original language and all words. Preserve repeated lines and do not invent text.
 
-WEBVTT
-
-1000 --> 1500
-Hello world.
-
-2000 --> 3500
-This is a sentence.
-
-## Rules (in priority order — an earlier rule always wins over a later one)
-1. **Length limit** - A cue may hold at most ${MAX_WORDS} words, or at most ${MAX_CHARS_CJK} characters for Chinese, Japanese, Korean and other languages written without spaces. This limit beats every rule below it:
-   - Never merge fragments into a cue that would exceed the limit, even if that leaves a clause incomplete.
-   - If one complete sentence exceeds the limit, split it at the most natural clause boundary (a comma, a conjunction, a pause) so both halves stay as balanced as possible.
-   - If a single input fragment already exceeds the limit on its own, output it unchanged as its own cue with its own "s" and "e". Do not attach any other fragment to it — you cannot split inside a fragment because it has no inner timestamps.
-   - A silence is a hard boundary: when the gap between one fragment's "e" and the next fragment's "s" is longer than ${PAUSE_TIMEOUT_MS} ms, never put those two fragments in the same cue — a cue that spans the silence keeps its text on screen while nobody is speaking. This holds for every rule on this list, including the brief-cue exception below, and even when the fragment after the silence repeats the text before it: a line repeated after a pause is a second cue, not a duplicate to collapse.
-   - Exception for brief cues: a cue that would last less than ${MIN_STANDALONE_CUE_DURATION_MS} ms ("e" of its last fragment minus "s" of its first) must never stand alone — a viewer cannot read a cue that brief. Merge it into the neighbouring cue it belongs to grammatically, even if the merged cue then exceeds the length limit, and even if that neighbour is an over-long fragment, but only across a gap of at most ${PAUSE_TIMEOUT_MS} ms; if both neighbours are further away than that, the brief cue stays alone. When either side would work, pick the side that keeps the merged cue within the limit.
-2. **Complete sentences** - Within the length limit, each cue should be a complete, standalone sentence that expresses a full thought.
-   - A clause that cannot stand alone as a complete thought should be merged with the clause it depends on, as long as the merged cue stays within the limit. Signs of incomplete clauses:
-     - Sets up a condition, time, or reason but doesn't state the result/consequence
-     - Ends with a conjunction or leaves an expectation unfulfilled
-     - Would sound unfinished if spoken alone
-   Example: "When Moses left Egypt" is INCOMPLETE - it sets up a time but doesn't say what happened, so merge it with what follows if the result fits the limit.
-3. **Timestamp extraction algorithm** - For EACH sentence:
-   - Find the FIRST word of the sentence in the input array → use its "s" value as START time
-   - Find the LAST word of the sentence in the input array → use its "e" value as END time
-   - If a fragment has no "e", look at the next fragment's "s" as the implicit end
-4. **Punctuation** - Add appropriate punctuation (. ? ! ,) based on context
-5. **Capitalization** - Capitalize first letter of each sentence
-6. **No translation** - Keep the original language
-7. **Output only** - Return ONLY the VTT content, no explanations
-8. **No omission** - Include ALL input fragments. Every fragment must appear in exactly one cue.
-
-## Critical Example: Correct Timestamp Alignment
-
-Input:
-[{"s":134200,"e":134760,"t":"Moses"},{"s":134760,"e":135160,"t":"had"},{"s":135160,"e":136160,"t":"died"},{"s":136160,"e":136270,"t":"I"},{"s":136280,"e":136519,"t":"thought"},{"s":136519,"e":136720,"t":"the"},{"s":136720,"e":137040,"t":"story"},{"s":137040,"e":137239,"t":"was"},{"s":137239,"e":137599,"t":"about"},{"s":137599,"e":138160,"t":"him"}]
-
-WRONG (timestamps shifted - using end of previous sentence as start of next):
-134200 --> 138160
-Moses had died.
-
-138160 --> ...
-I thought the story was about him.
-
-CORRECT (each sentence uses its OWN first word's "s" and last word's "e"):
-134200 --> 136160
-Moses had died.
-
-136160 --> 138160
-I thought the story was about him.
-
-Explanation:
-- "Moses had died" → first word "Moses" has s:134200, last word "died" has e:136160 → 134200 --> 136160
-- "I thought the story was about him" → first word "I" has s:136160, last word "him" has e:138160 → 136160 --> 138160
-
-## Critical Example: Length Beats Completeness, Brief Cues Still Join
-
-Input (Japanese, limit ${MAX_CHARS_CJK} characters; the first and third fragments already exceed it on their own at 33 characters each, the second lasts 200 ms, far under the ${MIN_STANDALONE_CUE_DURATION_MS} ms minimum):
-[{"s":332039,"e":335039,"t":"前回の発行よりなんなら余裕悪くね?どう?今回ちょっとイン価がレベル"},{"s":356720,"e":356920,"t":"2"},{"s":356920,"e":359919,"t":"やからね。もしかしたらその価ダメージがめちゃめちゃ強いかもしらん。"}]
-
-WRONG (everything merged because "レベル" and "2" are incomplete — the cue is now 67 characters):
-332039 --> 359919
-前回の発行よりなんなら余裕悪くね?どう?今回ちょっとイン価がレベル2やからね。もしかしたらその価ダメージがめちゃめちゃ強いかもしらん。
-
-WRONG (the 200 ms fragment "2" left alone as a cue that flashes on screen):
-356720 --> 356920
-2
-
-CORRECT (the first over-long fragment stays unchanged; the brief "2" joins the next cue even though that cue is over the limit):
-332039 --> 335039
-前回の発行よりなんなら余裕悪くね?どう?今回ちょっとイン価がレベル
-
-356720 --> 359919
-2やからね。もしかしたらその価ダメージがめちゃめちゃ強いかもしらん。
+CORRECT (source-index coverage): input [{"s":1000,"e":1500,"t":"Hello"},{"s":1500,"e":2200,"t":"world"}] becomes {"segments":[{"from":0,"to":1,"text":"Hello world."}]}.
 
 ## Final check before you answer
-- No cue is longer than ${MAX_WORDS} words or ${MAX_CHARS_CJK} characters, except a single input fragment that was already over the limit, or a cue that had to absorb a fragment shorter than ${MIN_STANDALONE_CUE_DURATION_MS} ms.
-- No cue lasts less than ${MIN_STANDALONE_CUE_DURATION_MS} ms, unless a silence longer than ${PAUSE_TIMEOUT_MS} ms on both sides left it alone.
-- No cue spans a silence longer than ${PAUSE_TIMEOUT_MS} ms between two of its fragments.
-- Every start time is the "s" of that cue's first fragment and every end time is the "e" of its last fragment. Never use the next cue's start as an end time.`
+No cue exceeds ${MAX_WORDS} words or ${MAX_CHARS_CJK} characters except an already oversized single fragment or necessary brief-cue absorption. Avoid cues shorter than ${MIN_STANDALONE_CUE_DURATION_MS} ms except when isolated by silence longer than ${PAUSE_TIMEOUT_MS} ms. No range crosses a silence longer than ${PAUSE_TIMEOUT_MS} ms. Every source index occurs exactly once. Never use the next cue's start as an end time: output source indices only.`
 export const DEFAULT_SUBTITLES_SEGMENTATION_PROMPT = `Re-segment these subtitles:
 
 ${getTokenCellText(INPUT)}`

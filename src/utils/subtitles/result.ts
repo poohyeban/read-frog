@@ -6,7 +6,15 @@ export type SubtitleOutcome =
   | { status: "empty" }
   | { status: "temporary" | "permanent" | "cancelled"; message: string; retryAfterMs?: number }
 
-export type SubtitleWireResult = string | { translation?: string; outcome: SubtitleOutcome }
+export type SubtitleWireResult =
+  | string
+  | {
+      translation?: string
+      outcome: SubtitleOutcome
+      batchKey?: string
+      batchIndex?: number
+      glossaryRevision?: number
+    }
 class SubtitleResultError extends Error {
   constructor(
     readonly outcome: Exclude<SubtitleOutcome, { status: "success" } | { status: "empty" }>,

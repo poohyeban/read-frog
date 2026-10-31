@@ -32,11 +32,10 @@ describe("aiSegmentBlock oversize handling", () => {
     )
   })
 
-  it("never splits a local provider, which has no prompt cap", async () => {
+  it("rejects oversized input even for a local/custom provider", async () => {
     const { aiSegmentBlock } = await import("../ai-segmentation")
 
-    await aiSegmentBlock(makeFragments(40, 2000), LOCAL_REF)
-
-    expect(mocks.sendMessage).toHaveBeenCalledTimes(1)
+    await expect(aiSegmentBlock(makeFragments(40, 2000), LOCAL_REF)).rejects.toThrow("input-limit")
+    expect(mocks.sendMessage).not.toHaveBeenCalled()
   })
 })

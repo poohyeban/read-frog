@@ -19,6 +19,7 @@ interface SubtitlesUIContextValue {
   seekTo: (seconds: number) => void
   getVideoElement: () => HTMLVideoElement | null
   downloadSourceSubtitles: () => Promise<void>
+  cancelTranslatedSubtitles?: () => Promise<void>
   downloadTranslatedSubtitles: () => Promise<void>
   controlsConfig?: ControlsConfig
   embedded?: boolean
@@ -58,6 +59,7 @@ export function SubtitlesProviders({
       getVideoElement: adapter.getVideoElement,
       downloadSourceSubtitles: adapter.downloadSourceSubtitles,
       downloadTranslatedSubtitles: adapter.downloadTranslatedSubtitles,
+      cancelTranslatedSubtitles: adapter.cancelTranslatedSubtitles,
       controlsConfig: adapter.getControlsConfig(),
       embedded: adapter.embedded,
       openBelow,

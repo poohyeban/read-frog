@@ -3,15 +3,70 @@ import type { SubtitlesFragment } from "../types"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { PAUSE_TIMEOUT_MS } from "@/utils/constants/subtitles"
 import { sendMessage } from "@/utils/message"
+import { assertSubtitleWindow } from "../work-policy"
 
 const NEWLINE_PATTERN = /\n/g
 const WHITESPACE_PATTERN = /\s+/g
-const VTT_TIMESTAMP_PATTERN = /^(\d+)\s*-->\s*(\d+)$/
+const VTT_TIMESTAMP_PATTERN = /^(-?\d+(?:\.\d+)?)\s*-->\s*(-?\d+(?:\.\d+)?)$/
 
 const SEGMENTATION_PUNCTUATION = /[\p{P}\s]/gu
 
 function normalizeSegmentationText(text: string): string {
   return text.normalize("NFKC").toLowerCase().replace(SEGMENTATION_PUNCTUATION, "")
+}
+
+/** New protocol: the model chooses source indices; only trusted source data supplies time. */
+export function decodeIndexedSegmentation(
+  source: SubtitlesFragment[],
+  response: string,
+): SubtitlesFragment[] {
+  const cleaned = response.replace(/```(?:json)?/g, "").trim()
+  if (!cleaned.startsWith("{")) {
+    // Compatibility with validated older providers/caches. Never accept free timestamps.
+    const legacy = parseSimplifiedVttToFragments(cleaned)
+    if (!isSegmentationAligned(source, legacy))
+      throw new Error("AI segmentation does not match the source timeline")
+    return legacy
+  }
+  const value: unknown = JSON.parse(cleaned)
+  if (
+    !value ||
+    typeof value !== "object" ||
+    !("segments" in value) ||
+    !Array.isArray(value.segments)
+  )
+    throw new Error("Invalid segmentation protocol")
+  let cursor = 0
+  const result: SubtitlesFragment[] = []
+  for (const segment of value.segments) {
+    if (
+      !segment ||
+      !Number.isInteger(segment.from) ||
+      !Number.isInteger(segment.to) ||
+      segment.from !== cursor ||
+      segment.to < cursor ||
+      segment.to >= source.length ||
+      typeof segment.text !== "string"
+    )
+      throw new Error("Invalid segmentation source coverage")
+    const fragments = source.slice(segment.from, segment.to + 1)
+    if (
+      normalizeSegmentationText(segment.text) !==
+      fragments.map((c) => normalizeSegmentationText(c.text)).join("")
+    )
+      throw new Error("AI segmentation changed source text")
+    let coveredEnd = fragments[0]!.end
+    for (const fragment of fragments.slice(1)) {
+      if (fragment.start - coveredEnd > PAUSE_TIMEOUT_MS)
+        throw new Error("AI segmentation crossed silence")
+      coveredEnd = Math.max(coveredEnd, fragment.end)
+    }
+    result.push({ start: fragments[0]!.start, end: coveredEnd, text: segment.text })
+    cursor = segment.to + 1
+  }
+  if (cursor !== source.length || !result.length)
+    throw new Error("Incomplete segmentation source coverage")
+  return result
 }
 
 /** AI may group fragments and add punctuation, but must preserve their timeline. */
@@ -26,15 +81,17 @@ export function isSegmentationAligned(
     if (!first || cue.start !== first.start || cue.end <= cue.start) return false
     const target = normalizeSegmentationText(cue.text)
     let text = ""
+    let coveredEnd = first.end
     let matched = false
     for (; cursor < source.length; cursor++) {
       const fragment = source[cursor]!
-      if (cursor > 0 && text && fragment.start - source[cursor - 1]!.end > PAUSE_TIMEOUT_MS) {
+      if (cursor > 0 && text && fragment.start - coveredEnd > PAUSE_TIMEOUT_MS) {
         return false
       }
       text += normalizeSegmentationText(fragment.text)
+      coveredEnd = Math.max(coveredEnd, fragment.end)
       if (!target.startsWith(text)) return false
-      if (text === target && cue.end === fragment.end) {
+      if (text === target && cue.end === coveredEnd) {
         cursor++
         matched = true
         break
@@ -137,9 +194,17 @@ export async function aiSegmentBlock(
   }
 
   const jsonContent = formatFragmentsToJson(cleanedFragments)
+  assertSubtitleWindow(cleanedFragments)
 
   task.signal?.throwIfAborted()
   const segmentedVtt = await sendMessage("aiSegmentSubtitles", {
+    work:
+      task.work ??
+      (await task.prepareWork?.(
+        "segmentation",
+        Math.min(...cleanedFragments.map((c) => c.start)),
+        Math.max(...cleanedFragments.map((c) => c.end)),
+      )),
     jsonContent,
     providerRef,
     sessionId: task.sessionId,

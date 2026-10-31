@@ -3,6 +3,7 @@ import type { MatchedTerm } from "@/utils/glossary/types"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
 
 export interface SubtitleRequestPayload {
+  work?: import("@/utils/subtitles/work-policy").SubtitleWorkContext
   text: string
   langConfig: Config["language"]
   providerRef: SerializableProviderRef

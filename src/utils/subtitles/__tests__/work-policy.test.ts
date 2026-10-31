@@ -78,6 +78,17 @@ describe("independent model input boundaries", () => {
       continuousReadyMs(source, [...ready, { ...source[1]!, translation: "译文" }], 0, 15000),
     ).toBe(15000)
   })
+  it("measures the union when dense source cues overlap or nest", () => {
+    const source = [
+      { start: 0, end: 2000, text: "long" },
+      { start: 100, end: 600, text: "nested" },
+    ]
+    const ready = [
+      { start: 0, end: 500, text: "a", translation: "a" },
+      { start: 500, end: 2000, text: "b", translation: "b" },
+    ]
+    expect(continuousReadyMs(source, ready, 0, 2000)).toBe(2000)
+  })
   it("uses different suspend/resume watermarks and accounts for playback rate", () => {
     const buffer = new SubtitleBufferController()
     expect(buffer.update(21000)).toBe(false)

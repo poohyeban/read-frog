@@ -100,7 +100,7 @@ describe("translation coordinator loading state", () => {
     coordinator.start()
     await vi.waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
 
-    coordinator.stop()
+    void coordinator.stop()
     const firstCall = spy.mock.calls[0]!
     const batch = firstCall[0] as Array<{ text: string; start: number; end: number }>
     resolveTranslate(batch.map((f) => ({ ...f, translation: `t:${f.text}` })))
@@ -114,7 +114,7 @@ describe("translation coordinator loading state", () => {
     spy.mockRestore()
   })
 
-  it("invalidates translated bookkeeping when the same start is recut", () => {
+  it("keeps completed Fast identity separate from newly segmented identities", () => {
     let fragments = [{ text: "hello world", start: 0, end: 2000 }]
     const onStateChange = vi.fn<(...args: any[]) => any>()
     const coordinator = new TranslationCoordinator({
@@ -133,7 +133,7 @@ describe("translation coordinator loading state", () => {
 
     // noteFragmentListChanged is a no-op when inactive.
     ;(coordinator as any).active = true
-    ;(coordinator as any).translated.add(cueIdentity(fragments[0]!))
+    ;(coordinator as any).translated.add(`fast:${cueIdentity(fragments[0]!)}`)
 
     // AI re-segmentation keeps start=0 but shortens the cue.
     fragments = [
@@ -145,8 +145,8 @@ describe("translation coordinator loading state", () => {
     // Old completion must be invalidated so the recut line can be translated again.
     expect((coordinator as any).translated.has(cueIdentity(fragments[0]!))).toBe(false)
     // Old baseline identity must not stick around as if still valid.
-    expect((coordinator as any).translated.size).toBe(0)
-    coordinator.stop()
+    expect((coordinator as any).translated.size).toBe(1)
+    void coordinator.stop()
   })
 
   it("does not apply in-flight results after stop then start", async () => {
@@ -177,7 +177,7 @@ describe("translation coordinator loading state", () => {
     coordinator.start()
     await vi.waitFor(() => expect(spy).toHaveBeenCalledTimes(1))
 
-    coordinator.stop()
+    void coordinator.stop()
     coordinator.start()
     // Resume must be able to start a new batch (isTranslating not stuck).
     await vi.waitFor(() => expect(spy).toHaveBeenCalledTimes(2))
@@ -192,7 +192,10 @@ describe("translation coordinator loading state", () => {
     resolvers[1]!([{ text: "a", start: 0, end: 1000, translation: "FRESH" }])
     await Promise.resolve()
     await Promise.resolve()
-    expect(onTranslated).toHaveBeenCalledWith([expect.objectContaining({ translation: "FRESH" })])
+    expect(onTranslated).toHaveBeenCalledWith(
+      [expect.objectContaining({ translation: "FRESH" })],
+      "fast",
+    )
 
     spy.mockRestore()
   })
@@ -226,7 +229,7 @@ describe("translation coordinator loading state", () => {
 
       coordinator.start()
       await vi.waitFor(() => expect(spy).toHaveBeenCalledOnce())
-      coordinator.stop()
+      void coordinator.stop()
 
       const batch = (spy.mock.calls[0]?.[0] ?? []) as Array<{ start: number }>
       spy.mockRestore()

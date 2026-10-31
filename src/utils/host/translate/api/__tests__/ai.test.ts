@@ -1,6 +1,7 @@
 import type { LLMProviderConfig } from "@/types/config/provider"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { getRequestErrorMeta } from "@/utils/request/retry-policy"
+import { SubtitleWorkRejected } from "@/utils/subtitles/work-policy"
 import { aiTranslate } from "../ai"
 
 const mocks = vi.hoisted(() => ({
@@ -71,6 +72,53 @@ describe("aiTranslate", () => {
         kind: "rate-limit",
       }),
     )
+  })
+
+  it("reserves the actual rendered input before dispatch and records returned usage with SDK retries disabled", async () => {
+    const order: string[] = []
+    const usage = { inputTokens: 10, outputTokens: 20 }
+    const guard = {
+      beforeCall: vi.fn<(input: string, output: number) => Promise<void>>(async () => {
+        order.push("reserve")
+      }),
+      onDispatch: () => {
+        order.push("dispatch")
+      },
+      usage: vi.fn<(value: { inputTokens?: number; outputTokens?: number }) => Promise<void>>(
+        async () => {},
+      ),
+    }
+    mocks.generateText.mockImplementation(async () => {
+      order.push("model")
+      return { text: "translated", usage, finishReason: "stop" }
+    })
+    await aiTranslate("hello", "Chinese", providerConfig, promptResolver, {
+      modelGuard: guard,
+      maxOutputTokens: 128,
+    })
+    expect(order).toEqual(["reserve", "dispatch", "model"])
+    expect(guard.beforeCall).toHaveBeenCalledWith("system\nprompt", 128)
+    expect(guard.usage).toHaveBeenCalledWith(usage)
+    expect(mocks.generateText).toHaveBeenCalledWith(
+      expect.objectContaining({ maxRetries: 0, maxOutputTokens: 128 }),
+    )
+  })
+
+  it("a lease revoked at the final dispatch checkpoint causes zero SDK starts", async () => {
+    const guard = {
+      beforeCall: async () => {},
+      usage: async () => {},
+      onDispatch: () => {
+        throw new SubtitleWorkRejected("lease")
+      },
+    }
+    await expect(
+      aiTranslate("hello", "Chinese", providerConfig, promptResolver, {
+        modelGuard: guard,
+        maxOutputTokens: 128,
+      }),
+    ).rejects.toThrow("lease")
+    expect(mocks.generateText).not.toHaveBeenCalled()
   })
 
   it("does not expose a remote error body as the display message", async () => {

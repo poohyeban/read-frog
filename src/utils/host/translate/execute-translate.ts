@@ -3,6 +3,7 @@ import type { Config } from "@/types/config/config"
 import type { ProviderConfig } from "@/types/config/provider"
 import type { TranslationTextFormat } from "@/types/config/translate"
 import type { MatchedTerm } from "@/utils/glossary/types"
+import type { SubtitleModelGuard } from "@/utils/subtitles/work-policy"
 import { isLLMProviderConfig } from "@/types/config/provider"
 import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { aiTranslate } from "./api/ai"
@@ -23,6 +24,8 @@ export async function executeTranslate<TContext>(
     preserveLineBreaks?: boolean
     glossaryTerms?: readonly MatchedTerm[]
     signal?: AbortSignal
+    modelGuard?: SubtitleModelGuard
+    maxOutputTokens?: number
   },
 ) {
   const preparedText = prepareTranslationText(text)

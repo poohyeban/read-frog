@@ -1,16 +1,19 @@
 import { useAtomValue, useSetAtom } from "jotai"
 import logo from "@/assets/icons/read-frog.png?inline"
 import { TRANSLATE_BUTTON_CLASS } from "@/utils/constants/subtitles"
+import { i18n } from "@/utils/i18n"
 import { cn } from "@/utils/styles/utils"
 import {
   subtitlesSettingsPanelOpenAtom,
   subtitlesSettingsPanelViewAtom,
   subtitlesStore,
+  subtitleStopPhaseAtom,
   subtitlesVisibleAtom,
 } from "../atoms"
 import { ROOT_VIEW } from "./subtitles-settings-panel/views"
 
 export function SubtitlesTranslateButton() {
+  const stopPhase = useAtomValue(subtitleStopPhaseAtom, { store: subtitlesStore })
   const isVisible = useAtomValue(subtitlesVisibleAtom, { store: subtitlesStore })
   const panelOpen = useAtomValue(subtitlesSettingsPanelOpenAtom, { store: subtitlesStore })
   const setPanelOpen = useSetAtom(subtitlesSettingsPanelOpenAtom, { store: subtitlesStore })
@@ -47,7 +50,13 @@ export function SubtitlesTranslateButton() {
             : "bg-secondary text-secondary-foreground",
         )}
       >
-        {isVisible ? "ON" : "OFF"}
+        {stopPhase === "stopping"
+          ? i18n.t("subtitles.work.stopping")
+          : stopPhase === "failed"
+            ? "!"
+            : isVisible
+              ? "ON"
+              : "OFF"}
       </div>
     </button>
   )

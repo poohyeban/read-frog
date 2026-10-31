@@ -9,7 +9,7 @@ vi.mock("@/utils/subtitles/processor/ai-segmentation", () => ({
 const LOCAL_REF = { kind: "local" as const, config: { id: "openai-default" } as never }
 
 describe("segmentation pipeline", () => {
-  it("replaces overlapping baseline fragments when AI fallback is used", async () => {
+  it("does not publish failed segmentation as Quality", async () => {
     const rawFragments = [
       { text: "hello", start: 0, end: 500 },
       { text: "world", start: 500, end: 1000 },
@@ -25,7 +25,7 @@ describe("segmentation pipeline", () => {
 
     await (pipeline as any).processNextChunk(0)
 
-    expect(pipeline.processedFragments).toEqual([{ text: "hello world", start: 0, end: 1000 }])
+    expect(pipeline.processedFragments).toEqual([])
   })
 
   it("does not segment past the look-ahead window from the current position", async () => {
@@ -122,7 +122,9 @@ describe("segmentation pipeline", () => {
     expect(afterAdvance).toBeLessThan(150_000 + 2 * PROCESS_LOOK_AHEAD_MS)
   })
 
-  it("notifies onChunkSegmented after replacing a processed chunk", async () => {
+  it("notifies onChunkSegmented only after valid AI segmentation", async () => {
+    const { aiSegmentBlock } = await import("@/utils/subtitles/processor/ai-segmentation")
+    vi.mocked(aiSegmentBlock).mockResolvedValueOnce([{ text: "hello world", start: 0, end: 1000 }])
     const rawFragments = [
       { text: "hello", start: 0, end: 500 },
       { text: "world", start: 500, end: 1000 },
@@ -172,7 +174,7 @@ describe("segmentation pipeline", () => {
     expect(pipeline.processedFragments.length).toBeGreaterThan(0)
   })
 
-  it("replaceProcessedChunk drops cues that overlap the window by interval", () => {
+  it("publishes Quality separately without importing baseline cues", () => {
     const pipeline = new SegmentationPipeline({
       baselineFragments: [
         { text: "spans into window", start: 0, end: 1500 },
@@ -195,10 +197,7 @@ describe("segmentation pipeline", () => {
       [{ text: "recut", start: 1000, end: 2000 }],
     )
 
-    expect(pipeline.processedFragments).toEqual([
-      { text: "recut", start: 1000, end: 2000 },
-      { text: "after", start: 2000, end: 3000 },
-    ])
+    expect(pipeline.processedFragments).toEqual([{ text: "recut", start: 1000, end: 2000 }])
   })
 
   it("does not apply segmentation results after stop", async () => {
@@ -231,7 +230,7 @@ describe("segmentation pipeline", () => {
 
     expect(onChunkSegmented).not.toHaveBeenCalled()
     // Baseline fragments remain untouched after stop mid-flight.
-    expect(pipeline.processedFragments).toEqual([{ text: "hello world", start: 0, end: 1000 }])
+    expect(pipeline.processedFragments).toEqual([])
   })
 })
 

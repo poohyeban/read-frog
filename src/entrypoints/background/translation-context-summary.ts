@@ -16,6 +16,7 @@ import {
 } from "@/utils/request/cancellation"
 import { getRequestErrorMeta } from "@/utils/request/retry-policy"
 import { generateTextForProviderRef } from "./background-stream"
+import { providerExecutionKey } from "./translation-queues"
 
 // Queue retries run first. Only terminal failures enter this bounded, temporary
 // cooldown; they are never written to the successful Dexie cache.
@@ -30,6 +31,10 @@ export async function getOrGenerateTranslationContextSummary(
     scope?: string
     priority?: number
     isScopeCancelled?: (scope: string) => boolean
+    modelGuard?: (
+      scopes: () => readonly string[] | undefined,
+      signal?: AbortSignal,
+    ) => import("@/utils/subtitles/work-policy").SubtitleModelGuard
   },
 ): Promise<string | null> {
   const { title, textContent, providerRef, cacheKeyParts, requestQueue, scope } = args
@@ -53,7 +58,10 @@ export async function getOrGenerateTranslationContextSummary(
   assertCurrent()
   if (cached && isValidArticleSummary(cached.summary)) return cached.summary
 
-  const thunk = async (signal?: AbortSignal) => {
+  const thunk = async (
+    signal?: AbortSignal,
+    liveScopes: () => readonly string[] | undefined = () => (scope ? [scope] : undefined),
+  ) => {
     signal?.throwIfAborted()
     const cachedAgain = await db.articleSummaryCache.get(cacheKey)
     signal?.throwIfAborted()
@@ -64,7 +72,11 @@ export async function getOrGenerateTranslationContextSummary(
       { providerRef },
       {
         signal,
-        generate: generateTextForProviderRef,
+        generate: (payload, options) =>
+          generateTextForProviderRef(payload, {
+            ...options,
+            modelGuard: args.modelGuard?.(liveScopes, signal),
+          }),
       },
     )
     signal?.throwIfAborted()
@@ -82,7 +94,7 @@ export async function getOrGenerateTranslationContextSummary(
       Date.now(),
       taskKey,
       scope ? [scope] : undefined,
-      { priority: args.priority },
+      { priority: args.priority, providerKey: providerExecutionKey(providerRef) },
     )
     assertCurrent()
     return summary || null

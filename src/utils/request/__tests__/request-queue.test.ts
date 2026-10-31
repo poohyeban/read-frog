@@ -892,7 +892,7 @@ describe("requestQueue – retry policy and queue fail-fast drain", () => {
     await expect(newPromise).resolves.toBe("new success")
   })
 
-  it("does not let old in-flight task cleanup remove a new task with the same hash", async () => {
+  it("blocks same-hash re-dispatch until a cancelled physical call actually settles", async () => {
     vi.useFakeTimers()
 
     const q = new RequestQueue({
@@ -919,10 +919,12 @@ describe("requestQueue – retry policy and queue fail-fast drain", () => {
     await vi.advanceTimersByTimeAsync(0)
     await expect(oldPromise).rejects.toBe(queueFatalError)
 
-    const newPromise = q.enqueue(() => newDeferred.promise, Date.now(), "same")
+    const blocked = q.enqueue(() => newDeferred.promise, Date.now(), "same")
+    expect(blocked).toBe(oldPromise)
 
     oldDeferred.resolve("old success")
     await vi.advanceTimersByTimeAsync(0)
+    const newPromise = q.enqueue(() => newDeferred.promise, Date.now(), "same")
 
     const duplicatePromise = q.enqueue(
       () => {

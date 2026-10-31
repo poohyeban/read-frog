@@ -15,7 +15,7 @@ const providerRef = {
 afterEach(() => vi.clearAllMocks())
 
 describe("segmentation response recovery", () => {
-  it("falls back to source timing when a parseable AI response shifts the timeline", async () => {
+  it("rejects shifted AI timing and leaves the source unchanged", async () => {
     vi.mocked(sendMessage).mockResolvedValue(
       "WEBVTT\n\n0 --> 1960\nMoses had died.\n\n1960 --> 3960\nI thought the story was about him.",
     )
@@ -29,13 +29,11 @@ describe("segmentation response recovery", () => {
       onChunkSegmented,
     })
     pipeline.start()
-    await vi.waitFor(() => expect(onChunkSegmented).toHaveBeenCalled())
-    expect(pipeline.processedFragments[0]?.start).toBe(134200)
-    expect(pipeline.processedFragments.at(-1)?.end).toBe(138160)
-    expect(pipeline.processedFragments.map((cue) => cue.text).join(" ")).toBe(
-      raw.map((cue) => cue.text).join(" "),
-    )
-    expect(pipeline.isRunning).toBe(false)
+    await vi.waitFor(() => expect(pipeline.isRunning).toBe(false))
+    expect(onChunkSegmented).not.toHaveBeenCalled()
+    expect(pipeline.processedFragments).toEqual([])
+    expect(raw[0]?.start).toBe(134200)
+    expect(raw.at(-1)?.end).toBe(138160)
     pipeline.stop()
   })
 })

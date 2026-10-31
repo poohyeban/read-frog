@@ -9,7 +9,6 @@ export interface BudgetLedger {
   actualInputTokens: number
   actualOutputTokens: number
   usageReports: number
-  rejected: number
 }
 export interface BudgetAttempt {
   key: string
@@ -34,7 +33,6 @@ export function emptyBudget(key: string): BudgetLedger {
     actualInputTokens: 0,
     actualOutputTokens: 0,
     usageReports: 0,
-    rejected: 0,
   }
 }
 

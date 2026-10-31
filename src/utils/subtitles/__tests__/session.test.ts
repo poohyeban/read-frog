@@ -34,7 +34,7 @@ describe("SubtitleSession and existing RequestQueue cancellation", () => {
       `7:${b.sessionId}`,
     ])
     const settled = Promise.allSettled([work, shared])
-    playback.stop()
+    void playback.stop()
     expect(a.isCurrent()).toBe(false)
     expect(remoteSignal?.aborted).toBe(false)
     expect(b.isCurrent()).toBe(true)

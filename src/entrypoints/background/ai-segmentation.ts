@@ -11,7 +11,13 @@ import {
 import {
   isSegmentationAligned,
   parseSimplifiedVttToFragments,
+  decodeIndexedSegmentation,
 } from "@/utils/subtitles/processor/ai-segmentation"
+import {
+  assertSubtitleWindow,
+  subtitleOutputLimit,
+  type SubtitleModelGuard,
+} from "@/utils/subtitles/work-policy"
 import { generateTextForProviderRef } from "./background-stream"
 
 const VTT_CODE_BLOCK_RE = /```vtt\n?/g
@@ -65,10 +71,11 @@ function prepareSegmentation(data: AiSegmentSubtitlesData) {
   const source = inputFragmentsSchema
     .parse(JSON.parse(jsonContent))
     .map(({ s, e, t }) => ({ start: s, end: e, text: t }))
+  assertSubtitleWindow(source)
 
   const { systemPrompt, prompt } = getSubtitlesSegmentationPrompt(jsonContent)
   const cacheKey = Sha256Hex(
-    "subtitle-segmentation-v3:aligned:16384",
+    "subtitle-segmentation-v5:bounded:indexed",
     systemPrompt,
     prompt,
     getProviderCacheIdentity(providerRef),
@@ -105,7 +112,7 @@ export async function getCachedAiSegmentation(
 
 export async function runAiSegmentSubtitles(
   data: AiSegmentSubtitlesData,
-  options: { signal?: AbortSignal } = {},
+  options: { signal?: AbortSignal; modelGuard?: SubtitleModelGuard } = {},
 ): Promise<string> {
   options.signal?.throwIfAborted()
   const plan = prepareSegmentation(data)
@@ -122,13 +129,19 @@ export async function runAiSegmentSubtitles(
 
         instructions: systemPrompt,
         prompt,
-        maxOutputTokens: 16_384,
+        maxOutputTokens: subtitleOutputLimit(JSON.stringify(source), true),
       },
       options,
     )
     options.signal?.throwIfAborted()
 
-    const result = cleanVttResponse(segmentedVtt)
+    const decoded = decodeIndexedSegmentation(
+      source,
+      segmentedVtt.trim().startsWith("{") || segmentedVtt.includes("```json")
+        ? segmentedVtt
+        : cleanVttResponse(segmentedVtt),
+    )
+    const result = `WEBVTT\n\n${decoded.map((c) => `${c.start} --> ${c.end}\n${c.text}`).join("\n\n")}`
 
     // Parse-check before caching: a cached result that yields no cues would be
     // served on every later attempt for this chunk, pinning the failure until
