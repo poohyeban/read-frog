@@ -1,0 +1,26 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/__tests__/hash.test.ts (5 tests | 1 failed) 8ms
+   × isolates semantic tuple boundaries even when fields contain separators 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/__tests__/hash.test.ts > isolates semantic tuple boundaries even when fields contain separators
+AssertionError: expected 'a52dd81bfd5e4e66d96b9f598382f6cbf8c5c…' not to be 'a52dd81bfd5e4e66d96b9f598382f6cbf8c5c…' // Object.is equality
+ ❯ src/utils/__tests__/hash.test.ts:28:37
+     26|
+     27| it("isolates semantic tuple boundaries even when fields contain separa…
+     28|   expect(Sha256Hex("a|b", "c")).not.toBe(Sha256Hex("a", "b|c"))
+       |                                     ^
+     29| })
+     30|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  15:51:17
+   Duration  474ms (setup 57%, transform 30%, import 6%, tests 4%, worker 3%)
+

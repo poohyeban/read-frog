@@ -23,3 +23,7 @@ describe("test Sha256Hex", () => {
     expect(() => Sha256Hex()).toThrow("At least one text parameter is required")
   })
 })
+
+it("isolates semantic tuple boundaries even when fields contain separators", () => {
+  expect(Sha256Hex("a|b", "c")).not.toBe(Sha256Hex("a", "b|c"))
+})
