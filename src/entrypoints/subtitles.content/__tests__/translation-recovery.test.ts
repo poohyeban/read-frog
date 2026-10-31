@@ -235,15 +235,23 @@ it("recovers a temporary intake failure after its retry-after, preserving succes
   expect(vi.mocked(translateSubtitles).mock.calls[1]![0].map((c) => c.text)).toEqual(["retry"])
 })
 
-
 it("reaches eligible members beyond the first 128 already settled candidates", async () => {
   vi.useFakeTimers()
-  vi.mocked(translateSubtitles).mockImplementation(async cues => cues.map(cue => ({
-    ...cue, translation: "", translationOutcome: { status: "permanent", message: "invalid key" },
-  })))
+  vi.mocked(translateSubtitles).mockImplementation(async (cues) =>
+    cues.map((cue) => ({
+      ...cue,
+      translation: "",
+      translationOutcome: { status: "permanent", message: "invalid key" },
+    })),
+  )
   const source = Array.from({ length: 140 }, (_, i) => ({ text: `cue-${i}`, start: i, end: 10000 }))
   const { coordinator } = setup(source)
   coordinator.start()
   await vi.advanceTimersByTimeAsync(0)
-  expect(vi.mocked(translateSubtitles).mock.calls.flatMap(call => call[0]).some(c => c.text === "cue-139")).toBe(true)
+  expect(
+    vi
+      .mocked(translateSubtitles)
+      .mock.calls.flatMap((call) => call[0])
+      .some((c) => c.text === "cue-139"),
+  ).toBe(true)
 })

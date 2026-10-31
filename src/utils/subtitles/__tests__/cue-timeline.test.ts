@@ -2,7 +2,7 @@ import type { SubtitlesFragment } from "../types"
 import { describe, expect, it } from "vitest"
 import { CueTimeline, cueIdentity } from "../cue-timeline"
 describe("CueTimeline", () => {
-  it("matches linear first-active semantics for overlaps, equal starts, gaps and reverse seeks", () => {
+  it("matches latest-start/shortest-active semantics for overlaps, equal starts, gaps and reverse seeks", () => {
     const cues = [
       { start: 0, end: 100000, text: "long" },
       { start: 1, end: 2, text: "short" },
@@ -11,7 +11,11 @@ describe("CueTimeline", () => {
     ]
     const index = new CueTimeline(cues)
     for (const time of [0, 1, 2, 1500, 99999, 100000, 110000, 119999, 120000, 10, -1])
-      expect(index.at(time)).toBe(cues.find((c) => c.start <= time && c.end > time) ?? null)
+      expect(index.at(time)).toBe(
+        cues
+          .filter((c) => c.start <= time && c.end > time)
+          .sort((a, b) => b.start - a.start || a.end - b.end)[0] ?? null,
+      )
     expect(index.window(100000, 120000)).toHaveLength(2)
     expect(cueIdentity(cues[2]!)).not.toBe(cueIdentity(cues[3]!))
   })
@@ -44,7 +48,11 @@ describe("CueTimeline", () => {
     const index = new CueTimeline(cues)
     for (let i = 0; i < 1000; i++) {
       const time = (i * 7919) % 5000000
-      expect(index.at(time)).toBe(cues.find((c) => c.start <= time && c.end > time) ?? null)
+      expect(index.at(time)).toBe(
+        cues
+          .filter((c) => c.start <= time && c.end > time)
+          .sort((a, b) => b.start - a.start || a.end - b.end)[0] ?? null,
+      )
     }
   })
   it("merges out-of-order additions once and keeps the last repeated update", () => {
@@ -61,12 +69,35 @@ describe("CueTimeline", () => {
   })
 })
 
-
 it("keeps normal dialogue visible under a two-hour overlapping cue", () => {
   const long = { start: 0, end: 7200000, text: "long" }
-  const dialogue = Array.from({ length: 5000 }, (_, i) => ({ start: i * 1000 + 1, end: i * 1000 + 900, text: `dialogue-${i}` }))
+  const dialogue = Array.from({ length: 5000 }, (_, i) => ({
+    start: i * 1000 + 1,
+    end: i * 1000 + 900,
+    text: `dialogue-${i}`,
+  }))
   const timeline = new CueTimeline([long, ...dialogue])
-  for (const i of [0, 4999, 12, 2333, 2]) expect(timeline.at(dialogue[i]!.start + 1)).toBe(dialogue[i])
+  for (const i of [0, 4999, 12, 2333, 2])
+    expect(timeline.at(dialogue[i]!.start + 1)).toBe(dialogue[i])
   expect(timeline.at(999)).toBe(long)
   expect(timeline.window(0, 1000)).toHaveLength(2)
+})
+
+it("counts eligible results after filtering and preserves equal-start speaker cues", () => {
+  const cues = Array.from({ length: 1000 }, (_, i) => ({
+    start: 0,
+    end: 1000 + i,
+    text: String(i),
+  }))
+  const timeline = new CueTimeline(cues)
+  expect(timeline.window(0, 100, 5, (c) => Number(c.text) >= 128).map((c) => c.text)).toEqual([
+    "128",
+    "129",
+    "130",
+    "131",
+    "132",
+  ])
+  expect(timeline.at(10)).toBe(cues[0])
+  expect(timeline.at(1001)).toBe(cues[2])
+  expect(timeline.window(0, 100)).toHaveLength(1000)
 })

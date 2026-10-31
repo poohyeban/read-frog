@@ -1,0 +1,435 @@
+{
+  "environment": {
+    "source": "/workspace/read-frog-review-baseline",
+    "browser": "154.0.8037.57",
+    "node": "v24.19.0",
+    "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+  },
+  "errors": [],
+  "browserMetrics": {
+    "before": [
+      {
+        "name": "Timestamp",
+        "value": 924.603088
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 4
+      },
+      {
+        "name": "Frames",
+        "value": 4
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 13
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 9
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 18
+      },
+      {
+        "name": "Resources",
+        "value": 2
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 9
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 4
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 0
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 4
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 2
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 0
+      },
+      {
+        "name": "LayoutCount",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 0
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 0.000015
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0
+      },
+      {
+        "name": "TaskDuration",
+        "value": 0.000021
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 0.000006
+      },
+      {
+        "name": "ThreadTime",
+        "value": 0.000061
+      },
+      {
+        "name": "ProcessTime",
+        "value": 0.07
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 1740344
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 2691072
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 0
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 924.5525
+      },
+      {
+        "name": "NavigationStart",
+        "value": 924.502773
+      }
+    ],
+    "after": [
+      {
+        "name": "Timestamp",
+        "value": 924.944485
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 4
+      },
+      {
+        "name": "Frames",
+        "value": 4
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 13
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 9
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 18
+      },
+      {
+        "name": "Resources",
+        "value": 2
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 9
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 4
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 0
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 4
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 2
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 0
+      },
+      {
+        "name": "LayoutCount",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 0
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 0.333514
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0
+      },
+      {
+        "name": "TaskDuration",
+        "value": 0.333732
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 0.000218
+      },
+      {
+        "name": "ThreadTime",
+        "value": 0.326356
+      },
+      {
+        "name": "ProcessTime",
+        "value": 0.42
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 7100868
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 11534336
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 0
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 924.5525
+      },
+      {
+        "name": "NavigationStart",
+        "value": 924.502773
+      }
+    ]
+  },
+  "rendererCpuSeconds": 1.03,
+  "rendererMemory": [
+    {
+      "type": "renderer",
+      "peakRssKiB": 34276,
+      "rssKiB": 34276
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 73044,
+      "rssKiB": 73044
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 91848,
+      "rssKiB": 91848
+    }
+  ],
+  "size": 50000,
+  "durationMs": 10800000,
+  "constructionMs": 4.400000000023283,
+  "lookup": [
+    0.002999999999301508,
+    0,
+    0.0009999999997671693,
+    0,
+    0,
+    0,
+    0,
+    0.0010000000009313225,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0.0009999999997671693,
+    0,
+    0,
+    0,
+    0,
+    0.0010000000009313225,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "windows": [
+    0.01700000000069849,
+    0.02099999999976717,
+    0.02900000000023283,
+    0.026999999999534337,
+    0.02900000000023283,
+    0.04300000000046566,
+    0.04799999999930151,
+    0.06099999999976717,
+    0.06699999999953433,
+    0.07599999999976717,
+    0.08300000000046566,
+    0.09199999999953434,
+    0.08300000000046566,
+    0.03599999999976717,
+    0.005,
+    0.015,
+    0.02,
+    0.022000000000698492,
+    0.026999999999534337,
+    0.03599999999976717,
+    0.09400000000023283,
+    0.09599999999976717,
+    0.12100000000093132,
+    0.13599999999976717,
+    0.13900000000023283,
+    0.14599999999976718,
+    0.13300000000046566,
+    0.01099999999976717,
+    0.01599999999976717,
+    0.026999999999534337,
+    0.04099999999976717,
+    0.055,
+    0.05900000000023283,
+    0.06899999999906868,
+    0.08400000000023283,
+    0.09099999999976717,
+    0.10200000000069849,
+    0.09900000000023283,
+    0.1279999999993015,
+    0.12599999999976716,
+    0.07800000000046566,
+    0.00900000000023283,
+    0.01900000000023283,
+    0.027999999999301507,
+    0.04,
+    0.05,
+    0.055,
+    0.06400000000023283,
+    0.075,
+    0.09
+  ],
+  "incorrect": 5000,
+  "providerStarts": 0,
+  "ipc": 0,
+  "reactCommits": 0,
+  "actualUsage": null,
+  "heapBytes": 7051986,
+  "note": "Actual CueTimeline in Chromium; 5000 random/reverse seeks with one full-video cue. No Provider or React work."
+}

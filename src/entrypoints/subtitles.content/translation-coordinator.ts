@@ -304,7 +304,7 @@ export class TranslationCoordinator {
           : !allowFastSpeculation
             ? Math.min(ahead, this.buffer.lowMs * rate)
             : ahead
-      const candidates = timeline.window(timeMs, timeMs + laneAhead, 128).filter((c) => {
+      const candidates = timeline.window(timeMs, timeMs + laneAhead, 128, (c) => {
         const key = `${lane}:${cueIdentity(c)}`
         // A complete quality interval makes the corresponding Fast request unnecessary.
         if (
