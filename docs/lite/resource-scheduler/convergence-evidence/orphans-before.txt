@@ -1,0 +1,40 @@
+RUN  v5.0.3 /workspace/read-frog-convergence-baseline
+
+ ❯ src/utils/providers/__tests__/resource-runtime.test.ts (10 tests | 1 failed | 9 skipped) 1004ms
+   ❯ background provider authority (10)
+     × reconciles removed provider policies and orphan members, preserving a disabled account alias 994ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/providers/__tests__/resource-runtime.test.ts > background provider authority > reconciles removed provider policies and orphan members, preserving a disabled account alias
+AssertionError: expected { a: { rate: 12 }, …(2) } to deeply equal { a: { rate: 12 }, …(1) }
+
+- Expected
++ Received
+
+@@ -3,6 +3,9 @@
+      "rate": 12,
+    },
+    "b": {
+      "maxInFlight": 4,
+    },
++   "deleted": {
++     "rate": 1,
++   },
+  }
+
+ ❯ src/utils/providers/__tests__/resource-runtime.test.ts:136:63
+    134|     expect((await read())?.providers).toEqual({ a: { rate: 12 } })
+    135|   })
+    136|   it("shares account aliases, keeps request hot paths free of storage/…
+       |                                                               ^
+    137|     let runtime = await import("../resource-runtime")
+    138|     const { getLocalConfig } = await import("@/utils/config/storage")
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 skipped (10)
+   Start at  13:17:15
+   Duration  4.75s (transform 39%, tests 30%, setup 21%, import 9%, worker 1%)

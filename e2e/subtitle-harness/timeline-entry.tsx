@@ -42,7 +42,8 @@ root.render(
 )
 ;(window as any).runSubtitleBenchmark = async () => {
   const scales = []
-  for (const size of [100, 1000, 10000, 50000]) {
+  const sampling = (window as any).__benchmarkSampling
+  for (const size of sampling?.sizes ?? [100, 1000, 10000, 50000]) {
     const cues = makeCues(size)
     subtitlesStore.set(sourceTrackAtom, cues)
     const video = videoAt(0)
@@ -67,7 +68,7 @@ root.render(
       updates.push((performance.now() - stamp) / 200)
     }
     scheduler.supplementSubtitles(cues.map((f) => ({ ...f, translation: f.text })))
-    for (let sample = 0; sample < 10; sample++) {
+    for (let sample = 0; sample < (sampling?.repeats ?? 10); sample++) {
       const stamp = performance.now()
       scheduler.supplementSubtitles(
         cues
@@ -96,6 +97,7 @@ root.render(
   }
   return {
     scales,
-    note: "30 paired microbenchmark samples; actual production timelines/atoms/renderer. No Provider calls. Separate from the physical-resource continuity matrix.",
+    sampling,
+    note: "30 lookup/timeupdate samples; bulk500 sample count is configurable. Actual production timelines/atoms/renderer. No Provider calls. First bulk sample follows initial whole-track publication; all samples are retained individually without discarding warm-up or outliers.",
   }
 }

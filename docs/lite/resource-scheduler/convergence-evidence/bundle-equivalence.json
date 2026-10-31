@@ -1,0 +1,63 @@
+{
+  "timeline": {
+    "normalization": "Only Vite //#region source-path comment lines replaced. All executable code preserved byte for byte.",
+    "bundles": {
+      "baseline": {
+        "sha256": "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "bytes": 470942
+      },
+      "candidate": {
+        "sha256": "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "bytes": 470942
+      }
+    },
+    "identical": true,
+    "checkedRuns": {
+      "baseline": [
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff"
+      ],
+      "candidate": [
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff",
+        "623008aff006c705598741ac93483c672a58dfb9eccca93a4204f71a1f59c3ff"
+      ]
+    }
+  },
+  "export": {
+    "normalization": "Only Vite //#region source-path comment lines replaced. All executable code preserved byte for byte.",
+    "bundles": {
+      "baseline": {
+        "sha256": "f85f91e9a908c96daf386c48a219cbc5766116eeb740760091f1f34b7cd4f878",
+        "bytes": 225347
+      },
+      "candidate": {
+        "sha256": "4a207f095c420248170fbff50f5e36960298f78c1fdf5fab15c270c4f0de4729",
+        "bytes": 225499
+      }
+    },
+    "identical": false,
+    "checkedRuns": {
+      "baseline": [
+        "f85f91e9a908c96daf386c48a219cbc5766116eeb740760091f1f34b7cd4f878",
+        "f85f91e9a908c96daf386c48a219cbc5766116eeb740760091f1f34b7cd4f878",
+        "f85f91e9a908c96daf386c48a219cbc5766116eeb740760091f1f34b7cd4f878",
+        "f85f91e9a908c96daf386c48a219cbc5766116eeb740760091f1f34b7cd4f878",
+        "f85f91e9a908c96daf386c48a219cbc5766116eeb740760091f1f34b7cd4f878"
+      ],
+      "candidate": [
+        "4a207f095c420248170fbff50f5e36960298f78c1fdf5fab15c270c4f0de4729",
+        "4a207f095c420248170fbff50f5e36960298f78c1fdf5fab15c270c4f0de4729",
+        "4a207f095c420248170fbff50f5e36960298f78c1fdf5fab15c270c4f0de4729",
+        "4a207f095c420248170fbff50f5e36960298f78c1fdf5fab15c270c4f0de4729",
+        "4a207f095c420248170fbff50f5e36960298f78c1fdf5fab15c270c4f0de4729"
+      ]
+    }
+  },
+  "metadataCorrection": "Only the timeline sampling note was corrected after inspection: initial whole-track upsert already builds its mutation index. No timing values were changed."
+}

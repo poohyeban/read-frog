@@ -1,0 +1,120 @@
+{
+  "baseline": {
+    "requests": 6766,
+    "retries": 25,
+    "cancelled": 2325,
+    "cacheHits": 4,
+    "estimatedInputTokens": 985409,
+    "afterStopRequests": 0,
+    "realUsage": null,
+    "admissionRejections": 0,
+    "firstP50": 100,
+    "firstP95": 8000,
+    "firstMissing": 90,
+    "readyMean": 0.4743672446303329,
+    "rendererCpuSeconds": 24.72,
+    "peakRssMiB": 173.50390625,
+    "heapMiB": 34.69504928588867,
+    "taskSeconds": 17.373549999999998,
+    "scriptSeconds": 8.581126,
+    "ordinary": [
+      {
+        "rate": 1,
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.9375,
+        "readyAhead": {
+          "2": 0.875,
+          "3": 0.875,
+          "5": 0.8125
+        },
+        "requests": 20
+      },
+      {
+        "rate": 2,
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.967741935483871,
+        "readyAhead": {
+          "2": 0.9032258064516129,
+          "3": 0.8709677419354839,
+          "5": 0.8064516129032258
+        },
+        "requests": 39
+      },
+      {
+        "rate": 4,
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.9672131147540983,
+        "readyAhead": {
+          "2": 0.9016393442622951,
+          "3": 0.8688524590163934,
+          "5": 0.7540983606557377
+        },
+        "requests": 35
+      }
+    ],
+    "main144First": {
+      "p50": 1000,
+      "p95": 8000,
+      "missing": 88
+    }
+  },
+  "candidate": {
+    "requests": 6766,
+    "retries": 25,
+    "cancelled": 2325,
+    "cacheHits": 4,
+    "estimatedInputTokens": 985424,
+    "afterStopRequests": 0,
+    "realUsage": null,
+    "admissionRejections": 0,
+    "firstP50": 106,
+    "firstP95": 8000,
+    "firstMissing": 90,
+    "readyMean": 0.47398845675154505,
+    "rendererCpuSeconds": 28.72,
+    "peakRssMiB": 183.55078125,
+    "heapMiB": 30.878135681152344,
+    "taskSeconds": 19.600458,
+    "scriptSeconds": 9.253608,
+    "ordinary": [
+      {
+        "rate": 1,
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.9375,
+        "readyAhead": {
+          "2": 0.875,
+          "3": 0.875,
+          "5": 0.8125
+        },
+        "requests": 20
+      },
+      {
+        "rate": 2,
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.967741935483871,
+        "readyAhead": {
+          "2": 0.9032258064516129,
+          "3": 0.8709677419354839,
+          "5": 0.8064516129032258
+        },
+        "requests": 39
+      },
+      {
+        "rate": 4,
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.9672131147540983,
+        "readyAhead": {
+          "2": 0.9016393442622951,
+          "3": 0.8688524590163934,
+          "5": 0.7540983606557377
+        },
+        "requests": 35
+      }
+    ],
+    "main144First": {
+      "p50": 1000,
+      "p95": 8000,
+      "missing": 88
+    }
+  }
+}

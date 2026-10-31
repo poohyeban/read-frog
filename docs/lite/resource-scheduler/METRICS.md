@@ -1,5 +1,7 @@
 # Mock 性能与资源指标
 
+> `d7e4e8b` 之后的针对性收敛、最终检查及重复测量见 [CONVERGENCE.md](CONVERGENCE.md)。本页保留上一轮历史验收口径。
+
 基线：`fddc448e72cca5aa3007fcf27ab15c378288c844`。数值来自 evidence 目录原始 JSON。所有请求均由本地 Mock Provider 处理。
 
 ## 165 场景矩阵

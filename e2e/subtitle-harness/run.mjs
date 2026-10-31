@@ -129,6 +129,15 @@ try {
       return seed / 4294967296
     }
   }, process.env.BENCHMARK_MODE ?? "dual")
+  await page.addInitScript(
+    (sampling) => {
+      window.__benchmarkSampling = sampling
+    },
+    {
+      repeats: Number(process.env.BENCHMARK_REPEATS) || undefined,
+      sizes: process.env.BENCHMARK_SIZES?.split(",").map(Number),
+    },
+  )
   if (["continuity", "matrix", "lifecycle"].includes(process.env.BENCHMARK_KIND))
     await page.clock.install()
   await page.goto(`${server.url}/index.html`)
@@ -212,10 +221,7 @@ try {
   }
   for (const scale of results.scales ?? [])
     for (const row of scale.samples ?? []) {
-      if (
-        row.result &&
-        (!row.result.valid || row.result.count !== scale.size || row.result.unique !== scale.size)
-      )
+      if (!row.result?.valid || row.result.count !== scale.size || row.result.unique !== scale.size)
         failures.push(`export ${scale.size}: incomplete`)
     }
   if (errors.length || failures.length) throw new Error(JSON.stringify({ errors, failures }))

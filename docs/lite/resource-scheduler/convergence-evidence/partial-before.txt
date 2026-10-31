@@ -1,0 +1,83 @@
+RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/request/__tests__/request-queue.test.ts (21 tests | 2 failed) 102ms
+   ❯ logical queue with the single physical scheduler (21)
+     × retains aligned successes and spends attempts/physical permits only on failed members 12ms
+     × rejects invalid singleton recovery without minting another batch or accepting blank output 2ms
+ ❯ src/entrypoints/background/__tests__/translation-queues.test.ts (38 tests | 1 failed) 6733ms
+   ❯ translation queue helpers (38)
+     × preserves a partially valid subtitle batch under its exact prompt and reuses its successful positions 462ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/background/__tests__/translation-queues.test.ts > translation queue helpers > preserves a partially valid subtitle batch under its exact prompt and reuses its successful positions
+AssertionError: promise rejected "Error: Empty subtitle translation" instead of resolving
+ ❯ src/entrypoints/background/__tests__/translation-queues.test.ts:110:80
+    109|     const output = `一\n\n${BATCH_SEPARATOR}\n\n \n\n${BATCH_SEPARATOR}…
+    110|     executeTranslateMock.mockResolvedValue(output)
+    111|     const prompt = async () => ({ systemPrompt: "translate", prompt: "…
+       |                             ^
+    112|     await expect(executeBatchTranslation(data, prompt)).resolves.toEqu…
+    113|     const row = translationCachePutMock.mock.calls[0]![0]
+
+Caused by: Error: Empty subtitle translation
+ ❯ executeBatchTranslation src/entrypoints/background/translation-queues.ts:255:13
+ ❯ src/entrypoints/background/__tests__/translation-queues.test.ts:110:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/utils/request/__tests__/request-queue.test.ts > logical queue with the single physical scheduler > retains aligned successes and spends attempts/physical permits only on failed members
+AssertionError: expected [ 'A', ' ', 'C', …(2) ] to deeply equal [ 'A', 'failed', 'C', 'failed', 'E' ]
+
+- Expected
++ Received
+
+  [
+    "A",
+-   "failed",
++   " ",
+    "C",
+-   "failed",
++   {
++     "invalid": true,
++   },
+    "E",
+  ]
+
+ ❯ src/utils/request/__tests__/request-queue.test.ts:281:88
+    279|     const outcomes = Promise.allSettled(["a", "b", "c", "d", "e"].map(…
+    280|     await vi.advanceTimersByTimeAsync(10000)
+    281|     expect((await outcomes).map((r) => r.status === "fulfilled" ? r.va…
+       |                                                                                        ^
+    282|     expect(fallback.mock.calls.map(([item]) => item)).toEqual(["b", "d…
+    283|     expect(attempts.counts).toEqual([1, 3, 1, 3, 1])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/utils/request/__tests__/request-queue.test.ts > logical queue with the single physical scheduler > rejects invalid singleton recovery without minting another batch or accepting blank output
+AssertionError: expected [ 'fulfilled', 'fulfilled' ] to deeply equal [ 'fulfilled', 'rejected' ]
+
+- Expected
++ Received
+
+  [
+    "fulfilled",
+-   "rejected",
++   "fulfilled",
+  ]
+
+ ❯ src/utils/request/__tests__/request-queue.test.ts:297:50
+    295|     const results = Promise.allSettled([batch.enqueue("good"), batch.e…
+    296|     await vi.advanceTimersByTimeAsync(1000)
+    297|     expect((await results).map((r) => r.status)).toEqual(["fulfilled",…
+       |                                                  ^
+    298|     expect(individual).toHaveBeenCalledTimes(1)
+    299|     expect(individual.mock.calls[0]?.[0]).toBe("bad")
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 56 passed (59)
+   Start at  13:05:47
+   Duration  8.12s (tests 80%, transform 12%, setup 4%, import 3%)

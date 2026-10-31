@@ -1,5 +1,7 @@
 # Read Frog Lite：共享资源调度与双通道字幕本地验收
 
+> `d7e4e8b` 之后的针对性收敛、最终检查及重复测量见 [CONVERGENCE.md](CONVERGENCE.md)。本页保留上一轮历史验收口径。
+
 日期：2026-10-31。基线：`fddc448e72cca5aa3007fcf27ab15c378288c844`。所有开发、提交、测试和构建均在本地工作区完成；没有推送、创建 PR、触发 GitHub Actions 或发布 Release。所有性能 Provider 均为 Mock，没有使用真实付费 Token。
 
 ## 已完成的行为

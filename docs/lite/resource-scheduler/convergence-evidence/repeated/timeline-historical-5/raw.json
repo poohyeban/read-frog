@@ -1,0 +1,397 @@
+{
+  "environment": {
+    "source": "/workspace/read-frog-baseline",
+    "browser": "154.0.8037.57",
+    "node": "v24.19.0",
+    "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+  },
+  "errors": [],
+  "browserMetrics": {
+    "before": [
+      {
+        "name": "Timestamp",
+        "value": 25267.460195
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 4
+      },
+      {
+        "name": "Frames",
+        "value": 4
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 160
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 10
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 20
+      },
+      {
+        "name": "Resources",
+        "value": 2
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 9
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 4
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 0
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 4
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 2
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 0
+      },
+      {
+        "name": "LayoutCount",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 0
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 2.5e-5
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0
+      },
+      {
+        "name": "TaskDuration",
+        "value": 3e-5
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 5e-6
+      },
+      {
+        "name": "ThreadTime",
+        "value": 8.9e-5
+      },
+      {
+        "name": "ProcessTime",
+        "value": 0.26
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 3328740
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 6361088
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 0
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 25267.38571
+      },
+      {
+        "name": "NavigationStart",
+        "value": 25267.206134
+      }
+    ],
+    "after": [
+      {
+        "name": "Timestamp",
+        "value": 25268.330801
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 4
+      },
+      {
+        "name": "Frames",
+        "value": 4
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 184
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 11
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 25
+      },
+      {
+        "name": "Resources",
+        "value": 2
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 13
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 4
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 0
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 4
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 2
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 0
+      },
+      {
+        "name": "LayoutCount",
+        "value": 1
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 1
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0.000608
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 6.9e-5
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 0.189448
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0.166521
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0
+      },
+      {
+        "name": "TaskDuration",
+        "value": 0.624343
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 0.267697
+      },
+      {
+        "name": "ThreadTime",
+        "value": 0.5977
+      },
+      {
+        "name": "ProcessTime",
+        "value": 1.3
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 34425068
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 83210240
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 0
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 25267.38571
+      },
+      {
+        "name": "NavigationStart",
+        "value": 25267.206134
+      }
+    ]
+  },
+  "rendererCpuSeconds": 2.35,
+  "rendererMemory": [
+    {
+      "type": "renderer",
+      "peakRssKiB": 34300,
+      "rssKiB": 34300
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 188600,
+      "rssKiB": 187736
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 90956,
+      "rssKiB": 90956
+    }
+  ],
+  "scales": [
+    {
+      "size": 10000,
+      "lookup": [
+        0.035, 0.03099999999627471, 0.018499999996274708, 0.01599999999627471, 0.012000000011175871,
+        0.01099999999627471, 0.00849999999627471, 0.014499999992549419, 0.006500000003725291,
+        0.01099999999627471, 0.01049999998882413, 0.00900000000372529, 0.0125, 0.007000000011175871,
+        0.013000000007450581, 0.0175, 0.003999999985098839, 0.00949999999254942,
+        0.02550000000745058, 0.01150000000372529, 0.01099999999627471, 0.00900000000372529,
+        0.00899999998509884, 0.01149999998509884, 0.00449999999254942, 0.0075, 0.00850000001490116,
+        0.0075, 0.00849999999627471, 0.01049999998882413
+      ],
+      "timeupdate": [
+        0.03050000000745058, 0.04849999999627471, 0.03050000000745058, 0.03349999999627471,
+        0.03949999999254942, 0.013499999996274709, 0.014500000011175872, 0.00800000000745058,
+        0.0125, 0.0225, 0.02400000000372529, 0.019499999992549418, 0.01400000000372529,
+        0.01199999999254942, 0.0125, 0.015, 0.012000000011175871, 0.01599999999627471,
+        0.02449999999254942, 0.0175, 0.01550000000745058, 0.01400000000372529, 0.04350000001490116,
+        0.0125, 0.01400000000372529, 0.01599999999627471, 0.013499999996274709, 0.015,
+        0.01650000000372529, 0.04200000001117587
+      ],
+      "bulk500": [
+        1.0999999977648258, 0.9000000022351742, 0.5, 0.3999999985098839, 0.8000000007450581,
+        2.399999998509884, 0.5, 0.4000000022351742, 0.3999999985098839, 0.4000000022351742,
+        0.6999999992549419, 0.5, 0.5999999977648258, 0.8000000007450581, 0.5, 0.8000000007450581,
+        0.30000000074505806, 0.3999999985098839, 0.19999999925494194, 0.4000000022351742,
+        0.6999999992549419, 0.5, 0.5, 0.30000000074505806, 1.3999999985098839, 0.5,
+        0.19999999925494194, 0.4000000022351742, 0.30000000074505806, 0.6999999992549419,
+        0.30000000074505806, 0.3999999985098839, 1, 0.6000000014901161, 0.3999999985098839,
+        0.3999999985098839, 0.6000000014901161, 0.5, 0.3999999985098839, 0.5, 0.6000000014901161,
+        0.6000000014901161, 0.5, 0.3999999985098839, 0.3999999985098839, 0.5, 0.4000000022351742,
+        0.5, 0.5999999977648258, 0.5
+      ],
+      "sameCueCommits": 0,
+      "heapBytes": 13631810
+    },
+    {
+      "size": 50000,
+      "lookup": [
+        0.012999999988824128, 0.00900000000372529, 0.00599999999627471, 0.006500000003725291,
+        0.0125, 0.005, 0.005, 0.003999999985098839, 0.004500000011175871, 0.00849999999627471,
+        0.00599999999627471, 0.00849999999627471, 0.01150000000372529, 0.0125, 0.015499999988824129,
+        0.026999999992549418, 0.005, 0.00400000000372529, 0.003999999985098839, 0.00400000000372529,
+        0.006500000003725291, 0.00449999999254942, 0.00599999999627471, 0.005499999988824129, 0.005,
+        0.005500000007450581, 0.01150000000372529, 0.007000000011175871, 0.005, 0.006500000003725291
+      ],
+      "timeupdate": [
+        0.015, 0.02800000000745058, 0.01099999999627471, 0.01099999999627471, 0.03900000000372529,
+        0.006500000003725291, 0.006500000003725291, 0.006500000003725291, 0.0075, 0.01,
+        0.00900000000372529, 0.014499999992549419, 0.02, 0.01800000000745058, 0.01950000001117587,
+        0.0075, 0.0075, 0.00800000000745058, 0.01400000000372529, 0.01150000000372529, 0.0075,
+        0.00599999999627471, 0.007000000011175871, 0.006500000003725291, 0.01, 0.00599999999627471,
+        0.012999999988824128, 0.01400000000372529, 0.01099999999627471, 0.00799999998882413
+      ],
+      "bulk500": [
+        1.199999999254942, 1.3999999985098839, 0.8000000007450581, 0.9000000022351742,
+        1.0999999977648258, 0.8000000007450581, 0.8000000007450581, 0.6999999992549419,
+        0.6999999992549419, 0.8000000007450581, 0.8000000007450581, 0.5999999977648258,
+        0.6000000014901161, 0.8000000007450581, 0.6999999992549419, 0.6000000014901161,
+        1.3999999985098839, 1.1000000014901161, 1, 1.199999999254942, 1.300000000745058,
+        1.0999999977648258, 0.6999999992549419, 0.9000000022351742, 1.0999999977648258, 1.5,
+        1.300000000745058, 1.1000000014901161, 0.8999999985098839, 0.9000000022351742,
+        1.699999999254942, 1, 2.300000000745058, 1.199999999254942, 1.3999999985098839, 1,
+        1.199999999254942, 1.2000000029802322, 1, 0.8999999985098839, 1.199999999254942,
+        1.300000000745058, 1.5, 0.8999999985098839, 0.8000000007450581, 1, 1, 0.8000000007450581,
+        0.8999999985098839, 1.2000000029802322
+      ],
+      "sameCueCommits": 0,
+      "heapBytes": 34812250
+    }
+  ],
+  "sampling": {
+    "repeats": 50,
+    "sizes": [10000, 50000]
+  },
+  "note": "30 lookup/timeupdate samples; bulk500 sample count is configurable. Actual production timelines/atoms/renderer. No Provider calls. First bulk sample follows initial whole-track publication; all samples are retained individually without discarding warm-up or outliers."
+}

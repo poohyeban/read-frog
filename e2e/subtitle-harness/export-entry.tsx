@@ -7,9 +7,10 @@ import { model } from "./model"
   config.videoSubtitles.aiSegmentation = false
   model.delay = -1
   const scales = []
-  for (const size of [100, 1000, 10000, 50000]) {
+  const sampling = (window as any).__benchmarkSampling
+  for (const size of sampling?.sizes ?? [100, 1000, 10000, 50000]) {
     const samples = []
-    for (let sample = 0; sample < 3; sample++) {
+    for (let sample = 0; sample < (sampling?.repeats ?? 3); sample++) {
       model.reset()
       exports.length = 0
       const source = Array.from({ length: size }, (_, i) => ({
@@ -45,6 +46,7 @@ import { model } from "./model"
   }
   return {
     scales,
-    note: "Actual downloader + SRT builder; presegmented source, three full exports per size; zero-latency mock translator, no Provider billing and no disk download. These calls are content batches, not HTTP requests.",
+    sampling,
+    note: "Actual downloader + SRT builder; presegmented source, configurable full exports per size; zero-latency mock translator, no Provider billing and no disk download. All cold and warm samples retained. These calls are content batches, not HTTP requests.",
   }
 }

@@ -1,0 +1,76 @@
+RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/request/__tests__/resource-identity.test.ts (7 tests | 2 failed) 39ms
+   × late HMAC completion cannot overwrite a newer identity or resurrect a removed provider 8ms
+   × captures credential material before asynchronous initialization 7ms
+ ❯ src/utils/providers/__tests__/resource-runtime.test.ts (8 tests | 2 failed) 1896ms
+   ❯ background provider authority (8)
+     × uses one immutable revision snapshot across delayed hmac and rapid multi-provider/group edits 79ms
+     × uses one immutable revision snapshot across delayed persistence and rapid multi-provider/group edits 57ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/providers/__tests__/resource-runtime.test.ts > background provider authority > uses one immutable revision snapshot across delayed hmac and rapid multi-provider/group edits
+AssertionError: expected '34b9a68b-4186-4e27-9a9f-696b0eb6edea' not to be '34b9a68b-4186-4e27-9a9f-696b0eb6edea' // Object.is equality
+ ❯ src/utils/providers/__tests__/resource-runtime.test.ts:195:71
+    196|     let live = true,
+    197|       starts = 0
+    198|     const result = runtime
+       |     ^
+    199|       .runProviderOperation(
+    200|         provider,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/utils/providers/__tests__/resource-runtime.test.ts > background provider authority > uses one immutable revision snapshot across delayed persistence and rapid multi-provider/group edits
+AssertionError: expected '60227bc2-26ec-43ae-bb19-cc15b2c214b3' not to be '60227bc2-26ec-43ae-bb19-cc15b2c214b3' // Object.is equality
+ ❯ src/utils/providers/__tests__/resource-runtime.test.ts:195:71
+    196|     let live = true,
+    197|       starts = 0
+    198|     const result = runtime
+       |     ^
+    199|       .runProviderOperation(
+    200|         provider,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/utils/request/__tests__/resource-identity.test.ts > late HMAC completion cannot overwrite a newer identity or resurrect a removed provider
+AssertionError: expected undefined to be 'd304d965-3475-4151-b35f-8ca2ada88e77' // Object.is equality
+
+- Expected:
+"d304d965-3475-4151-b35f-8ca2ada88e77"
+
++ Received:
+undefined
+
+ ❯ src/utils/request/__tests__/resource-identity.test.ts:119:45
+    117|     release.resolve()
+    118|     expect(await old).not.toBe(latest)
+    119|     expect(resolver.get("provider", "new")).toBe(latest)
+       |                                             ^
+    120|     const pending = resolver.update("removed", "1", material("third-ke…
+    121|     resolver.remove("removed")
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/utils/request/__tests__/resource-identity.test.ts > captures credential material before asynchronous initialization
+AssertionError: expected 'bec08ae8-e4c8-4769-ada6-2e36b444d2e2' to be '9e4b17a3-564f-47a2-88bc-326396cdca15' // Object.is equality
+
+Expected: "9e4b17a3-564f-47a2-88bc-326396cdca15"
+Received: "bec08ae8-e4c8-4769-ada6-2e36b444d2e2"
+
+ ❯ src/utils/request/__tests__/resource-identity.test.ts:137:77
+    135|   release.resolve()
+    136|   const id = await pending
+    137|   expect(await resolver.update("b", "same-material", material("capture…
+       |                                                                             ^
+    138| })
+    139|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 11 passed (15)
+   Start at  12:59:26
+   Duration  3.88s (tests 48%, transform 31%, setup 13%, import 6%, worker 1%)

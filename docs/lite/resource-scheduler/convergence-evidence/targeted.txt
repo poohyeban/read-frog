@@ -1,0 +1,10 @@
+RUN  v5.0.3 /workspace/read-frog
+
+
+ Test Files  9 passed (9)
+      Tests  130 passed (130)
+   Start at  13:17:00
+   Duration  8.94s (tests 46%, import 22%, setup 16%, transform 16%, worker 1%)
+
+    Isolate  9 workers spawned · ~239ms startup each (spawn + environment, per file)
+             at least ~479ms faster with isolate: false — reuses workers across files instead of one per file

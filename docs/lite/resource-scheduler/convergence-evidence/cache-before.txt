@@ -1,0 +1,109 @@
+RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts (6 tests | 5 failed) 339ms
+   × bounds a hung read, continues Fast, and never fans out cache reads over 100 seeks/stop-starts 39ms
+   × continues on cache rejection and cools repeated failed lookups 258ms
+   × continues on cache sync throw and cools repeated failed lookups 18ms
+   × accepts late valid cache results, cancels redundant pending work, and does not start it again 6ms
+   × aborts waiting on stop and rejects stale cache publication across restart 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts > bounds a hung read, continues Fast, and never fans out cache reads over 100 seeks/stop-starts
+AssertionError: expected "vi.fn()" to be called at least once
+ ❯ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts:50:26
+     48|   const { engine, video, session } = setup(read)
+     49|   await vi.advanceTimersByTimeAsync(500)
+     50|   expect(mock.translate).toHaveBeenCalled()
+       |                          ^
+     51|   for (let i = 0; i < 100; i++) {
+     52|     video.currentTime = i * 100
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts > continues on cache rejection and cools repeated failed lookups
+AssertionError: expected "vi.fn()" to be called 1 times, but got 101 times
+ ❯ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts:81:16
+     79|     await vi.advanceTimersByTimeAsync(1)
+     80|   }
+     81|   expect(read).toHaveBeenCalledTimes(1)
+       |                ^
+     82|   await vi.advanceTimersByTimeAsync(6000)
+     83|   video.dispatchEvent(new Event("timeupdate"))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts > continues on cache sync throw and cools repeated failed lookups
+AssertionError: expected "vi.fn()" to be called at least once
+ ❯ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts:75:26
+     73|   const { video } = setup(read)
+     74|   await vi.advanceTimersByTimeAsync(1)
+     75|   expect(mock.translate).toHaveBeenCalled()
+       |                          ^
+     76|   for (let i = 1; i <= 100; i++) {
+     77|     video.currentTime = i * 100
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts > accepts late valid cache results, cancels redundant pending work, and does not start it again
+AssertionError: expected "vi.fn()" to be called at least once
+ ❯ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts:104:26
+    102|   const { publish, source, engine } = setup(() => pending.promise)
+    103|   await vi.advanceTimersByTimeAsync(500)
+    104|   expect(mock.translate).toHaveBeenCalled()
+       |                          ^
+    105|   const starts = mock.translate.mock.calls.length
+    106|   const signals = mock.translate.mock.calls.map((c) => c[3].signal as …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts > aborts waiting on stop and rejects stale cache publication across restart
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts:122:27
+    120|   await vi.advanceTimersByTimeAsync(1)
+    121|   await engine.stop()
+    122|   expect(signal?.aborted).toBe(true)
+       |                           ^
+    123|   expect(vi.getTimerCount()).toBe(0)
+    124|   engine.start()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯ Uncaught Exception ⎯⎯⎯⎯⎯
+Error: DB unavailable
+ ❯ Object.<anonymous> src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts:70:38
+     68| it.each(["rejection", "sync throw"])("continues on cache %s and cools …
+     69|   const read = vi.fn(() => {
+     70|     if (mode === "sync throw") throw new Error("DB unavailable")
+       |                                      ^
+     71|     return Promise.reject(new Error("background unavailable"))
+     72|   })
+ ❯ Object.Mock [as read] node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/spy.DgMTfhrK.js:323:40
+ ❯ TranslationCoordinator.restoreCandidates src/entrypoints/subtitles.content/translation-coordinator.ts:338:8
+ ❯ TranslationCoordinator.handleTranslationTick src/entrypoints/subtitles.content/translation-coordinator.ts:245:14
+ ❯ src/entrypoints/subtitles.content/translation-coordinator.ts:202:29
+
+This error originated in "src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The last test to run before this error was "continues on cache sync throw and cools repeated failed lookups". This means either:
+- the error was thrown while Vitest was running this test, or
+- the error was thrown after the test completed, and this was the most recent test at that point.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+     Errors  1 error
+   Start at  13:07:36
+   Duration  3.40s (transform 45%, import 40%, tests 11%, setup 4%)
