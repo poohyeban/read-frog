@@ -1,6 +1,7 @@
 import type { SubtitleTraceSink } from "@/utils/subtitles/diagnostics"
 import type { StateData, SubtitlesFragment, SubtitlesState } from "@/utils/subtitles/types"
 import { CueTimeline, cueIdentity } from "@/utils/subtitles/cue-timeline"
+import { recordTrackPublication } from "@/utils/subtitles/track-publication"
 import {
   adPlayingAtom,
   currentSubtitleAtom,
@@ -68,7 +69,7 @@ export class SubtitlesScheduler {
     const previous = this.currentIndex >= 0 ? this.subtitles[this.currentIndex] : null
     if (lane === "quality") this.qualityTimeline = this.qualityTimeline.upsert(subtitles)
     else this.timeline = this.timeline.upsert(subtitles)
-    this.publishTranslatedTrack()
+    this.publishTranslatedTrack(subtitles)
     this.updateSubtitles(this.videoElement.currentTime)
     if (previous !== this.subtitles[this.currentIndex]) this.updateCurrentSubtitle()
   }
@@ -241,8 +242,13 @@ export class SubtitlesScheduler {
     }
   }
 
-  private publishTranslatedTrack() {
-    subtitlesStore.set(translatedTrackAtom, [...this.qualityTimeline.cues, ...this.subtitles])
+  private publishTranslatedTrack(updates?: readonly SubtitlesFragment[]) {
+    const next = this.qualityTimeline.cues.length
+      ? [...this.qualityTimeline.cues, ...this.subtitles]
+      : this.subtitles
+    if (updates && !this.qualityTimeline.cues.length)
+      recordTrackPublication(next, subtitlesStore.get(translatedTrackAtom), updates)
+    subtitlesStore.set(translatedTrackAtom, next)
   }
 
   private updateCurrentSubtitle() {

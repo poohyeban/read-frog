@@ -37,7 +37,7 @@ export const rawSourceTrackAtom = atom<SubtitlesFragment[]>([])
 
 /** The scheduler's translated cues, for consumers that need the whole track
  * rather than whichever one covers now. */
-export const translatedTrackAtom = atom<SubtitlesFragment[]>([])
+export const translatedTrackAtom = atom<readonly SubtitlesFragment[]>([])
 
 /**
  * Display cue: prefer a translated scheduler cue; otherwise fall back to the source track

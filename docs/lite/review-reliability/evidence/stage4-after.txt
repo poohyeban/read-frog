@@ -1,0 +1,13 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+
+ Test Files  23 passed (23)
+      Tests  227 passed (227)
+   Start at  15:48:23
+   Duration  5.73s (import 30%, transform 28%, setup 23%, environment 9%, tests 8%, worker 1%)
+
+     Import  250 modules were evaluated 1009 times · 4.12s total, 30% of tracked time
+             ~537ms faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+             learn more: https://vitest.dev/guide/improving-performance#test-isolation
+

@@ -1,10 +1,29 @@
 import type { SubtitlesFragment } from "./types"
 
-/** Timing alone is not unique: overlapping tracks can share a start timestamp. */
-export function cueIdentity(
-  cue: Pick<SubtitlesFragment, "id" | "start" | "end" | "text" | "sourceLanguage">,
-): string {
-  return JSON.stringify([cue.id ?? "", cue.start, cue.end, cue.text, cue.sourceLanguage ?? ""])
+type CueIdentityFields = Pick<SubtitlesFragment, "id" | "start" | "end" | "text" | "sourceLanguage">
+const cueIdentities = new WeakMap<CueIdentityFields, CueIdentityFields & { key: string }>()
+/** Stable snapshots avoid serialization; field checks also tolerate legacy mutable cues. */
+export function cueIdentity(cue: CueIdentityFields): string {
+  const cached = cueIdentities.get(cue)
+  if (
+    cached &&
+    cached.id === cue.id &&
+    cached.start === cue.start &&
+    cached.end === cue.end &&
+    cached.text === cue.text &&
+    cached.sourceLanguage === cue.sourceLanguage
+  )
+    return cached.key
+  const key = JSON.stringify([cue.id ?? "", cue.start, cue.end, cue.text, cue.sourceLanguage ?? ""])
+  cueIdentities.set(cue, {
+    id: cue.id,
+    start: cue.start,
+    end: cue.end,
+    text: cue.text,
+    sourceLanguage: cue.sourceLanguage,
+    key,
+  })
+  return key
 }
 function lowerBound(values: readonly number[], target: number, strict = false) {
   let lo = 0,

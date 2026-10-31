@@ -1,0 +1,36 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/subtitles/__tests__/session.test.ts (5 tests | 1 failed) 16ms
+   × does not emit a second control IPC when a cancelled task settles late 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/subtitles/__tests__/session.test.ts > does not emit a second control IPC when a cancelled task settles late
+AssertionError: expected [ 'cancelSubtitleRequests', …(2) ] to deeply equal [ 'cancelSubtitleRequests' ]
+
+- Expected
++ Received
+
+  [
+    "cancelSubtitleRequests",
++   "releaseSubtitleTask",
++   "releaseSubtitleTask",
+  ]
+
+ ❯ src/utils/subtitles/__tests__/session.test.ts:110:54
+    108|   task.complete()
+    109|   task.complete()
+    110|   expect(rpc.cancel.mock.calls.map(call => call[0])).toEqual(["cancelS…
+       |                                                      ^
+    111|   session.dispose()
+    112| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  15:47:35
+   Duration  576ms (transform 41%, setup 37%, import 15%, tests 5%, worker 2%)
+

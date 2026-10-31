@@ -105,6 +105,7 @@ export class SubtitleSession {
         epoch === this.epoch &&
         !controller.signal.aborted,
       complete: () => {
+        if (completed) return
         completed = true
         this.tasks.delete(task)
         void sendMessage("releaseSubtitleTask", { sessionId }).catch(() => {})

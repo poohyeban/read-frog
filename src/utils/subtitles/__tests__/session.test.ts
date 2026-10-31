@@ -99,3 +99,14 @@ describe("worker lease failure reproduction", () => {
     session.dispose()
   })
 })
+
+it("does not emit a second control IPC when a cancelled task settles late", () => {
+  rpc.cancel.mockReset().mockResolvedValue(undefined)
+  const session = new SubtitleSession()
+  const task = session.begin("playback", "late")
+  task.cancel()
+  task.complete()
+  task.complete()
+  expect(rpc.cancel.mock.calls.map((call) => call[0])).toEqual(["cancelSubtitleRequests"])
+  session.dispose()
+})

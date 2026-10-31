@@ -1,6 +1,7 @@
 import type { SubtitlesFragment } from "./types"
 import { cueIdentity, getCueTimeline } from "./cue-timeline"
 import { isSegmentationAligned } from "./processor/ai-segmentation"
+import { trackUpdates } from "./track-publication"
 
 export interface TranscriptLine {
   id?: string
@@ -14,8 +15,9 @@ export interface TranscriptLine {
 
 interface Projection {
   raw: SubtitlesFragment[]
-  translated: SubtitlesFragment[]
+  translated: readonly SubtitlesFragment[]
   lines: TranscriptLine[]
+  direct: boolean
   byAnchor: Map<string, TranscriptLine>
 }
 interface SourceIndex {
@@ -25,21 +27,39 @@ interface SourceIndex {
 }
 const projections = new WeakMap<SubtitlesFragment[], Projection>()
 const sourceIndexes = new WeakMap<SubtitlesFragment[], SourceIndex>()
-const identities = new WeakMap<SubtitlesFragment, string>()
-function identity(cue: SubtitlesFragment) {
-  let key = identities.get(cue)
-  if (!key) {
-    key = cueIdentity(cue)
-    identities.set(cue, key)
-  }
-  return key
+const identity = cueIdentity
+function projectLine(
+  cue: SubtitlesFragment,
+  anchorKey: string,
+  old?: TranscriptLine,
+): TranscriptLine {
+  const valid =
+    !!cue.translation?.trim() &&
+    (!cue.translationOutcome || cue.translationOutcome.status === "success")
+  const translation = valid && cue.translation !== cue.text ? cue.translation : undefined
+  return old &&
+    old.start === cue.start &&
+    old.end === cue.end &&
+    old.text === cue.text &&
+    old.sourceLanguage === cue.sourceLanguage &&
+    old.translation === translation
+    ? old
+    : {
+        id: cue.id,
+        anchorKey,
+        sourceLanguage: cue.sourceLanguage,
+        start: cue.start,
+        end: cue.end,
+        text: cue.text,
+        translation,
+      }
 }
 
 /** Immutable track publications drive projection; timeupdate never rebuilds rows.
  * Span validation and unchanged row objects survive incremental result publications. */
 export function buildTranscript(
   source: SubtitlesFragment[],
-  translated: SubtitlesFragment[],
+  translated: readonly SubtitlesFragment[],
   raw: SubtitlesFragment[] = source,
 ): TranscriptLine[] {
   const previous = projections.get(source)
@@ -55,6 +75,26 @@ export function buildTranscript(
   const valid = (cue: SubtitlesFragment) =>
     !!cue.translation?.trim() &&
     (!cue.translationOutcome || cue.translationOutcome.status === "success")
+  const updates = previous ? trackUpdates(translated, previous.translated) : undefined
+  if (
+    raw === source &&
+    previous?.raw === raw &&
+    previous.direct &&
+    updates?.every((c) => c.lane !== "quality")
+  ) {
+    const lines = previous.lines.slice()
+    const byAnchor = previous.byAnchor
+    for (const cue of updates) {
+      const anchor = identity(cue)
+      const position = index.positions.get(anchor)
+      if (position === undefined) continue
+      const line = projectLine(valid(cue) ? cue : rawCues[position]!, anchor, lines[position])
+      lines[position] = line
+      byAnchor.set(anchor, line)
+    }
+    projections.set(source, { raw, translated, lines, byAnchor, direct: true })
+    return lines
+  }
   const fast = new Map<string, SubtitlesFragment>()
   const quality: SubtitlesFragment[] = []
   for (const cue of translated) {
@@ -98,30 +138,12 @@ export function buildTranscript(
     const selected = selections.get(i)
     const anchorKey = index.keys[i]!
     const cue = direct ? (fast.get(anchorKey) ?? rawCues[i]!) : (selected?.cue ?? rawCues[i]!)
-    const translation = valid(cue) && cue.translation !== cue.text ? cue.translation : undefined
-    const old = previous?.byAnchor.get(anchorKey)
-    const line =
-      old &&
-      old.start === cue.start &&
-      old.end === cue.end &&
-      old.text === cue.text &&
-      old.sourceLanguage === cue.sourceLanguage &&
-      old.translation === translation
-        ? old
-        : {
-            id: cue.id,
-            anchorKey,
-            sourceLanguage: cue.sourceLanguage,
-            start: cue.start,
-            end: cue.end,
-            text: cue.text,
-            translation,
-          }
+    const line = projectLine(cue, anchorKey, previous?.byAnchor.get(anchorKey))
     lines.push(line)
     byAnchor.set(anchorKey, line)
     i = selected?.end ?? i + 1
   }
-  projections.set(source, { raw, translated, lines, byAnchor })
+  projections.set(source, { raw, translated, lines, byAnchor, direct })
   return lines
 }
 
