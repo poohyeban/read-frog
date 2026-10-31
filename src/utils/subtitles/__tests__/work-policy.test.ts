@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { SUBTITLE_PERFORMANCE_DEFAULTS } from "@/utils/request/resource-policy"
 import { continuousReadyMs, SubtitleBufferController } from "../continuous-buffer"
 import {
   chunkSubtitleWork,
@@ -46,6 +47,23 @@ describe("independent model input boundaries", () => {
       { start: 500, end: 2000, text: "b", translation: "b" },
     ]
     expect(continuousReadyMs(source, ready, 0, 2000)).toBe(2000)
+  })
+  it("changes buffer watermarks in place while preserving observed provider latency", () => {
+    const buffer = new SubtitleBufferController()
+    buffer.observe(6000)
+    expect(buffer.lowMs).toBe(14000)
+    buffer.configure({
+      ...SUBTITLE_PERFORMANCE_DEFAULTS,
+      lowMinMs: 2000,
+      lowMaxMs: 5000,
+      highMinMs: 8000,
+      highMaxMs: 12000,
+    })
+    expect(buffer.lowMs).toBe(5000)
+    expect(buffer.update(48000, 4)).toBe(false)
+    expect(buffer.update(19000, 4)).toBe(true)
+    buffer.configure(SUBTITLE_PERFORMANCE_DEFAULTS)
+    expect(buffer.lowMs).toBe(14000)
   })
   it("uses different suspend/resume watermarks and accounts for playback rate", () => {
     const buffer = new SubtitleBufferController()

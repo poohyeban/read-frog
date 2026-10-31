@@ -12,64 +12,94 @@ export interface TranscriptLine {
   translation?: string
 }
 
-const previousLines = new WeakMap<SubtitlesFragment[], Map<string, TranscriptLine>>()
-const sourcePositions = new WeakMap<SubtitlesFragment[], Map<string, number>>()
+interface Projection {
+  raw: SubtitlesFragment[]
+  translated: SubtitlesFragment[]
+  lines: TranscriptLine[]
+  byAnchor: Map<string, TranscriptLine>
+}
+interface SourceIndex {
+  keys: string[]
+  positions: Map<string, number>
+  spans: WeakMap<SubtitlesFragment, { start: number; end: number } | null>
+}
+const projections = new WeakMap<SubtitlesFragment[], Projection>()
+const sourceIndexes = new WeakMap<SubtitlesFragment[], SourceIndex>()
+const identities = new WeakMap<SubtitlesFragment, string>()
+function identity(cue: SubtitlesFragment) {
+  let key = identities.get(cue)
+  if (!key) {
+    key = cueIdentity(cue)
+    identities.set(cue, key)
+  }
+  return key
+}
 
-/** Result-driven projection. Whole Quality pairs own their source interval; a crossing
- * Fast row falls back to uncovered raw cues instead of duplicating or mixing text. */
+/** Immutable track publications drive projection; timeupdate never rebuilds rows.
+ * Span validation and unchanged row objects survive incremental result publications. */
 export function buildTranscript(
   source: SubtitlesFragment[],
   translated: SubtitlesFragment[],
   raw: SubtitlesFragment[] = source,
 ): TranscriptLine[] {
+  const previous = projections.get(source)
+  if (previous?.raw === raw && previous.translated === translated) return previous.lines
   const timeline = getCueTimeline(raw)
   const rawCues = timeline.cues
-  let positions = sourcePositions.get(raw)
-  if (!positions) {
-    positions = new Map(rawCues.map((cue, index) => [cueIdentity(cue), index]))
-    sourcePositions.set(raw, positions)
+  let index = sourceIndexes.get(raw)
+  if (!index) {
+    const keys = rawCues.map(identity)
+    index = { keys, positions: new Map(keys.map((key, i) => [key, i])), spans: new WeakMap() }
+    sourceIndexes.set(raw, index)
   }
-  const occupied = new Uint8Array(rawCues.length)
-  const selections = new Map<number, { cue: SubtitlesFragment; end: number }>()
   const valid = (cue: SubtitlesFragment) =>
     !!cue.translation?.trim() &&
     (!cue.translationOutcome || cue.translationOutcome.status === "success")
-  const fast = new Map(
-    translated.filter((c) => c.lane !== "quality" && valid(c)).map((c) => [cueIdentity(c), c]),
-  )
-  function select(cue: SubtitlesFragment, key = cueIdentity(cue)) {
-    const exact = positions!.get(key)
-    if (exact !== undefined) {
-      if (!occupied[exact]) {
-        occupied[exact] = 1
-        selections.set(exact, { cue, end: exact + 1 })
-      }
-      return
+  const fast = new Map<string, SubtitlesFragment>()
+  const quality: SubtitlesFragment[] = []
+  for (const cue of translated) {
+    if (!valid(cue)) continue
+    if (cue.lane === "quality") quality.push(cue)
+    else fast.set(identity(cue), cue)
+  }
+  const direct = raw === source && !quality.length
+  const occupied = direct ? null : new Uint8Array(rawCues.length)
+  const selections = new Map<number, { cue: SubtitlesFragment; end: number }>()
+  function span(cue: SubtitlesFragment) {
+    const cached = index!.spans.get(cue)
+    if (cached !== undefined) return cached
+    const exact = index!.positions.get(identity(cue))
+    let result: { start: number; end: number } | null = null
+    if (exact !== undefined) result = { start: exact, end: exact + 1 }
+    else {
+      const covered = timeline.window(cue.start, cue.end)
+      if (isSegmentationAligned(covered, [cue]))
+        result = {
+          start: index!.positions.get(identity(covered[0]!))!,
+          end: index!.positions.get(identity(covered.at(-1)!))! + 1,
+        }
     }
-    const covered = timeline.window(cue.start, cue.end)
-    if (!isSegmentationAligned([...covered], [cue])) return
-    const start = positions!.get(cueIdentity(covered[0]!))!
-    const end = positions!.get(cueIdentity(covered.at(-1)!))! + 1
-    for (let i = start; i < end; i++) if (occupied[i]) return
-    occupied.fill(1, start, end)
-    selections.set(start, { cue, end })
+    index!.spans.set(cue, result)
+    return result
   }
-  for (const cue of getCueTimeline(translated.filter((c) => c.lane === "quality" && valid(c))).cues)
-    select(cue)
-  for (const cue of getCueTimeline(source).cues) {
-    const key = cueIdentity(cue)
-    select(fast.get(key) ?? cue, key)
+  function select(cue: SubtitlesFragment, range = span(cue)) {
+    if (!range) return
+    for (let i = range.start; i < range.end; i++) if (occupied![i]) return
+    occupied!.fill(1, range.start, range.end)
+    selections.set(range.start, { cue, end: range.end })
   }
-
-  const previous = previousLines.get(source)
-  const next = new Map<string, TranscriptLine>()
+  if (!direct) {
+    for (const cue of quality.sort((a, b) => a.start - b.start)) select(cue)
+    for (const cue of getCueTimeline(source).cues) select(fast.get(identity(cue)) ?? cue, span(cue))
+  }
+  const byAnchor = new Map<string, TranscriptLine>()
   const lines: TranscriptLine[] = []
   for (let i = 0; i < rawCues.length;) {
     const selected = selections.get(i)
-    const cue = selected?.cue ?? rawCues[i]!
-    const anchorKey = cueIdentity(rawCues[i]!)
+    const anchorKey = index.keys[i]!
+    const cue = direct ? (fast.get(anchorKey) ?? rawCues[i]!) : (selected?.cue ?? rawCues[i]!)
     const translation = valid(cue) && cue.translation !== cue.text ? cue.translation : undefined
-    const old = previous?.get(anchorKey)
+    const old = previous?.byAnchor.get(anchorKey)
     const line =
       old &&
       old.start === cue.start &&
@@ -88,10 +118,10 @@ export function buildTranscript(
             translation,
           }
     lines.push(line)
-    next.set(anchorKey, line)
+    byAnchor.set(anchorKey, line)
     i = selected?.end ?? i + 1
   }
-  previousLines.set(source, next)
+  projections.set(source, { raw, translated, lines, byAnchor })
   return lines
 }
 
