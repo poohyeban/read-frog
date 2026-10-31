@@ -159,6 +159,10 @@ export class TranslationCoordinator {
   }
   clearFailed() {
     this.failed.clear()
+    // Explicit user resume may follow a budget increase. The persistent dispatch
+    // ledger still decides admission; clearing these local latches grants no credit.
+    this.hardBlocked = false
+    this.speculativeBlocked = false
   }
   private detach() {
     if (this.video)

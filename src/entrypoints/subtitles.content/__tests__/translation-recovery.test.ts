@@ -122,6 +122,38 @@ describe("subtitle translation recovery", () => {
 })
 
 describe("bounded failure recovery", () => {
+  it("can resume after a user raises the budget without polling an exhausted budget", async () => {
+    vi.useFakeTimers()
+    vi.mocked(translateSubtitles).mockImplementation(async (cues) =>
+      cues.map((cue) => ({
+        ...cue,
+        translation: "",
+        translationOutcome: { status: "permanent", message: "hard-budget" },
+      })),
+    )
+    const { coordinator, video, onTranslated } = setup([{ text: "resume", start: 0, end: 2000 }])
+    coordinator.start()
+    await vi.advanceTimersByTimeAsync(0)
+    for (let i = 0; i < 100; i++) video.dispatchEvent(new Event("timeupdate"))
+    await vi.advanceTimersByTimeAsync(60000)
+    expect(translateSubtitles).toHaveBeenCalledTimes(1)
+    await coordinator.stop()
+    vi.mocked(translateSubtitles).mockImplementation(async (cues) =>
+      cues.map((cue) => ({
+        ...cue,
+        translation: "resumed",
+        translationOutcome: { status: "success" },
+      })),
+    )
+    coordinator.clearFailed()
+    coordinator.start()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(translateSubtitles).toHaveBeenCalledTimes(2)
+    expect(onTranslated).toHaveBeenLastCalledWith(
+      [expect.objectContaining({ translation: "resumed" })],
+      "fast",
+    )
+  })
   it("retries only the temporary failed cue after cooldown, preserving successful neighbors", async () => {
     vi.useFakeTimers()
     vi.mocked(translateSubtitles).mockImplementation(async (cues) =>
