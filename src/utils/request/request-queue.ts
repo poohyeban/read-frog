@@ -175,7 +175,7 @@ export class RequestQueue {
       // It calls context.abort in that case; never start a concurrent retry of that operation.
       if (context.physicalSettled) await context.physicalSettled
       if (task.drained || controller.signal.aborted) return
-      task.policy ??= context.policy
+      task.policy = context.policy
       task.failures++
       const policy = task.policy
       const maxAttempts = policy?.maxAttempts ?? this.options.maxRetries + 1

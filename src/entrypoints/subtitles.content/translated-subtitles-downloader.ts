@@ -5,8 +5,9 @@ import type { SubtitlesFetcher } from "@/utils/subtitles/fetchers/types"
 import type { SubtitlesVideoContext } from "@/utils/subtitles/processor/translator"
 import type { SubtitlesFragment } from "@/utils/subtitles/types"
 import { toastManager } from "@/components/ui/base-ui/toast"
+import { getPerformanceSnapshot, initializePerformance } from "@/utils/config/performance"
 import { getLocalConfig } from "@/utils/config/storage"
-import { MAX_GAP_MS, TRANSLATION_BATCH_SIZE } from "@/utils/constants/subtitles"
+import { MAX_GAP_MS } from "@/utils/constants/subtitles"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { resolveLanguageCodeFromLocale } from "@/utils/content/page-language"
 import { i18n } from "@/utils/i18n"
@@ -78,6 +79,8 @@ export class TranslatedSubtitlesDownloader {
         throw new Error(i18n.t("subtitles.errors.translatedExportFailed"))
       }
 
+      await initializePerformance()
+      this.assertActive(operationId)
       this.degradedChunks = 0
       const sourceSubtitles = [...(await this.fetcher.fetch())].sort(
         (a, b) => a.start - b.start || a.end - b.end,
@@ -97,10 +100,7 @@ export class TranslatedSubtitlesDownloader {
       const estimate = estimateSubtitleExport(
         sourceSubtitles,
         configSnapshot.videoSubtitles.aiSegmentation,
-        Math.min(
-          TRANSLATION_BATCH_SIZE,
-          configSnapshot.videoSubtitles.batchQueueConfig.maxItemsPerBatch,
-        ),
+        getPerformanceSnapshot().subtitles.batchSize,
         configSnapshot.pageTranslation.enableAIContentAware,
       )
       if (
@@ -353,7 +353,7 @@ export class TranslatedSubtitlesDownloader {
   }
 
   private buildTranslationBatches(fragments: SubtitlesFragment[]): SubtitlesFragment[][] {
-    return chunkSubtitleWork(fragments, TRANSLATION_BATCH_SIZE)
+    return chunkSubtitleWork(fragments, getPerformanceSnapshot().subtitles.batchSize)
   }
 
   private degradedChunks = 0

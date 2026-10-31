@@ -10,7 +10,12 @@ type ExtensionAPI = {
   storage: {
     local: {
       get: (key: string) => Promise<Record<string, Config>>
-      set: (value: Record<string, Config>) => Promise<void>
+      set: (
+        value: Record<
+          string,
+          Config | import("../src/utils/request/performance-config").PerformanceOverrides
+        >,
+      ) => Promise<void>
     }
   }
 }
@@ -180,7 +185,13 @@ test("unpacked MV3: translation, DeepSeek actions, diagnostics, images and crede
         config.pageTranslation.page.translateTitle = false
         config.pageTranslation.node.enabled = true
         config.pageTranslation.node.hotkey = "backtick"
-        config.pageTranslation.batchQueueConfig.maxItemsPerBatch = 1
+        await api.storage.local.set({
+          performanceOverrides: {
+            version: 1,
+            revision: 1,
+            batches: { page: { maxItemsPerBatch: 1 } },
+          },
+        })
         config.inputTranslation.fromLang = "eng"
         config.inputTranslation.toLang = "cmn"
         config.selectionToolbar.builtInActions.dictionary.providerId = id

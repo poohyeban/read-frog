@@ -174,6 +174,7 @@ export class ResourceScheduler {
     if (!policies.length) throw new ResourceRejected("identity")
     return {
       ...policies[0]!,
+      maxInFlight: Math.min(this.global.maxInFlight, ...policies.map((p) => p.maxInFlight)),
       maxAttempts: Math.min(...policies.map((p) => p.maxAttempts)),
       timeoutMs: Math.min(...policies.map((p) => p.timeoutMs)),
       baseRetryDelayMs: Math.max(...policies.map((p) => p.baseRetryDelayMs)),
@@ -402,10 +403,11 @@ export class ResourceScheduler {
       start: (beforeSend) => {
         entry.controller.signal.throwIfAborted()
         entry.options.assertCurrent?.()
-        if (active.started || active.released || !attempts.canStart(policy.maxAttempts))
+        const maxAttempts = this.policy(entry.options.resourceId).maxAttempts
+        if (active.started || active.released || !attempts.canStart(maxAttempts))
           throw new ResourceRejected("attempts")
         beforeSend?.()
-        attempts.start(policy.maxAttempts)
+        attempts.start(maxAttempts)
         active.started = true
         this.counters.starts++
       },

@@ -2,16 +2,27 @@ import type { Config } from "@/types/config/config"
 import type { PerformanceOverrides } from "@/utils/request/performance-config"
 import { storage } from "#imports"
 import {
-  BATCH_DEFAULTS,
   emptyPerformanceOverrides,
   PERFORMANCE_STORAGE_KEY,
   performanceOverridesSchema,
   subtitlePerformanceSchema,
 } from "@/utils/request/performance-config"
-import { RESOURCE_DEFAULTS, resourcePolicySchema } from "@/utils/request/resource-policy"
+import { resourcePolicySchema } from "@/utils/request/resource-policy"
+
+// Historical defaults must not move when new benchmark results tune current defaults.
+const LEGACY_V5_RESOURCE_DEFAULTS = { rate: 8, capacity: 20, maxInFlight: 2 }
+const LEGACY_V5_BATCH_DEFAULTS = { maxItemsPerBatch: 4, maxCharactersPerBatch: 1000 }
 
 /** Run before the root schema strips workBudget. Never overwrite a newer sparse value. */
-export async function migratePerformanceConfig(config: Config, oldVersion: number) {
+interface LegacyScheduling {
+  requestQueueConfig?: { rate?: number; capacity?: number }
+  batchQueueConfig?: { maxItemsPerBatch?: number; maxCharactersPerBatch?: number }
+}
+type LegacyConfig = Omit<Config, "pageTranslation" | "videoSubtitles"> & {
+  pageTranslation: Config["pageTranslation"] & LegacyScheduling
+  videoSubtitles: Config["videoSubtitles"] & LegacyScheduling
+}
+export async function migratePerformanceConfig(config: LegacyConfig, oldVersion: number) {
   if (oldVersion >= 6) return
   const stored = await storage.getItem<PerformanceOverrides>(PERFORMANCE_STORAGE_KEY)
   const parsed = performanceOverridesSchema.safeParse(stored)
@@ -26,8 +37,9 @@ export async function migratePerformanceConfig(config: Config, oldVersion: numbe
     for (const key of ["rate", "capacity"] as const) {
       const value = owner.requestQueueConfig?.[key]
       if (
+        typeof value !== "number" ||
         !resourcePolicySchema.shape[key].safeParse(value).success ||
-        (knownDefaults && value === RESOURCE_DEFAULTS[key])
+        (knownDefaults && value === LEGACY_V5_RESOURCE_DEFAULTS[key])
       )
         continue
       next.providers ??= {}
@@ -40,10 +52,11 @@ export async function migratePerformanceConfig(config: Config, oldVersion: numbe
       const value = owner.batchQueueConfig?.[key]
       const max = key === "maxItemsPerBatch" ? 32 : 12_000
       if (
+        typeof value !== "number" ||
         !Number.isInteger(value) ||
         value < 1 ||
         value > max ||
-        (knownDefaults && value === BATCH_DEFAULTS[key])
+        (knownDefaults && value === LEGACY_V5_BATCH_DEFAULTS[key])
       )
         continue
       next.batches ??= {}
@@ -59,7 +72,7 @@ export async function migratePerformanceConfig(config: Config, oldVersion: numbe
   if (
     legacy?.maxInFlight !== undefined &&
     resourcePolicySchema.shape.maxInFlight.safeParse(legacy.maxInFlight).success &&
-    (!knownDefaults || legacy.maxInFlight !== RESOURCE_DEFAULTS.maxInFlight)
+    (!knownDefaults || legacy.maxInFlight !== LEGACY_V5_RESOURCE_DEFAULTS.maxInFlight)
   ) {
     next.providers ??= {}
     const provider = (next.providers[config.videoSubtitles.providerId] ??= {})

@@ -36,6 +36,7 @@ export default class AppDB extends Dexie {
     this.version(5).stores({ subtitleCandidates: "key,trackKey,createdAt" })
     // Retain the historical upgrade chain. Only obsolete internal accounting is removed.
     this.version(6).stores({ subtitleBudget: null, subtitleAttempt: null })
+    this.version(7).stores({ subtitleCandidates: "key,trackKey,[trackKey+start],createdAt" })
     this.aiSegmentationCache.mapToClass(AiSegmentationCache)
     this.glossary.mapToClass(Glossary)
     this.glossaryTerm.mapToClass(GlossaryTerm)

@@ -18,6 +18,7 @@ import {
   subtitlesSidebarOpenAtom,
   subtitlesSourceAtom,
   subtitlesStore,
+  subtitleStopPhaseAtom,
   translatedTrackAtom,
 } from "../atoms"
 import { wordLookupAtom } from "../learning/atoms"
@@ -103,6 +104,7 @@ function attachScheduler(adapter: UniversalVideoAdapter, active: boolean, curren
 describe("universalVideoAdapter", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mocks.resolveSubtitlesProviderRef.mockReset().mockResolvedValue(null)
     subtitlesStore.set(sourceTrackAtom, [])
     subtitlesStore.set(translatedTrackAtom, [])
     subtitlesStore.set(currentTimeMsAtom, 0)
@@ -732,7 +734,7 @@ describe("universalVideoAdapter", () => {
     // test instead of this one.
     mocks.resolveSubtitlesProviderRef.mockReturnValueOnce(new Promise(() => {}))
 
-    void (adapter as any).processTranslatedSubtitles()
+    void (adapter as any).processTranslatedSubtitles(DEFAULT_CONFIG)
     await Promise.resolve()
     await Promise.resolve()
 
@@ -1020,5 +1022,71 @@ describe("universalVideoAdapter", () => {
     a.handlePageShow({ persisted: true })
     expect(restart).toHaveBeenCalledTimes(1)
     expect(a.subtitleSession).toBeNull()
+  })
+  it("100 user toggles retain completed captions and finish every stop acknowledgement", async () => {
+    vi.useFakeTimers()
+    const messaging = await import("@/utils/message")
+    const messages = vi
+      .spyOn(messaging, "sendMessage")
+      .mockImplementation(async (type: string): Promise<any> =>
+        type === "getSubtitleCandidates"
+          ? []
+          : type === "getProviderResourcePolicy"
+            ? { maxInFlight: 2 }
+            : undefined,
+      )
+    const documentMock = Object.assign(new EventTarget(), {
+      title: "Mock video",
+      querySelector: () => null,
+      getElementById: () => null,
+    })
+    vi.stubGlobal("document", documentMock)
+    const config = structuredClone(DEFAULT_CONFIG)
+    config.language.targetCode = "cmn"
+    mocks.getLocalConfig.mockResolvedValue(config)
+    mocks.resolveSubtitlesProviderRef.mockResolvedValue({
+      kind: "local",
+      config: config.providersConfig[0],
+    })
+    mocks.translateSubtitles.mockImplementation(async (cues) =>
+      cues.map((cue: any) => ({
+        ...cue,
+        translation: "cached",
+        translationOutcome: { status: "success" },
+      })),
+    )
+    const { adapter, subtitlesFetcher } = createAdapter([{ text: "hello", start: 0, end: 1000 }])
+    subtitlesFetcher.shouldUseSameTrack.mockResolvedValue(true)
+    const player = Object.assign(new EventTarget(), { currentTime: 0, playbackRate: 1 })
+    const add = vi.spyOn(player, "addEventListener"),
+      remove = vi.spyOn(player, "removeEventListener")
+    const scheduler = attachScheduler(adapter, true)
+    Object.assign(scheduler, {
+      start: () => {},
+      show: () => {},
+      hide: () => {},
+      getVideoElement: () => player,
+    })
+    vi.spyOn(adapter as any, "hideNativeSubtitles").mockImplementation(() => {})
+    vi.spyOn(adapter as any, "showNativeSubtitles").mockImplementation(() => {})
+    try {
+      for (let cycle = 0; cycle < 100; cycle++) {
+        const enabling = adapter.toggleSubtitlesManually(true)
+        await vi.advanceTimersByTimeAsync(0)
+        await enabling
+        await adapter.toggleSubtitlesManually(false)
+        expect(subtitlesStore.get(subtitleStopPhaseAtom)).toBe("stopped")
+      }
+      expect(mocks.translateSubtitles).toHaveBeenCalledTimes(1)
+      expect(subtitlesFetcher.fetch).toHaveBeenCalledTimes(1)
+      expect(add.mock.calls.length).toBe(remove.mock.calls.length)
+      const calls = mocks.translateSubtitles.mock.calls.length
+      await vi.advanceTimersByTimeAsync(60_000)
+      expect(mocks.translateSubtitles).toHaveBeenCalledTimes(calls)
+    } finally {
+      adapter.destroy()
+      messages.mockRestore()
+      vi.useRealTimers()
+    }
   })
 })

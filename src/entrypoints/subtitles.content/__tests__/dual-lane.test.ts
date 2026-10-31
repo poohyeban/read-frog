@@ -17,7 +17,10 @@ vi.mock("@/utils/subtitles/processor/translator", () => ({
   translateSubtitles: model.translate,
   fetchSubtitlesSummary: vi.fn<(...args: any[]) => any>(),
 }))
-vi.mock("@/utils/subtitles/processor/ai-segmentation", () => ({ aiSegmentBlock: model.segment }))
+vi.mock("@/utils/subtitles/processor/ai-segmentation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/subtitles/processor/ai-segmentation")>()),
+  aiSegmentBlock: model.segment,
+}))
 vi.mock("@/utils/message", () => ({
   sendMessage: vi.fn<(...args: any[]) => any>().mockResolvedValue(undefined),
 }))
@@ -269,4 +272,58 @@ describe("three-hour independent dual lanes", () => {
     await vi.advanceTimersByTimeAsync(60_000)
     expect(model.calls.length).toBe(before)
   })
+})
+
+it("restores and reselects full Quality while admission is disabled, without repeat segmentation after recovery", async () => {
+  const source = [
+    { start: 0, end: 1000, text: "one" },
+    { start: 1000, end: 2000, text: "two" },
+  ]
+  const quality = [{ start: 0, end: 2000, text: "One, two!", translation: "历史质量译文" }]
+  const video = new Player()
+  video.currentTime = 1
+  let allowed = false
+  const renderer = new SubtitlesScheduler({ videoElement: video as unknown as HTMLVideoElement })
+  const pipeline = new SegmentationPipeline({
+    rawFragments: source,
+    getVideoElement: () => video as unknown as HTMLVideoElement,
+    getSourceLanguage: () => "en",
+    providerRef: { kind: "local", config: {} as never },
+  })
+  const read = vi.fn<(...args: any[]) => any>().mockResolvedValue([
+    {
+      key: "saved",
+      trackKey: "track",
+      lane: "quality",
+      cues: quality,
+      start: 0,
+      end: 2000,
+      createdAt: new Date(),
+    },
+  ])
+  const engine = new TranslationCoordinator({
+    configSnapshot: structuredClone(DEFAULT_CONFIG),
+    canRequest: () => allowed,
+    getFragments: () => source,
+    getVideoElement: () => video as unknown as HTMLVideoElement,
+    getCurrentState: () => "idle",
+    segmentationPipeline: pipeline,
+    onStateChange: () => {},
+    onTranslated: (cues, lane) => renderer.supplementSubtitles(cues, lane),
+    candidateCache: { read, write: async () => {} },
+  })
+  instances.push({ engine, renderer })
+  renderer.start()
+  engine.start()
+  await vi.advanceTimersByTimeAsync(1)
+  expect(subtitlesStore.get(currentSubtitleAtom)?.translation).toBe("历史质量译文")
+  expect(pipeline.hasUnprocessedChunks()).toBe(false)
+  allowed = true
+  for (let i = 0; i < 100; i++) {
+    video.seek(i % 2)
+    await vi.advanceTimersByTimeAsync(1)
+  }
+  expect(model.calls).toHaveLength(0)
+  expect(read).toHaveBeenCalledTimes(1)
+  await engine.stop()
 })

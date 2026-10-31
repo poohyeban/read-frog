@@ -25,7 +25,10 @@ export class CueTimeline<T extends SubtitlesFragment = SubtitlesFragment> {
   }
   private starts: number[]
   private maxEnds: number[]
-  private identities: Map<string, number>
+  private identities?: Map<string, number>
+  private identityIndex() {
+    return (this.identities ??= new Map(this.cues.map((cue, index) => [cueIdentity(cue), index])))
+  }
   constructor(cues: readonly T[] = [], alreadySorted = false) {
     const valid = cues.filter(
       (c) => Number.isFinite(c.start) && Number.isFinite(c.end) && c.end > c.start && c.end > 0,
@@ -34,7 +37,6 @@ export class CueTimeline<T extends SubtitlesFragment = SubtitlesFragment> {
     this.starts = this.cues.map((c) => c.start)
     let maxEnd = -Infinity
     this.maxEnds = this.cues.map((c) => (maxEnd = Math.max(maxEnd, c.end)))
-    this.identities = new Map(this.cues.map((c, i) => [cueIdentity(c), i]))
   }
   /** O(log n), including arbitrarily long intervals and reverse seeks. */
   indexAt(timeMs: number): number {
@@ -46,10 +48,10 @@ export class CueTimeline<T extends SubtitlesFragment = SubtitlesFragment> {
     return this.cues[this.indexAt(timeMs)] ?? null
   }
   has(key: string) {
-    return this.identities.has(key)
+    return this.identityIndex().has(key)
   }
   get(key: string): T | undefined {
-    const index = this.identities.get(key)
+    const index = this.identityIndex().get(key)
     return index === undefined ? undefined : this.cues[index]
   }
   /** O(log n + examined overlaps); bounded result. Pathological overlaps can scan n. */
@@ -71,7 +73,7 @@ export class CueTimeline<T extends SubtitlesFragment = SubtitlesFragment> {
     const additions = new Map<string, T>()
     for (const cue of updates) {
       const key = cueIdentity(cue)
-      const index = this.identities.get(key)
+      const index = this.identityIndex().get(key)
       if (index === undefined) {
         additions.set(key, cue)
       } else items[index] = cue

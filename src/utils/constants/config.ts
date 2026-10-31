@@ -27,13 +27,10 @@ import { DEFAULT_INPUT_TRANSLATION_CONFIG, DEFAULT_FLOATING_BUTTON_CONFIG } from
 import { DEFAULT_SELECTION_OVERLAY_OPACITY } from "./selection"
 import {
   DEFAULT_AUTO_TRANSLATE_SHORTCUT_KEY,
-  DEFAULT_BATCH_CONFIG,
   DEFAULT_MIN_CHARACTERS_PER_NODE,
   DEFAULT_MIN_WORDS_PER_NODE,
   DEFAULT_PRELOAD_MARGIN,
   DEFAULT_PRELOAD_THRESHOLD,
-  DEFAULT_REQUEST_CAPACITY,
-  DEFAULT_REQUEST_RATE,
   DEFAULT_SELECTION_TRANSLATION_SHORTCUT_KEY,
   DEFAULT_TRANSLATION_MODE_SHORTCUT_KEY,
 } from "./translate"
@@ -125,14 +122,6 @@ export const DEFAULT_CONFIG: Config = {
     },
     enableAIContentAware: false,
     customPromptsConfig: DEFAULT_TRANSLATE_PROMPTS_CONFIG,
-    requestQueueConfig: {
-      capacity: DEFAULT_REQUEST_CAPACITY,
-      rate: DEFAULT_REQUEST_RATE,
-    },
-    batchQueueConfig: {
-      maxCharactersPerBatch: DEFAULT_BATCH_CONFIG.maxCharactersPerBatch,
-      maxItemsPerBatch: DEFAULT_BATCH_CONFIG.maxItemsPerBatch,
-    },
     translationNodeStyle: {
       preset: TRANSLATION_NODE_STYLE_ON_INSTALLED,
       isCustom: false,

@@ -23,6 +23,7 @@ import {
   FEATURE_PROVIDER_DEFS,
 } from "@/utils/constants/feature-providers"
 import { EntityEditor } from "../../../../components/entity-editor"
+import { PerformanceSettings } from "../../../../components/performance-settings"
 import { selectedProviderIdAtom } from "../atoms"
 import { CustomProviderEditor, ProviderEditor, useProviderForm } from "../provider-editor"
 import { duplicateProvider } from "../utils"
@@ -139,6 +140,7 @@ function EditableProviderConfig({ providerConfig }: { providerConfig: APIProvide
                 </ProviderEditor.Assignments>
               )}
               {hasAdvancedFields && <ProviderEditor.AdvancedFields />}
+              <PerformanceSettings providerId={providerConfig.id} />
             </EntityEditor.Body>
             <EntityEditor.Footer>
               <ProviderEditor.DuplicateButton />

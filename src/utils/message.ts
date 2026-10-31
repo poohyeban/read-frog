@@ -19,6 +19,16 @@ import type { SubtitleWireResult } from "@/utils/subtitles/result"
 import { defineExtensionMessaging } from "@webext-core/messaging"
 
 interface ProtocolMap {
+  getProviderResourcePolicy: (data: {
+    providerId: string
+  }) => import("@/utils/request/resource-policy").ResourcePolicy | null
+  getPerformanceConfiguration: () => {
+    overrides: import("@/utils/request/performance-config").PerformanceOverrides
+    identities: Record<string, string>
+  }
+  patchPerformanceConfiguration: (
+    data: import("@/utils/request/performance-patch").PerformancePatch,
+  ) => import("@/utils/request/performance-config").PerformanceOverrides
   synthesizeSpeech: (data: {
     requestId: string
     text: string
@@ -38,6 +48,7 @@ interface ProtocolMap {
   releaseSubtitleTask: (data: { sessionId: string }) => void
   getSubtitleCandidates: (data: {
     trackKey: string
+    legacyTrackKey?: string
     start: number
     end: number
   }) => import("@/utils/subtitles/types").SubtitleCandidateBundle[]

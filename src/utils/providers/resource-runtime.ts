@@ -100,6 +100,7 @@ function refresh(config: Config | null) {
       identities = resolved
       const registry = resolveResourceRegistry(identities, getPerformanceOverrides())
       providerResourceScheduler.configure(registry.domains, registry.paths, registry.global)
+      directRequests.setQueueOptions({ maxQueued: registry.global.maxQueued })
       for (const [domain, until] of Object.entries(cooling)) {
         if (Number.isFinite(until) && until > Date.now())
           providerResourceScheduler.restoreCooldown(domain, until)
@@ -156,6 +157,11 @@ export async function getResourceProvider(providerId: string) {
 export function getResourceIdentities() {
   return new Map(identities)
 }
+export async function getProviderResourceSnapshot() {
+  await initializeProviderResources()
+  await updates
+  return { identities: new Map(identities), providerIds: new Set(configs.keys()) }
+}
 
 /** The sole remote-operation authority. Local/cache work never enters here. */
 export async function runProviderOperation<T>(
@@ -198,7 +204,7 @@ export async function runProviderOperation<T>(
   }
   assertCurrent()
   context.resourceId = id
-  context.policy ??= providerResourceScheduler.policy(id!)
+  context.policy = providerResourceScheduler.policy(id!)
   let settled!: () => void
   context.physicalSettled = new Promise<void>((resolve) => {
     settled = resolve

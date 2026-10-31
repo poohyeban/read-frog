@@ -1,7 +1,5 @@
 import type { PreloadConfig } from "@/types/config/translate"
 import { useAtom } from "jotai"
-import { Input } from "@/components/ui/base-ui/input"
-import { toastManager } from "@/components/ui/base-ui/toast"
 import { preloadConfigSchema } from "@/types/config/translate"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import {
@@ -12,6 +10,7 @@ import {
 } from "@/utils/constants/translate"
 import { i18n } from "@/utils/i18n"
 import { ConfigItem } from "../../../components/config-item"
+import { PerformanceNumberInput } from "../../../components/performance-settings/fields"
 
 type KeyOfPreloadConfig = keyof PreloadConfig
 
@@ -50,31 +49,19 @@ function PreloadNumberInput({ property }: { property: KeyOfPreloadConfig }) {
   const constraints = propertyConstraints[property]
 
   return (
-    <Input
-      className="w-24 shrink-0"
-      type="number"
-      min={constraints.min}
-      max={constraints.max}
+    <PerformanceNumberInput
+      label={
+        property === "margin"
+          ? i18n.t("options.translation.translationQueue.preloadConfig.margin.description")
+          : i18n.t("options.translation.translationQueue.preloadConfig.threshold.description")
+      }
       step={constraints.step}
       value={preload[property]}
-      onChange={(e) => {
-        const newConfigValue = Number(e.target.value)
-        const configParseResult = preloadConfigSchema
-          .partial()
-          .safeParse({ [property]: newConfigValue })
-        if (configParseResult.success) {
-          void setTranslateConfig({
-            page: {
-              ...translateConfig.page,
-              preload: { ...translateConfig.page.preload, [property]: newConfigValue },
-            },
-          })
-        } else {
-          toastManager.add({
-            type: "error",
-            title: configParseResult.error?.issues[0]!.message,
-          })
-        }
+      save={async (newConfigValue) => {
+        preloadConfigSchema.parse({ ...preload, [property]: newConfigValue })
+        await setTranslateConfig({
+          page: { ...translateConfig.page, preload: { ...preload, [property]: newConfigValue } },
+        })
       }}
     />
   )

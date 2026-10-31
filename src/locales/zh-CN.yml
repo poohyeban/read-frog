@@ -55,6 +55,52 @@ errorRecovery:
     confirm: 重置
     cancel: 取消
 options:
+  performance:
+    exportDiagnostics: "下载字幕诊断记录"
+    advanced: "高级性能设置"
+    description: "Provider 限制由所有标签页和翻译功能共享。总尝试次数包含首次请求。修改后动态生效，无需重启扩展。"
+    defaultValue: "默认值：$1"
+    custom: "已自定义"
+    reset: "恢复默认"
+    invalid: "请输入支持范围内的有效值。"
+    batches: "批处理"
+    buffers: "字幕缓冲区"
+    provider: "Provider 请求限制"
+    groups: "共享资源组"
+    global: "扩展整体限制"
+    groupDescription: "仅将共享服务额度的凭据加入同一组。每个实际账户只能属于一个组；认证信息变更后，新身份会退出原组。"
+    unavailable: "暂时无法识别 Provider 资源，请检查已保存的端点和认证信息。"
+    editGroup: "编辑资源组"
+    deleteGroup: "移除资源组"
+    createGroup: "创建资源组"
+    groupName: "资源组名称"
+    alreadyGrouped: "已属于其他资源组"
+    save: "保存"
+    cancel: "取消"
+    fields:
+      rate: "每秒请求数"
+      capacity: "突发容量（请求数）"
+      maxInFlight: "最大实际并发数"
+      maxQueued: "最大排队请求数"
+      timeoutMs: "请求超时（毫秒）"
+      maxAttempts: "总尝试次数（包含首次）"
+      baseRetryDelayMs: "重试初始等待（毫秒）"
+      maxRetryDelayMs: "重试最长等待（毫秒）"
+      cooldownMs: "429 默认冷却（毫秒）"
+      priorityAgingMs: "等待任务优先级提升间隔（毫秒）"
+      maxItemsPerBatch: "每批最多条目"
+      maxCharactersPerBatch: "每批最多字符"
+      batchDelay: "批次聚合等待（毫秒）"
+      maxPending: "最多待处理批次成员"
+      diagnostics: "记录有界字幕诊断"
+      maxPendingBatches: "最多待处理字幕批次"
+      batchSize: "每批字幕条数"
+      fastAheadMs: "Fast 预读时长（媒体毫秒）"
+      qualityAheadMs: "Quality 预读时长（媒体毫秒）"
+      lowMinMs: "缓冲低水位下限（毫秒）"
+      lowMaxMs: "缓冲低水位上限（毫秒）"
+      highMinMs: "缓冲高水位下限（毫秒）"
+      highMaxMs: "缓冲高水位上限（毫秒）"
   autosave:
     invalid: 请修正标出的字段后再离开。
     failed: 修改保存失败，编辑内容已保留。
@@ -1417,14 +1463,6 @@ dataTypes:
   number: 数字
 subtitles:
   work:
-    title: "播放模型预算"
-    description: "累计上限属于此扩展安装。刷新、拖动进度和重启不会重置消耗。最后 20% 预留给紧急字幕。提高上限代表授权更多调用；清理翻译缓存不会清空账本。Token 为保守估算，不是金额上限。"
-    requests: "累计请求上限"
-    tokens: "累计估算 Token 上限"
-    concurrency: "每个 Provider 的最大同时请求数"
-    diagnostics: "记录有大小限制的诊断事件"
-    status: "已消耗：$1 次请求；$2 估算 Token；$3 已报告 Token。"
-    exportDiagnostics: "下载诊断记录"
     exportConfirm: "导出完整字幕？重试前预计 $1 次模型请求，原始字幕共 $2 字符。将复用缓存并按有界小批次处理，可随时取消。"
     exportFailed: "导出未完成，未保存为完整 SRT。"
     cancelled: "导出已取消"

@@ -19,6 +19,7 @@ export const batchOverridesSchema = z.object({
   batchDelay: z.number().int().min(0).max(500).optional(),
   maxPending: z.number().int().min(1).max(1024).optional(),
 })
+export type BatchPerformance = Required<z.infer<typeof batchOverridesSchema>>
 export const subtitlePerformanceSchema = z.object({
   diagnostics: z.boolean(),
   maxPendingBatches: z.number().int().min(1).max(16),
@@ -70,7 +71,10 @@ export function validatePerformanceOverrides(value: unknown): PerformanceOverrid
     }
   }
   for (const policy of [
-    ...Object.values(parsed.providers ?? {}),
+    ...Object.values(parsed.providers ?? {}).filter(
+      (candidate) =>
+        candidate.maxRetryDelayMs !== undefined && candidate.baseRetryDelayMs !== undefined,
+    ),
     ...Object.values(parsed.groups ?? {}).map((g) => g.policy ?? {}),
   ]) {
     if (
@@ -100,5 +104,24 @@ export function effectivePerformance(
       subtitles: { ...BATCH_DEFAULTS, ...overrides.batches?.subtitles },
     },
     subtitles: { ...SUBTITLE_PERFORMANCE_DEFAULTS, ...overrides.subtitles },
+  }
+}
+
+/** Export tuning without installation-bound physical identities or HMAC material. */
+export function portablePerformanceOverrides(overrides: PerformanceOverrides) {
+  return {
+    ...overrides,
+    groups: overrides.groups
+      ? Object.fromEntries(
+          Object.entries(overrides.groups).map(([id, group]) => [
+            id,
+            {
+              name: group.name,
+              policy: group.policy,
+              bindingsOmitted: true,
+            },
+          ]),
+        )
+      : undefined,
   }
 }

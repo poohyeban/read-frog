@@ -1,4 +1,6 @@
 import type { SubtitlesFragment } from "./types"
+import type { SubtitlePerformance } from "@/utils/request/performance-config"
+import { SUBTITLE_PERFORMANCE_DEFAULTS } from "@/utils/request/resource-policy"
 import { getCueTimeline } from "./cue-timeline"
 
 /** First untranslated speech, not a sum of disjoint completed intervals. Silence costs no work. */
@@ -34,11 +36,19 @@ export function continuousReadyMs(
 export class SubtitleBufferController {
   private latencies: number[] = []
   private qualityLatencies: number[] = []
+  private policy: SubtitlePerformance = SUBTITLE_PERFORMANCE_DEFAULTS
+  private fastP95 = 1000
+  private qualityP95 = 15_000
+  configure(policy: SubtitlePerformance) {
+    this.policy = policy
+  }
   fastSpeculation = true
   observe(ms: number, quality = false) {
     const values = quality ? this.qualityLatencies : this.latencies
     values.push(ms)
     if (values.length > 32) values.shift()
+    if (quality) this.qualityP95 = this.p95(values, 15_000)
+    else this.fastP95 = this.p95(values, 1000)
   }
   private p95(values: number[], fallback: number) {
     return values.length
@@ -46,13 +56,13 @@ export class SubtitleBufferController {
       : fallback
   }
   get lowMs() {
-    return Math.min(30_000, Math.max(8000, this.p95(this.latencies, 1000) * 2 + 2000))
+    return Math.min(this.policy.lowMaxMs, Math.max(this.policy.lowMinMs, this.fastP95 * 2 + 2000))
   }
   get highMs() {
-    return Math.min(60_000, Math.max(20_000, this.lowMs + 12_000))
+    return Math.min(this.policy.highMaxMs, Math.max(this.policy.highMinMs, this.lowMs + 12_000))
   }
   get qualityEstimateMs() {
-    return this.p95(this.qualityLatencies, 15_000)
+    return this.qualityP95
   }
   update(qualityMs: number, rate = 1) {
     const coverage = qualityMs / Math.max(0.25, rate)

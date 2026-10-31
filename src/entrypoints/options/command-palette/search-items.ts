@@ -216,17 +216,10 @@ export const SEARCH_ITEMS: SearchItem[] = [
     pageKey: "options.translation.title",
   },
   {
-    // On the Translation queue page, drilled into from the Translation page.
-    sectionId: "request-rate",
+    sectionId: "performance-settings",
     route: "/page-translation/translation-queue",
-    titleKey: "options.translation.translationQueue.requestQueueConfig.title",
-    pageKey: "options.translation.title",
-  },
-  {
-    sectionId: "request-batch",
-    route: "/page-translation/translation-queue",
-    titleKey: "options.translation.translationQueue.batchQueueConfig.title",
-    descriptionKey: "options.translation.translationQueue.batchQueueConfig.description",
+    titleKey: "options.performance.advanced",
+    descriptionKey: "options.performance.description",
     pageKey: "options.translation.title",
   },
   {

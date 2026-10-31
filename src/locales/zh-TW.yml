@@ -55,6 +55,52 @@ errorRecovery:
     confirm: 重設
     cancel: 取消
 options:
+  performance:
+    exportDiagnostics: "下載字幕診斷記錄"
+    advanced: "進階效能設定"
+    description: "Provider 限制由所有分頁和翻譯功能共用。總嘗試次數包含首次請求。修改後動態生效，無需重新啟動擴充功能。"
+    defaultValue: "預設值：$1"
+    custom: "已自訂"
+    reset: "恢復預設"
+    invalid: "請輸入支援範圍內的有效值。"
+    batches: "批次處理"
+    buffers: "字幕緩衝區"
+    provider: "Provider 請求限制"
+    groups: "共用資源群組"
+    global: "擴充功能整體限制"
+    groupDescription: "僅將共用服務額度的憑證加入同一組。每個實際帳戶只能屬於一個群組；驗證資訊變更後，新身分會退出原群組。"
+    unavailable: "暫時無法識別 Provider 資源，請檢查已儲存的端點和驗證資訊。"
+    editGroup: "編輯資源群組"
+    deleteGroup: "移除資源群組"
+    createGroup: "建立資源群組"
+    groupName: "資源群組名稱"
+    alreadyGrouped: "已屬於其他資源群組"
+    save: "儲存"
+    cancel: "取消"
+    fields:
+      rate: "每秒請求數"
+      capacity: "突發容量（請求數）"
+      maxInFlight: "最大實際並行數"
+      maxQueued: "最大排隊請求數"
+      timeoutMs: "請求逾時（毫秒）"
+      maxAttempts: "總嘗試次數（包含首次）"
+      baseRetryDelayMs: "重試初始等待（毫秒）"
+      maxRetryDelayMs: "重試最長等待（毫秒）"
+      cooldownMs: "429 預設冷卻（毫秒）"
+      priorityAgingMs: "等待任務優先級提升間隔（毫秒）"
+      maxItemsPerBatch: "每批最多項目"
+      maxCharactersPerBatch: "每批最多字元"
+      batchDelay: "批次聚合等待（毫秒）"
+      maxPending: "最多待處理批次成員"
+      diagnostics: "記錄有界字幕診斷"
+      maxPendingBatches: "最多待處理字幕批次"
+      batchSize: "每批字幕條數"
+      fastAheadMs: "Fast 預讀時長（媒體毫秒）"
+      qualityAheadMs: "Quality 預讀時長（媒體毫秒）"
+      lowMinMs: "緩衝低水位下限（毫秒）"
+      lowMaxMs: "緩衝低水位上限（毫秒）"
+      highMinMs: "緩衝高水位下限（毫秒）"
+      highMaxMs: "緩衝高水位上限（毫秒）"
   autosave:
     invalid: 請修正標示的欄位後再離開。
     failed: 變更儲存失敗，編輯內容已保留。
@@ -1416,14 +1462,6 @@ dataTypes:
   number: 數字
 subtitles:
   work:
-    title: "播放模型預算"
-    description: "累計上限屬於此擴充功能安裝。重新整理、拖動進度與重啟不會重置消耗。最後 20% 預留給緊急字幕。提高上限代表授權更多呼叫；清理翻譯快取不會清空帳本。Token 為保守估算，不是金額上限。"
-    requests: "累計請求上限"
-    tokens: "累計估算 Token 上限"
-    concurrency: "每個 Provider 的最大同時請求數"
-    diagnostics: "記錄有大小限制的診斷事件"
-    status: "已消耗：$1 次請求；$2 估算 Token；$3 已回報 Token。"
-    exportDiagnostics: "下載診斷紀錄"
     exportConfirm: "匯出完整字幕？重試前預計 $1 次模型請求，原始字幕共 $2 字符。將重用快取並按有界小批次處理，可隨時取消。"
     exportFailed: "匯出未完成，未儲存為完整 SRT。"
     cancelled: "匯出已取消"

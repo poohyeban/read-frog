@@ -12,7 +12,6 @@ import {
   DEFAULT_SUBTITLES_TOGGLE_SHORTCUT_KEY,
   DEFAULT_TRANSLATION_POSITION,
 } from "./subtitles"
-import { DEFAULT_BATCH_CONFIG, DEFAULT_REQUEST_CAPACITY, DEFAULT_REQUEST_RATE } from "./translate"
 // Upstream v1.54.1 defaults, with the Lite user's translation provider.
 export const DEFAULT_INPUT_TRANSLATION_CONFIG = {
   enabled: true,
@@ -58,14 +57,6 @@ export const DEFAULT_VIDEO_SUBTITLES_CONFIG = {
   },
   aiSegmentation: false,
   wordLookupActionId: BUILT_IN_DICTIONARY_ACTION_ID,
-  requestQueueConfig: {
-    capacity: DEFAULT_REQUEST_CAPACITY,
-    rate: DEFAULT_REQUEST_RATE,
-  },
-  batchQueueConfig: {
-    maxCharactersPerBatch: DEFAULT_BATCH_CONFIG.maxCharactersPerBatch,
-    maxItemsPerBatch: DEFAULT_BATCH_CONFIG.maxItemsPerBatch,
-  },
   customPromptsConfig: DEFAULT_SUBTITLE_TRANSLATE_PROMPTS_CONFIG,
   position: DEFAULT_SUBTITLE_POSITION,
 } as const

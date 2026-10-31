@@ -1,14 +1,19 @@
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import type { SubtitleTraceSink } from "@/utils/subtitles/diagnostics"
 import type { SubtitlesFragment } from "@/utils/subtitles/types"
-import { PROCESS_LOOK_AHEAD_MS } from "@/utils/constants/subtitles"
+import { getPerformanceSnapshot } from "@/utils/config/performance"
+import { Sha256Hex } from "@/utils/hash"
 import { freezeData } from "@/utils/immutable"
 import { CueTimeline, cueIdentity, getCueTimeline } from "@/utils/subtitles/cue-timeline"
 import { effectiveLookAheadMs } from "@/utils/subtitles/lookahead"
-import { aiSegmentBlock } from "@/utils/subtitles/processor/ai-segmentation"
+import {
+  aiSegmentBlock,
+  isSegmentationAligned,
+  cleanFragmentsForAi,
+} from "@/utils/subtitles/processor/ai-segmentation"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
 import { SubtitleSession, type SubtitleTask } from "@/utils/subtitles/session"
-import { chunkSubtitleWork } from "@/utils/subtitles/work-policy"
+import { chunkSubtitleWork, SUBTITLE_WORK_LIMITS } from "@/utils/subtitles/work-policy"
 
 export type ChunkSegmentedHandler = (
   chunk: SubtitlesFragment[],
@@ -20,8 +25,94 @@ export class SegmentationPipeline {
   processedFragments: SubtitlesFragment[] = []
 
   private processedChunks = new Map<string, SubtitlesFragment[]>()
+  private chunkKeys = new Map<SubtitlesFragment[], string>()
+  private chunksByKey = new Map<string, SubtitlesFragment[]>()
+  private restoredVariants = new Map<string, Map<string, Map<number, SubtitlesFragment>>>()
   restore(cues: SubtitlesFragment[]) {
     this.processedFragments = [...new CueTimeline(this.processedFragments).upsert(cues).cues]
+    const restored = getCueTimeline(this.processedFragments)
+    const touched = new Set<SubtitlesFragment[]>()
+    for (const cue of cues) {
+      if (cue.segmentation) {
+        const { index, count, variant } = cue.segmentation
+        if (
+          !Number.isInteger(index) ||
+          index < 0 ||
+          index >= SUBTITLE_WORK_LIMITS.cues ||
+          !Number.isInteger(count) ||
+          count < 1 ||
+          count > SUBTITLE_WORK_LIMITS.cues ||
+          !/^[a-f0-9]{64}$/.test(variant)
+        )
+          continue
+        if (!this.chunksByKey.has(cue.segmentation.block)) {
+          for (const window of this.chunkTimeline.window(cue.start, cue.end))
+            this.chunkKey(this.chunks[Number(window.text)]!)
+        }
+        const chunk = this.chunksByKey.get(cue.segmentation.block)
+        if (chunk) {
+          touched.add(chunk)
+          const variants = this.restoredVariants.get(cue.segmentation.block) ?? new Map()
+          const members = variants.get(cue.segmentation.variant) ?? new Map()
+          members.set(cue.segmentation.index, cue)
+          // Bounded alternatives for corrupted or nondeterministic historical manifests.
+          if (variants.size < 4 || variants.has(cue.segmentation.variant))
+            variants.set(cue.segmentation.variant, members)
+          this.restoredVariants.set(cue.segmentation.block, variants)
+        }
+      } else {
+        // Legacy caches have no manifest. Only exact, full source alignment can prove completion.
+        for (const window of this.chunkTimeline.window(cue.start, cue.end))
+          touched.add(this.chunks[Number(window.text)]!)
+      }
+    }
+    for (const chunk of touched) {
+      const block = this.chunkKey(chunk)
+      const rows = restored
+        .window(chunk[0]!.start, Math.max(...chunk.map((c) => c.end)))
+        .filter((c) => !c.segmentation || c.segmentation.block === block)
+      const variants = new Map<string, SubtitlesFragment[]>()
+      for (const [variant, members] of this.restoredVariants.get(block) ?? [])
+        variants.set(variant, [...members.values()])
+      for (const cue of rows) {
+        if (cue.segmentation) continue
+        const variant = "legacy"
+        const members = variants.get(variant) ?? []
+        members.push(cue)
+        variants.set(variant, members)
+      }
+      // Keep partial source ownership so completing another chunk cannot erase it.
+      if (!this.completed.has(block)) this.processedChunks.set(block, rows)
+      for (const [variant, members] of variants) {
+        if (variant !== "legacy") {
+          members.sort((a, b) => a.segmentation!.index - b.segmentation!.index)
+          if (
+            members.some(
+              (c, i) =>
+                c.segmentation!.version !== 1 ||
+                c.segmentation!.index !== i ||
+                c.segmentation!.count !== members.length,
+            )
+          )
+            continue
+          if (Sha256Hex(JSON.stringify(members.map(cueIdentity))) !== variant) continue
+        }
+        if (!isSegmentationAligned(cleanFragmentsForAi(chunk), members)) continue
+        if (
+          members.some(
+            (c) =>
+              !c.translation?.trim() ||
+              (c.translationOutcome && c.translationOutcome.status !== "success"),
+          )
+        )
+          continue
+        this.processedChunks.set(block, members)
+        this.completed.add(block)
+        this.failed.delete(block)
+        this.restoredVariants.delete(block)
+        break
+      }
+    }
   }
   private chunks: SubtitlesFragment[][]
   private chunkTimeline: CueTimeline
@@ -114,7 +205,7 @@ export class SegmentationPipeline {
     const video = this.getVideoElement()
     if (!video || !this.admission()) return
     const time = video.currentTime * 1000
-    const ahead = effectiveLookAheadMs(PROCESS_LOOK_AHEAD_MS, video.playbackRate)
+    const ahead = this.lookAhead(video.playbackRate)
     if (
       this.processingChunk &&
       !this.processingChunk.some((c) => c.end > time && c.start <= time + ahead)
@@ -157,7 +248,7 @@ export class SegmentationPipeline {
 
     const chunk = this.findNextChunk(currentTimeMs)
     if (chunk.length === 0) return false
-    const key = cueIdentity(chunk[0]!)
+    const key = this.chunkKey(chunk)
 
     if (this.preSegmented) {
       this.completed.add(key)
@@ -221,19 +312,41 @@ export class SegmentationPipeline {
     // Do not mutate processed fragments or notify the adapter after stop().
     if (this.stopped) return
 
-    this.processedChunks.set(cueIdentity(chunk[0]!), nextFragments)
+    const block = this.chunkKey(chunk)
+    const variant = Sha256Hex(JSON.stringify(nextFragments.map(cueIdentity)))
+    const published = nextFragments.map((cue, index) => ({
+      ...cue,
+      segmentation: { version: 1 as const, block, variant, index, count: nextFragments.length },
+    }))
+    this.processedChunks.set(block, published)
     // Chunk ownership, rather than overlapping timestamps, preserves dense parallel cues.
-    this.restore([...this.processedChunks.values()].flat())
+    this.processedFragments = [...new CueTimeline([...this.processedChunks.values()].flat()).cues]
 
-    this.onChunkSegmented?.(chunk, nextFragments)
+    this.onChunkSegmented?.(chunk, published)
   }
 
   private findNextChunk(currentTimeMs: number): SubtitlesFragment[] {
-    const ahead = effectiveLookAheadMs(PROCESS_LOOK_AHEAD_MS, this.getVideoElement()?.playbackRate)
+    const ahead = this.lookAhead(this.getVideoElement()?.playbackRate)
     for (const window of this.chunkTimeline.window(currentTimeMs, currentTimeMs + ahead + 1)) {
       const chunk = this.chunks[Number(window.text)]!
-      if (!this.completed.has(cueIdentity(chunk[0]!))) return chunk
+      if (!this.completed.has(this.chunkKey(chunk))) return chunk
     }
     return []
+  }
+  /** Hash only source blocks actually queried or restored, never the whole long track on startup. */
+  private chunkKey(chunk: SubtitlesFragment[]) {
+    let key = this.chunkKeys.get(chunk)
+    if (!key) {
+      key = Sha256Hex("segmentation-source-v1", JSON.stringify(chunk.map(cueIdentity)))
+      this.chunkKeys.set(chunk, key)
+      this.chunksByKey.set(key, chunk)
+    }
+    return key
+  }
+  private lookAhead(rate?: number) {
+    return Math.min(
+      300_000,
+      effectiveLookAheadMs(getPerformanceSnapshot().subtitles.qualityAheadMs, rate),
+    )
   }
 }

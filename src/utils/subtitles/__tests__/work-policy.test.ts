@@ -56,3 +56,9 @@ describe("independent model input boundaries", () => {
     expect(buffer.update(80000, 4)).toBe(false)
   })
 })
+
+it("does not split an already legal Quality cue on the translation path", () => {
+  const cue = { text: "word ".repeat(400), start: 0, end: 2000 }
+  const chunks = chunkSubtitleWork([cue])
+  expect(chunks).toEqual([[cue]])
+})

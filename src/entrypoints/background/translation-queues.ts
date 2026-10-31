@@ -1,19 +1,18 @@
 import type { Config } from "@/types/config/config"
 import type { ProviderConfig } from "@/types/config/provider"
-import type { BatchQueueConfig, RequestQueueConfig } from "@/types/config/translate"
 import type { SubtitlePromptContext } from "@/types/content"
 import type { WebPagePromptContext } from "@/types/content"
 import type { ProviderRequestRouting } from "@/types/provider-request"
 import type { MatchedTerm } from "@/utils/glossary/types"
 import type { PromptResolver } from "@/utils/host/translate/api/ai"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
+import type { BatchPerformance } from "@/utils/request/performance-config"
 import { isLLMProviderConfig } from "@/types/config/provider"
 import {
   getPerformanceSnapshot,
   initializePerformance,
   watchPerformance,
 } from "@/utils/config/performance"
-import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { BATCH_SEPARATOR, BATCH_SEPARATOR_LINE_PATTERN } from "@/utils/constants/prompt"
 import { db } from "@/utils/db/dexie/db"
 import { Sha256Hex } from "@/utils/hash"
@@ -322,16 +321,10 @@ export function buildTranslationScopeKey(
 }
 
 interface TranslationQueueSetupConfig<TContext = unknown> {
-  requestQueueConfig: RequestQueueConfig
-  batchQueueConfig: BatchQueueConfig
   promptResolver: PromptResolver<TContext>
   // Present only for queues whose requests carry cancellation scopes.
   isScopeCancelled?: (scopeKey: string) => boolean
   queueName: "webpage" | "subtitles"
-  // "default" means the user's stored config could not be loaded — the queue
-  // is running on DEFAULT_CONFIG values (rate 8 / capacity 20), NOT what the
-  // options page shows. Logged loudly so support reports are diagnosable.
-  configSource: "user" | "default"
 }
 
 async function createTranslationQueues<TContext>(config: TranslationQueueSetupConfig<TContext>) {
@@ -491,32 +484,10 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
   return { requestQueue, batchQueue }
 }
 
-/**
- * Load the persisted config and build the queues. Never rejects: a broken
- * storage layer degrades to DEFAULT_CONFIG (loudly logged) instead of leaving
- * every translation message rejected.
- */
-async function loadQueueSetupConfig(
-  queueName: "webpage" | "subtitles",
-  selectConfig: (config: Config) => {
-    requestQueueConfig: RequestQueueConfig
-    batchQueueConfig: BatchQueueConfig
-  },
-): Promise<{
-  requestQueueConfig: RequestQueueConfig
-  batchQueueConfig: BatchQueueConfig
-  configSource: "user" | "default"
-}> {
-  let config: Config | null = null
-  try {
-    config = await ensureInitializedConfig()
-  } catch {
-    logger.error(`[translation-queues] failed to load config for ${queueName} queue`)
-  }
-  return {
-    ...selectConfig(config ?? DEFAULT_CONFIG),
-    configSource: config ? "user" : "default",
-  }
+/** Complete legacy migration before reading sparse snapshots. */
+async function prepareQueueConfiguration() {
+  await ensureInitializedConfig()
+  await initializePerformance()
 }
 
 /**
@@ -529,7 +500,7 @@ function watchQueueConfig(
   queueName: "webpage" | "subtitles",
   queuesPromise: Promise<{
     requestQueue: RequestQueue
-    batchQueue: { setBatchConfig: (config: Partial<BatchQueueConfig>) => void }
+    batchQueue: { setBatchConfig: (config: Partial<BatchPerformance>) => void }
   }>,
 ) {
   watchPerformance(() => {
@@ -555,14 +526,6 @@ function watchQueueConfig(
   })
 }
 
-const selectWebPageQueueConfig = (config: Config) => ({
-  requestQueueConfig: {
-    ...config.pageTranslation.requestQueueConfig,
-    maxInFlight: RESOURCE_DEFAULTS.maxInFlight,
-  },
-  batchQueueConfig: config.pageTranslation.batchQueueConfig,
-})
-
 export function createWebPageTranslationQueues() {
   // Scopes whose cancel already drained the queues. Consulted by (a) the
   // enqueue handler after its cache-lookup await and (b) the batch queue's
@@ -573,16 +536,12 @@ export function createWebPageTranslationQueues() {
 
   const webPromptResolver: PromptResolver<WebPagePromptContext> = getTranslatePrompt
 
-  const queuesPromise = loadQueueSetupConfig("webpage", selectWebPageQueueConfig).then(
-    ({ requestQueueConfig, batchQueueConfig, configSource }) =>
-      createTranslationQueues<WebPagePromptContext>({
-        requestQueueConfig,
-        batchQueueConfig,
-        promptResolver: webPromptResolver,
-        isScopeCancelled: (scopeKey) => cancelledScopes.has(scopeKey),
-        queueName: "webpage",
-        configSource,
-      }),
+  const queuesPromise = prepareQueueConfiguration().then(() =>
+    createTranslationQueues<WebPagePromptContext>({
+      promptResolver: webPromptResolver,
+      isScopeCancelled: (scopeKey) => cancelledScopes.has(scopeKey),
+      queueName: "webpage",
+    }),
   )
 
   watchQueueConfig("webpage", queuesPromise)
@@ -594,25 +553,14 @@ export function createWebPageTranslationQueues() {
  * Create subtitle translation queues and watch their configuration
  */
 
-const selectSubtitlesQueueConfig = (config: Config) => ({
-  requestQueueConfig: {
-    ...config.videoSubtitles.requestQueueConfig,
-    maxInFlight: RESOURCE_DEFAULTS.maxInFlight,
-  },
-  batchQueueConfig: config.videoSubtitles.batchQueueConfig,
-})
 export function createSubtitlesTranslationQueues() {
   const cancelledScopes = new CancelledScopeRegistry(10 * 60_000, 4096)
-  const queuesPromise = loadQueueSetupConfig("subtitles", selectSubtitlesQueueConfig).then(
-    ({ requestQueueConfig, batchQueueConfig, configSource }) =>
-      createTranslationQueues({
-        requestQueueConfig,
-        batchQueueConfig,
-        promptResolver: getSubtitlesTranslatePrompt,
-        isScopeCancelled: (scope) => cancelledScopes.has(scope),
-        queueName: "subtitles",
-        configSource,
-      }),
+  const queuesPromise = prepareQueueConfiguration().then(() =>
+    createTranslationQueues({
+      promptResolver: getSubtitlesTranslatePrompt,
+      isScopeCancelled: (scope) => cancelledScopes.has(scope),
+      queueName: "subtitles",
+    }),
   )
 
   watchQueueConfig("subtitles", queuesPromise)

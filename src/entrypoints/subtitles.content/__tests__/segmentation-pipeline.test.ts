@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from "vitest"
 import { PROCESS_LOOK_AHEAD_MS } from "@/utils/constants/subtitles"
 import { SegmentationPipeline } from "../segmentation-pipeline"
 
-vi.mock("@/utils/subtitles/processor/ai-segmentation", () => ({
+vi.mock("@/utils/subtitles/processor/ai-segmentation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/utils/subtitles/processor/ai-segmentation")>()),
   aiSegmentBlock: vi.fn<(...args: any[]) => any>().mockRejectedValue(new Error("ai failed")),
 }))
 
@@ -144,7 +145,7 @@ describe("segmentation pipeline", () => {
 
     expect(onChunkSegmented).toHaveBeenCalledTimes(1)
     expect(onChunkSegmented).toHaveBeenCalledWith(rawFragments, [
-      { text: "hello world", start: 0, end: 1000 },
+      expect.objectContaining({ text: "hello world", start: 0, end: 1000 }),
     ])
   })
 
@@ -197,7 +198,9 @@ describe("segmentation pipeline", () => {
       [{ text: "recut", start: 1000, end: 2000 }],
     )
 
-    expect(pipeline.processedFragments).toEqual([{ text: "recut", start: 1000, end: 2000 }])
+    expect(pipeline.processedFragments).toEqual([
+      expect.objectContaining({ text: "recut", start: 1000, end: 2000 }),
+    ])
   })
 
   it("does not apply segmentation results after stop", async () => {

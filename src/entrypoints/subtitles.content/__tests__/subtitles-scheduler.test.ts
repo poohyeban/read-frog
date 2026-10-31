@@ -117,6 +117,7 @@ describe("subtitles scheduler", () => {
       start: 0,
       end: 1000,
       translation: "你好世界",
+      lane: "fast",
     })
   })
 

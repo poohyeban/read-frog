@@ -17,6 +17,9 @@ export interface SubtitlesFragment {
   translationBatchKey?: string
   translationBatchIndex?: number
   glossaryRevision?: number
+  lane?: "fast" | "quality"
+  /** Complete segmentation block provenance; translation batches may split this block. */
+  segmentation?: { version: 1; block: string; variant: string; index: number; count: number }
 }
 
 export interface SubtitleCandidateBundle {

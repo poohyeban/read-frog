@@ -32,6 +32,8 @@ export const sourceLanguageAtom = atom<LangCodeISO6393 | null>(null)
 
 /** Immutable local baseline. Quality candidates never replace this source publication. */
 export const sourceTrackAtom = atom<SubtitlesFragment[]>([])
+/** Canonical source boundaries let the sidebar replace Fast rows with independent Quality rows. */
+export const rawSourceTrackAtom = atom<SubtitlesFragment[]>([])
 
 /** The scheduler's translated cues, for consumers that need the whole track
  * rather than whichever one covers now. */

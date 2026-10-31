@@ -7,20 +7,28 @@ import {
   validatePerformanceOverrides,
 } from "@/utils/request/performance-config"
 
-let overrides = emptyPerformanceOverrides()
-let effective = effectivePerformance(overrides)
+let overrides = freeze(emptyPerformanceOverrides())
+let effective = freeze(effectivePerformance(overrides))
 let initializing: Promise<void> | undefined
 let generation = 0
 let watching = false
 const listeners = new Set<() => void>()
+
+function freeze<T>(value: T): T {
+  if (value && typeof value === "object") {
+    for (const child of Object.values(value)) freeze(child)
+    Object.freeze(value)
+  }
+  return value
+}
 
 function accept(value: unknown) {
   const next =
     value === null || value === undefined
       ? emptyPerformanceOverrides()
       : validatePerformanceOverrides(value)
-  overrides = next
-  effective = effectivePerformance(next)
+  overrides = freeze(next)
+  effective = freeze(effectivePerformance(next))
   for (const listener of listeners) listener()
 }
 /** Context-local immutable snapshots: never reads storage on a playback/render hot path. */

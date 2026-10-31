@@ -21,6 +21,8 @@ export const TranscriptRow = memo(function TranscriptRow({
     <button
       ref={activeRowRef}
       type="button"
+      data-transcript-start={line.start}
+      data-transcript-end={line.end}
       aria-current={isActive || undefined}
       onClick={() => onSeek(line.start / 1000)}
       className={cn(

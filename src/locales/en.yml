@@ -57,6 +57,52 @@ errorRecovery:
     confirm: Reset
     cancel: Cancel
 options:
+  performance:
+    exportDiagnostics: "Download subtitle diagnostics"
+    advanced: "Advanced performance settings"
+    description: "Provider limits are shared by all tabs and translation features. Total attempts include the initial request. Changes apply without restarting the extension."
+    defaultValue: "Default: $1"
+    custom: "Customized"
+    reset: "Restore defaults"
+    invalid: "Enter a valid value within the supported range."
+    batches: "Batching"
+    buffers: "Subtitle buffers"
+    provider: "Provider request limits"
+    groups: "Shared resource groups"
+    global: "Extension-wide limits"
+    groupDescription: "Group credentials only when they share a service quota. Each physical account may belong to one group. Credential changes leave the previous group."
+    unavailable: "Provider resource identity is unavailable. Check the saved endpoint and credentials."
+    editGroup: "Edit group"
+    deleteGroup: "Remove group"
+    createGroup: "Create group"
+    groupName: "Group name"
+    alreadyGrouped: "Assigned to another group"
+    save: "Save"
+    cancel: "Cancel"
+    fields:
+      rate: "Requests per second"
+      capacity: "Burst capacity (requests)"
+      maxInFlight: "Maximum simultaneous requests"
+      maxQueued: "Maximum queued requests"
+      timeoutMs: "Request timeout (ms)"
+      maxAttempts: "Total attempts, including the first"
+      baseRetryDelayMs: "Initial retry delay (ms)"
+      maxRetryDelayMs: "Maximum retry delay (ms)"
+      cooldownMs: "429 fallback cooldown (ms)"
+      priorityAgingMs: "Priority aging interval (ms)"
+      maxItemsPerBatch: "Maximum items per batch"
+      maxCharactersPerBatch: "Maximum characters per batch"
+      batchDelay: "Batch collection delay (ms)"
+      maxPending: "Maximum pending batch members"
+      diagnostics: "Record bounded subtitle diagnostics"
+      maxPendingBatches: "Maximum pending subtitle batches"
+      batchSize: "Subtitle entries per batch"
+      fastAheadMs: "Fast lookahead (media ms)"
+      qualityAheadMs: "Quality lookahead (media ms)"
+      lowMinMs: "Minimum low watermark (ms)"
+      lowMaxMs: "Maximum low watermark (ms)"
+      highMinMs: "Minimum high watermark (ms)"
+      highMaxMs: "Maximum high watermark (ms)"
   autosave:
     invalid: Please correct the highlighted fields before leaving.
     failed: Your changes could not be saved. They are still available here.
@@ -1685,14 +1731,6 @@ dataTypes:
   number: Number
 subtitles:
   work:
-    title: "Playback model budget"
-    description: "Cumulative limits for this extension installation. Refreshing, seeking and restarting do not reset consumption. The final 20% is reserved for urgent captions. Raising a limit authorizes additional work; clearing translation caches does not reset this ledger. Token figures are conservative estimates, not a currency limit."
-    requests: "Total request limit"
-    tokens: "Total estimated token limit"
-    concurrency: "Maximum simultaneous requests per provider"
-    diagnostics: "Collect bounded diagnostic events"
-    status: "Used: $1 requests; $2 estimated token units; $3 reported tokens."
-    exportDiagnostics: "Download diagnostics"
     exportConfirm: "Export this complete subtitle track? Approximately $1 model requests before retries; source text: $2 characters. Cached results are reused. Processing uses bounded chunks and can be cancelled."
     exportFailed: "Export incomplete. No complete SRT was saved."
     cancelled: "Export cancelled"

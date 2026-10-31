@@ -28,7 +28,11 @@ import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { removeReactShadowHost } from "@/utils/react-shadow-host/create-shadow-host"
-import { subtitleConfigIdentity } from "@/utils/subtitles/config-identity"
+import {
+  subtitleConfigIdentity,
+  subtitleCacheIdentity,
+  legacySubtitleConfigIdentity,
+} from "@/utils/subtitles/config-identity"
 import { createSubtitleTrace } from "@/utils/subtitles/diagnostics"
 import { NoSubtitlesError, ToastSubtitlesError } from "@/utils/subtitles/errors"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
@@ -45,6 +49,7 @@ import {
   currentVideoIdAtom,
   sourceLanguageAtom,
   sourceTrackAtom,
+  rawSourceTrackAtom,
   translatedTrackAtom,
   videoSummaryPartialAtom,
   subtitlesPositionAtom,
@@ -525,6 +530,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     this.sessionVideoId = null
     this.subtitlesSummaryContextHash = null
     subtitlesStore.set(sourceTrackAtom, [])
+    subtitlesStore.set(rawSourceTrackAtom, [])
   }
 
   private clearVisibleStateForNavigation() {
@@ -932,6 +938,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
         const prior = this.configIdentity ?? subtitleConfigIdentity(previous)
         this.configIdentity = identity
         if (identity !== prior) this.invalidateTranslationConfig()
+        else this.translationCoordinator?.refreshResourcePolicy()
       }),
       storage.watch<number>(GLOSSARY_REVISION_KEY, (revision, previous) => {
         if (revision !== previous) this.invalidateTranslationConfig()
@@ -1097,6 +1104,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       subtitlesStore.set(currentTimeMsAtom, video.currentTime * 1000)
     }
     subtitlesStore.set(sourceTrackAtom, [...fragments])
+    subtitlesStore.set(rawSourceTrackAtom, boundedSourceCues(this.sourceSubtitles))
     subtitlesStore.set(
       sourceLanguageAtom,
       resolveLanguageCodeFromLocale(this.fetcher.getSourceLanguage()),
@@ -1127,7 +1135,9 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     // and the summary are generations, so a translate-only provider keeps the
     // rule-based recut and skips the summary without a doomed prompt attempt
     // per look-ahead window.
-    const providerRef = config ? await resolveSubtitlesProviderRef(config, "lineTranslation") : null
+    const providerRef = config
+      ? await resolveSubtitlesProviderRef(config, "lineTranslation").catch(() => null)
+      : null
     if (this.destroyed || operationId !== this.switchOperationId) return
     this.subtitleSession?.dispose()
     const session = (this.subtitleSession = new SubtitleSession({
@@ -1144,7 +1154,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       subtitlesTextContent: "",
     }
 
-    if (useAiSegmentation && promptableProviderRef && !this.fetcher.isPreSegmented?.()) {
+    if (useAiSegmentation && !this.fetcher.isPreSegmented?.()) {
       this.segmentationPipeline = new SegmentationPipeline({
         session,
         baselineFragments: this.sourceProcessedSubtitles,
@@ -1165,22 +1175,46 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     const trackKey = Sha256Hex(
       this.sessionVideoId ?? "",
       JSON.stringify(this.sessionSubtitles),
-      this.configIdentity ?? "",
+      subtitleCacheIdentity(config),
       JSON.stringify(videoContext),
     )
-    await initializePerformance()
+    const legacyConfig = config
+      ? {
+          ...config,
+          providersConfig: config.providersConfig.map((provider) =>
+            provider.id === config.videoSubtitles.providerId
+              ? { ...provider, enabled: true }
+              : provider,
+          ),
+        }
+      : null
+    const legacyTrackKey = Sha256Hex(
+      this.sessionVideoId ?? "",
+      JSON.stringify(this.sessionSubtitles),
+      legacySubtitleConfigIdentity(legacyConfig),
+      JSON.stringify(videoContext),
+    )
+    await initializePerformance().catch(() => {})
     const trace = createSubtitleTrace(getPerformanceSnapshot().subtitles.diagnostics, session.id)
     scheduler.setDiagnostics(trace)
     this.segmentationPipeline?.setDiagnostics(trace)
     this.translationCoordinator = new TranslationCoordinator({
       trace,
       candidateCache: {
-        read: (start, end) => sendMessage("getSubtitleCandidates", { trackKey, start, end }),
+        read: (start, end) =>
+          sendMessage("getSubtitleCandidates", { trackKey, legacyTrackKey, start, end }),
         write: (cues, lane, lease) =>
           sendMessage("saveSubtitleCandidates", { trackKey, cues, lane, lease }),
       },
       session,
       configSnapshot: config ?? undefined,
+      canRequest: () => !!providerRef,
+      getConcurrency: async () =>
+        (
+          await sendMessage("getProviderResourcePolicy", {
+            providerId: config?.videoSubtitles.providerId ?? "",
+          })
+        )?.maxInFlight ?? 1,
       getFragments: () => this.sessionProcessedFragments,
       getVideoElement: () => scheduler.getVideoElement(),
       getCurrentState: () => scheduler.getState(),

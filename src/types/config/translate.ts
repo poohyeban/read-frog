@@ -7,28 +7,14 @@ import {
 import {
   MAX_PRELOAD_MARGIN,
   MAX_PRELOAD_THRESHOLD,
-  MIN_BATCH_CHARACTERS,
-  MIN_BATCH_ITEMS,
   MIN_CHARACTERS_PER_NODE,
   MIN_PRELOAD_MARGIN,
   MIN_PRELOAD_THRESHOLD,
-  MIN_TRANSLATE_CAPACITY,
-  MIN_TRANSLATE_RATE,
   MIN_WORDS_PER_NODE,
 } from "@/utils/constants/translate"
 import { TRANSLATION_NODE_STYLE } from "@/utils/constants/translation-node-style"
 import { langCodeISO6393Schema } from "@/utils/languages"
 import { shortcutSchema } from "./shortcut"
-
-export const requestQueueConfigSchema = z.object({
-  capacity: z.number().gte(MIN_TRANSLATE_CAPACITY),
-  rate: z.number().gte(MIN_TRANSLATE_RATE),
-})
-
-export const batchQueueConfigSchema = z.object({
-  maxCharactersPerBatch: z.number().gte(MIN_BATCH_CHARACTERS),
-  maxItemsPerBatch: z.number().gte(MIN_BATCH_ITEMS),
-})
 
 export const TRANSLATION_MODES = ["bilingual", "translationOnly"] as const
 export const translationModeSchema = z.enum(TRANSLATION_MODES)
@@ -208,13 +194,8 @@ export const translateConfigSchema = z.object({
   }),
   enableAIContentAware: z.boolean(),
   customPromptsConfig: customPromptsConfigSchema,
-  requestQueueConfig: requestQueueConfigSchema,
-  batchQueueConfig: batchQueueConfigSchema,
   translationNodeStyle: translationNodeStyleConfigSchema,
 })
-
-export type RequestQueueConfig = z.infer<typeof requestQueueConfigSchema>
-export type BatchQueueConfig = z.infer<typeof batchQueueConfigSchema>
 
 // How the source text sent to a translation provider should be interpreted:
 // "plain" for plain text (the default), "html" for markup-bearing strings such

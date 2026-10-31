@@ -63,6 +63,7 @@ export class SubtitlesScheduler {
     if (subtitles.length === 0) {
       return
     }
+    subtitles = subtitles.map((cue) => (cue.lane === lane ? cue : { ...cue, lane }))
 
     const previous = this.currentIndex >= 0 ? this.subtitles[this.currentIndex] : null
     if (lane === "quality") this.qualityTimeline = this.qualityTimeline.upsert(subtitles)

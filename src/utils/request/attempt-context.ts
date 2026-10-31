@@ -43,7 +43,7 @@ export class AttemptContext {
   canStart(limit: number) {
     return this.ids.every((id) => {
       const member = root(this.members.get(id)!)
-      return member.starts < (member.limit ?? limit)
+      return member.starts < Math.min(member.limit ?? limit, limit)
     })
   }
   /** Called once at the real transport boundary, never for a cache lookup or a subscriber. */
@@ -52,7 +52,7 @@ export class AttemptContext {
       throw new ResourceRejected("attempts")
     for (const id of this.ids) {
       const member = root(this.members.get(id)!)
-      member.limit ??= limit
+      member.limit = Math.min(member.limit ?? limit, limit)
       member.starts++
     }
   }

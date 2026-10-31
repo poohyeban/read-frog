@@ -59,24 +59,35 @@ export function assertSubtitleWindow(cues: readonly SubtitlesFragment[]) {
 
 /** Oversized individual cues are locally split, never granted a larger model allowance. */
 export function boundedSourceCues(cues: readonly SubtitlesFragment[]): SubtitlesFragment[] {
-  return cues.flatMap((cue, sourceIndex) => {
-    if (!Number.isFinite(cue.start) || !Number.isFinite(cue.end) || cue.end <= cue.start) return []
+  const bounded: SubtitlesFragment[] = []
+  for (let sourceIndex = 0; sourceIndex < cues.length; sourceIndex++) {
+    const cue = cues[sourceIndex]!
+    if (!Number.isFinite(cue.start) || !Number.isFinite(cue.end) || cue.end <= cue.start) continue
     const pieces = Math.max(
       1,
-      Math.ceil(cue.text.length / 1200),
+      Math.ceil(cue.text.length / SUBTITLE_WORK_LIMITS.sourceCharacters),
       Math.ceil((cue.end - cue.start) / SUBTITLE_WORK_LIMITS.mediaMs),
     )
-    return Array.from({ length: pieces }, (_, part) => ({
-      ...cue,
-      id: pieces === 1 ? cue.id : `${cue.id ?? sourceIndex}:part:${part}`,
-      text: cue.text.slice(
+    if (pieces === 1) {
+      if (cue.text.trim()) bounded.push(cue)
+      continue
+    }
+    for (let part = 0; part < pieces; part++) {
+      const text = cue.text.slice(
         Math.floor((cue.text.length * part) / pieces),
         Math.floor((cue.text.length * (part + 1)) / pieces),
-      ),
-      start: cue.start + ((cue.end - cue.start) * part) / pieces,
-      end: cue.start + ((cue.end - cue.start) * (part + 1)) / pieces,
-    })).filter((c) => c.text.trim())
-  })
+      )
+      if (text.trim())
+        bounded.push({
+          ...cue,
+          id: `${cue.id ?? sourceIndex}:part:${part}`,
+          text,
+          start: cue.start + ((cue.end - cue.start) * part) / pieces,
+          end: cue.start + ((cue.end - cue.start) * (part + 1)) / pieces,
+        })
+    }
+  }
+  return bounded
 }
 
 export function chunkSubtitleWork(

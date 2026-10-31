@@ -10,12 +10,7 @@ import {
   MIN_FONT_WEIGHT,
 } from "@/utils/constants/subtitles"
 import { shortcutSchema } from "./shortcut"
-import {
-  batchQueueConfigSchema,
-  createCustomPromptsConfigSchema,
-  MAX_CUSTOM_CSS_LENGTH,
-  requestQueueConfigSchema,
-} from "./translate"
+import { createCustomPromptsConfigSchema, MAX_CUSTOM_CSS_LENGTH } from "./translate"
 
 export const subtitleCustomPromptsConfigSchema = createCustomPromptsConfigSchema(
   BUILT_IN_SUBTITLE_TRANSLATE_PROMPT_IDS,
@@ -67,8 +62,6 @@ export const videoSubtitlesSchema = z.object({
   // `.default()` is load-bearing: it lets configs stored before this field existed still
   // parse during the upgrade window, before the v115 migration runs.
   wordLookupActionId: z.string().nonempty().default(BUILT_IN_DICTIONARY_ACTION_ID),
-  requestQueueConfig: requestQueueConfigSchema,
-  batchQueueConfig: batchQueueConfigSchema,
   customPromptsConfig: subtitleCustomPromptsConfigSchema,
   position: subtitlePositionSchema,
 })

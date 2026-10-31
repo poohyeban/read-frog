@@ -83,3 +83,48 @@ describe("formatTimestamp", () => {
     expect(formatTimestamp(3_671_000)).toBe("1:01:11")
   })
 })
+
+describe("Quality merged transcript rows", () => {
+  const raw = [
+    cue("one", 0, 1000),
+    cue("two", 1000, 2000),
+    cue("three", 2000, 3000),
+    cue("four", 3000, 4000),
+  ]
+  it("uses complete Quality original/translation pairs over Fast with different boundaries", () => {
+    const baseline = [cue("one two three", 0, 3000), raw[3]!]
+    const fast = { ...baseline[0]!, translation: "Fast 一二三", lane: "fast" as const }
+    const quality = { ...cue("One, two!", 0, 2000, "Quality 一二"), lane: "quality" as const }
+    const before = buildTranscript(baseline, [fast], raw)
+    const next = buildTranscript(baseline, [fast, quality], raw)
+    expect(next.map((l) => [l.text, l.translation])).toEqual([
+      ["One, two!", "Quality 一二"],
+      ["three", undefined],
+      ["four", undefined],
+    ])
+    expect(next[0]!.anchorKey).toBe(before[0]!.anchorKey)
+    expect(next[2]).toBe(before[1])
+    expect(findActiveLine(next, 1500)).toBe(0)
+    expect(findActiveLine(next, 2500)).toBe(1)
+  })
+  it("keeps Fast until Quality is complete and ignores failed or changed-source candidates", () => {
+    const fast = { ...raw[0]!, translation: "Fast", lane: "fast" as const }
+    for (const quality of [
+      { ...raw[0]!, lane: "quality" as const },
+      {
+        ...raw[0]!,
+        lane: "quality" as const,
+        translation: "bad",
+        translationOutcome: { status: "temporary" as const, message: "failed" },
+      },
+      { ...raw[0]!, lane: "quality" as const, text: "unrelated", translation: "wrong source" },
+    ]) {
+      expect(buildTranscript(raw, [fast, quality])[0]!.translation).toBe("Fast")
+    }
+  })
+  it("does not let a later Fast result overwrite identical Quality boundaries", () => {
+    const quality = { ...raw[0]!, translation: "Quality", lane: "quality" as const }
+    const fast = { ...raw[0]!, translation: "Fast", lane: "fast" as const }
+    expect(buildTranscript(raw, [quality, fast])[0]!.translation).toBe("Quality")
+  })
+})

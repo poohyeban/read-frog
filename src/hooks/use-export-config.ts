@@ -2,10 +2,16 @@ import type { Config } from "@/types/config/config"
 import { useMutation } from "@tanstack/react-query"
 import { kebabCase } from "case-anything"
 import { saveAs } from "file-saver"
+import { storage } from "#imports"
 import { toastManager } from "@/components/ui/base-ui/toast"
 import { getObjectWithoutAPIKeys } from "@/utils/config/api"
 import { APP_NAME } from "@/utils/constants/app"
 import { i18n } from "@/utils/i18n"
+import {
+  PERFORMANCE_STORAGE_KEY,
+  performanceOverridesSchema,
+  portablePerformanceOverrides,
+} from "@/utils/request/performance-config"
 
 interface UseExportConfigOptions {
   config: Config
@@ -21,10 +27,16 @@ export function useExportConfig({ config, schemaVersion }: UseExportConfigOption
         exportConfig = getObjectWithoutAPIKeys(config)
       }
 
+      const performance = performanceOverridesSchema.safeParse(
+        await storage.getItem(PERFORMANCE_STORAGE_KEY),
+      )
       const json = JSON.stringify(
         {
           config: exportConfig,
           schemaVersion,
+          ...(performance.success
+            ? { performance: portablePerformanceOverrides(performance.data) }
+            : {}),
           // Its own top-level key, in the same shape the Drive sync writes, so
           // one reader handles both routes and a file from either can be
           // imported by either. Older builds simply ignore it.

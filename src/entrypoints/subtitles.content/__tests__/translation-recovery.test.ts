@@ -154,7 +154,7 @@ describe("bounded failure recovery", () => {
       "fast",
     )
   })
-  it("retries only the temporary failed cue after cooldown, preserving successful neighbors", async () => {
+  it("does not restart exhausted logical requests; explicit retry preserves successful neighbors", async () => {
     vi.useFakeTimers()
     vi.mocked(translateSubtitles).mockImplementation(async (cues) =>
       cues.map((cue) => ({
@@ -175,16 +175,14 @@ describe("bounded failure recovery", () => {
     for (let i = 0; i < 20; i++) video.dispatchEvent(new Event("timeupdate"))
     await vi.advanceTimersByTimeAsync(44_999)
     expect(translateSubtitles).toHaveBeenCalledTimes(1)
-    await vi.advanceTimersByTimeAsync(1)
-    expect(translateSubtitles).toHaveBeenCalledTimes(2)
-    expect(vi.mocked(translateSubtitles).mock.calls[1]![0].map((c) => c.text)).toEqual(["retry"])
-    await vi.advanceTimersByTimeAsync(120_000)
-    expect(translateSubtitles).toHaveBeenCalledTimes(2)
-    void coordinator.stop()
+    await vi.advanceTimersByTimeAsync(120_001)
+    expect(translateSubtitles).toHaveBeenCalledTimes(1)
+    await coordinator.stop()
     coordinator.clearFailed()
     coordinator.start()
     await vi.advanceTimersByTimeAsync(0)
-    expect(translateSubtitles).toHaveBeenCalledTimes(3)
+    expect(translateSubtitles).toHaveBeenCalledTimes(2)
+    expect(vi.mocked(translateSubtitles).mock.calls[1]![0].map((c) => c.text)).toEqual(["retry"])
   })
   it("never automatically retries a permanent provider failure", async () => {
     vi.useFakeTimers()

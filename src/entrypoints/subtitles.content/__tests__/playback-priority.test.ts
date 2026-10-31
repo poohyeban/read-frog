@@ -6,7 +6,7 @@ import { TranslationCoordinator } from "../translation-coordinator"
 const model = vi.hoisted(() => ({
   translate: vi.fn<(...args: any[]) => any>(),
   segment: vi.fn<(...args: any[]) => any>(),
-  events: [] as { type: string; starts: number[]; signal: AbortSignal }[],
+  events: [] as { type: string; lane?: string; starts: number[]; signal: AbortSignal }[],
 }))
 vi.mock("@/utils/subtitles/processor/translator", () => ({ translateSubtitles: model.translate }))
 vi.mock("@/utils/subtitles/processor/ai-segmentation", () => ({ aiSegmentBlock: model.segment }))
@@ -59,8 +59,8 @@ beforeEach(() => {
   vi.useFakeTimers()
   model.events = []
   vi.clearAllMocks()
-  const execute = (type: string, cues: SubtitlesFragment[], signal: AbortSignal) => {
-    model.events.push({ type, starts: cues.map((c) => c.start), signal })
+  const execute = (type: string, cues: SubtitlesFragment[], signal: AbortSignal, lane?: string) => {
+    model.events.push({ type, lane, starts: cues.map((c) => c.start), signal })
     return new Promise<SubtitlesFragment[]>((resolve, reject) => {
       const timer = setTimeout(
         () =>
@@ -83,7 +83,7 @@ beforeEach(() => {
     })
   }
   model.translate.mockImplementation((cues, _context, _config, task) =>
-    execute("translate", cues, task.signal),
+    execute("translate", cues, task.signal, task.lane),
   )
   model.segment.mockImplementation((cues, _provider, task) => execute("segment", cues, task.signal))
 })
@@ -165,7 +165,11 @@ describe("playback position is the admission invariant", () => {
       expect(model.events.filter((e) => e.type === "translate")).toHaveLength(2)
       await vi.advanceTimersByTimeAsync(1700)
       const starts = model.events.filter((e) => e.type === "translate").flatMap((e) => e.starts)
-      expect(Math.max(...starts)).toBeLessThanOrEqual(2120000 + 30000 * rate)
+      expect(Math.max(...starts)).toBeLessThanOrEqual(2120000 + 60000 * rate)
+      const fastStarts = model.events
+        .filter((e) => e.type === "translate" && e.lane === "fast")
+        .flatMap((e) => e.starts)
+      expect(Math.max(...fastStarts)).toBeLessThanOrEqual(2120000 + 30000 * rate)
       expect(Math.max(...starts)).toBeGreaterThan(2120000 + 30000)
     },
   )

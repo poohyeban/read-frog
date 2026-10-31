@@ -58,6 +58,44 @@ describe("executable remote entrypoint coverage", () => {
             }
           if (/^(?:@ai-sdk\/|ai-sdk-ollama)/.test(module))
             expect(adapters.has(name), `Adapter outside transport boundary: ${name}`).toBe(true)
+          if (module.endsWith("/resource-scheduler") || module === "./resource-scheduler")
+            if (
+              node.specifiers.some(
+                (item) => item.type === "ImportSpecifier" && item.importKind !== "type",
+              )
+            )
+              expect(name, "Only the background runtime constructs physical authority").toBe(
+                "src/utils/providers/resource-runtime.ts",
+              )
+          if (/^(?:axios|ky|got|node-fetch|undici)$/.test(module))
+            expect(adapters.has(name), `Unreviewed transport library: ${name}`).toBe(true)
+        },
+        ImportExpression(node) {
+          if (
+            node.source.type === "Literal" &&
+            typeof node.source.value === "string" &&
+            /^(?:ai$|@ai-sdk\/|ai-sdk-ollama)/.test(node.source.value)
+          )
+            expect(
+              name === gateway || adapters.has(name),
+              `Dynamic inference SDK bypass: ${name}`,
+            ).toBe(true)
+        },
+        MemberExpression(node) {
+          const property =
+            node.computed && node.property.type === "Literal"
+              ? node.property.value
+              : node.property.type === "Identifier"
+                ? node.property.name
+                : undefined
+          if (property === "doGenerate" || property === "doStream")
+            expect(adapters.has(name), `Aliased SDK method bypass: ${name}`).toBe(true)
+          if (
+            property === "fetch" &&
+            node.object.type === "Identifier" &&
+            ["globalThis", "window"].includes(node.object.name)
+          )
+            expect(localFetch.has(name), `Aliased network entrypoint: ${name}`).toBe(true)
         },
         CallExpression(node) {
           const expression = text.slice(node.callee.start, node.callee.end)
@@ -69,6 +107,11 @@ describe("executable remote entrypoint coverage", () => {
             expect(name === gateway || adapters.has(name), `Model bypass: ${name}`).toBe(true)
         },
         NewExpression(node) {
+          if (
+            node.callee.type === "Identifier" &&
+            ["XMLHttpRequest", "WebSocket", "EventSource"].includes(node.callee.name)
+          )
+            expect(localFetch.has(name), `Unreviewed remote transport: ${name}`).toBe(true)
           if (text.slice(node.callee.start, node.callee.end) === "ResourceScheduler")
             expect(name).toBe("src/utils/providers/resource-runtime.ts")
         },

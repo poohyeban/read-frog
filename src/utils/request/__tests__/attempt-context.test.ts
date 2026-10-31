@@ -24,6 +24,15 @@ describe("member attempt conservation", () => {
     expect(() => group.start(3)).toThrow("attempts")
     expect(group.counts).toEqual([1, 0])
   })
+  it("honors lower live limits without granting extra attempts when limits are raised", () => {
+    const task = AttemptContext.create(["caption"])
+    task.start(3)
+    expect(task.canStart(1)).toBe(false)
+    expect(() => task.start(1)).toThrow("attempts")
+    task.start(2)
+    expect(() => task.start(10)).toThrow("attempts")
+    expect(task.counts).toEqual([2])
+  })
   it("cannot mint attempts by renaming members or changing runtime policy", () => {
     const group = AttemptContext.create(["a", "a"])
     group.start(1)

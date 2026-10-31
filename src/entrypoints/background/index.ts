@@ -21,6 +21,7 @@ import { setupGlossaryMessageHandlers } from "./glossary"
 import { setupIframeInjection } from "./iframe-injection"
 import { setupLLMGenerateTextMessageHandlers } from "./llm-generate-text"
 import { setupPageTranslationHandlers } from "./page-translation"
+import { setupPerformanceSettings } from "./performance-settings"
 import { setupSpeechHandlers } from "./speech"
 import { setupSubtitlesTranslationHandlers } from "./subtitles-translation"
 import { translationMessage } from "./translation-signal"
@@ -71,6 +72,7 @@ export default defineBackground({
     // Synchronous: all translation and summary handlers register in the first turn of
     // the SW so wake-triggering messages are never dropped during init.
     setupPageTranslationHandlers()
+    setupPerformanceSettings()
     setupGlossaryMessageHandlers()
     setupSubtitlesTranslationHandlers()
     setupVideoSummaryHandlers()

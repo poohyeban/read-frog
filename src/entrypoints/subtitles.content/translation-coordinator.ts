@@ -7,9 +7,12 @@ import type {
   SubtitlesFragment,
   SubtitlesState,
 } from "@/utils/subtitles/types"
-import { getPerformanceOverrides } from "@/utils/config/performance"
+import {
+  getPerformanceOverrides,
+  getPerformanceSnapshot,
+  watchPerformance,
+} from "@/utils/config/performance"
 import { getLocalConfig } from "@/utils/config/storage"
-import { TRANSLATE_LOOK_AHEAD_MS, TRANSLATION_BATCH_SIZE } from "@/utils/constants/subtitles"
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { RESOURCE_DEFAULTS } from "@/utils/request/resource-policy"
 import { continuousReadyMs, SubtitleBufferController } from "@/utils/subtitles/continuous-buffer"
@@ -28,6 +31,8 @@ export interface TranslationCoordinatorOptions {
   }
   session?: SubtitleSession
   configSnapshot?: Config
+  canRequest?: () => boolean
+  getConcurrency?: () => Promise<number>
   getFragments: () => SubtitlesFragment[]
   getVideoElement: () => HTMLVideoElement | null
   getCurrentState: () => SubtitlesState
@@ -50,9 +55,8 @@ const EVENTS = [
   "timeupdate",
   "ratechange",
 ] as const
-const MAX_PENDING_BATCHES = 2
 
-/** Local admission is bounded; network concurrency/rate limits belong to RequestQueue. */
+/** Local windows are bounded; physical admission belongs to ResourceScheduler. */
 export class TranslationCoordinator {
   private session: SubtitleSession
   private active = false
@@ -78,13 +82,31 @@ export class TranslationCoordinator {
   private cacheTask: SubtitleTask | null = null
   private readyList = { fast: [] as SubtitlesFragment[], quality: [] as SubtitlesFragment[] }
   private buffer = new SubtitleBufferController()
+  private unwatchPerformance?: () => void
+  private concurrency = 1
+  private policyRevision = 0
+  refreshResourcePolicy() {
+    const revision = ++this.policyRevision
+    const configured =
+      getPerformanceOverrides().providers?.[
+        this.options.configSnapshot?.videoSubtitles.providerId ?? ""
+      ]?.maxInFlight ?? RESOURCE_DEFAULTS.maxInFlight
+    if (!this.options.getConcurrency) {
+      this.concurrency = configured
+      return
+    }
+    void this.options
+      .getConcurrency()
+      .then((value) => {
+        if (revision !== this.policyRevision || !this.active) return
+        this.concurrency = value
+        this.requestTick()
+      })
+      .catch(() => {})
+  }
   private contextWindows = new Set<string>()
   private contextTask: SubtitleTask | null = null
-  private failed = new Map<
-    string,
-    { phase: "cooling" | "permanent"; attempts: number; retryAt: number }
-  >()
-  private retryTimer: ReturnType<typeof setTimeout> | undefined
+  private failed = new Set<string>()
   private tickQueued = false
   private lastEmittedState: SubtitlesState = "idle"
   private videoContext: SubtitlesVideoContext = { videoTitle: "", subtitlesTextContent: "" }
@@ -107,6 +129,13 @@ export class TranslationCoordinator {
     if (!video) return
     this.session.start()
     this.active = true
+    this.refreshResourcePolicy()
+    this.buffer.configure(getPerformanceSnapshot().subtitles)
+    this.unwatchPerformance ??= watchPerformance(() => {
+      this.buffer.configure(getPerformanceSnapshot().subtitles)
+      this.refreshResourcePolicy()
+      this.requestTick()
+    })
     if (this.video !== video) {
       this.detach()
       this.video = video
@@ -120,8 +149,10 @@ export class TranslationCoordinator {
   }
   stop(): Promise<void> {
     this.active = false
+    this.policyRevision++
+    this.unwatchPerformance?.()
+    this.unwatchPerformance = undefined
     this.trace("stop-requested")
-    clearTimeout(this.retryTimer)
     const stopped = this.session.stop()
     this.pending.clear()
     this.pendingKeys.clear()
@@ -184,14 +215,16 @@ export class TranslationCoordinator {
     return globalThis.document?.visibilityState === "hidden"
   }
   private canPrepareQuality() {
-    if (!this.active || this.isHidden() || subtitlesStore.get(adPlayingAtom)) return false
+    if (
+      !this.active ||
+      this.options.canRequest?.() === false ||
+      this.isHidden() ||
+      subtitlesStore.get(adPlayingAtom)
+    )
+      return false
     const video = this.options.getVideoElement()
     if (!video) return false
-    const concurrency =
-      getPerformanceOverrides().providers?.[
-        this.options.configSnapshot?.videoSubtitles.providerId ?? ""
-      ]?.maxInFlight ?? RESOURCE_DEFAULTS.maxInFlight
-    if (concurrency > 1) return true
+    if (this.concurrency > 1) return true
     const rate = Math.min(4, Math.max(0.25, video.playbackRate || 1))
     const ready = [...this.readyList.fast, ...this.readyList.quality]
     const coverage =
@@ -210,8 +243,14 @@ export class TranslationCoordinator {
     if (!video) return
     const timeMs = video.currentTime * 1000
     if (this.restoreCandidates(timeMs)) return
+    // Cache restoration and display selection always run, even with admission disabled.
+    if (this.options.canRequest?.() === false) {
+      this.options.onStateChange("idle")
+      return
+    }
     const rate = Math.min(4, Math.max(0.25, video.playbackRate || 1))
-    const ahead = Math.min(240_000, Math.max(TRANSLATE_LOOK_AHEAD_MS, this.buffer.highMs) * rate)
+    const policy = getPerformanceSnapshot().subtitles
+    const ahead = Math.min(300_000, Math.max(policy.fastAheadMs, this.buffer.highMs) * rate)
     const source = this.getFastFragments()
     const qualityCoverage = continuousReadyMs(source, this.readyList.quality, timeMs, ahead)
     const wasSpeculating = this.buffer.fastSpeculation
@@ -219,10 +258,10 @@ export class TranslationCoordinator {
     this.trace("buffer", "quality", qualityCoverage)
     if (wasSpeculating !== this.buffer.fastSpeculation)
       this.trace(this.buffer.fastSpeculation ? "fast-resume" : "fast-suspend", "fast")
-    clearTimeout(this.retryTimer)
-    let nextRetry = Infinity
     for (const batch of [...this.pending]) {
-      const relevant = batch.cues.some((c) => c.end > timeMs && c.start < timeMs + ahead)
+      const batchAhead =
+        batch.lane === "quality" ? Math.min(300_000, policy.qualityAheadMs * rate) : ahead
+      const relevant = batch.cues.some((c) => c.end > timeMs && c.start < timeMs + batchAhead)
       const speculativeFast =
         batch.lane === "fast" &&
         !allowFastSpeculation &&
@@ -234,12 +273,14 @@ export class TranslationCoordinator {
       const fragments =
         lane === "fast" ? source : (this.options.segmentationPipeline?.processedFragments ?? [])
       const timeline = getCueTimeline(fragments)
-      const laneAhead = lane === "fast" && !allowFastSpeculation ? this.buffer.lowMs * rate : ahead
+      const laneAhead =
+        lane === "quality"
+          ? Math.min(300_000, policy.qualityAheadMs * rate)
+          : !allowFastSpeculation
+            ? Math.min(ahead, this.buffer.lowMs * rate)
+            : ahead
       const candidates = timeline.window(timeMs, timeMs + laneAhead, 128).filter((c) => {
         const key = `${lane}:${cueIdentity(c)}`
-        const failure = this.failed.get(key)
-        if (failure?.phase === "cooling" && failure.retryAt > Date.now())
-          nextRetry = Math.min(nextRetry, failure.retryAt)
         // A complete quality interval makes the corresponding Fast request unnecessary.
         if (
           lane === "fast" &&
@@ -252,21 +293,21 @@ export class TranslationCoordinator {
             c.end - Math.max(timeMs, c.start)
         )
           return false
-        return (
-          !this.translated.has(key) &&
-          !this.pendingKeys.has(key) &&
-          failure?.phase !== "permanent" &&
-          (failure?.retryAt ?? 0) <= Date.now()
-        )
+        return !this.translated.has(key) && !this.pendingKeys.has(key) && !this.failed.has(key)
       })
       const pending = [...this.pending].filter((b) => b.lane === lane)
-      if (candidates[0] && candidates[0].start <= timeMs && pending.length >= MAX_PENDING_BATCHES) {
+      if (
+        candidates[0] &&
+        candidates[0].start <= timeMs &&
+        pending.length >= policy.maxPendingBatches
+      ) {
         const future = pending.filter((b) => b.cues.every((c) => c.start > timeMs)).at(-1)
         if (future) this.cancelBatch(future)
       }
-      const batches = chunkSubtitleWork(candidates, TRANSLATION_BATCH_SIZE)
+      const batches = chunkSubtitleWork(candidates, policy.batchSize)
       for (const cues of batches) {
-        if ([...this.pending].filter((b) => b.lane === lane).length >= MAX_PENDING_BATCHES) break
+        if ([...this.pending].filter((b) => b.lane === lane).length >= policy.maxPendingBatches)
+          break
         const urgent = lane === "fast" && cues[0]!.start <= timeMs + this.buffer.lowMs * rate
         const task = this.session.begin(
           "playback",
@@ -283,8 +324,6 @@ export class TranslationCoordinator {
     this.options.segmentationPipeline?.reprioritize()
     this.prepareContext(timeMs, ahead)
     this.updateLoadingStateAt(timeMs, source)
-    if (Number.isFinite(nextRetry))
-      this.retryTimer = setTimeout(this.requestTick, Math.max(1, nextRetry - Date.now()))
   }
   private restoreCandidates(timeMs: number): boolean {
     const cache = this.options.candidateCache
@@ -296,18 +335,21 @@ export class TranslationCoordinator {
     const task = this.session.begin("context", String(window), 3)
     this.cacheTask = task
     void cache
-      .read(window * 60_000, window * 60_000 + 300_000)
+      .read(Math.max(0, window - 1) * 60_000, Math.max(0, window - 1) * 60_000 + 300_000)
       .then((bundles) => {
         if (!task.isCurrent()) return
+        const restored = { fast: [] as SubtitlesFragment[], quality: [] as SubtitlesFragment[] }
         for (const bundle of bundles) {
           this.trace("cache-restored", bundle.lane, bundle.cues.length)
           for (const cue of bundle.cues) {
             this.ready[bundle.lane].set(cueIdentity(cue), cue)
             this.translated.add(`${bundle.lane}:${cueIdentity(cue)}`)
           }
-          if (bundle.lane === "quality") this.options.segmentationPipeline?.restore(bundle.cues)
-          this.options.onTranslated(bundle.cues, bundle.lane)
+          restored[bundle.lane].push(...bundle.cues)
         }
+        if (restored.quality.length) this.options.segmentationPipeline?.restore(restored.quality)
+        for (const lane of ["fast", "quality"] as const)
+          if (restored[lane].length) this.options.onTranslated(restored[lane], lane)
         this.readyList = {
           fast: [...this.ready.fast.values()],
           quality: [...this.ready.quality.values()],
@@ -421,7 +463,7 @@ export class TranslationCoordinator {
         if (!task.isCurrent()) return
         void this.options.candidateCache.write(saved, lane, work.lease).catch(() => {})
       }
-      this.buffer.observe(Date.now() - batch.started)
+      this.buffer.observe(Date.now() - batch.started, lane === "quality")
       this.options.onTranslated(
         publish.filter(
           (c) =>
@@ -470,14 +512,10 @@ export class TranslationCoordinator {
   }
   private recordFailure(key: string, outcome: SubtitleOutcome) {
     if (outcome.status === "success" || outcome.status === "empty") return
-    const attempts = (this.failed.get(key)?.attempts ?? 0) + 1
-    const permanent = outcome.status === "permanent" || attempts >= 2
-    this.failed.set(key, {
-      phase: permanent ? "permanent" : "cooling",
-      attempts,
-      retryAt: Date.now() + Math.max(30_000, outcome.retryAfterMs ?? 0),
-    })
+    // The shared request path owns all attempts. A business timer must not mint new credits.
+    this.failed.add(key)
   }
+
   private updateLoadingStateAt(timeMs: number, fragments: SubtitlesFragment[]) {
     const active = getCueTimeline(fragments).at(timeMs)
     const next =

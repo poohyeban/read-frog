@@ -8,6 +8,7 @@ import {
   currentTimeMsAtom,
   currentVideoIdAtom,
   sourceTrackAtom,
+  rawSourceTrackAtom,
   translatedTrackAtom,
 } from "../../../../atoms"
 import { useSubtitlesUI } from "../../../subtitles-ui-context"
@@ -22,10 +23,14 @@ interface TranscriptLines {
 export function useTranscriptLines(): TranscriptLines {
   const { ensureSourceTrackPublished } = useSubtitlesUI()
   const source = useAtomValue(sourceTrackAtom)
+  const raw = useAtomValue(rawSourceTrackAtom)
   const translated = useAtomValue(translatedTrackAtom)
   const videoId = useAtomValue(currentVideoIdAtom)
 
-  const lines = useMemo(() => buildTranscript(source, translated), [source, translated])
+  const lines = useMemo(
+    () => buildTranscript(source, translated, raw.length ? raw : source),
+    [source, translated, raw],
+  )
   const activeIndexAtom = useMemo(
     () => atom((get) => findActiveLine(lines, get(currentTimeMsAtom))),
     [lines],

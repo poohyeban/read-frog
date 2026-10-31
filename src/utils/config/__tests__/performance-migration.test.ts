@@ -15,7 +15,17 @@ beforeEach(() => {
 })
 describe("sparse legacy resource migration", () => {
   it("does not persist known historical defaults", async () => {
-    await migratePerformanceConfig(structuredClone(DEFAULT_CONFIG), 5)
+    const legacy = structuredClone(DEFAULT_CONFIG)
+    for (const owner of [legacy.pageTranslation, legacy.videoSubtitles]) {
+      Object.assign(owner, {
+        requestQueueConfig: { rate: 8, capacity: 20 },
+        batchQueueConfig: { maxItemsPerBatch: 4, maxCharactersPerBatch: 1000 },
+      })
+    }
+    Object.assign(legacy.videoSubtitles, {
+      workBudget: { requests: 500, estimatedTokens: 100_000, maxInFlight: 2, diagnostics: false },
+    })
+    await migratePerformanceConfig(legacy, 5)
     expect(mock.write).not.toHaveBeenCalled()
   })
   it("preserves explicit concurrency, diagnostics and queue settings without financial fields", async () => {
@@ -23,8 +33,8 @@ describe("sparse legacy resource migration", () => {
     Object.assign(config.videoSubtitles, {
       workBudget: { requests: 1, estimatedTokens: 1, maxInFlight: 4, diagnostics: true },
     })
-    Object.assign(config.videoSubtitles.requestQueueConfig, { rate: 12 })
-    Object.assign(config.videoSubtitles.batchQueueConfig, { maxItemsPerBatch: 7 })
+    Object.assign(config.videoSubtitles, { requestQueueConfig: { rate: 12 } })
+    Object.assign(config.videoSubtitles, { batchQueueConfig: { maxItemsPerBatch: 7 } })
     const before = structuredClone(config)
     await migratePerformanceConfig(config, 5)
     const [key, result] = mock.write.mock.calls[0]!
@@ -37,6 +47,7 @@ describe("sparse legacy resource migration", () => {
   })
   it("preserves unknown historical effective values, and never overwrites an existing override", async () => {
     const config = structuredClone(DEFAULT_CONFIG)
+    Object.assign(config.pageTranslation, { requestQueueConfig: { rate: 8, capacity: 20 } })
     mock.read.mockResolvedValue({
       version: 1,
       revision: 4,

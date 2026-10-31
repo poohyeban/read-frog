@@ -27,11 +27,13 @@ vi.mock("@/utils/db/dexie/db", () => ({
       },
       where: () => ({
         below: () => ({ delete: async () => {} }),
-        equals: (key: string) => ({
+        between: ([key, start]: [string, number], [, end]: [string, number]) => ({
           filter: (predicate: (b: SubtitleCandidateBundle) => boolean) => ({
             limit: () => ({
               toArray: async () =>
-                fixture.bundles.filter((b) => b.trackKey === key && predicate(b)),
+                fixture.bundles.filter(
+                  (b) => b.trackKey === key && b.start >= start && b.start < end && predicate(b),
+                ),
             }),
           }),
         }),

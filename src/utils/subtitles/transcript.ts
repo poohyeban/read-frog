@@ -1,8 +1,10 @@
 import type { SubtitlesFragment } from "./types"
 import { cueIdentity, getCueTimeline } from "./cue-timeline"
+import { isSegmentationAligned } from "./processor/ai-segmentation"
 
 export interface TranscriptLine {
   id?: string
+  anchorKey?: string
   sourceLanguage?: string
   start: number
   end: number
@@ -11,44 +13,84 @@ export interface TranscriptLine {
 }
 
 const previousLines = new WeakMap<SubtitlesFragment[], Map<string, TranscriptLine>>()
+const sourcePositions = new WeakMap<SubtitlesFragment[], Map<string, number>>()
 
-/**
- * The source track is the skeleton: it exists whether or not translation is
- * running, and it is the one the player re-segments. Translations are matched
- * on complete cue identity; unchanged rows retain their references.
- */
+/** Result-driven projection. Whole Quality pairs own their source interval; a crossing
+ * Fast row falls back to uncovered raw cues instead of duplicating or mixing text. */
 export function buildTranscript(
   source: SubtitlesFragment[],
   translated: SubtitlesFragment[],
+  raw: SubtitlesFragment[] = source,
 ): TranscriptLine[] {
-  const translationByIdentity = new Map(
-    translated.filter((cue) => cue.translation).map((cue) => [cueIdentity(cue), cue.translation!]),
+  const timeline = getCueTimeline(raw)
+  const rawCues = timeline.cues
+  let positions = sourcePositions.get(raw)
+  if (!positions) {
+    positions = new Map(rawCues.map((cue, index) => [cueIdentity(cue), index]))
+    sourcePositions.set(raw, positions)
+  }
+  const occupied = new Uint8Array(rawCues.length)
+  const selections = new Map<number, { cue: SubtitlesFragment; end: number }>()
+  const valid = (cue: SubtitlesFragment) =>
+    !!cue.translation?.trim() &&
+    (!cue.translationOutcome || cue.translationOutcome.status === "success")
+  const fast = new Map(
+    translated.filter((c) => c.lane !== "quality" && valid(c)).map((c) => [cueIdentity(c), c]),
   )
+  function select(cue: SubtitlesFragment, key = cueIdentity(cue)) {
+    const exact = positions!.get(key)
+    if (exact !== undefined) {
+      if (!occupied[exact]) {
+        occupied[exact] = 1
+        selections.set(exact, { cue, end: exact + 1 })
+      }
+      return
+    }
+    const covered = timeline.window(cue.start, cue.end)
+    if (!isSegmentationAligned([...covered], [cue])) return
+    const start = positions!.get(cueIdentity(covered[0]!))!
+    const end = positions!.get(cueIdentity(covered.at(-1)!))! + 1
+    for (let i = start; i < end; i++) if (occupied[i]) return
+    occupied.fill(1, start, end)
+    selections.set(start, { cue, end })
+  }
+  for (const cue of getCueTimeline(translated.filter((c) => c.lane === "quality" && valid(c))).cues)
+    select(cue)
+  for (const cue of getCueTimeline(source).cues) {
+    const key = cueIdentity(cue)
+    select(fast.get(key) ?? cue, key)
+  }
 
   const previous = previousLines.get(source)
   const next = new Map<string, TranscriptLine>()
-  const lines = getCueTimeline(source).cues.map((cue) => {
-    const key = cueIdentity(cue)
-    const translatedText = translationByIdentity.get(key)
-    const translation = translatedText === cue.text ? undefined : translatedText
-    const old = previous?.get(key)
-    if (old && old.translation === translation) {
-      next.set(key, old)
-      return old
-    }
-    const line = {
-      id: cue.id,
-      sourceLanguage: cue.sourceLanguage,
-      start: cue.start,
-      end: cue.end,
-      text: cue.text,
-      // Passthrough and the error fallback copy the source into `translation`,
-      // which would print the line twice.
-      translation,
-    }
-    next.set(key, line)
-    return line
-  })
+  const lines: TranscriptLine[] = []
+  for (let i = 0; i < rawCues.length;) {
+    const selected = selections.get(i)
+    const cue = selected?.cue ?? rawCues[i]!
+    const anchorKey = cueIdentity(rawCues[i]!)
+    const translation = valid(cue) && cue.translation !== cue.text ? cue.translation : undefined
+    const old = previous?.get(anchorKey)
+    const line =
+      old &&
+      old.start === cue.start &&
+      old.end === cue.end &&
+      old.text === cue.text &&
+      old.sourceLanguage === cue.sourceLanguage &&
+      old.translation === translation
+        ? old
+        : {
+            id: cue.id,
+            anchorKey,
+            sourceLanguage: cue.sourceLanguage,
+            start: cue.start,
+            end: cue.end,
+            text: cue.text,
+            translation,
+          }
+    lines.push(line)
+    next.set(anchorKey, line)
+    i = selected?.end ?? i + 1
+  }
   previousLines.set(source, next)
   return lines
 }
