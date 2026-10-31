@@ -1,0 +1,64 @@
+{
+  "environment": {
+    "source": "/workspace/read-frog",
+    "browser": "154.0.8037.57",
+    "node": "v24.19.0",
+    "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+  },
+  "errors": [],
+  "rendererMemory": [
+    {
+      "type": "renderer",
+      "peakRssKiB": 34300,
+      "rssKiB": 34300
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 76672,
+      "rssKiB": 76672
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 90196,
+      "rssKiB": 90196
+    }
+  ],
+  "model": "Mock Provider, no paid tokens",
+  "actualProviderStarts": 10,
+  "ledger": {
+    "key": "playback",
+    "requests": 10,
+    "estimatedTokens": 2070,
+    "speculativeRequests": 8,
+    "speculativeTokens": 1656,
+    "actualInputTokens": 80,
+    "actualOutputTokens": 120,
+    "usageReports": 10
+  },
+  "counters": {
+    "reserved-tokens": 2070,
+    "dispatch-authorized": 10,
+    "queue-wait-ms": 41,
+    "batch-members": 10,
+    "provider-start": 10,
+    "provider-complete": 10,
+    "provider-latency-ms": 1,
+    "usage-input-tokens": 80,
+    "usage-output-tokens": 120,
+    "rejected:soft-budget": 1,
+    "rejected:hard-budget": 101,
+    "cancel": 1,
+    "rejected:lease": 1
+  },
+  "exportThreeHours": {
+    "sourceCues": 5400,
+    "chunks": 180,
+    "maximumCues": 30,
+    "maximumSpanMs": 59800
+  },
+  "postStopStarts": 0,
+  "retries": 0,
+  "cacheHits": 0,
+  "realProviderUsage": null,
+  "note": "ledger usage is synthetic Mock Provider usage; it is not real paid API usage"
+}

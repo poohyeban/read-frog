@@ -39,7 +39,11 @@ await build({
       name: "controlled-subtitle-provider",
       enforce: "pre",
       resolveId(id, importer) {
-        if (id === "./config" && importer?.endsWith("background/translation-queues.ts"))
+        if (
+          id === "./config" &&
+          (importer?.endsWith("background/translation-queues.ts") ||
+            importer?.endsWith("background/subtitle-work.ts"))
+        )
           return resolve(harness, "fixture.ts")
         if (
           id === "@/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/list" &&
@@ -95,13 +99,31 @@ try {
   const page = await browser.newPage()
   const errors = []
   page.on("pageerror", (error) => errors.push(error.message))
-  const config = JSON.parse(await readFile("/tmp/read-frog-ui-fixture/config.json", "utf8"))
+  const config = JSON.parse(
+    await readFile("/tmp/read-frog-ui-fixture/config.json", "utf8").catch(() => "null"),
+  )
   await page.addInitScript((fixtureConfig) => {
     window.__config = fixtureConfig
   }, config)
+  await page.addInitScript((mode) => {
+    window.__benchmarkMode = mode
+  }, process.env.BENCHMARK_MODE ?? "dual")
+  if (process.env.BENCHMARK_KIND === "continuity") await page.clock.install()
   await page.goto(`${server.url}/index.html`)
   await page.waitForFunction(() => window.runSubtitleBenchmark)
-  const results = await page.evaluate(() => window.runSubtitleBenchmark())
+  let finished = false
+  const running = page
+    .evaluate(() => window.runSubtitleBenchmark())
+    .finally(() => {
+      finished = true
+    })
+  if (process.env.BENCHMARK_KIND === "continuity") {
+    for (let step = 0; step < 10000; step++) {
+      if (finished) break
+      await page.clock.runFor(10000)
+    }
+  }
+  const results = await running
   const system = await browser.newBrowserCDPSession()
   const processes = await system.send("SystemInfo.getProcessInfo")
   const memory = await Promise.all(
@@ -137,7 +159,7 @@ try {
   console.log(
     output,
     errors,
-    results.scales.map((r) => ({ size: r.size, commits: r.sameCueCommits })),
+    (results.scales ?? []).map((r) => ({ size: r.size, commits: r.sameCueCommits })),
   )
 } finally {
   await browser.close()

@@ -1,0 +1,12 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+
+ Test Files  2 passed (2)
+      Tests  23 passed (23)
+   Start at  08:02:11
+   Duration  4.34s (transform 39%, import 37%, environment 11%, tests 9%, setup 4%)
+
+  Transform  transforming modules took 2.83s · 39% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns

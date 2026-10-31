@@ -146,7 +146,7 @@ root.render(
       const readyCues = new Set<string>()
       const cueKey = (cue: any) => JSON.stringify([cue.start, cue.end, cue.text])
       coordinator = new TranslationCoordinator({
-        getFragments: () => pipeline.processedFragments,
+        getFragments: () => ((pipeline as any).setAdmission ? cues : pipeline.processedFragments),
         getVideoElement: () => video,
         getCurrentState: () => state,
         segmentationPipeline: pipeline,
@@ -180,7 +180,7 @@ root.render(
         seek(2400)
       }
       if (name === "stopStart") {
-        coordinator.stop()
+        void coordinator.stop()
         coordinator.start()
       }
       if (name === "pauseResume") video.dispatchEvent(new Event("playing"))
@@ -197,7 +197,7 @@ root.render(
           if (current) readiness.push(readyCues.has(cueKey(current)))
         }
       } else await delay(250)
-      coordinator.stop()
+      void coordinator.stop()
       const stopped = performance.now()
       await delay(80)
       scenarios.push({

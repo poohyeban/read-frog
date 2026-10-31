@@ -1,0 +1,22 @@
+Local acceptance, 2026-10-31 UTC
+Production source: f5a1460a
+
+SKIP_FREE_API=true vitest run: 305 files, 2821 tests passed.
+Post-full targeted runs (overlapping): 41, 2, 89, 23 tests passed.
+oxlint --type-aware --type-check: exit 0.
+oxfmt --check .: exit 0; 1224 matched files.
+git diff --check: exit 0.
+SKIP_FREE_API=true wxt build: exit 0; WXT 0.21.4; 9.268 seconds; 14.87 MB.
+
+Build: .output/chrome-mv3
+Local archive: .output/read-frog-lite-v2-local.zip
+Archive SHA256: 99dcc6fdb17a9d531d9cb4da990b991456071fdc5406cce1337b54558b701853
+Background SHA256: 764b77bee3d5ce598b455c9a1478a5f1b0b0b007663b15d0a1aedfafd9f92ef1
+
+Real Chromium mock harness: all 7 result files have empty page-error arrays.
+Wall-clock baseline and candidate: 30 samples x 12 scenarios each.
+Virtual-clock baseline, dual, Fast-only and cached Quality: 30 samples x 3 rates each.
+Real IndexedDB budget harness: 10 Provider starts; 0 post-stop starts.
+No real paid Provider, native MV3 or logged-in platform certification.
+No push, PR, Release or Actions.
+Console logs preserve results and warnings; ANSI progress controls and trailing whitespace were normalized for Git.

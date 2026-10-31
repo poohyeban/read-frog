@@ -1,0 +1,1787 @@
+{
+  "method": "P50 median, P95 nearest rank; null means no observed ready result, not zero latency",
+  "continuity": {
+    "before": {
+      "1": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1027
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1027.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 3000.0,
+              "p95": 3002
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1002.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 5000.0,
+              "p95": 5002
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1002.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 9000.0,
+              "p95": 9002
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1002.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 16000.0,
+              "p95": 16002
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 29.33,
+          "30": 52.89,
+          "60": 76.44
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 16.0,
+          "p95": 16
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 14.0,
+          "p95": 14
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 2.0,
+          "p95": 2
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 7.0,
+          "p95": 8
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 1.0,
+          "p95": 1
+        },
+        "afterStopStarts": 0
+      },
+      "2": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 28,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 28,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 2000.0,
+              "p95": 2000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 3000.0,
+              "p95": 3000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 5000.0,
+              "p95": 5000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 10000.0,
+              "p95": 10000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 25.0,
+          "30": 46.67,
+          "60": 73.33
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 25.0,
+          "p95": 25
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 23.0,
+          "p95": 23
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 2.0,
+          "p95": 3
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 16.0,
+          "p95": 16
+        },
+        "replayImmediatePercent": 93.33,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 1.0,
+          "p95": 1
+        },
+        "afterStopStarts": 0
+      },
+      "4": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "lateMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "lateMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "lateMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "lateMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "lateMs": {
+              "observations": 0,
+              "p50": null,
+              "p95": null
+            },
+            "beforeDisplayPercent": 0.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 0.0,
+          "30": 0.0,
+          "60": 0.0
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 131.0,
+          "p95": 131
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 4.0,
+          "p95": 4
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 127.0,
+          "p95": 127
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 120.0,
+          "p95": 120
+        },
+        "replayImmediatePercent": 0.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 2.0,
+          "p95": 2
+        },
+        "afterStopStarts": 0
+      }
+    },
+    "after": {
+      "1": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 100.0,
+          "30": 100.0,
+          "60": 100.0
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 42.0,
+          "p95": 42
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 39.0,
+          "p95": 39
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 3.0,
+          "p95": 3
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 2.0,
+          "p95": 2
+        },
+        "afterStopStarts": 0
+      },
+      "2": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 100.0,
+          "30": 100.0,
+          "60": 100.0
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 71.0,
+          "p95": 71
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 67.0,
+          "p95": 67
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 4.0,
+          "p95": 4
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 2.0,
+          "p95": 2
+        },
+        "afterStopStarts": 0
+      },
+      "4": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 500.0,
+              "p95": 500.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 97.5,
+          "30": 98.33,
+          "60": 99.17
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 132.0,
+          "p95": 132
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 124.0,
+          "p95": 124
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 8.0,
+          "p95": 8
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 1.0,
+          "p95": 1
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 2.0,
+          "p95": 2
+        },
+        "afterStopStarts": 0
+      }
+    },
+    "fast-only": {
+      "1": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1013
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1013.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1013
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1013
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1013
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1013
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 100.0,
+          "30": 100.0,
+          "60": 100.0
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 33.0,
+          "p95": 33
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 33.0,
+          "p95": 33
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "afterStopStarts": 0
+      },
+      "2": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 100.0,
+          "30": 100.0,
+          "60": 100.0
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 64.0,
+          "p95": 64
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 63.0,
+          "p95": 63
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 1.0,
+          "p95": 1
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "afterStopStarts": 0
+      },
+      "4": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 500.0,
+              "p95": 500.0
+            },
+            "beforeDisplayPercent": 0.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 1000.0,
+              "p95": 1000
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 97.5,
+          "30": 98.33,
+          "60": 99.17
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 121.0,
+          "p95": 121
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 120.0,
+          "p95": 120
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 1.0,
+          "p95": 1
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 1.0,
+          "p95": 1
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "afterStopStarts": 0
+      }
+    },
+    "quality-cache": {
+      "1": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 96.67
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 100.0,
+          "30": 100.0,
+          "60": 100.0
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "afterStopStarts": 0
+      },
+      "2": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 100.0,
+          "30": 100.0,
+          "60": 100.0
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "afterStopStarts": 0
+      },
+      "4": {
+        "samples": 30,
+        "cues": {
+          "1": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "2": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "3": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "5": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          },
+          "10": {
+            "readyAtMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "lateMs": {
+              "observations": 30,
+              "p50": 0.0,
+              "p95": 0
+            },
+            "beforeDisplayPercent": 100.0
+          }
+        },
+        "windowBeforeDisplayPercentExcludingInitialCue": {
+          "20": 100.0,
+          "30": 100.0,
+          "60": 100.0
+        },
+        "mockProcessorStarts": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "mockProcessorCompletions": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "mockProcessorCancellations": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "waitingCuesPerMinuteExcludingInitialCue": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "replayImmediatePercent": 100.0,
+        "replayNewPrefetchTasks": {
+          "observations": 30,
+          "p50": 0.0,
+          "p95": 0
+        },
+        "afterStopStarts": 0
+      }
+    }
+  },
+  "wallClock": {
+    "before": {
+      "scenarios": {
+        "zero": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 42.2,
+            "p95": 51.6
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 4.0,
+            "p95": 4
+          },
+          "afterStopStarts": 0
+        },
+        "resume2120": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 41.95,
+            "p95": 46.9
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 4.0,
+            "p95": 4
+          },
+          "afterStopStarts": 0
+        },
+        "asyncResume": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 40.6,
+            "p95": 47.9
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 6.0,
+            "p95": 6
+          },
+          "afterStopStarts": 0
+        },
+        "link2400": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 41.55,
+            "p95": 46.9
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 4.0,
+            "p95": 4
+          },
+          "afterStopStarts": 0
+        },
+        "seekForward": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 40.65,
+            "p95": 44.3
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 6.0,
+            "p95": 6
+          },
+          "afterStopStarts": 0
+        },
+        "seekBackward": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 40.6,
+            "p95": 41.3
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 6.0,
+            "p95": 6
+          },
+          "afterStopStarts": 0
+        },
+        "longCue": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 41.65,
+            "p95": 46.5
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 4.0,
+            "p95": 4
+          },
+          "afterStopStarts": 0
+        },
+        "pauseResume": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 41.8,
+            "p95": 47.3
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 4.0,
+            "p95": 4
+          },
+          "afterStopStarts": 0
+        },
+        "rate2": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 41.7,
+            "p95": 50.2
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 6.0,
+            "p95": 6
+          },
+          "afterStopStarts": 0
+        },
+        "rate4": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 41.8,
+            "p95": 49.5
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 9.0,
+            "p95": 9
+          },
+          "afterStopStarts": 0
+        },
+        "rapidSeek": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 40.75,
+            "p95": 43.5
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 6.0,
+            "p95": 6
+          },
+          "afterStopStarts": 0
+        },
+        "stopStart": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 40.7,
+            "p95": 46.8
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 6.0,
+            "p95": 6
+          },
+          "afterStopStarts": 0
+        }
+      },
+      "scales": [
+        {
+          "cues": 100,
+          "lookupMs": {
+            "observations": 30,
+            "p50": 0.0063,
+            "p95": 0.04
+          },
+          "timeupdateMs": {
+            "observations": 30,
+            "p50": 0.0135,
+            "p95": 0.1015
+          },
+          "bulk500Ms": {
+            "observations": 10,
+            "p50": 0.05,
+            "p95": 0.2
+          },
+          "sameCueReactCommits": 0,
+          "heapBytes": 13017529
+        },
+        {
+          "cues": 1000,
+          "lookupMs": {
+            "observations": 30,
+            "p50": 0.009,
+            "p95": 0.0635
+          },
+          "timeupdateMs": {
+            "observations": 30,
+            "p50": 0.0145,
+            "p95": 0.077
+          },
+          "bulk500Ms": {
+            "observations": 10,
+            "p50": 0.3,
+            "p95": 4.4
+          },
+          "sameCueReactCommits": 0,
+          "heapBytes": 15297393
+        },
+        {
+          "cues": 10000,
+          "lookupMs": {
+            "observations": 30,
+            "p50": 0.0068,
+            "p95": 0.0435
+          },
+          "timeupdateMs": {
+            "observations": 30,
+            "p50": 0.0128,
+            "p95": 0.036
+          },
+          "bulk500Ms": {
+            "observations": 10,
+            "p50": 0.3,
+            "p95": 12
+          },
+          "sameCueReactCommits": 0,
+          "heapBytes": 21507785
+        },
+        {
+          "cues": 50000,
+          "lookupMs": {
+            "observations": 30,
+            "p50": 0.0067,
+            "p95": 0.0255
+          },
+          "timeupdateMs": {
+            "observations": 30,
+            "p50": 0.0108,
+            "p95": 0.033
+          },
+          "bulk500Ms": {
+            "observations": 10,
+            "p50": 1.05,
+            "p95": 2.1
+          },
+          "sameCueReactCommits": 0,
+          "heapBytes": 55756633
+        }
+      ]
+    },
+    "after": {
+      "scenarios": {
+        "zero": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 43.25,
+            "p95": 47.1
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 8.0,
+            "p95": 8
+          },
+          "afterStopStarts": 0
+        },
+        "resume2120": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 42.95,
+            "p95": 44.1
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 8.0,
+            "p95": 8
+          },
+          "afterStopStarts": 0
+        },
+        "asyncResume": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 40.9,
+            "p95": 42.9
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 11.0,
+            "p95": 11
+          },
+          "afterStopStarts": 0
+        },
+        "link2400": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 42.75,
+            "p95": 47.7
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 8.0,
+            "p95": 8
+          },
+          "afterStopStarts": 0
+        },
+        "seekForward": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 40.8,
+            "p95": 41.6
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 11.0,
+            "p95": 11
+          },
+          "afterStopStarts": 0
+        },
+        "seekBackward": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 40.8,
+            "p95": 41.1
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 11.0,
+            "p95": 11
+          },
+          "afterStopStarts": 0
+        },
+        "longCue": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 42.55,
+            "p95": 46.2
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 6.0,
+            "p95": 6
+          },
+          "afterStopStarts": 0
+        },
+        "pauseResume": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 43.0,
+            "p95": 46.6
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 8.0,
+            "p95": 8
+          },
+          "afterStopStarts": 0
+        },
+        "rate2": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 43.2,
+            "p95": 49.0
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 17.0,
+            "p95": 17
+          },
+          "afterStopStarts": 0
+        },
+        "rate4": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 42.8,
+            "p95": 44.2
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 32.0,
+            "p95": 32
+          },
+          "afterStopStarts": 0
+        },
+        "rapidSeek": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 40.85,
+            "p95": 41.7
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 11.0,
+            "p95": 11
+          },
+          "afterStopStarts": 0
+        },
+        "stopStart": {
+          "firstCueReadyMs": {
+            "observations": 30,
+            "p50": 41.0,
+            "p95": 41.6
+          },
+          "mockProcessorStarts": {
+            "observations": 30,
+            "p50": 11.0,
+            "p95": 11
+          },
+          "afterStopStarts": 0
+        }
+      },
+      "scales": [
+        {
+          "cues": 100,
+          "lookupMs": {
+            "observations": 30,
+            "p50": 0.006,
+            "p95": 0.026
+          },
+          "timeupdateMs": {
+            "observations": 30,
+            "p50": 0.0097,
+            "p95": 0.0355
+          },
+          "bulk500Ms": {
+            "observations": 10,
+            "p50": 0.2,
+            "p95": 0.4
+          },
+          "sameCueReactCommits": 0,
+          "heapBytes": 8581913
+        },
+        {
+          "cues": 1000,
+          "lookupMs": {
+            "observations": 30,
+            "p50": 0.006,
+            "p95": 0.0155
+          },
+          "timeupdateMs": {
+            "observations": 30,
+            "p50": 0.0095,
+            "p95": 0.0285
+          },
+          "bulk500Ms": {
+            "observations": 10,
+            "p50": 0.25,
+            "p95": 0.6
+          },
+          "sameCueReactCommits": 0,
+          "heapBytes": 16567597
+        },
+        {
+          "cues": 10000,
+          "lookupMs": {
+            "observations": 30,
+            "p50": 0.004,
+            "p95": 0.007
+          },
+          "timeupdateMs": {
+            "observations": 30,
+            "p50": 0.006,
+            "p95": 0.013
+          },
+          "bulk500Ms": {
+            "observations": 10,
+            "p50": 0.3,
+            "p95": 0.5
+          },
+          "sameCueReactCommits": 0,
+          "heapBytes": 26895421
+        },
+        {
+          "cues": 50000,
+          "lookupMs": {
+            "observations": 30,
+            "p50": 0.0035,
+            "p95": 0.0085
+          },
+          "timeupdateMs": {
+            "observations": 30,
+            "p50": 0.0055,
+            "p95": 0.0105
+          },
+          "bulk500Ms": {
+            "observations": 10,
+            "p50": 0.7,
+            "p95": 0.8
+          },
+          "sameCueReactCommits": 0,
+          "heapBytes": 52844493
+        }
+      ]
+    }
+  },
+  "budget": {
+    "environment": {
+      "source": "/workspace/read-frog",
+      "browser": "154.0.8037.57",
+      "node": "v24.19.0",
+      "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+    },
+    "errors": [],
+    "rendererMemory": [
+      {
+        "type": "renderer",
+        "peakRssKiB": 34300,
+        "rssKiB": 34300
+      },
+      {
+        "type": "renderer",
+        "peakRssKiB": 76672,
+        "rssKiB": 76672
+      },
+      {
+        "type": "renderer",
+        "peakRssKiB": 90196,
+        "rssKiB": 90196
+      }
+    ],
+    "model": "Mock Provider, no paid tokens",
+    "actualProviderStarts": 10,
+    "ledger": {
+      "key": "playback",
+      "requests": 10,
+      "estimatedTokens": 2070,
+      "speculativeRequests": 8,
+      "speculativeTokens": 1656,
+      "actualInputTokens": 80,
+      "actualOutputTokens": 120,
+      "usageReports": 10
+    },
+    "counters": {
+      "reserved-tokens": 2070,
+      "dispatch-authorized": 10,
+      "queue-wait-ms": 41,
+      "batch-members": 10,
+      "provider-start": 10,
+      "provider-complete": 10,
+      "provider-latency-ms": 1,
+      "usage-input-tokens": 80,
+      "usage-output-tokens": 120,
+      "rejected:soft-budget": 1,
+      "rejected:hard-budget": 101,
+      "cancel": 1,
+      "rejected:lease": 1
+    },
+    "exportThreeHours": {
+      "sourceCues": 5400,
+      "chunks": 180,
+      "maximumCues": 30,
+      "maximumSpanMs": 59800
+    },
+    "postStopStarts": 0,
+    "retries": 0,
+    "cacheHits": 0,
+    "realProviderUsage": null,
+    "note": "ledger usage is synthetic Mock Provider usage; it is not real paid API usage"
+  }
+}

@@ -1,7 +1,8 @@
 import { atom } from "jotai"
+import { DEFAULT_CONFIG } from "@/utils/constants/config"
 export const configFieldsAtomMap = { videoSubtitles: atom({ style: { displayMode: "bilingual" } }) }
 export async function getLocalConfig() {
-  return structuredClone((window as any).__config)
+  return structuredClone((window as any).__config ?? DEFAULT_CONFIG)
 }
 export const i18n = { t: (key: string) => key }
 export async function sendMessage() {}
