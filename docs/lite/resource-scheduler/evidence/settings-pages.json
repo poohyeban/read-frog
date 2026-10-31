@@ -1,0 +1,1497 @@
+{
+  "note": "Production extension pages over HTTP with API fixtures; 30 cold browser contexts per entry by default.",
+  "results": [
+    {
+      "entry": "options",
+      "sample": 0,
+      "initial": {
+        "ready": 1712.3999999985099,
+        "resources": [
+          {
+            "name": "options-B_R7RxHU.js",
+            "bytes": 98271
+          },
+          {
+            "name": "hash-CLmqaxXH.js",
+            "bytes": 295601
+          },
+          {
+            "name": "navigation-B4xqS6yq.js",
+            "bytes": 1131
+          },
+          {
+            "name": "helpers-DP4VX2pq.js",
+            "bytes": 29771
+          },
+          {
+            "name": "dist-CTDqPquV.js",
+            "bytes": 41124
+          },
+          {
+            "name": "mutation-DJ7eS16H.js",
+            "bytes": 10917
+          },
+          {
+            "name": "query-2NrbxrSu.js",
+            "bytes": 7616
+          },
+          {
+            "name": "useRegisterFieldControl-BTmNEM4r.js",
+            "bytes": 13073
+          },
+          {
+            "name": "useOpenChangeComplete-CiEx9fac.js",
+            "bytes": 7008
+          },
+          {
+            "name": "visuallyHidden-CmQ9ItcI.js",
+            "bytes": 203
+          },
+          {
+            "name": "dist-QJDFOEJg.js",
+            "bytes": 960
+          },
+          {
+            "name": "createReactComponent-C43C1uBF.js",
+            "bytes": 47144
+          },
+          {
+            "name": "button-C7Vsbu6f.js",
+            "bytes": 4404
+          },
+          {
+            "name": "theme-CiR8a8yY.js",
+            "bytes": 351722
+          },
+          {
+            "name": "useHydrateAtoms-Cz1U03LE.js",
+            "bytes": 257
+          },
+          {
+            "name": "storage-CFUt5GYU.js",
+            "bytes": 1060
+          },
+          {
+            "name": "_virtual_wxt-plugins-DB4ZMZxa.js",
+            "bytes": 29
+          },
+          {
+            "name": "_virtual_wxt-html-plugins-BaAyCpKt.js",
+            "bytes": 713
+          },
+          {
+            "name": "performance-config-CV_G3xzb.js",
+            "bytes": 3333
+          },
+          {
+            "name": "lib-TuhSvlY1.js",
+            "bytes": 93008
+          },
+          {
+            "name": "os-BvCglWMY.js",
+            "bytes": 20897
+          },
+          {
+            "name": "separator-Bt8tyFAY.js",
+            "bytes": 684
+          },
+          {
+            "name": "theme-Cb6zHMyR.css",
+            "bytes": 206983
+          },
+          {
+            "name": "options-jXXsayuK.css",
+            "bytes": 24
+          },
+          {
+            "name": "api-providers-DFbhCitX.js",
+            "bytes": 33989
+          },
+          {
+            "name": "options-tUSzGzIJ.js",
+            "bytes": 1199
+          },
+          {
+            "name": "translate-D7at0GdZ.js",
+            "bytes": 10816
+          },
+          {
+            "name": "message-BoP1aqTW.js",
+            "bytes": 3052
+          },
+          {
+            "name": "text-preparation-BibFtZOm.js",
+            "bytes": 102
+          },
+          {
+            "name": "select-B5R-gm04.js",
+            "bytes": 30429
+          },
+          {
+            "name": "ItemIndicator-CEYzAfq6.js",
+            "bytes": 11199
+          },
+          {
+            "name": "resolveAriaLabelledBy-BJD39Y_Q.js",
+            "bytes": 221
+          },
+          {
+            "name": "serializeValue-B_EucO5O.js",
+            "bytes": 133
+          },
+          {
+            "name": "useControlled-B7LKumIY.js",
+            "bytes": 286
+          },
+          {
+            "name": "useCompositeListItem-Bca5o0-u.js",
+            "bytes": 3353
+          },
+          {
+            "name": "isElementDisabled-KSuuBj8D.js",
+            "bytes": 114
+          },
+          {
+            "name": "CSPContext-DeuNNjQJ.js",
+            "bytes": 202
+          },
+          {
+            "name": "help-tooltip-CslLf3sg.js",
+            "bytes": 457
+          },
+          {
+            "name": "switch-3G16AVCd.js",
+            "bytes": 5502
+          },
+          {
+            "name": "useAriaLabelledBy-D4M0tZN1.js",
+            "bytes": 613
+          },
+          {
+            "name": "collapsible-C9GfcgZ6.js",
+            "bytes": 6702
+          },
+          {
+            "name": "combobox-DaTpb45c.js",
+            "bytes": 39178
+          },
+          {
+            "name": "getHighlightReason-En-ZJq_h.js",
+            "bytes": 206
+          },
+          {
+            "name": "stringifyLocale-CkHjdQTJ.js",
+            "bytes": 99
+          },
+          {
+            "name": "checkbox-BqE74zhJ.js",
+            "bytes": 6005
+          },
+          {
+            "name": "FieldItemContext-CbDM01pj.js",
+            "bytes": 178
+          },
+          {
+            "name": "popover-BhEUwkD5.js",
+            "bytes": 126004
+          },
+          {
+            "name": "PopoverPopup-D_fzeQg1.js",
+            "bytes": 10340
+          },
+          {
+            "name": "field-CMmOEppj.js",
+            "bytes": 2812
+          },
+          {
+            "name": "label-CdmmgAwB.js",
+            "bytes": 421
+          },
+          {
+            "name": "provider-BtTVhGa_.js",
+            "bytes": 1020
+          },
+          {
+            "name": "page-layout-Dwjk12xC.js",
+            "bytes": 705
+          },
+          {
+            "name": "provider-icon-UHYXukSx.js",
+            "bytes": 1248
+          },
+          {
+            "name": "provider-selector-CYXIYYhY.js",
+            "bytes": 1261
+          },
+          {
+            "name": "provider-display-BFnemem5.js",
+            "bytes": 124
+          },
+          {
+            "name": "set-api-key-warning-981oXLxt.js",
+            "bytes": 735
+          },
+          {
+            "name": "use-feature-providers-7twJzLnq.js",
+            "bytes": 879
+          },
+          {
+            "name": "config-section-D3fLzJ7-.js",
+            "bytes": 399
+          },
+          {
+            "name": "page-layout-O5Yk0vxB.js",
+            "bytes": 34
+          },
+          {
+            "name": "config-item-DESXiwAE.js",
+            "bytes": 881
+          },
+          {
+            "name": "badge-CZZ4dEC7.js",
+            "bytes": 1760
+          },
+          {
+            "name": "llm-feature-status-list-CxJucFME.js",
+            "bytes": 1286
+          },
+          {
+            "name": "provider-ref-CjvqbfBR.js",
+            "bytes": 263
+          },
+          {
+            "name": "select-content-props-BXS7ejAM.js",
+            "bytes": 35
+          },
+          {
+            "name": "performance-settings-CV6gK77A.js",
+            "bytes": 9767
+          },
+          {
+            "name": "performance-CPlpf2cI.js",
+            "bytes": 618
+          },
+          {
+            "name": "json-code-editor-D8B3yVLZ.js",
+            "bytes": 1155
+          },
+          {
+            "name": "inter-latin-wght-normal-Dx4kXJAl.woff2",
+            "bytes": 48256
+          },
+          {
+            "name": "favicon.ico",
+            "bytes": 0
+          }
+        ],
+        "heap": 13492595
+      },
+      "metrics": {
+        "ScriptDuration": 0.478042,
+        "TaskDuration": 1.247067,
+        "JSHeapUsedSize": 12081360
+      },
+      "errors": [],
+      "editorRoute": 305.20000000298023,
+      "backRoute": 112.59999999776483,
+      "advancedEditors": 2,
+      "resourceDefaultsReadOnly": true
+    },
+    {
+      "entry": "options",
+      "sample": 1,
+      "initial": {
+        "ready": 860.3000000007451,
+        "resources": [
+          {
+            "name": "options-B_R7RxHU.js",
+            "bytes": 98271
+          },
+          {
+            "name": "hash-CLmqaxXH.js",
+            "bytes": 295601
+          },
+          {
+            "name": "navigation-B4xqS6yq.js",
+            "bytes": 1131
+          },
+          {
+            "name": "helpers-DP4VX2pq.js",
+            "bytes": 29771
+          },
+          {
+            "name": "dist-CTDqPquV.js",
+            "bytes": 41124
+          },
+          {
+            "name": "mutation-DJ7eS16H.js",
+            "bytes": 10917
+          },
+          {
+            "name": "query-2NrbxrSu.js",
+            "bytes": 7616
+          },
+          {
+            "name": "useRegisterFieldControl-BTmNEM4r.js",
+            "bytes": 13073
+          },
+          {
+            "name": "visuallyHidden-CmQ9ItcI.js",
+            "bytes": 203
+          },
+          {
+            "name": "useOpenChangeComplete-CiEx9fac.js",
+            "bytes": 7008
+          },
+          {
+            "name": "dist-QJDFOEJg.js",
+            "bytes": 960
+          },
+          {
+            "name": "createReactComponent-C43C1uBF.js",
+            "bytes": 47144
+          },
+          {
+            "name": "button-C7Vsbu6f.js",
+            "bytes": 4404
+          },
+          {
+            "name": "theme-CiR8a8yY.js",
+            "bytes": 351722
+          },
+          {
+            "name": "storage-CFUt5GYU.js",
+            "bytes": 1060
+          },
+          {
+            "name": "useHydrateAtoms-Cz1U03LE.js",
+            "bytes": 257
+          },
+          {
+            "name": "_virtual_wxt-plugins-DB4ZMZxa.js",
+            "bytes": 29
+          },
+          {
+            "name": "_virtual_wxt-html-plugins-BaAyCpKt.js",
+            "bytes": 713
+          },
+          {
+            "name": "lib-TuhSvlY1.js",
+            "bytes": 93008
+          },
+          {
+            "name": "performance-config-CV_G3xzb.js",
+            "bytes": 3333
+          },
+          {
+            "name": "os-BvCglWMY.js",
+            "bytes": 20897
+          },
+          {
+            "name": "theme-Cb6zHMyR.css",
+            "bytes": 206983
+          },
+          {
+            "name": "separator-Bt8tyFAY.js",
+            "bytes": 684
+          },
+          {
+            "name": "options-jXXsayuK.css",
+            "bytes": 24
+          },
+          {
+            "name": "favicon.ico",
+            "bytes": 0
+          },
+          {
+            "name": "api-providers-DFbhCitX.js",
+            "bytes": 33989
+          },
+          {
+            "name": "options-tUSzGzIJ.js",
+            "bytes": 1199
+          },
+          {
+            "name": "translate-D7at0GdZ.js",
+            "bytes": 10816
+          },
+          {
+            "name": "message-BoP1aqTW.js",
+            "bytes": 3052
+          },
+          {
+            "name": "text-preparation-BibFtZOm.js",
+            "bytes": 102
+          },
+          {
+            "name": "select-B5R-gm04.js",
+            "bytes": 30429
+          },
+          {
+            "name": "ItemIndicator-CEYzAfq6.js",
+            "bytes": 11199
+          },
+          {
+            "name": "resolveAriaLabelledBy-BJD39Y_Q.js",
+            "bytes": 221
+          },
+          {
+            "name": "serializeValue-B_EucO5O.js",
+            "bytes": 133
+          },
+          {
+            "name": "useControlled-B7LKumIY.js",
+            "bytes": 286
+          },
+          {
+            "name": "useCompositeListItem-Bca5o0-u.js",
+            "bytes": 3353
+          },
+          {
+            "name": "isElementDisabled-KSuuBj8D.js",
+            "bytes": 114
+          },
+          {
+            "name": "CSPContext-DeuNNjQJ.js",
+            "bytes": 202
+          },
+          {
+            "name": "help-tooltip-CslLf3sg.js",
+            "bytes": 457
+          },
+          {
+            "name": "switch-3G16AVCd.js",
+            "bytes": 5502
+          },
+          {
+            "name": "useAriaLabelledBy-D4M0tZN1.js",
+            "bytes": 613
+          },
+          {
+            "name": "collapsible-C9GfcgZ6.js",
+            "bytes": 6702
+          },
+          {
+            "name": "combobox-DaTpb45c.js",
+            "bytes": 39178
+          },
+          {
+            "name": "getHighlightReason-En-ZJq_h.js",
+            "bytes": 206
+          },
+          {
+            "name": "stringifyLocale-CkHjdQTJ.js",
+            "bytes": 99
+          },
+          {
+            "name": "checkbox-BqE74zhJ.js",
+            "bytes": 6005
+          },
+          {
+            "name": "FieldItemContext-CbDM01pj.js",
+            "bytes": 178
+          },
+          {
+            "name": "popover-BhEUwkD5.js",
+            "bytes": 126004
+          },
+          {
+            "name": "PopoverPopup-D_fzeQg1.js",
+            "bytes": 10340
+          },
+          {
+            "name": "field-CMmOEppj.js",
+            "bytes": 2812
+          },
+          {
+            "name": "label-CdmmgAwB.js",
+            "bytes": 421
+          },
+          {
+            "name": "provider-BtTVhGa_.js",
+            "bytes": 1020
+          },
+          {
+            "name": "page-layout-Dwjk12xC.js",
+            "bytes": 705
+          },
+          {
+            "name": "provider-icon-UHYXukSx.js",
+            "bytes": 1248
+          },
+          {
+            "name": "provider-selector-CYXIYYhY.js",
+            "bytes": 1261
+          },
+          {
+            "name": "provider-display-BFnemem5.js",
+            "bytes": 124
+          },
+          {
+            "name": "set-api-key-warning-981oXLxt.js",
+            "bytes": 735
+          },
+          {
+            "name": "use-feature-providers-7twJzLnq.js",
+            "bytes": 879
+          },
+          {
+            "name": "config-section-D3fLzJ7-.js",
+            "bytes": 399
+          },
+          {
+            "name": "page-layout-O5Yk0vxB.js",
+            "bytes": 34
+          },
+          {
+            "name": "config-item-DESXiwAE.js",
+            "bytes": 881
+          },
+          {
+            "name": "badge-CZZ4dEC7.js",
+            "bytes": 1760
+          },
+          {
+            "name": "llm-feature-status-list-CxJucFME.js",
+            "bytes": 1286
+          },
+          {
+            "name": "provider-ref-CjvqbfBR.js",
+            "bytes": 263
+          },
+          {
+            "name": "select-content-props-BXS7ejAM.js",
+            "bytes": 35
+          },
+          {
+            "name": "performance-settings-CV6gK77A.js",
+            "bytes": 9767
+          },
+          {
+            "name": "performance-CPlpf2cI.js",
+            "bytes": 618
+          },
+          {
+            "name": "json-code-editor-D8B3yVLZ.js",
+            "bytes": 1155
+          },
+          {
+            "name": "inter-latin-wght-normal-Dx4kXJAl.woff2",
+            "bytes": 48256
+          }
+        ],
+        "heap": 13506717
+      },
+      "metrics": {
+        "ScriptDuration": 0.43108,
+        "TaskDuration": 0.748277,
+        "JSHeapUsedSize": 12048072
+      },
+      "errors": [],
+      "editorRoute": 279.3999999985099,
+      "backRoute": 146.60000000149012
+    },
+    {
+      "entry": "options",
+      "sample": 2,
+      "initial": {
+        "ready": 816.6999999992549,
+        "resources": [
+          {
+            "name": "options-B_R7RxHU.js",
+            "bytes": 98271
+          },
+          {
+            "name": "navigation-B4xqS6yq.js",
+            "bytes": 1131
+          },
+          {
+            "name": "hash-CLmqaxXH.js",
+            "bytes": 295601
+          },
+          {
+            "name": "helpers-DP4VX2pq.js",
+            "bytes": 29771
+          },
+          {
+            "name": "dist-CTDqPquV.js",
+            "bytes": 41124
+          },
+          {
+            "name": "mutation-DJ7eS16H.js",
+            "bytes": 10917
+          },
+          {
+            "name": "query-2NrbxrSu.js",
+            "bytes": 7616
+          },
+          {
+            "name": "useRegisterFieldControl-BTmNEM4r.js",
+            "bytes": 13073
+          },
+          {
+            "name": "useOpenChangeComplete-CiEx9fac.js",
+            "bytes": 7008
+          },
+          {
+            "name": "visuallyHidden-CmQ9ItcI.js",
+            "bytes": 203
+          },
+          {
+            "name": "dist-QJDFOEJg.js",
+            "bytes": 960
+          },
+          {
+            "name": "createReactComponent-C43C1uBF.js",
+            "bytes": 47144
+          },
+          {
+            "name": "button-C7Vsbu6f.js",
+            "bytes": 4404
+          },
+          {
+            "name": "useHydrateAtoms-Cz1U03LE.js",
+            "bytes": 257
+          },
+          {
+            "name": "theme-CiR8a8yY.js",
+            "bytes": 351722
+          },
+          {
+            "name": "storage-CFUt5GYU.js",
+            "bytes": 1060
+          },
+          {
+            "name": "_virtual_wxt-plugins-DB4ZMZxa.js",
+            "bytes": 29
+          },
+          {
+            "name": "_virtual_wxt-html-plugins-BaAyCpKt.js",
+            "bytes": 713
+          },
+          {
+            "name": "lib-TuhSvlY1.js",
+            "bytes": 93008
+          },
+          {
+            "name": "performance-config-CV_G3xzb.js",
+            "bytes": 3333
+          },
+          {
+            "name": "os-BvCglWMY.js",
+            "bytes": 20897
+          },
+          {
+            "name": "separator-Bt8tyFAY.js",
+            "bytes": 684
+          },
+          {
+            "name": "theme-Cb6zHMyR.css",
+            "bytes": 206983
+          },
+          {
+            "name": "options-jXXsayuK.css",
+            "bytes": 24
+          },
+          {
+            "name": "favicon.ico",
+            "bytes": 0
+          },
+          {
+            "name": "api-providers-DFbhCitX.js",
+            "bytes": 33989
+          },
+          {
+            "name": "options-tUSzGzIJ.js",
+            "bytes": 1199
+          },
+          {
+            "name": "translate-D7at0GdZ.js",
+            "bytes": 10816
+          },
+          {
+            "name": "message-BoP1aqTW.js",
+            "bytes": 3052
+          },
+          {
+            "name": "text-preparation-BibFtZOm.js",
+            "bytes": 102
+          },
+          {
+            "name": "select-B5R-gm04.js",
+            "bytes": 30429
+          },
+          {
+            "name": "ItemIndicator-CEYzAfq6.js",
+            "bytes": 11199
+          },
+          {
+            "name": "resolveAriaLabelledBy-BJD39Y_Q.js",
+            "bytes": 221
+          },
+          {
+            "name": "serializeValue-B_EucO5O.js",
+            "bytes": 133
+          },
+          {
+            "name": "useControlled-B7LKumIY.js",
+            "bytes": 286
+          },
+          {
+            "name": "useCompositeListItem-Bca5o0-u.js",
+            "bytes": 3353
+          },
+          {
+            "name": "isElementDisabled-KSuuBj8D.js",
+            "bytes": 114
+          },
+          {
+            "name": "CSPContext-DeuNNjQJ.js",
+            "bytes": 202
+          },
+          {
+            "name": "help-tooltip-CslLf3sg.js",
+            "bytes": 457
+          },
+          {
+            "name": "switch-3G16AVCd.js",
+            "bytes": 5502
+          },
+          {
+            "name": "useAriaLabelledBy-D4M0tZN1.js",
+            "bytes": 613
+          },
+          {
+            "name": "collapsible-C9GfcgZ6.js",
+            "bytes": 6702
+          },
+          {
+            "name": "combobox-DaTpb45c.js",
+            "bytes": 39178
+          },
+          {
+            "name": "getHighlightReason-En-ZJq_h.js",
+            "bytes": 206
+          },
+          {
+            "name": "stringifyLocale-CkHjdQTJ.js",
+            "bytes": 99
+          },
+          {
+            "name": "checkbox-BqE74zhJ.js",
+            "bytes": 6005
+          },
+          {
+            "name": "FieldItemContext-CbDM01pj.js",
+            "bytes": 178
+          },
+          {
+            "name": "popover-BhEUwkD5.js",
+            "bytes": 126004
+          },
+          {
+            "name": "PopoverPopup-D_fzeQg1.js",
+            "bytes": 10340
+          },
+          {
+            "name": "field-CMmOEppj.js",
+            "bytes": 2812
+          },
+          {
+            "name": "label-CdmmgAwB.js",
+            "bytes": 421
+          },
+          {
+            "name": "provider-BtTVhGa_.js",
+            "bytes": 1020
+          },
+          {
+            "name": "page-layout-Dwjk12xC.js",
+            "bytes": 705
+          },
+          {
+            "name": "provider-icon-UHYXukSx.js",
+            "bytes": 1248
+          },
+          {
+            "name": "provider-selector-CYXIYYhY.js",
+            "bytes": 1261
+          },
+          {
+            "name": "provider-display-BFnemem5.js",
+            "bytes": 124
+          },
+          {
+            "name": "set-api-key-warning-981oXLxt.js",
+            "bytes": 735
+          },
+          {
+            "name": "use-feature-providers-7twJzLnq.js",
+            "bytes": 879
+          },
+          {
+            "name": "config-section-D3fLzJ7-.js",
+            "bytes": 399
+          },
+          {
+            "name": "page-layout-O5Yk0vxB.js",
+            "bytes": 34
+          },
+          {
+            "name": "config-item-DESXiwAE.js",
+            "bytes": 881
+          },
+          {
+            "name": "badge-CZZ4dEC7.js",
+            "bytes": 1760
+          },
+          {
+            "name": "llm-feature-status-list-CxJucFME.js",
+            "bytes": 1286
+          },
+          {
+            "name": "provider-ref-CjvqbfBR.js",
+            "bytes": 263
+          },
+          {
+            "name": "select-content-props-BXS7ejAM.js",
+            "bytes": 35
+          },
+          {
+            "name": "performance-settings-CV6gK77A.js",
+            "bytes": 9767
+          },
+          {
+            "name": "performance-CPlpf2cI.js",
+            "bytes": 618
+          },
+          {
+            "name": "json-code-editor-D8B3yVLZ.js",
+            "bytes": 1155
+          },
+          {
+            "name": "inter-latin-wght-normal-Dx4kXJAl.woff2",
+            "bytes": 48256
+          }
+        ],
+        "heap": 13579961
+      },
+      "metrics": {
+        "ScriptDuration": 0.404449,
+        "TaskDuration": 0.685219,
+        "JSHeapUsedSize": 12168716
+      },
+      "errors": [],
+      "editorRoute": 290.5999999977648,
+      "backRoute": 150.40000000223517
+    },
+    {
+      "entry": "translation-hub",
+      "sample": 0,
+      "initial": {
+        "ready": 634.5,
+        "resources": [
+          {
+            "name": "translation-hub-3KWAiY_S.js",
+            "bytes": 14595
+          },
+          {
+            "name": "hash-CLmqaxXH.js",
+            "bytes": 295601
+          },
+          {
+            "name": "helpers-DP4VX2pq.js",
+            "bytes": 29771
+          },
+          {
+            "name": "mutation-DJ7eS16H.js",
+            "bytes": 10917
+          },
+          {
+            "name": "dist-CTDqPquV.js",
+            "bytes": 41124
+          },
+          {
+            "name": "query-2NrbxrSu.js",
+            "bytes": 7616
+          },
+          {
+            "name": "useRegisterFieldControl-BTmNEM4r.js",
+            "bytes": 13073
+          },
+          {
+            "name": "useOpenChangeComplete-CiEx9fac.js",
+            "bytes": 7008
+          },
+          {
+            "name": "visuallyHidden-CmQ9ItcI.js",
+            "bytes": 203
+          },
+          {
+            "name": "createReactComponent-C43C1uBF.js",
+            "bytes": 47144
+          },
+          {
+            "name": "dist-QJDFOEJg.js",
+            "bytes": 960
+          },
+          {
+            "name": "button-C7Vsbu6f.js",
+            "bytes": 4404
+          },
+          {
+            "name": "theme-CiR8a8yY.js",
+            "bytes": 351722
+          },
+          {
+            "name": "useHydrateAtoms-Cz1U03LE.js",
+            "bytes": 257
+          },
+          {
+            "name": "storage-CFUt5GYU.js",
+            "bytes": 1060
+          },
+          {
+            "name": "text-preparation-BibFtZOm.js",
+            "bytes": 102
+          },
+          {
+            "name": "message-BoP1aqTW.js",
+            "bytes": 3052
+          },
+          {
+            "name": "translate-D7at0GdZ.js",
+            "bytes": 10816
+          },
+          {
+            "name": "_virtual_wxt-plugins-DB4ZMZxa.js",
+            "bytes": 29
+          },
+          {
+            "name": "_virtual_wxt-html-plugins-BaAyCpKt.js",
+            "bytes": 713
+          },
+          {
+            "name": "resolveAriaLabelledBy-BJD39Y_Q.js",
+            "bytes": 221
+          },
+          {
+            "name": "serializeValue-B_EucO5O.js",
+            "bytes": 133
+          },
+          {
+            "name": "ItemIndicator-CEYzAfq6.js",
+            "bytes": 11199
+          },
+          {
+            "name": "useControlled-B7LKumIY.js",
+            "bytes": 286
+          },
+          {
+            "name": "useCompositeListItem-Bca5o0-u.js",
+            "bytes": 3353
+          },
+          {
+            "name": "isElementDisabled-KSuuBj8D.js",
+            "bytes": 114
+          },
+          {
+            "name": "CSPContext-DeuNNjQJ.js",
+            "bytes": 202
+          },
+          {
+            "name": "select-B5R-gm04.js",
+            "bytes": 30429
+          },
+          {
+            "name": "IconSettings-DEOUiRcb.js",
+            "bytes": 720
+          },
+          {
+            "name": "built-in-prompts-BAczyRVQ.js",
+            "bytes": 792
+          },
+          {
+            "name": "page-layout-Dwjk12xC.js",
+            "bytes": 705
+          },
+          {
+            "name": "getHighlightReason-En-ZJq_h.js",
+            "bytes": 206
+          },
+          {
+            "name": "stringifyLocale-CkHjdQTJ.js",
+            "bytes": 99
+          },
+          {
+            "name": "language-labels-CDz7xPKZ.js",
+            "bytes": 247
+          },
+          {
+            "name": "language-combobox-options-BJNXyEGR.js",
+            "bytes": 523
+          },
+          {
+            "name": "combobox-DaTpb45c.js",
+            "bytes": 39178
+          },
+          {
+            "name": "language-combobox-wYmoMB1e.js",
+            "bytes": 1470
+          },
+          {
+            "name": "separator-Bt8tyFAY.js",
+            "bytes": 684
+          },
+          {
+            "name": "label-CdmmgAwB.js",
+            "bytes": 421
+          },
+          {
+            "name": "field-CMmOEppj.js",
+            "bytes": 2812
+          },
+          {
+            "name": "types-S9P3vI5E.js",
+            "bytes": 116
+          },
+          {
+            "name": "use-text-to-speech-BcBTPKgc.js",
+            "bytes": 249163
+          },
+          {
+            "name": "empty-o2KoH5KY.js",
+            "bytes": 1350
+          },
+          {
+            "name": "provider-icon-UHYXukSx.js",
+            "bytes": 1248
+          },
+          {
+            "name": "theme-Cb6zHMyR.css",
+            "bytes": 206983
+          },
+          {
+            "name": "inter-latin-wght-normal-Dx4kXJAl.woff2",
+            "bytes": 48256
+          },
+          {
+            "name": "favicon.ico",
+            "bytes": 0
+          }
+        ],
+        "heap": 12981728
+      },
+      "metrics": {
+        "ScriptDuration": 0.255746,
+        "TaskDuration": 0.571505,
+        "JSHeapUsedSize": 11691040
+      },
+      "errors": []
+    },
+    {
+      "entry": "translation-hub",
+      "sample": 1,
+      "initial": {
+        "ready": 668.0999999977648,
+        "resources": [
+          {
+            "name": "translation-hub-3KWAiY_S.js",
+            "bytes": 14595
+          },
+          {
+            "name": "hash-CLmqaxXH.js",
+            "bytes": 295601
+          },
+          {
+            "name": "helpers-DP4VX2pq.js",
+            "bytes": 29771
+          },
+          {
+            "name": "dist-CTDqPquV.js",
+            "bytes": 41124
+          },
+          {
+            "name": "mutation-DJ7eS16H.js",
+            "bytes": 10917
+          },
+          {
+            "name": "query-2NrbxrSu.js",
+            "bytes": 7616
+          },
+          {
+            "name": "useRegisterFieldControl-BTmNEM4r.js",
+            "bytes": 13073
+          },
+          {
+            "name": "useOpenChangeComplete-CiEx9fac.js",
+            "bytes": 7008
+          },
+          {
+            "name": "visuallyHidden-CmQ9ItcI.js",
+            "bytes": 203
+          },
+          {
+            "name": "createReactComponent-C43C1uBF.js",
+            "bytes": 47144
+          },
+          {
+            "name": "dist-QJDFOEJg.js",
+            "bytes": 960
+          },
+          {
+            "name": "button-C7Vsbu6f.js",
+            "bytes": 4404
+          },
+          {
+            "name": "theme-CiR8a8yY.js",
+            "bytes": 351722
+          },
+          {
+            "name": "useHydrateAtoms-Cz1U03LE.js",
+            "bytes": 257
+          },
+          {
+            "name": "storage-CFUt5GYU.js",
+            "bytes": 1060
+          },
+          {
+            "name": "text-preparation-BibFtZOm.js",
+            "bytes": 102
+          },
+          {
+            "name": "message-BoP1aqTW.js",
+            "bytes": 3052
+          },
+          {
+            "name": "translate-D7at0GdZ.js",
+            "bytes": 10816
+          },
+          {
+            "name": "_virtual_wxt-html-plugins-BaAyCpKt.js",
+            "bytes": 713
+          },
+          {
+            "name": "_virtual_wxt-plugins-DB4ZMZxa.js",
+            "bytes": 29
+          },
+          {
+            "name": "serializeValue-B_EucO5O.js",
+            "bytes": 133
+          },
+          {
+            "name": "resolveAriaLabelledBy-BJD39Y_Q.js",
+            "bytes": 221
+          },
+          {
+            "name": "ItemIndicator-CEYzAfq6.js",
+            "bytes": 11199
+          },
+          {
+            "name": "useControlled-B7LKumIY.js",
+            "bytes": 286
+          },
+          {
+            "name": "useCompositeListItem-Bca5o0-u.js",
+            "bytes": 3353
+          },
+          {
+            "name": "CSPContext-DeuNNjQJ.js",
+            "bytes": 202
+          },
+          {
+            "name": "isElementDisabled-KSuuBj8D.js",
+            "bytes": 114
+          },
+          {
+            "name": "select-B5R-gm04.js",
+            "bytes": 30429
+          },
+          {
+            "name": "IconSettings-DEOUiRcb.js",
+            "bytes": 720
+          },
+          {
+            "name": "built-in-prompts-BAczyRVQ.js",
+            "bytes": 792
+          },
+          {
+            "name": "page-layout-Dwjk12xC.js",
+            "bytes": 705
+          },
+          {
+            "name": "getHighlightReason-En-ZJq_h.js",
+            "bytes": 206
+          },
+          {
+            "name": "stringifyLocale-CkHjdQTJ.js",
+            "bytes": 99
+          },
+          {
+            "name": "combobox-DaTpb45c.js",
+            "bytes": 39178
+          },
+          {
+            "name": "language-labels-CDz7xPKZ.js",
+            "bytes": 247
+          },
+          {
+            "name": "language-combobox-options-BJNXyEGR.js",
+            "bytes": 523
+          },
+          {
+            "name": "language-combobox-wYmoMB1e.js",
+            "bytes": 1470
+          },
+          {
+            "name": "separator-Bt8tyFAY.js",
+            "bytes": 684
+          },
+          {
+            "name": "label-CdmmgAwB.js",
+            "bytes": 421
+          },
+          {
+            "name": "field-CMmOEppj.js",
+            "bytes": 2812
+          },
+          {
+            "name": "types-S9P3vI5E.js",
+            "bytes": 116
+          },
+          {
+            "name": "empty-o2KoH5KY.js",
+            "bytes": 1350
+          },
+          {
+            "name": "use-text-to-speech-BcBTPKgc.js",
+            "bytes": 249163
+          },
+          {
+            "name": "provider-icon-UHYXukSx.js",
+            "bytes": 1248
+          },
+          {
+            "name": "theme-Cb6zHMyR.css",
+            "bytes": 206983
+          },
+          {
+            "name": "favicon.ico",
+            "bytes": 0
+          },
+          {
+            "name": "inter-latin-wght-normal-Dx4kXJAl.woff2",
+            "bytes": 48256
+          }
+        ],
+        "heap": 11352100
+      },
+      "metrics": {
+        "ScriptDuration": 0.322254,
+        "TaskDuration": 0.640687,
+        "JSHeapUsedSize": 10061416
+      },
+      "errors": []
+    },
+    {
+      "entry": "translation-hub",
+      "sample": 2,
+      "initial": {
+        "ready": 644.0999999977648,
+        "resources": [
+          {
+            "name": "translation-hub-3KWAiY_S.js",
+            "bytes": 14595
+          },
+          {
+            "name": "hash-CLmqaxXH.js",
+            "bytes": 295601
+          },
+          {
+            "name": "helpers-DP4VX2pq.js",
+            "bytes": 29771
+          },
+          {
+            "name": "dist-CTDqPquV.js",
+            "bytes": 41124
+          },
+          {
+            "name": "mutation-DJ7eS16H.js",
+            "bytes": 10917
+          },
+          {
+            "name": "query-2NrbxrSu.js",
+            "bytes": 7616
+          },
+          {
+            "name": "useRegisterFieldControl-BTmNEM4r.js",
+            "bytes": 13073
+          },
+          {
+            "name": "useOpenChangeComplete-CiEx9fac.js",
+            "bytes": 7008
+          },
+          {
+            "name": "visuallyHidden-CmQ9ItcI.js",
+            "bytes": 203
+          },
+          {
+            "name": "dist-QJDFOEJg.js",
+            "bytes": 960
+          },
+          {
+            "name": "createReactComponent-C43C1uBF.js",
+            "bytes": 47144
+          },
+          {
+            "name": "button-C7Vsbu6f.js",
+            "bytes": 4404
+          },
+          {
+            "name": "theme-CiR8a8yY.js",
+            "bytes": 351722
+          },
+          {
+            "name": "useHydrateAtoms-Cz1U03LE.js",
+            "bytes": 257
+          },
+          {
+            "name": "storage-CFUt5GYU.js",
+            "bytes": 1060
+          },
+          {
+            "name": "text-preparation-BibFtZOm.js",
+            "bytes": 102
+          },
+          {
+            "name": "message-BoP1aqTW.js",
+            "bytes": 3052
+          },
+          {
+            "name": "translate-D7at0GdZ.js",
+            "bytes": 10816
+          },
+          {
+            "name": "_virtual_wxt-plugins-DB4ZMZxa.js",
+            "bytes": 29
+          },
+          {
+            "name": "_virtual_wxt-html-plugins-BaAyCpKt.js",
+            "bytes": 713
+          },
+          {
+            "name": "resolveAriaLabelledBy-BJD39Y_Q.js",
+            "bytes": 221
+          },
+          {
+            "name": "serializeValue-B_EucO5O.js",
+            "bytes": 133
+          },
+          {
+            "name": "ItemIndicator-CEYzAfq6.js",
+            "bytes": 11199
+          },
+          {
+            "name": "useControlled-B7LKumIY.js",
+            "bytes": 286
+          },
+          {
+            "name": "useCompositeListItem-Bca5o0-u.js",
+            "bytes": 3353
+          },
+          {
+            "name": "isElementDisabled-KSuuBj8D.js",
+            "bytes": 114
+          },
+          {
+            "name": "CSPContext-DeuNNjQJ.js",
+            "bytes": 202
+          },
+          {
+            "name": "select-B5R-gm04.js",
+            "bytes": 30429
+          },
+          {
+            "name": "IconSettings-DEOUiRcb.js",
+            "bytes": 720
+          },
+          {
+            "name": "built-in-prompts-BAczyRVQ.js",
+            "bytes": 792
+          },
+          {
+            "name": "page-layout-Dwjk12xC.js",
+            "bytes": 705
+          },
+          {
+            "name": "getHighlightReason-En-ZJq_h.js",
+            "bytes": 206
+          },
+          {
+            "name": "stringifyLocale-CkHjdQTJ.js",
+            "bytes": 99
+          },
+          {
+            "name": "combobox-DaTpb45c.js",
+            "bytes": 39178
+          },
+          {
+            "name": "language-labels-CDz7xPKZ.js",
+            "bytes": 247
+          },
+          {
+            "name": "language-combobox-options-BJNXyEGR.js",
+            "bytes": 523
+          },
+          {
+            "name": "language-combobox-wYmoMB1e.js",
+            "bytes": 1470
+          },
+          {
+            "name": "separator-Bt8tyFAY.js",
+            "bytes": 684
+          },
+          {
+            "name": "label-CdmmgAwB.js",
+            "bytes": 421
+          },
+          {
+            "name": "field-CMmOEppj.js",
+            "bytes": 2812
+          },
+          {
+            "name": "types-S9P3vI5E.js",
+            "bytes": 116
+          },
+          {
+            "name": "use-text-to-speech-BcBTPKgc.js",
+            "bytes": 249163
+          },
+          {
+            "name": "empty-o2KoH5KY.js",
+            "bytes": 1350
+          },
+          {
+            "name": "provider-icon-UHYXukSx.js",
+            "bytes": 1248
+          },
+          {
+            "name": "theme-Cb6zHMyR.css",
+            "bytes": 206983
+          },
+          {
+            "name": "favicon.ico",
+            "bytes": 0
+          }
+        ],
+        "heap": 11376336
+      },
+      "metrics": {
+        "ScriptDuration": 0.318612,
+        "TaskDuration": 0.74188,
+        "JSHeapUsedSize": 10082900
+      },
+      "errors": []
+    }
+  ]
+}

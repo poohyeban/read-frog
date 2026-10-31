@@ -10,6 +10,7 @@ import {
 import { SegmentationPipeline } from "@/entrypoints/subtitles.content/segmentation-pipeline"
 import { SubtitlesScheduler } from "@/entrypoints/subtitles.content/subtitles-scheduler"
 import { TranslationCoordinator } from "@/entrypoints/subtitles.content/translation-coordinator"
+import { SubtitleSession } from "@/utils/subtitles/session"
 import { model } from "./model"
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
 const makeCues = (n: number) =>
@@ -134,7 +135,9 @@ root.render(
       model.reset()
       let state: any = "idle"
       let coordinator: TranslationCoordinator | undefined
+      const session = new SubtitleSession()
       const pipeline = new SegmentationPipeline({
+        session,
         onChunkSegmented: () => coordinator?.noteFragmentListChanged(),
         baselineFragments: cues,
         rawFragments: cues,
@@ -146,6 +149,7 @@ root.render(
       const readyCues = new Set<string>()
       const cueKey = (cue: any) => JSON.stringify([cue.start, cue.end, cue.text])
       coordinator = new TranslationCoordinator({
+        session,
         getFragments: () => ((pipeline as any).setAdmission ? cues : pipeline.processedFragments),
         getVideoElement: () => video,
         getCurrentState: () => state,
@@ -211,6 +215,7 @@ root.render(
         events: [...model.events],
         published,
       })
+      session.dispose()
     }
   return { scales, scenarios }
 }

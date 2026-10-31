@@ -140,6 +140,6 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
     mode,
     clock: "Playwright virtual clock; actual engine classes and deterministic Mock Provider",
     samples,
-    note: "Requests count mocked processor invocations, not paid API calls. Real Provider usage is unavailable. Atomic API budgets are tested separately through the SDK and IndexedDB harness.",
+    note: "Requests count mocked processor invocations, not paid API calls. Real Provider usage is unavailable. Physical scheduling is measured separately using the production resource authority.",
   }
 }

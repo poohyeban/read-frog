@@ -1,0 +1,17 @@
+{
+  "baseline": "fddc448e72cca5aa3007fcf27ab15c378288c844",
+  "productionCommit": "cd0c85df4bf143acfb5670b6f9ff183092da30b1",
+  "branch": "codex/subtitle-engine-v2",
+  "codeCommits": [
+    "cd0c85df perf(subtitles): prepare mutation indexes before incremental updates",
+    "56135b22 perf(subtitles): reuse validated spans and unchanged transcript projections",
+    "6b4c6964 fix(subtitles): restore quality provenance and expose sparse resource settings",
+    "d55a5290 refactor(requests): centralize physical resource scheduling and bounded recovery",
+    "b79f2dcd refactor(subtitles): remove cumulative budgets and preserve execution leases"
+  ],
+  "buildArtifact": ".output/chrome-mv3",
+  "manifestSha256": "13d02688107e53f6a0c77ef2fc908d8d6a1e6f3484bbfcfec61e99319a49c78c",
+  "node": "v24.19.0",
+  "paidProviderCalls": 0,
+  "nativeMV3": "blocked by managed policy; not accepted"
+}

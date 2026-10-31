@@ -102,6 +102,33 @@ try {
           await advanced.click()
           await advanced.click()
           expect(await page.locator(".cm-editor").count()).toBe(data.advancedEditors)
+          const resources = page.getByRole("button", {
+            name: "Advanced performance settings",
+            exact: true,
+          })
+          await expect(resources).toHaveAttribute("aria-expanded", "false")
+          const before = await page.evaluate(
+            () =>
+              window.__uiTrace.calls.filter(
+                (call) => call.name === "message:patchPerformanceConfiguration",
+              ).length,
+          )
+          await resources.click()
+          await expect(resources).toHaveAttribute("aria-expanded", "true")
+          await page.getByText("Provider request limits", { exact: true }).first().click()
+          await expect(
+            page.getByLabel("Maximum simultaneous requests", { exact: true }).first(),
+          ).toHaveValue("2")
+          await resources.click()
+          expect(
+            await page.evaluate(
+              () =>
+                window.__uiTrace.calls.filter(
+                  (call) => call.name === "message:patchPerformanceConfiguration",
+                ).length,
+            ),
+          ).toBe(before)
+          data.resourceDefaultsReadOnly = true
         }
       }
       expect(errors).toEqual([])

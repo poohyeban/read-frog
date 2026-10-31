@@ -1,0 +1,1878 @@
+{
+  "matrix-baseline": {
+    "scenarios": 165,
+    "requests": 6627,
+    "estimatedInputTokens": 979283,
+    "realUsage": null,
+    "cancelledTransports": 2336,
+    "scheduledRetries": 18,
+    "cacheWindowRestorations": 4,
+    "admissionRejections": null,
+    "afterStopRequests": 0,
+    "concurrencyViolations": 0,
+    "residualActive": 0,
+    "firstCaptionMs": {
+      "p50": 1000.0,
+      "p95": 8000
+    },
+    "firstCaptionMissingWithinObservation": 88,
+    "rendererCpuSeconds": 43.79,
+    "peakRendererRssMiB": 219.40625,
+    "heapMiB": 40.77065658569336,
+    "taskSeconds": 30.410045999999998,
+    "scriptSeconds": 16.087382,
+    "concurrencyMeanReadiness": {
+      "1": 0.32246570009988834,
+      "2": 0.39766523199561277,
+      "4": 0.4647836609083965,
+      "8": 0.46747183295140726
+    },
+    "defaultNormalLatency": [
+      {
+        "rate": 1,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "dual",
+        "failure": "",
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.9375,
+        "readyAhead": {
+          "2": 0.875,
+          "3": 0.875,
+          "5": 0.8125
+        },
+        "requests": 25,
+        "retries": 0,
+        "cancelled": 2,
+        "cacheHits": 0,
+        "estimatedInputTokens": 3255,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 2,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "dual",
+        "failure": "",
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.967741935483871,
+        "readyAhead": {
+          "2": 0.9032258064516129,
+          "3": 0.8709677419354839,
+          "5": 0.8064516129032258
+        },
+        "requests": 39,
+        "retries": 0,
+        "cancelled": 3,
+        "cacheHits": 0,
+        "estimatedInputTokens": 4557,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "dual",
+        "failure": "",
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.9672131147540983,
+        "readyAhead": {
+          "2": 0.9016393442622951,
+          "3": 0.8688524590163934,
+          "5": 0.7540983606557377
+        },
+        "requests": 35,
+        "retries": 0,
+        "cancelled": 3,
+        "cacheHits": 0,
+        "estimatedInputTokens": 4875,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      }
+    ],
+    "warmQuality": [
+      {
+        "rate": 1,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "quality-cache",
+        "failure": "",
+        "firstMs": 0,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9375,
+          "3": 0.875,
+          "5": 0.8125
+        },
+        "requests": 0,
+        "retries": 0,
+        "cancelled": 0,
+        "cacheHits": 1,
+        "estimatedInputTokens": 0,
+        "realUsage": null,
+        "peakActive": 0,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 0,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 2,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "quality-cache",
+        "failure": "",
+        "firstMs": 0,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9354838709677419,
+          "3": 0.9032258064516129,
+          "5": 0.8387096774193549
+        },
+        "requests": 0,
+        "retries": 0,
+        "cancelled": 0,
+        "cacheHits": 1,
+        "estimatedInputTokens": 0,
+        "realUsage": null,
+        "peakActive": 0,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 0,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "quality-cache",
+        "failure": "",
+        "firstMs": 0,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9344262295081968,
+          "3": 0.9016393442622951,
+          "5": 0.8360655737704918
+        },
+        "requests": 0,
+        "retries": 0,
+        "cancelled": 0,
+        "cacheHits": 2,
+        "estimatedInputTokens": 0,
+        "realUsage": null,
+        "peakActive": 0,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 0,
+        "resources": {
+          "active": 0
+        }
+      }
+    ],
+    "rateBurstTuning": [
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 1,
+        "burst": 1,
+        "firstMs": 100,
+        "readyBeforeDisplay": 0.06666666666666667,
+        "readyAhead": {
+          "2": 0,
+          "3": 0,
+          "5": 0
+        },
+        "requests": 31,
+        "retries": 0,
+        "cancelled": 12,
+        "cacheHits": 0,
+        "estimatedInputTokens": 4433,
+        "realUsage": null,
+        "peakActive": 1,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 1,
+        "burst": 4,
+        "firstMs": 100,
+        "readyBeforeDisplay": 0.16666666666666666,
+        "readyAhead": {
+          "2": 0,
+          "3": 0,
+          "5": 0
+        },
+        "requests": 34,
+        "retries": 0,
+        "cancelled": 12,
+        "cacheHits": 0,
+        "estimatedInputTokens": 5294,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 1,
+        "burst": 20,
+        "firstMs": 100,
+        "readyBeforeDisplay": 0.9333333333333333,
+        "readyAhead": {
+          "2": 0.7416666666666667,
+          "3": 0.6583333333333333,
+          "5": 0.4583333333333333
+        },
+        "requests": 50,
+        "retries": 0,
+        "cancelled": 4,
+        "cacheHits": 0,
+        "estimatedInputTokens": 8446,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 4,
+        "burst": 1,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.8916666666666667,
+          "3": 0.8333333333333334,
+          "5": 0.725
+        },
+        "requests": 121,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 17031,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 4,
+        "burst": 4,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9166666666666666,
+          "3": 0.8666666666666667,
+          "5": 0.75
+        },
+        "requests": 124,
+        "retries": 0,
+        "cancelled": 9,
+        "cacheHits": 0,
+        "estimatedInputTokens": 17732,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 4,
+        "burst": 20,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 140,
+        "retries": 0,
+        "cancelled": 9,
+        "cacheHits": 0,
+        "estimatedInputTokens": 18740,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 8,
+        "burst": 1,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9166666666666666,
+          "3": 0.875,
+          "5": 0.7916666666666666
+        },
+        "requests": 143,
+        "retries": 0,
+        "cancelled": 7,
+        "cacheHits": 0,
+        "estimatedInputTokens": 18449,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 8,
+        "burst": 4,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 145,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19087,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 8,
+        "burst": 20,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 147,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19213,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 16,
+        "burst": 1,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8166666666666667
+        },
+        "requests": 148,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19276,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 16,
+        "burst": 4,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 147,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19213,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 16,
+        "burst": 20,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 147,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19213,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0
+        }
+      }
+    ]
+  },
+  "matrix-current": {
+    "scenarios": 165,
+    "requests": 6766,
+    "estimatedInputTokens": 985409,
+    "realUsage": null,
+    "cancelledTransports": 2325,
+    "scheduledRetries": 25,
+    "cacheWindowRestorations": 4,
+    "admissionRejections": 0,
+    "afterStopRequests": 0,
+    "concurrencyViolations": 0,
+    "residualActive": 0,
+    "firstCaptionMs": {
+      "p50": 1000.0,
+      "p95": 8000
+    },
+    "firstCaptionMissingWithinObservation": 88,
+    "rendererCpuSeconds": 19.22,
+    "peakRendererRssMiB": 182.125,
+    "heapMiB": 22.70728302001953,
+    "taskSeconds": 12.649216000000001,
+    "scriptSeconds": 5.784516,
+    "concurrencyMeanReadiness": {
+      "1": 0.35439141547682,
+      "2": 0.398561289343283,
+      "4": 0.4647836609083965,
+      "8": 0.46747183295140726
+    },
+    "defaultNormalLatency": [
+      {
+        "rate": 1,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "dual",
+        "failure": "",
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.9375,
+        "readyAhead": {
+          "2": 0.875,
+          "3": 0.875,
+          "5": 0.8125
+        },
+        "requests": 20,
+        "retries": 0,
+        "cancelled": 2,
+        "cacheHits": 0,
+        "estimatedInputTokens": 2940,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 20,
+            "cancellations": 3,
+            "rejected": 0,
+            "admissions": 20,
+            "eligibilityChecks": 56,
+            "maxActive": 2,
+            "maxQueued": 2
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 19,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 2,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "dual",
+        "failure": "",
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.967741935483871,
+        "readyAhead": {
+          "2": 0.9032258064516129,
+          "3": 0.8709677419354839,
+          "5": 0.8064516129032258
+        },
+        "requests": 39,
+        "retries": 0,
+        "cancelled": 3,
+        "cacheHits": 0,
+        "estimatedInputTokens": 4557,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 39,
+            "cancellations": 4,
+            "rejected": 0,
+            "admissions": 39,
+            "eligibilityChecks": 143,
+            "maxActive": 2,
+            "maxQueued": 3
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 18,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "dual",
+        "failure": "",
+        "firstMs": 1000,
+        "readyBeforeDisplay": 0.9672131147540983,
+        "readyAhead": {
+          "2": 0.9016393442622951,
+          "3": 0.8688524590163934,
+          "5": 0.7540983606557377
+        },
+        "requests": 35,
+        "retries": 0,
+        "cancelled": 3,
+        "cacheHits": 0,
+        "estimatedInputTokens": 4875,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 35,
+            "cancellations": 4,
+            "rejected": 0,
+            "admissions": 35,
+            "eligibilityChecks": 106,
+            "maxActive": 2,
+            "maxQueued": 2
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 19,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      }
+    ],
+    "warmQuality": [
+      {
+        "rate": 1,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "quality-cache",
+        "failure": "",
+        "firstMs": 0,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9375,
+          "3": 0.875,
+          "5": 0.8125
+        },
+        "requests": 0,
+        "retries": 0,
+        "cancelled": 0,
+        "cacheHits": 1,
+        "estimatedInputTokens": 0,
+        "realUsage": null,
+        "peakActive": 0,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 0,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 0,
+            "cancellations": 0,
+            "rejected": 0,
+            "admissions": 0,
+            "eligibilityChecks": 0,
+            "maxActive": 0,
+            "maxQueued": 0
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 20,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 2,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "quality-cache",
+        "failure": "",
+        "firstMs": 0,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9354838709677419,
+          "3": 0.9032258064516129,
+          "5": 0.8387096774193549
+        },
+        "requests": 0,
+        "retries": 0,
+        "cancelled": 0,
+        "cacheHits": 1,
+        "estimatedInputTokens": 0,
+        "realUsage": null,
+        "peakActive": 0,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 0,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 0,
+            "cancellations": 0,
+            "rejected": 0,
+            "admissions": 0,
+            "eligibilityChecks": 0,
+            "maxActive": 0,
+            "maxQueued": 0
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 20,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 1000,
+        "density": 1,
+        "mode": "quality-cache",
+        "failure": "",
+        "firstMs": 0,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9344262295081968,
+          "3": 0.9016393442622951,
+          "5": 0.8360655737704918
+        },
+        "requests": 0,
+        "retries": 0,
+        "cancelled": 0,
+        "cacheHits": 2,
+        "estimatedInputTokens": 0,
+        "realUsage": null,
+        "peakActive": 0,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 0,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 0,
+            "cancellations": 0,
+            "rejected": 0,
+            "admissions": 0,
+            "eligibilityChecks": 0,
+            "maxActive": 0,
+            "maxQueued": 0
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 20,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      }
+    ],
+    "rateBurstTuning": [
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 1,
+        "burst": 1,
+        "firstMs": 100,
+        "readyBeforeDisplay": 0.058333333333333334,
+        "readyAhead": {
+          "2": 0,
+          "3": 0,
+          "5": 0
+        },
+        "requests": 31,
+        "retries": 0,
+        "cancelled": 15,
+        "cacheHits": 0,
+        "estimatedInputTokens": 5729,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 31,
+            "cancellations": 42,
+            "rejected": 0,
+            "admissions": 31,
+            "eligibilityChecks": 245,
+            "maxActive": 2,
+            "maxQueued": 3
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 0,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 1,
+        "burst": 4,
+        "firstMs": 100,
+        "readyBeforeDisplay": 0.15833333333333333,
+        "readyAhead": {
+          "2": 0,
+          "3": 0,
+          "5": 0
+        },
+        "requests": 34,
+        "retries": 0,
+        "cancelled": 15,
+        "cacheHits": 0,
+        "estimatedInputTokens": 6590,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 34,
+            "cancellations": 39,
+            "rejected": 0,
+            "admissions": 34,
+            "eligibilityChecks": 244,
+            "maxActive": 2,
+            "maxQueued": 3
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 2.220446049250313e-16,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 1,
+        "burst": 20,
+        "firstMs": 100,
+        "readyBeforeDisplay": 0.9333333333333333,
+        "readyAhead": {
+          "2": 0.7416666666666667,
+          "3": 0.6583333333333333,
+          "5": 0.4583333333333333
+        },
+        "requests": 49,
+        "retries": 0,
+        "cancelled": 3,
+        "cacheHits": 0,
+        "estimatedInputTokens": 8303,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 49,
+            "cancellations": 11,
+            "rejected": 0,
+            "admissions": 49,
+            "eligibilityChecks": 290,
+            "maxActive": 2,
+            "maxQueued": 3
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 0.9999999999999983,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 4,
+        "burst": 1,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.8916666666666667,
+          "3": 0.825,
+          "5": 0.7083333333333334
+        },
+        "requests": 121,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 17031,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 121,
+            "cancellations": 10,
+            "rejected": 0,
+            "admissions": 121,
+            "eligibilityChecks": 617,
+            "maxActive": 2,
+            "maxQueued": 3
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 0,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 4,
+        "burst": 4,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9166666666666666,
+          "3": 0.8666666666666667,
+          "5": 0.7416666666666667
+        },
+        "requests": 124,
+        "retries": 0,
+        "cancelled": 9,
+        "cacheHits": 0,
+        "estimatedInputTokens": 17732,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 124,
+            "cancellations": 10,
+            "rejected": 0,
+            "admissions": 124,
+            "eligibilityChecks": 603,
+            "maxActive": 2,
+            "maxQueued": 3
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 0,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 4,
+        "burst": 20,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 140,
+        "retries": 0,
+        "cancelled": 9,
+        "cacheHits": 0,
+        "estimatedInputTokens": 18740,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 1,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 140,
+            "cancellations": 10,
+            "rejected": 0,
+            "admissions": 140,
+            "eligibilityChecks": 634,
+            "maxActive": 2,
+            "maxQueued": 3
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 1.7763568394002505e-15,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 8,
+        "burst": 1,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.9166666666666666,
+          "3": 0.875,
+          "5": 0.7916666666666666
+        },
+        "requests": 143,
+        "retries": 0,
+        "cancelled": 7,
+        "cacheHits": 0,
+        "estimatedInputTokens": 18449,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 143,
+            "cancellations": 8,
+            "rejected": 0,
+            "admissions": 143,
+            "eligibilityChecks": 447,
+            "maxActive": 2,
+            "maxQueued": 3
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 0,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 8,
+        "burst": 4,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 145,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19087,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 145,
+            "cancellations": 8,
+            "rejected": 0,
+            "admissions": 145,
+            "eligibilityChecks": 396,
+            "maxActive": 2,
+            "maxQueued": 3
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 3,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 8,
+        "burst": 20,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 147,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19213,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 147,
+            "cancellations": 8,
+            "rejected": 0,
+            "admissions": 147,
+            "eligibilityChecks": 334,
+            "maxActive": 2,
+            "maxQueued": 2
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 19,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 16,
+        "burst": 1,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8166666666666667
+        },
+        "requests": 148,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19276,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 148,
+            "cancellations": 8,
+            "rejected": 0,
+            "admissions": 148,
+            "eligibilityChecks": 406,
+            "maxActive": 2,
+            "maxQueued": 2
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 0,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 16,
+        "burst": 4,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 147,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19213,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 147,
+            "cancellations": 8,
+            "rejected": 0,
+            "admissions": 147,
+            "eligibilityChecks": 334,
+            "maxActive": 2,
+            "maxQueued": 2
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 3,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      },
+      {
+        "rate": 4,
+        "concurrency": 2,
+        "latency": 100,
+        "density": 4,
+        "mode": "dual",
+        "failure": "",
+        "requestRate": 16,
+        "burst": 20,
+        "firstMs": 100,
+        "readyBeforeDisplay": 1,
+        "readyAhead": {
+          "2": 0.925,
+          "3": 0.8916666666666667,
+          "5": 0.8083333333333333
+        },
+        "requests": 147,
+        "retries": 0,
+        "cancelled": 8,
+        "cacheHits": 0,
+        "estimatedInputTokens": 19213,
+        "realUsage": null,
+        "peakActive": 2,
+        "replayReady": true,
+        "replayNewRequests": 0,
+        "afterStopRequests": 0,
+        "maxAttempts": 1,
+        "resources": {
+          "active": 0,
+          "queued": 0,
+          "lanes": 0,
+          "timers": 0,
+          "counters": {
+            "starts": 147,
+            "cancellations": 8,
+            "rejected": 0,
+            "admissions": 147,
+            "eligibilityChecks": 334,
+            "maxActive": 2,
+            "maxQueued": 2
+          },
+          "domains": {
+            "account": {
+              "active": 0,
+              "queued": 0,
+              "tokens": 19,
+              "cooldownUntil": 0
+            }
+          }
+        }
+      }
+    ]
+  },
+  "transcript-baseline": {
+    "rendererCpuSeconds": 23.03,
+    "scales": [
+      {
+        "size": 100,
+        "mount": {
+          "p50": 33.399999998509884,
+          "p95": 50.399999998509884
+        },
+        "update500": {
+          "p50": 33.30000000074506,
+          "p95": 35
+        },
+        "seekScroll": {
+          "p50": 33.30000000074506,
+          "p95": 37
+        },
+        "maxMountedRows": 100,
+        "heapPeakMiB": 7.6667985916137695
+      },
+      {
+        "size": 1000,
+        "mount": {
+          "p50": 33.34999999962747,
+          "p95": 35.80000000074506
+        },
+        "update500": {
+          "p50": 33.30000000074506,
+          "p95": 45.400000002235174
+        },
+        "seekScroll": {
+          "p50": 34.0,
+          "p95": 41.19999999925494
+        },
+        "maxMountedRows": 14,
+        "heapPeakMiB": 11.127979278564453
+      },
+      {
+        "size": 10000,
+        "mount": {
+          "p50": 33.34999999962747,
+          "p95": 58.599999997764826
+        },
+        "update500": {
+          "p50": 33.19999999925494,
+          "p95": 42.69999999925494
+        },
+        "seekScroll": {
+          "p50": 33.84999999962747,
+          "p95": 41
+        },
+        "maxMountedRows": 14,
+        "heapPeakMiB": 44.78161144256592
+      },
+      {
+        "size": 50000,
+        "mount": {
+          "p50": 158.2999999988824,
+          "p95": 450.29999999701977
+        },
+        "update500": {
+          "p50": 130.84999999962747,
+          "p95": 230.5
+        },
+        "seekScroll": {
+          "p50": 128.2000000011176,
+          "p95": 288.8999999985099
+        },
+        "maxMountedRows": 14,
+        "heapPeakMiB": 161.5686912536621
+      }
+    ]
+  },
+  "transcript-current": {
+    "rendererCpuSeconds": 10.159999999999998,
+    "scales": [
+      {
+        "size": 100,
+        "mount": {
+          "p50": 33.40000000037253,
+          "p95": 97.80000000074506
+        },
+        "update500": {
+          "p50": 33.30000000074506,
+          "p95": 33.900000002235174
+        },
+        "seekScroll": {
+          "p50": 33.399999998509884,
+          "p95": 35.19999999925494
+        },
+        "maxMountedRows": 100,
+        "heapPeakMiB": 8.713784217834473
+      },
+      {
+        "size": 1000,
+        "mount": {
+          "p50": 33.34999999962747,
+          "p95": 33.899999998509884
+        },
+        "update500": {
+          "p50": 33.34999999962747,
+          "p95": 41.100000001490116
+        },
+        "seekScroll": {
+          "p50": 33.84999999962747,
+          "p95": 116.5
+        },
+        "maxMountedRows": 13,
+        "heapPeakMiB": 11.13354778289795
+      },
+      {
+        "size": 10000,
+        "mount": {
+          "p50": 33.30000000074506,
+          "p95": 35.80000000074506
+        },
+        "update500": {
+          "p50": 33.15000000037253,
+          "p95": 34.80000000074506
+        },
+        "seekScroll": {
+          "p50": 33.90000000037253,
+          "p95": 37.100000001490116
+        },
+        "maxMountedRows": 13,
+        "heapPeakMiB": 40.80939292907715
+      },
+      {
+        "size": 50000,
+        "mount": {
+          "p50": 50.0,
+          "p95": 169.40000000223517
+        },
+        "update500": {
+          "p50": 34.649999998509884,
+          "p95": 92.60000000149012
+        },
+        "seekScroll": {
+          "p50": 34.69999999925494,
+          "p95": 77.5
+        },
+        "maxMountedRows": 13,
+        "heapPeakMiB": 163.49768924713135
+      }
+    ]
+  },
+  "timeline-baseline": [
+    {
+      "size": 100,
+      "lookup": {
+        "p50": 0.0075,
+        "p95": 0.02900000000372529
+      },
+      "timeupdate": {
+        "p50": 0.011749999998137355,
+        "p95": 0.05349999999627471
+      },
+      "bulk500": {
+        "p50": 0.10000000149011612,
+        "p95": 0.3999999985098839
+      },
+      "sameCueCommits": 0
+    },
+    {
+      "size": 1000,
+      "lookup": {
+        "p50": 0.00599999999627471,
+        "p95": 0.0175
+      },
+      "timeupdate": {
+        "p50": 0.009750000005587935,
+        "p95": 0.05450000001117587
+      },
+      "bulk500": {
+        "p50": 0.30000000074505806,
+        "p95": 3.699999999254942
+      },
+      "sameCueCommits": 0
+    },
+    {
+      "size": 10000,
+      "lookup": {
+        "p50": 0.005,
+        "p95": 0.01150000000372529
+      },
+      "timeupdate": {
+        "p50": 0.0075,
+        "p95": 0.01400000000372529
+      },
+      "bulk500": {
+        "p50": 0.5,
+        "p95": 0.9000000022351742
+      },
+      "sameCueCommits": 0
+    },
+    {
+      "size": 50000,
+      "lookup": {
+        "p50": 0.005,
+        "p95": 0.01400000000372529
+      },
+      "timeupdate": {
+        "p50": 0.00875,
+        "p95": 0.02150000000372529
+      },
+      "bulk500": {
+        "p50": 0.8999999985098839,
+        "p95": 1.6000000014901161
+      },
+      "sameCueCommits": 0
+    }
+  ],
+  "timeline-current": [
+    {
+      "size": 100,
+      "lookup": {
+        "p50": 0.007250000005587936,
+        "p95": 0.02849999999627471
+      },
+      "timeupdate": {
+        "p50": 0.012250000005587937,
+        "p95": 0.035
+      },
+      "bulk500": {
+        "p50": 0.19999999925494194,
+        "p95": 0.5999999977648258
+      },
+      "sameCueCommits": 0
+    },
+    {
+      "size": 1000,
+      "lookup": {
+        "p50": 0.005,
+        "p95": 0.01400000000372529
+      },
+      "timeupdate": {
+        "p50": 0.007999999998137355,
+        "p95": 0.0175
+      },
+      "bulk500": {
+        "p50": 0.34999999962747097,
+        "p95": 0.8000000007450581
+      },
+      "sameCueCommits": 0
+    },
+    {
+      "size": 10000,
+      "lookup": {
+        "p50": 0.00400000000372529,
+        "p95": 0.0075
+      },
+      "timeupdate": {
+        "p50": 0.006749999998137355,
+        "p95": 0.01699999999254942
+      },
+      "bulk500": {
+        "p50": 0.40000000037252903,
+        "p95": 1
+      },
+      "sameCueCommits": 0
+    },
+    {
+      "size": 50000,
+      "lookup": {
+        "p50": 0.00400000000372529,
+        "p95": 0.005500000007450581
+      },
+      "timeupdate": {
+        "p50": 0.006499999994412064,
+        "p95": 0.02550000000745058
+      },
+      "bulk500": {
+        "p50": 0.7000000011175871,
+        "p95": 13.300000000745058
+      },
+      "sameCueCommits": 0
+    }
+  ],
+  "export-baseline": [
+    {
+      "size": 100,
+      "durationMs": {
+        "p50": 14,
+        "p95": 47.30000000074506
+      },
+      "callsPerExport": 20,
+      "complete": true
+    },
+    {
+      "size": 1000,
+      "durationMs": {
+        "p50": 27.699999999254942,
+        "p95": 38.5
+      },
+      "callsPerExport": 200,
+      "complete": true
+    },
+    {
+      "size": 10000,
+      "durationMs": {
+        "p50": 121.60000000149012,
+        "p95": 133.10000000149012
+      },
+      "callsPerExport": 2000,
+      "complete": true
+    },
+    {
+      "size": 50000,
+      "durationMs": {
+        "p50": 501.3999999985099,
+        "p95": 580.3000000007451
+      },
+      "callsPerExport": 10000,
+      "complete": true
+    }
+  ],
+  "export-current": [
+    {
+      "size": 100,
+      "durationMs": {
+        "p50": 4.100000001490116,
+        "p95": 12.199999999254942
+      },
+      "callsPerExport": 20,
+      "complete": true
+    },
+    {
+      "size": 1000,
+      "durationMs": {
+        "p50": 24.5,
+        "p95": 40.899999998509884
+      },
+      "callsPerExport": 200,
+      "complete": true
+    },
+    {
+      "size": 10000,
+      "durationMs": {
+        "p50": 87.70000000298023,
+        "p95": 370.30000000074506
+      },
+      "callsPerExport": 2000,
+      "complete": true
+    },
+    {
+      "size": 50000,
+      "durationMs": {
+        "p50": 354.30000000074506,
+        "p95": 376.5
+      },
+      "callsPerExport": 10000,
+      "complete": true
+    }
+  ]
+}

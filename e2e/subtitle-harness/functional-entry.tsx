@@ -91,8 +91,55 @@ createRoot(document.getElementById("root")!).render(
   subtitlesStore.set(currentTimeMsAtom, 2120000)
   await delay(300)
   checks.backwardSeek = visible()
+  // Merge many rows above a manually held viewport and one covering its anchor.
+  document
+    .querySelector('[aria-current="true"]')!
+    .dispatchEvent(new WheelEvent("wheel", { bubbles: true, deltaY: -100 }))
+  await delay()
+  const area = viewport.getBoundingClientRect()
+  const visibleRows = () =>
+    [...document.querySelectorAll<HTMLElement>("[data-transcript-start]")].filter(
+      (row) =>
+        row.getBoundingClientRect().bottom > area.top &&
+        row.getBoundingClientRect().top < area.bottom,
+    )
+  const anchor = visibleRows()[0]
+  const anchorTime = Number(anchor?.dataset.transcriptStart)
+  const anchorOffset = anchor ? anchor.getBoundingClientRect().top - area.top : 0
+  viewport.dispatchEvent(new Event("scroll"))
+  const quality = source.slice(0, 2200).flatMap((cue, index) =>
+    index % 2
+      ? []
+      : [
+          {
+            ...cue,
+            end: source[index + 1]!.end,
+            text: `${cue.text} ${source[index + 1]!.text}`,
+            translation: `Quality ${index}`,
+            lane: "quality" as const,
+          },
+        ],
+  )
+  subtitlesStore.set(translatedTrackAtom, quality)
+  await delay(1500)
+  const restoredAnchor = visibleRows().find(
+    (row) =>
+      Number(row.dataset.transcriptStart) <= anchorTime &&
+      Number(row.dataset.transcriptEnd) > anchorTime,
+  )
+  checks.qualityMergeAnchor =
+    !!restoredAnchor &&
+    Math.abs(restoredAnchor.getBoundingClientRect().top - area.top - anchorOffset) < 30
+  checks.qualityMergedPair = visibleRows().some((row) => row.textContent?.includes("Quality"))
   return {
     checks,
+    anchor: {
+      anchorTime,
+      anchorOffset,
+      afterOffset: restoredAnchor ? restoredAnchor.getBoundingClientRect().top - area.top : null,
+      scrollTop: viewport.scrollTop,
+      visibleTimes: visibleRows().map((row) => Number(row.dataset.transcriptStart)),
+    },
     scales: [],
     seeks,
     mountedRows: document.querySelectorAll('[role="listitem"]').length,

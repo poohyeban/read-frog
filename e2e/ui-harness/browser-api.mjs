@@ -92,7 +92,17 @@ export function installBrowserAPI({
           ? translated
           : message.type === "getDetectedCode"
             ? "eng"
-            : undefined
+            : message.type === "getPerformanceConfiguration"
+              ? {
+                  overrides: { version: 1, revision: 0 },
+                  identities: Object.fromEntries(
+                    config.providersConfig.map((provider) => [
+                      provider.id,
+                      `fixture-${provider.id}`,
+                    ]),
+                  ),
+                }
+              : undefined
       const promise = call(`message:${message.type}`, backgroundDelay, response).then((res) => {
         const reply =
           failure === "message" &&

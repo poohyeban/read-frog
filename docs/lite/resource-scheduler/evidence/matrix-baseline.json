@@ -1,0 +1,5134 @@
+{
+  "environment": {
+    "source": "/workspace/read-frog-baseline",
+    "browser": "154.0.8037.57",
+    "node": "v24.19.0",
+    "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+  },
+  "errors": [],
+  "browserMetrics": {
+    "before": [
+      {
+        "name": "Timestamp",
+        "value": 21509.093387
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 4
+      },
+      {
+        "name": "Frames",
+        "value": 4
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 13
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 9
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 18
+      },
+      {
+        "name": "Resources",
+        "value": 2
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 9
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 4
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 0
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 4
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 2
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 0
+      },
+      {
+        "name": "LayoutCount",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 0
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 0.000026
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0
+      },
+      {
+        "name": "TaskDuration",
+        "value": 0.000036
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 0.00001
+      },
+      {
+        "name": "ThreadTime",
+        "value": 0.000104
+      },
+      {
+        "name": "ProcessTime",
+        "value": 0.44
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 3541252
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 6361088
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 0
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 21508.921866
+      },
+      {
+        "name": "NavigationStart",
+        "value": 21508.640352
+      }
+    ],
+    "after": [
+      {
+        "name": "Timestamp",
+        "value": 21628.772191
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 1
+      },
+      {
+        "name": "Frames",
+        "value": 1
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 2376
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 4
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 14
+      },
+      {
+        "name": "Resources",
+        "value": 1
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 12
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 2
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 0
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 1
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 0
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 382
+      },
+      {
+        "name": "LayoutCount",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 0
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 0.158861
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 16.087382
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0
+      },
+      {
+        "name": "TaskDuration",
+        "value": 30.410082
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 14.163839
+      },
+      {
+        "name": "ThreadTime",
+        "value": 31.069577
+      },
+      {
+        "name": "ProcessTime",
+        "value": 41.52
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 42751132
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 121053184
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 0
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 21508.921866
+      },
+      {
+        "name": "NavigationStart",
+        "value": 21508.640352
+      }
+    ]
+  },
+  "rendererCpuSeconds": 43.79,
+  "rendererMemory": [
+    {
+      "type": "renderer",
+      "peakRssKiB": 33920,
+      "rssKiB": 33920
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 224672,
+      "rssKiB": 217276
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 91352,
+      "rssKiB": 79088
+    }
+  ],
+  "samples": [
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 193,
+      "readyBeforeDisplay": 0.9375,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.875,
+        "5": 0.75
+      },
+      "requests": 16,
+      "retries": 0,
+      "cancelled": 1,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2703,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9836065573770492,
+      "readyAhead": {
+        "2": 0.9016393442622951,
+        "3": 0.8360655737704918,
+        "5": 0.6557377049180327
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5649,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9375,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.8125,
+        "5": 0.6875
+      },
+      "requests": 18,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2499,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9672131147540983,
+      "readyAhead": {
+        "2": 0.7868852459016393,
+        "3": 0.6721311475409836,
+        "5": 0.47540983606557374
+      },
+      "requests": 20,
+      "retries": 0,
+      "cancelled": 4,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4156,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 3000,
+      "readyBeforeDisplay": 0.75,
+      "readyAhead": {
+        "2": 0.625,
+        "3": 0.5625,
+        "5": 0.3125
+      },
+      "requests": 8,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1449,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1716,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 8000,
+      "readyBeforeDisplay": 0.375,
+      "readyAhead": {
+        "2": 0.1875,
+        "3": 0.0625,
+        "5": 0
+      },
+      "requests": 4,
+      "retries": 0,
+      "cancelled": 1,
+      "cacheHits": 0,
+      "estimatedInputTokens": 552,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1716,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 3,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 789,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1716,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 3,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 789,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 1,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1716,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9375,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.875,
+        "5": 0.8125
+      },
+      "requests": 25,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3240,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9836065573770492,
+      "readyAhead": {
+        "2": 0.9180327868852459,
+        "3": 0.8852459016393442,
+        "5": 0.819672131147541
+      },
+      "requests": 76,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 8372,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9375,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.875,
+        "5": 0.8125
+      },
+      "requests": 25,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3255,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9672131147540983,
+      "readyAhead": {
+        "2": 0.9016393442622951,
+        "3": 0.8688524590163934,
+        "5": 0.7540983606557377
+      },
+      "requests": 39,
+      "retries": 0,
+      "cancelled": 5,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5977,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 3000,
+      "readyBeforeDisplay": 0.875,
+      "readyAhead": {
+        "2": 0.8125,
+        "3": 0.8125,
+        "5": 0.75
+      },
+      "requests": 20,
+      "retries": 0,
+      "cancelled": 4,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2520,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.3770491803278688,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 17,
+      "retries": 0,
+      "cancelled": 7,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3727,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 8000,
+      "readyBeforeDisplay": 0.75,
+      "readyAhead": {
+        "2": 0.6875,
+        "3": 0.625,
+        "5": 0.5
+      },
+      "requests": 7,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1311,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 14,
+      "retries": 0,
+      "cancelled": 14,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2002,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.125,
+      "readyAhead": {
+        "2": 0.0625,
+        "3": 0.0625,
+        "5": 0
+      },
+      "requests": 6,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1203,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 14,
+      "retries": 0,
+      "cancelled": 14,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2002,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 4,
+      "retries": 0,
+      "cancelled": 4,
+      "cacheHits": 0,
+      "estimatedInputTokens": 927,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 14,
+      "retries": 0,
+      "cancelled": 14,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2002,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9375,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.875,
+        "5": 0.8125
+      },
+      "requests": 26,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3333,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9836065573770492,
+      "readyAhead": {
+        "2": 0.9180327868852459,
+        "3": 0.8852459016393442,
+        "5": 0.819672131147541
+      },
+      "requests": 78,
+      "retries": 0,
+      "cancelled": 4,
+      "cacheHits": 0,
+      "estimatedInputTokens": 8578,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9375,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.875,
+        "5": 0.8125
+      },
+      "requests": 27,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3411,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9672131147540983,
+      "readyAhead": {
+        "2": 0.9016393442622951,
+        "3": 0.8688524590163934,
+        "5": 0.7704918032786885
+      },
+      "requests": 67,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 7885,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 3000,
+      "readyBeforeDisplay": 0.875,
+      "readyAhead": {
+        "2": 0.8125,
+        "3": 0.8125,
+        "5": 0.75
+      },
+      "requests": 26,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3378,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.8852459016393442,
+      "readyAhead": {
+        "2": 0.7213114754098361,
+        "3": 0.6557377049180327,
+        "5": 0.4918032786885246
+      },
+      "requests": 29,
+      "retries": 0,
+      "cancelled": 9,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5411,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 3,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 8000,
+      "readyBeforeDisplay": 0.75,
+      "readyAhead": {
+        "2": 0.6875,
+        "3": 0.625,
+        "5": 0.5
+      },
+      "requests": 14,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2547,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 19,
+      "retries": 0,
+      "cancelled": 18,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3981,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.3125,
+      "readyAhead": {
+        "2": 0.125,
+        "3": 0.125,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 7,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2406,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 19,
+      "retries": 0,
+      "cancelled": 18,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3981,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 9,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1617,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 4,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 17,
+      "retries": 0,
+      "cancelled": 17,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3727,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9375,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.875,
+        "5": 0.8125
+      },
+      "requests": 26,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3333,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9836065573770492,
+      "readyAhead": {
+        "2": 0.9180327868852459,
+        "3": 0.8852459016393442,
+        "5": 0.819672131147541
+      },
+      "requests": 78,
+      "retries": 0,
+      "cancelled": 4,
+      "cacheHits": 0,
+      "estimatedInputTokens": 8578,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9375,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.875,
+        "5": 0.8125
+      },
+      "requests": 27,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3411,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9672131147540983,
+      "readyAhead": {
+        "2": 0.9016393442622951,
+        "3": 0.8688524590163934,
+        "5": 0.7704918032786885
+      },
+      "requests": 67,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 7885,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 3000,
+      "readyBeforeDisplay": 0.875,
+      "readyAhead": {
+        "2": 0.8125,
+        "3": 0.8125,
+        "5": 0.75
+      },
+      "requests": 26,
+      "retries": 0,
+      "cancelled": 5,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3378,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.8852459016393442,
+      "readyAhead": {
+        "2": 0.7213114754098361,
+        "3": 0.6557377049180327,
+        "5": 0.4918032786885246
+      },
+      "requests": 29,
+      "retries": 0,
+      "cancelled": 9,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5411,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": false,
+      "replayNewRequests": 3,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 8000,
+      "readyBeforeDisplay": 0.75,
+      "readyAhead": {
+        "2": 0.6875,
+        "3": 0.625,
+        "5": 0.5
+      },
+      "requests": 16,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2733,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 20,
+      "retries": 0,
+      "cancelled": 19,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4124,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": false,
+      "replayNewRequests": 3,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.3125,
+      "readyAhead": {
+        "2": 0.125,
+        "3": 0.125,
+        "5": 0
+      },
+      "requests": 14,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2682,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 20,
+      "retries": 0,
+      "cancelled": 19,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4124,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": false,
+      "replayNewRequests": 3,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 10,
+      "retries": 0,
+      "cancelled": 9,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2130,
+      "realUsage": null,
+      "peakActive": 7,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 8,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 17,
+      "retries": 0,
+      "cancelled": 17,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3727,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.7741935483870968,
+      "readyAhead": {
+        "2": 0.6451612903225806,
+        "3": 0.5806451612903226,
+        "5": 0.45161290322580644
+      },
+      "requests": 17,
+      "retries": 0,
+      "cancelled": 1,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3006,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9166666666666666,
+        "3": 0.8416666666666667,
+        "5": 0.6833333333333333
+      },
+      "requests": 42,
+      "retries": 0,
+      "cancelled": 5,
+      "cacheHits": 0,
+      "estimatedInputTokens": 8166,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.6774193548387096,
+      "readyAhead": {
+        "2": 0.5806451612903226,
+        "3": 0.5161290322580645,
+        "5": 0.3548387096774194
+      },
+      "requests": 18,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2649,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.925,
+      "readyAhead": {
+        "2": 0.5916666666666667,
+        "3": 0.425,
+        "5": 0.09166666666666666
+      },
+      "requests": 32,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5440,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 3000,
+      "readyBeforeDisplay": 0.8387096774193549,
+      "readyAhead": {
+        "2": 0.6774193548387096,
+        "3": 0.6129032258064516,
+        "5": 0.45161290322580644
+      },
+      "requests": 7,
+      "retries": 0,
+      "cancelled": 1,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1341,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 24,
+      "retries": 0,
+      "cancelled": 24,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3432,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 6,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 828,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 24,
+      "retries": 0,
+      "cancelled": 24,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3432,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 6,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 828,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 24,
+      "retries": 0,
+      "cancelled": 24,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3432,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 6,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 828,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 24,
+      "retries": 0,
+      "cancelled": 24,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3432,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.967741935483871,
+      "readyAhead": {
+        "2": 0.9032258064516129,
+        "3": 0.8709677419354839,
+        "5": 0.8064516129032258
+      },
+      "requests": 42,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4746,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9333333333333333,
+        "3": 0.9,
+        "5": 0.825
+      },
+      "requests": 141,
+      "retries": 0,
+      "cancelled": 5,
+      "cacheHits": 0,
+      "estimatedInputTokens": 15267,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.967741935483871,
+      "readyAhead": {
+        "2": 0.9032258064516129,
+        "3": 0.8709677419354839,
+        "5": 0.8064516129032258
+      },
+      "requests": 39,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4557,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.975,
+      "readyAhead": {
+        "2": 0.7833333333333333,
+        "3": 0.7333333333333333,
+        "5": 0.43333333333333335
+      },
+      "requests": 41,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 8023,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 3011,
+      "readyBeforeDisplay": 0.8709677419354839,
+      "readyAhead": {
+        "2": 0.8064516129032258,
+        "3": 0.7741935483870968,
+        "5": 0.6451612903225806
+      },
+      "requests": 17,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2601,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 26,
+      "retries": 0,
+      "cancelled": 26,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3718,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.12903225806451613,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 9,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1617,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 26,
+      "retries": 0,
+      "cancelled": 26,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3718,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 8,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1479,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 26,
+      "retries": 0,
+      "cancelled": 26,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3718,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 8,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1479,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 26,
+      "retries": 0,
+      "cancelled": 26,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3718,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.967741935483871,
+      "readyAhead": {
+        "2": 0.9032258064516129,
+        "3": 0.8709677419354839,
+        "5": 0.8064516129032258
+      },
+      "requests": 47,
+      "retries": 0,
+      "cancelled": 5,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5751,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9333333333333333,
+        "3": 0.9,
+        "5": 0.825
+      },
+      "requests": 145,
+      "retries": 0,
+      "cancelled": 5,
+      "cacheHits": 0,
+      "estimatedInputTokens": 15519,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.967741935483871,
+      "readyAhead": {
+        "2": 0.9032258064516129,
+        "3": 0.8709677419354839,
+        "5": 0.8064516129032258
+      },
+      "requests": 45,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5625,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.975,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.8083333333333333,
+        "5": 0.7083333333333334
+      },
+      "requests": 66,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 10542,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 3000,
+      "readyBeforeDisplay": 0.9032258064516129,
+      "readyAhead": {
+        "2": 0.8387096774193549,
+        "3": 0.8064516129032258,
+        "5": 0.7096774193548387
+      },
+      "requests": 29,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4587,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 31,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6593,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.4838709677419355,
+      "readyAhead": {
+        "2": 0.16129032258064516,
+        "3": 0.06451612903225806,
+        "5": 0
+      },
+      "requests": 15,
+      "retries": 0,
+      "cancelled": 7,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2760,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 31,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6593,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 14,
+      "retries": 0,
+      "cancelled": 13,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2622,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 31,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6593,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 11,
+      "retries": 0,
+      "cancelled": 10,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2208,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 4,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 31,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6593,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.967741935483871,
+      "readyAhead": {
+        "2": 0.9032258064516129,
+        "3": 0.8709677419354839,
+        "5": 0.8064516129032258
+      },
+      "requests": 47,
+      "retries": 0,
+      "cancelled": 5,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5751,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9333333333333333,
+        "3": 0.9,
+        "5": 0.825
+      },
+      "requests": 145,
+      "retries": 0,
+      "cancelled": 5,
+      "cacheHits": 0,
+      "estimatedInputTokens": 15519,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.967741935483871,
+      "readyAhead": {
+        "2": 0.9032258064516129,
+        "3": 0.8709677419354839,
+        "5": 0.8064516129032258
+      },
+      "requests": 45,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5625,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.975,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.8083333333333333,
+        "5": 0.7083333333333334
+      },
+      "requests": 66,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 10542,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 3000,
+      "readyBeforeDisplay": 0.9032258064516129,
+      "readyAhead": {
+        "2": 0.8387096774193549,
+        "3": 0.8064516129032258,
+        "5": 0.7096774193548387
+      },
+      "requests": 32,
+      "retries": 0,
+      "cancelled": 7,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4806,
+      "realUsage": null,
+      "peakActive": 7,
+      "replayReady": true,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 31,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6593,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.5806451612903226,
+      "readyAhead": {
+        "2": 0.25806451612903225,
+        "3": 0.16129032258064516,
+        "5": 0.03225806451612903
+      },
+      "requests": 19,
+      "retries": 0,
+      "cancelled": 9,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3687,
+      "realUsage": null,
+      "peakActive": 7,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 31,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6593,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 17,
+      "retries": 0,
+      "cancelled": 15,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3411,
+      "realUsage": null,
+      "peakActive": 7,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 31,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6593,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 11,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2346,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 8,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 31,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6593,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.6229508196721312,
+      "readyAhead": {
+        "2": 0.4918032786885246,
+        "3": 0.4262295081967213,
+        "5": 0.29508196721311475
+      },
+      "requests": 10,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2130,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.925,
+        "3": 0.8833333333333333,
+        "5": 0.7916666666666666
+      },
+      "requests": 66,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 12894,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.819672131147541,
+      "readyAhead": {
+        "2": 0.6885245901639344,
+        "3": 0.5573770491803278,
+        "5": 0.32786885245901637
+      },
+      "requests": 23,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3924,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 48,
+      "retries": 0,
+      "cancelled": 48,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6864,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1656,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 48,
+      "retries": 0,
+      "cancelled": 48,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6864,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1656,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 48,
+      "retries": 0,
+      "cancelled": 48,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6864,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1656,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 48,
+      "retries": 0,
+      "cancelled": 48,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6864,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1656,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 1,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 48,
+      "retries": 0,
+      "cancelled": 48,
+      "cacheHits": 0,
+      "estimatedInputTokens": 6864,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9836065573770492,
+      "readyAhead": {
+        "2": 0.9180327868852459,
+        "3": 0.8852459016393442,
+        "5": 0.819672131147541
+      },
+      "requests": 75,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 7890,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.925,
+        "3": 0.8916666666666667,
+        "5": 0.8083333333333333
+      },
+      "requests": 147,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 19213,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9672131147540983,
+      "readyAhead": {
+        "2": 0.9016393442622951,
+        "3": 0.8688524590163934,
+        "5": 0.7540983606557377
+      },
+      "requests": 35,
+      "retries": 0,
+      "cancelled": 3,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4875,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.10833333333333334,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 56,
+      "retries": 0,
+      "cancelled": 35,
+      "cacheHits": 0,
+      "estimatedInputTokens": 11464,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.39344262295081966,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 16,
+      "retries": 0,
+      "cancelled": 5,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2958,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 50,
+      "retries": 0,
+      "cancelled": 50,
+      "cacheHits": 0,
+      "estimatedInputTokens": 7150,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 14,
+      "retries": 0,
+      "cancelled": 14,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1932,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 50,
+      "retries": 0,
+      "cancelled": 50,
+      "cacheHits": 0,
+      "estimatedInputTokens": 7150,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 14,
+      "retries": 0,
+      "cancelled": 14,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1932,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 50,
+      "retries": 0,
+      "cancelled": 50,
+      "cacheHits": 0,
+      "estimatedInputTokens": 7150,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 14,
+      "retries": 0,
+      "cancelled": 14,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1932,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 50,
+      "retries": 0,
+      "cancelled": 50,
+      "cacheHits": 0,
+      "estimatedInputTokens": 7150,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9836065573770492,
+      "readyAhead": {
+        "2": 0.9180327868852459,
+        "3": 0.8852459016393442,
+        "5": 0.819672131147541
+      },
+      "requests": 78,
+      "retries": 0,
+      "cancelled": 4,
+      "cacheHits": 0,
+      "estimatedInputTokens": 8169,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9333333333333333,
+        "3": 0.8916666666666667,
+        "5": 0.825
+      },
+      "requests": 150,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 19402,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9672131147540983,
+      "readyAhead": {
+        "2": 0.9016393442622951,
+        "3": 0.8688524590163934,
+        "5": 0.7704918032786885
+      },
+      "requests": 67,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 7476,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.95,
+      "readyAhead": {
+        "2": 0.6166666666666667,
+        "3": 0.45,
+        "5": 0.11666666666666667
+      },
+      "requests": 71,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 13609,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.8852459016393442,
+      "readyAhead": {
+        "2": 0.7213114754098361,
+        "3": 0.6557377049180327,
+        "5": 0.4918032786885246
+      },
+      "requests": 29,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5007,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 58,
+      "retries": 0,
+      "cancelled": 58,
+      "cacheHits": 0,
+      "estimatedInputTokens": 11750,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 19,
+      "retries": 0,
+      "cancelled": 17,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3627,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 58,
+      "retries": 0,
+      "cancelled": 58,
+      "cacheHits": 0,
+      "estimatedInputTokens": 11750,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 19,
+      "retries": 0,
+      "cancelled": 17,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3627,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 58,
+      "retries": 0,
+      "cancelled": 58,
+      "cacheHits": 0,
+      "estimatedInputTokens": 11750,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 16,
+      "retries": 0,
+      "cancelled": 16,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2958,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 4,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 58,
+      "retries": 0,
+      "cancelled": 58,
+      "cacheHits": 0,
+      "estimatedInputTokens": 11750,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 100,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9836065573770492,
+      "readyAhead": {
+        "2": 0.9180327868852459,
+        "3": 0.8852459016393442,
+        "5": 0.819672131147541
+      },
+      "requests": 78,
+      "retries": 0,
+      "cancelled": 4,
+      "cacheHits": 0,
+      "estimatedInputTokens": 8169,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9333333333333333,
+        "3": 0.8916666666666667,
+        "5": 0.825
+      },
+      "requests": 150,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 19402,
+      "realUsage": null,
+      "peakActive": 3,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9672131147540983,
+      "readyAhead": {
+        "2": 0.9016393442622951,
+        "3": 0.8688524590163934,
+        "5": 0.7704918032786885
+      },
+      "requests": 67,
+      "retries": 0,
+      "cancelled": 6,
+      "cacheHits": 0,
+      "estimatedInputTokens": 7476,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 1000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.95,
+      "readyAhead": {
+        "2": 0.6166666666666667,
+        "3": 0.45,
+        "5": 0.11666666666666667
+      },
+      "requests": 71,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 13609,
+      "realUsage": null,
+      "peakActive": 4,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 3000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0.8852459016393442,
+      "readyAhead": {
+        "2": 0.7213114754098361,
+        "3": 0.6557377049180327,
+        "5": 0.4918032786885246
+      },
+      "requests": 29,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5007,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 3000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 58,
+      "retries": 0,
+      "cancelled": 58,
+      "cacheHits": 0,
+      "estimatedInputTokens": 11750,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 8000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 20,
+      "retries": 0,
+      "cancelled": 18,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3765,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 8000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 58,
+      "retries": 0,
+      "cancelled": 58,
+      "cacheHits": 0,
+      "estimatedInputTokens": 11750,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 15000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 20,
+      "retries": 0,
+      "cancelled": 18,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3765,
+      "realUsage": null,
+      "peakActive": 6,
+      "replayReady": false,
+      "replayNewRequests": 2,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 15000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 58,
+      "retries": 0,
+      "cancelled": 58,
+      "cacheHits": 0,
+      "estimatedInputTokens": 11750,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 30000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 16,
+      "retries": 0,
+      "cancelled": 16,
+      "cacheHits": 0,
+      "estimatedInputTokens": 2958,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 8,
+      "latency": 30000,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 58,
+      "retries": 0,
+      "cancelled": 58,
+      "cacheHits": 0,
+      "estimatedInputTokens": 11750,
+      "realUsage": null,
+      "peakActive": 5,
+      "replayReady": false,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 1,
+      "mode": "fast",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9375,
+      "readyAhead": {
+        "2": 0.875,
+        "3": 0.875,
+        "5": 0.8125
+      },
+      "requests": 18,
+      "retries": 0,
+      "cancelled": 0,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1584,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 1,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 1,
+      "mode": "quality-cache",
+      "failure": "",
+      "firstMs": 0,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9375,
+        "3": 0.875,
+        "5": 0.8125
+      },
+      "requests": 0,
+      "retries": 0,
+      "cancelled": 0,
+      "cacheHits": 1,
+      "estimatedInputTokens": 0,
+      "realUsage": null,
+      "peakActive": 0,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 0,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 1,
+      "mode": "fast",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.967741935483871,
+      "readyAhead": {
+        "2": 0.9032258064516129,
+        "3": 0.8709677419354839,
+        "5": 0.8064516129032258
+      },
+      "requests": 34,
+      "retries": 0,
+      "cancelled": 1,
+      "cacheHits": 0,
+      "estimatedInputTokens": 3042,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 1,
+      "mode": "quality-cache",
+      "failure": "",
+      "firstMs": 0,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9354838709677419,
+        "3": 0.9032258064516129,
+        "5": 0.8387096774193549
+      },
+      "requests": 0,
+      "retries": 0,
+      "cancelled": 0,
+      "cacheHits": 1,
+      "estimatedInputTokens": 0,
+      "realUsage": null,
+      "peakActive": 0,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 0,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 1,
+      "mode": "fast",
+      "failure": "",
+      "firstMs": 1000,
+      "readyBeforeDisplay": 0.9672131147540983,
+      "readyAhead": {
+        "2": 0.9016393442622951,
+        "3": 0.8688524590163934,
+        "5": 0.7704918032786885
+      },
+      "requests": 61,
+      "retries": 0,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5643,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 1000,
+      "density": 1,
+      "mode": "quality-cache",
+      "failure": "",
+      "firstMs": 0,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9344262295081968,
+        "3": 0.9016393442622951,
+        "5": 0.8360655737704918
+      },
+      "requests": 0,
+      "retries": 0,
+      "cancelled": 0,
+      "cacheHits": 2,
+      "estimatedInputTokens": 0,
+      "realUsage": null,
+      "peakActive": 0,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 0,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "429",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 6,
+      "retries": 5,
+      "cancelled": 0,
+      "cacheHits": 0,
+      "estimatedInputTokens": 1578,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "timeout",
+      "firstMs": 3001.686279296875,
+      "readyBeforeDisplay": 0.5161290322580645,
+      "readyAhead": {
+        "2": 0.41935483870967744,
+        "3": 0.3225806451612903,
+        "5": 0.12903225806451613
+      },
+      "requests": 23,
+      "retries": 13,
+      "cancelled": 2,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4629,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 2,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 2,
+      "concurrency": 1,
+      "latency": 1000,
+      "density": 1,
+      "mode": "dual",
+      "failure": "401",
+      "firstMs": null,
+      "readyBeforeDisplay": 0,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 39,
+      "retries": 0,
+      "cancelled": 0,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4707,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": false,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 1,
+      "burst": 1,
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.06666666666666667,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 31,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 4433,
+      "realUsage": null,
+      "peakActive": 1,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 1,
+      "burst": 4,
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.16666666666666666,
+      "readyAhead": {
+        "2": 0,
+        "3": 0,
+        "5": 0
+      },
+      "requests": 34,
+      "retries": 0,
+      "cancelled": 12,
+      "cacheHits": 0,
+      "estimatedInputTokens": 5294,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 1,
+      "burst": 20,
+      "firstMs": 100,
+      "readyBeforeDisplay": 0.9333333333333333,
+      "readyAhead": {
+        "2": 0.7416666666666667,
+        "3": 0.6583333333333333,
+        "5": 0.4583333333333333
+      },
+      "requests": 50,
+      "retries": 0,
+      "cancelled": 4,
+      "cacheHits": 0,
+      "estimatedInputTokens": 8446,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 4,
+      "burst": 1,
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.8916666666666667,
+        "3": 0.8333333333333334,
+        "5": 0.725
+      },
+      "requests": 121,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 17031,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 4,
+      "burst": 4,
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9166666666666666,
+        "3": 0.8666666666666667,
+        "5": 0.75
+      },
+      "requests": 124,
+      "retries": 0,
+      "cancelled": 9,
+      "cacheHits": 0,
+      "estimatedInputTokens": 17732,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 4,
+      "burst": 20,
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.925,
+        "3": 0.8916666666666667,
+        "5": 0.8083333333333333
+      },
+      "requests": 140,
+      "retries": 0,
+      "cancelled": 9,
+      "cacheHits": 0,
+      "estimatedInputTokens": 18740,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 1,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 8,
+      "burst": 1,
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.9166666666666666,
+        "3": 0.875,
+        "5": 0.7916666666666666
+      },
+      "requests": 143,
+      "retries": 0,
+      "cancelled": 7,
+      "cacheHits": 0,
+      "estimatedInputTokens": 18449,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 8,
+      "burst": 4,
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.925,
+        "3": 0.8916666666666667,
+        "5": 0.8083333333333333
+      },
+      "requests": 145,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 19087,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 8,
+      "burst": 20,
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.925,
+        "3": 0.8916666666666667,
+        "5": 0.8083333333333333
+      },
+      "requests": 147,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 19213,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 16,
+      "burst": 1,
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.925,
+        "3": 0.8916666666666667,
+        "5": 0.8166666666666667
+      },
+      "requests": 148,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 19276,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 16,
+      "burst": 4,
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.925,
+        "3": 0.8916666666666667,
+        "5": 0.8083333333333333
+      },
+      "requests": 147,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 19213,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    },
+    {
+      "rate": 4,
+      "concurrency": 2,
+      "latency": 100,
+      "density": 4,
+      "mode": "dual",
+      "failure": "",
+      "requestRate": 16,
+      "burst": 20,
+      "firstMs": 100,
+      "readyBeforeDisplay": 1,
+      "readyAhead": {
+        "2": 0.925,
+        "3": 0.8916666666666667,
+        "5": 0.8083333333333333
+      },
+      "requests": 147,
+      "retries": 0,
+      "cancelled": 8,
+      "cacheHits": 0,
+      "estimatedInputTokens": 19213,
+      "realUsage": null,
+      "peakActive": 2,
+      "replayReady": true,
+      "replayNewRequests": 0,
+      "afterStopRequests": 0,
+      "maxAttempts": 1,
+      "resources": {
+        "active": 0
+      }
+    }
+  ],
+  "clock": "virtual time",
+  "note": "Actual coordinator and actual baseline RequestQueue/ExecutionSlots or new RequestQueue/ResourceScheduler around a local Mock Provider. Input tokens are conservative estimates; real usage unavailable. No paid requests."
+}

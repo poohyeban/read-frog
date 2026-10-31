@@ -1,0 +1,101 @@
+import { Provider, useAtomValue } from "jotai"
+import React, { useLayoutEffect } from "react"
+import { createRoot } from "react-dom/client"
+import {
+  currentTimeMsAtom,
+  displaySubtitleAtom,
+  sourceTrackAtom,
+  subtitlesStore,
+} from "@/entrypoints/subtitles.content/atoms"
+import { SubtitlesScheduler } from "@/entrypoints/subtitles.content/subtitles-scheduler"
+const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
+const makeCues = (n: number) =>
+  Array.from({ length: n }, (_, i) => ({
+    start: i * 2000,
+    end: i * 2000 + 1800,
+    text: `Sentence ${i}.`,
+  }))
+function videoAt(time: number) {
+  const video = document.createElement("video")
+  let value = time
+  Object.defineProperty(video, "currentTime", {
+    get: () => value,
+    set: (next) => {
+      value = next
+    },
+  })
+  return video
+}
+let commits = 0
+function Caption() {
+  const cue = useAtomValue(displaySubtitleAtom)
+  useLayoutEffect(() => {
+    commits++
+  })
+  return <span>{cue?.text}</span>
+}
+const root = createRoot(document.getElementById("root")!)
+root.render(
+  <Provider store={subtitlesStore}>
+    <Caption />
+  </Provider>,
+)
+;(window as any).runSubtitleBenchmark = async () => {
+  const scales = []
+  for (const size of [100, 1000, 10000, 50000]) {
+    const cues = makeCues(size)
+    subtitlesStore.set(sourceTrackAtom, cues)
+    const video = videoAt(0)
+    const scheduler = new SubtitlesScheduler({ videoElement: video })
+    scheduler.start()
+    const lookup = [],
+      updates = [],
+      bulk = []
+    for (let sample = 0; sample < 30; sample++) {
+      let stamp = performance.now()
+      for (let i = 0; i < 200; i++) {
+        const index = ((sample * 200 + i) * 7919) % size
+        subtitlesStore.set(currentTimeMsAtom, cues[index]!.start + 100)
+        subtitlesStore.get(displaySubtitleAtom)
+      }
+      lookup.push((performance.now() - stamp) / 200)
+      stamp = performance.now()
+      for (let i = 0; i < 200; i++) {
+        video.currentTime = (((sample * 200 + i) * 7919) % size) * 2 + 0.1
+        video.dispatchEvent(new Event("timeupdate"))
+      }
+      updates.push((performance.now() - stamp) / 200)
+    }
+    scheduler.supplementSubtitles(cues.map((f) => ({ ...f, translation: f.text })))
+    for (let sample = 0; sample < 10; sample++) {
+      const stamp = performance.now()
+      scheduler.supplementSubtitles(
+        cues
+          .slice(-Math.min(size, 500))
+          .map((f) => ({ ...f, translation: `${sample}: ${f.text}` })),
+      )
+      bulk.push(performance.now() - stamp)
+    }
+    subtitlesStore.set(currentTimeMsAtom, 100)
+    await delay(10)
+    const initialCommits = commits
+    for (let i = 0; i < 30; i++) {
+      subtitlesStore.set(currentTimeMsAtom, 100 + i)
+      await delay(1)
+    }
+    scales.push({
+      size,
+      lookup,
+      timeupdate: updates,
+      bulk500: bulk,
+      sameCueCommits: commits - initialCommits,
+      heapBytes: (performance as any).memory?.usedJSHeapSize,
+    })
+    scheduler.reset()
+    scheduler.stop()
+  }
+  return {
+    scales,
+    note: "30 paired microbenchmark samples; actual production timelines/atoms/renderer. No Provider calls. Separate from the physical-resource continuity matrix.",
+  }
+}

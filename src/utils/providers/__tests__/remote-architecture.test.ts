@@ -42,20 +42,21 @@ describe("executable remote entrypoint coverage", () => {
         ImportDeclaration(node) {
           const module = node.source.value
           if (node.importKind === "type") return
-          if (module === "ai")
+          if (module === "ai") {
+            // Allow only audited local helpers outside the gateway. New SDK inference
+            // APIs (including embeddings/images) must not silently escape a name blacklist.
+            const localHelpers = new Set(["Output", "parsePartialJson"])
             for (const item of node.specifiers) {
-              if (item.type === "ImportNamespaceSpecifier") expect(name).toBe(gateway)
-              if (item.type === "ImportSpecifier" && item.importKind !== "type") {
-                const imported =
-                  item.imported.type === "Identifier" ? item.imported.name : item.imported.value
-                if (
-                  /^(?:generateText|streamText|generateObject|streamObject|(?:experimental_)?generateSpeech|(?:experimental_)?transcribe)$/.test(
-                    imported,
-                  )
-                )
-                  expect(name, `SDK bypass in ${name}`).toBe(gateway)
-              }
+              if (item.type === "ImportSpecifier" && item.importKind === "type") continue
+              const imported =
+                item.type === "ImportSpecifier"
+                  ? item.imported.type === "Identifier"
+                    ? item.imported.name
+                    : item.imported.value
+                  : "*"
+              if (!localHelpers.has(imported)) expect(name, `SDK bypass in ${name}`).toBe(gateway)
             }
+          }
           if (/^(?:@ai-sdk\/|ai-sdk-ollama)/.test(module))
             expect(adapters.has(name), `Adapter outside transport boundary: ${name}`).toBe(true)
           if (module.endsWith("/resource-scheduler") || module === "./resource-scheduler")
