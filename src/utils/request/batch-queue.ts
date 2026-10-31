@@ -12,6 +12,14 @@ export class BatchCountMismatchError extends Error {
   }
 }
 
+export class BatchMemberInvalidError extends Error {
+  readonly isRetryable = false
+  constructor() {
+    super("Invalid batch member result")
+    this.name = "BatchMemberInvalidError"
+  }
+}
+
 interface BatchTask<T, R> {
   memberId: string
   data: T
@@ -57,6 +65,8 @@ export interface BatchOptions<T, R> {
   // batch was outside every cancellable structure (retry backoff sleep).
   isScopeCancelled?: (scopeKey: string) => boolean
   executeBatch: (dataList: T[], meta: BatchExecutionMeta) => Promise<R[]>
+  /** Validate aligned members only after the complete result count is known. */
+  isResultValid?: (result: R, data: T) => boolean
   executeIndividual?: (data: T, meta: BatchExecutionMeta) => Promise<R>
   onError?: (
     error: Error,
@@ -80,6 +90,7 @@ export class BatchQueue<T, R> {
   private getScope?: (data: T) => string | undefined
   private isScopeCancelled?: (scopeKey: string) => boolean
   private executeBatch: (dataList: T[], meta: BatchExecutionMeta) => Promise<R[]>
+  private isResultValid?: (result: R, data: T) => boolean
   private executeIndividual?: (data: T, meta: BatchExecutionMeta) => Promise<R>
   private onError?: (
     error: Error,
@@ -98,6 +109,7 @@ export class BatchQueue<T, R> {
     this.getScope = config.getScope
     this.isScopeCancelled = config.isScopeCancelled
     this.executeBatch = config.executeBatch
+    this.isResultValid = config.isResultValid
     this.executeIndividual = config.executeIndividual
     this.onError = config.onError
   }
@@ -347,7 +359,19 @@ export class BatchQueue<T, R> {
         throw new BatchCountMismatchError(tasks.length, results.length, results)
       }
 
-      tasks.forEach((task, index) => task.resolve(results[index]!))
+      const failed: BatchTask<T, R>[] = []
+      tasks.forEach((task, index) => {
+        const result = results[index]!
+        if (this.isResultValid && !this.isResultValid(result, task.data)) failed.push(task)
+        else task.resolve(result)
+      })
+      if (failed.length) {
+        const error = new BatchMemberInvalidError()
+        this.onError?.(error, { batchKey, retryCount: 0, isFallback: false })
+        if (this.enableFallbackToIndividual && this.executeIndividual)
+          return this.executeFallbackIndividual(failed, batchKey, meta.attempts)
+        failed.forEach((task) => task.reject(error))
+      }
     } catch (error) {
       const err = error as Error
 
@@ -404,6 +428,8 @@ export class BatchQueue<T, R> {
             scopes,
             attempts: attempts.subset([task.memberId]),
           })
+          if (this.isResultValid && !this.isResultValid(result, task.data))
+            throw new BatchMemberInvalidError()
           task.resolve(result)
         } catch (error) {
           const err = error as Error

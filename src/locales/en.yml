@@ -97,6 +97,8 @@ options:
       diagnostics: "Record bounded subtitle diagnostics"
       maxPendingBatches: "Maximum pending subtitle batches"
       batchSize: "Subtitle entries per batch"
+      cacheRestoreTimeoutMs: "Cache restoration wait (ms)"
+      cacheRestoreRetryMs: "Cache failure cooldown (ms)"
       fastAheadMs: "Fast lookahead (media ms)"
       qualityAheadMs: "Quality lookahead (media ms)"
       lowMinMs: "Minimum low watermark (ms)"

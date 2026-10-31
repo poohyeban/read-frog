@@ -199,8 +199,9 @@ export async function executeBatchTranslation<TContext>(
   let resolver = snapshotPromptResolver(promptResolver, promptConfig, subtitlePromptConfig)
   let cacheKey: string | undefined
   // A cue hash describes one input, not the neighbouring cues or glossary union
-  // the model sees. Persist only the complete subtitle batch under its actual
-  // rendered prompt. A singleton (including fallback) has its own identity.
+  // the model sees. Persist aligned subtitle batches under their actual prompt;
+  // candidate restoration validates each referenced position independently.
+  // A singleton (including fallback) has its own identity.
   if (subtitlePromptConfig) {
     const prompt = await resolver(LANG_CODE_TO_EN_NAME[langConfig.targetCode], batchText, {
       isBatch: true,
@@ -222,7 +223,7 @@ export async function executeBatchTranslation<TContext>(
     signal?.throwIfAborted()
     if (cached?.translation) {
       const parsed = parseBatchResult(cached.translation)
-      if (parsed.length === texts.length && parsed.every((text, i) => text || !texts[i]!.trim())) {
+      if (parsed.length === texts.length && parsed.some((text) => text.trim())) {
         subtitleWorkRuntime.note("cache-hit")
         if (!cached.subtitleInputs)
           await db.translationCache.put({
@@ -248,11 +249,10 @@ export async function executeBatchTranslation<TContext>(
   if (subtitlePromptConfig) subtitleWorkRuntime.note("batch-results", undefined, parsed.length)
   if (cacheKey) {
     signal?.throwIfAborted()
-    // Let BatchQueue own count-mismatch retries, without spending the network
-    // retry budget as well. Invalid responses must never enter the cache.
+    // Preserve reliable alignment and valid positions. BatchQueue alone recovers
+    // failed members; throwing here would repeat all successful translations.
     if (parsed.length !== texts.length) return parsed
-    if (parsed.some((text, i) => !text && texts[i]!.trim()))
-      throw new Error("Empty subtitle translation")
+    if (!parsed.some((text) => text.trim())) return parsed
     await db.translationCache.put({
       key: cacheKey,
       translation: result,
@@ -387,6 +387,10 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
         : data.hash,
     getScope: (data) => data.scope,
     isScopeCancelled,
+    isResultValid: (result, data) => {
+      const text = typeof result === "string" ? result : result?.translation
+      return typeof text === "string" && (!!text.trim() || !data.text.trim())
+    },
     executeBatch: async (dataList, meta) => {
       // Stable for this RequestQueue task: automatic retries must reuse the
 

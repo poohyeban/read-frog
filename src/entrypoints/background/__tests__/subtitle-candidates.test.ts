@@ -97,3 +97,22 @@ it("does not restore stale glossary revisions or a cancelled session's publicati
   await storage.setItem(GLOSSARY_REVISION_KEY, fixture.revision)
   expect(await read()).toEqual([])
 })
+
+it("restores a valid position from a partial aligned batch but never its empty position", async () => {
+  fixture.batches.set("whole-prompt", {
+    key: "whole-prompt",
+    subtitleInputs: ["first", "second"],
+    translation: "一|",
+  })
+  await save()
+  expect(await read()).toHaveLength(1)
+  fixture.bundles[0]!.cues = [
+    {
+      ...cues[0]!,
+      text: "second",
+      translation: "",
+      translationBatchIndex: 1,
+    },
+  ]
+  expect(await read()).toEqual([])
+})

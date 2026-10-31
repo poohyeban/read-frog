@@ -8,15 +8,19 @@ import {
   initializePerformance,
   watchPerformance,
 } from "@/utils/config/performance"
+import { createPerformanceWriter } from "@/utils/config/performance-writer"
 import { getLocalConfig } from "@/utils/config/storage"
 import { CONFIG_STORAGE_KEY } from "@/utils/constants/config"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { freezeData } from "@/utils/immutable"
 import { getExecutionContext } from "@/utils/request/execution-context"
+import { PERFORMANCE_STORAGE_KEY } from "@/utils/request/performance-config"
 import { RequestQueue } from "@/utils/request/request-queue"
 import { ResourceRejected } from "@/utils/request/resource-error"
 import {
   ResourceIdentityResolver,
   isIdentityVault,
+  normalizeResourceEndpoint,
   type IdentityVault,
 } from "@/utils/request/resource-identity"
 import { RESOURCE_DEFAULTS } from "@/utils/request/resource-policy"
@@ -55,7 +59,8 @@ const resolver = new ResourceIdentityResolver({
     return primary ?? recovery
   },
   write: writeIdentity,
-  hasBindings: async () => Object.keys(getPerformanceOverrides().groups ?? {}).length > 0,
+  hasBindings: async () =>
+    Object.values(getPerformanceOverrides().groups ?? {}).some((g) => g.members.length > 0),
 })
 export const providerResourceScheduler = new ResourceScheduler()
 const directRequests = new RequestQueue({
@@ -68,36 +73,66 @@ const directRequests = new RequestQueue({
 let configs = new Map<string, LLMProviderConfig>()
 let revisions = new Map<string, string>()
 let identities = new Map<string, string>()
+let configuredIdentities = new Map<string, string>()
+let resourceIds: Set<string> | undefined
+let identityRevisions = new Map<string, string>()
+let refreshGeneration = 0
 let initialize: Promise<void> | undefined
 let updates: Promise<void> = Promise.resolve()
 let watching = false
+let hasConfiguration = false
 let revision = 0
 let failure: unknown
 let cooling: Record<string, number> = {}
 
+// User patches and configuration reconciliation share one serialized writer.
+export const resourcePerformanceWriter = createPerformanceWriter({
+  read: () => storage.getItem(PERFORMANCE_STORAGE_KEY),
+  write: (value) => storage.setItem(PERFORMANCE_STORAGE_KEY, value),
+  context: getProviderResourceSnapshot,
+})
+
 function refresh(config: Config | null) {
-  const next = new Map((config?.providersConfig ?? []).map((p) => [p.id, p]))
+  hasConfiguration = config !== null
+  const generation = ++refreshGeneration
+  const next = new Map(
+    (config?.providersConfig ?? []).map((p) => [p.id, freezeData(structuredClone(p))]),
+  )
+  const nextRevisions = new Map([...next].map(([id, p]) => [id, providerTransportRevision(p)]))
   // Invalidate obsolete queued transport snapshots synchronously, before async identity work.
   configs = next
-  revisions = new Map([...next].map(([id, p]) => [id, providerTransportRevision(p)]))
+  revisions = nextRevisions
   updates = updates
     .catch(() => {})
     .then(async () => {
+      if (generation !== refreshGeneration) return
+      if (!config) throw new ResourceRejected("configuration-changed")
       await resolver.initialize()
+      if (generation !== refreshGeneration) return
       const resolved = new Map<string, string>()
-      for (const [id, provider] of configs) {
-        if (!provider.enabled) continue
+      let complete = true
+      for (const [id, provider] of next) {
+        let material
         try {
-          resolved.set(
-            id,
-            await resolver.update(id, revisions.get(id)!, providerIdentityMaterial(provider)),
-          )
+          material = providerIdentityMaterial(provider)
+          normalizeResourceEndpoint(material.endpoint)
         } catch {
-          /* An unconfigured endpoint cannot disable unrelated providers. */
+          // An unconfigured/invalid endpoint is not a live reference.
+          continue
         }
+        try {
+          resolved.set(id, await resolver.update(id, nextRevisions.get(id)!, material))
+        } catch {
+          // HMAC/storage failures do not prove a saved member is unreferenced.
+          complete = false
+        }
+        if (generation !== refreshGeneration) return
       }
-      for (const id of identities.keys()) if (!resolved.has(id)) resolver.remove(id)
-      identities = resolved
+      for (const id of configuredIdentities.keys()) if (!resolved.has(id)) resolver.remove(id)
+      configuredIdentities = resolved
+      resourceIds = complete ? new Set(resolved.values()) : undefined
+      identities = new Map([...resolved].filter(([id]) => next.get(id)?.enabled))
+      identityRevisions = nextRevisions
       const registry = resolveResourceRegistry(identities, getPerformanceOverrides())
       providerResourceScheduler.configure(registry.domains, registry.paths, registry.global)
       directRequests.setQueueOptions({ maxQueued: registry.global.maxQueued })
@@ -107,9 +142,11 @@ function refresh(config: Config | null) {
         else delete cooling[domain]
       }
       failure = undefined
+      // Do not await here: a queued UI edit can itself be waiting for this refresh.
+      void resourcePerformanceWriter.reconcile().catch(() => {})
     })
     .catch((error) => {
-      failure = error
+      if (generation === refreshGeneration) failure = error
       throw error
     })
   void updates.catch(() => {})
@@ -127,7 +164,9 @@ export function initializeProviderResources() {
         void refresh(config).catch(() => {})
       })
       watchPerformance(() => {
-        void refresh({ providersConfig: [...configs.values()] } as Config).catch(() => {})
+        void refresh(
+          hasConfiguration ? ({ providersConfig: [...configs.values()] } as Config) : null,
+        ).catch(() => {})
       })
     }
     const captured = revision
@@ -145,11 +184,24 @@ export function initializeProviderResources() {
   return initialize
 }
 
-export async function getResourceProvider(providerId: string) {
+/** A waiter must follow updates queued while an older HMAC/write was suspended. */
+async function waitForCurrentResources() {
   await initializeProviderResources()
-  await updates
-  const provider = configs.get(providerId)
-  if (!provider?.enabled || !identities.has(providerId))
+  while (true) {
+    const pending = updates
+    try {
+      await pending
+    } catch (error) {
+      if (pending === updates) throw error
+    }
+    if (pending === updates) return { configs, identities, resourceIds }
+  }
+}
+
+export async function getResourceProvider(providerId: string) {
+  const snapshot = await waitForCurrentResources()
+  const provider = snapshot.configs.get(providerId)
+  if (!provider?.enabled || !snapshot.identities.has(providerId))
     throw new ResourceRejected("configuration-changed")
   return provider
 }
@@ -158,9 +210,12 @@ export function getResourceIdentities() {
   return new Map(identities)
 }
 export async function getProviderResourceSnapshot() {
-  await initializeProviderResources()
-  await updates
-  return { identities: new Map(identities), providerIds: new Set(configs.keys()) }
+  const snapshot = await waitForCurrentResources()
+  return {
+    identities: new Map(snapshot.identities),
+    providerIds: new Set(snapshot.configs.keys()),
+    resourceIds: snapshot.resourceIds && new Set(snapshot.resourceIds),
+  }
 }
 
 /** The sole remote-operation authority. Local/cache work never enters here. */
@@ -170,8 +225,7 @@ export async function runProviderOperation<T>(
   operation: (signal: AbortSignal, permit: ExecutionPermit) => Promise<T>,
   beforeSend?: () => void,
 ): Promise<T> {
-  await initializeProviderResources()
-  await updates
+  await waitForCurrentResources()
   signal?.throwIfAborted()
   const context = getExecutionContext(signal)
   if (!context) {
@@ -198,6 +252,7 @@ export async function runProviderOperation<T>(
       !id ||
       identities.get(provider.id) !== id ||
       revisions.get(provider.id) !== captured ||
+      identityRevisions.get(provider.id) !== captured ||
       !configs.get(provider.id)?.enabled
     )
       throw new ResourceRejected("configuration-changed")

@@ -96,3 +96,57 @@ describe("persistent opaque resource identities", () => {
     expect(writes).toBe(1)
   })
 })
+
+function latch() {
+  let resolve!: () => void
+  const promise = new Promise<void>((r) => {
+    resolve = r
+  })
+  return { promise, resolve }
+}
+it("late HMAC completion cannot overwrite a newer identity or resurrect a removed provider", async () => {
+  const resolver = new ResourceIdentityResolver(persistence)
+  await resolver.initialize()
+  const entered = latch(),
+    release = latch()
+  const sign = crypto.subtle.sign.bind(crypto.subtle)
+  const hook = vi.spyOn(crypto.subtle, "sign").mockImplementationOnce(async (...args) => {
+    entered.resolve()
+    await release.promise
+    return sign(...args)
+  })
+  try {
+    const old = resolver.update("provider", "old", material("old-key"))
+    await entered.promise
+    const latest = await resolver.update("provider", "new", material("new-key"))
+    release.resolve()
+    expect(await old).not.toBe(latest)
+    expect(resolver.get("provider", "new")).toBe(latest)
+    const pending = resolver.update("removed", "1", material("third-key"))
+    resolver.remove("removed")
+    await pending
+    expect(resolver.get("removed", "1")).toBeUndefined()
+  } finally {
+    release.resolve()
+    hook.mockRestore()
+  }
+})
+it("captures credential material before asynchronous initialization", async () => {
+  const entered = latch(),
+    release = latch()
+  const resolver = new ResourceIdentityResolver({
+    ...persistence,
+    read: async () => {
+      entered.resolve()
+      await release.promise
+      return persistence.read()
+    },
+  })
+  const input = material("captured")
+  const pending = resolver.update("a", "old", input)
+  await entered.promise
+  input.authentication = { authorization: "Bearer changed-after-call" }
+  release.resolve()
+  const id = await pending
+  expect(await resolver.update("b", "same-material", material("captured"))).toBe(id)
+})

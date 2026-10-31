@@ -85,6 +85,59 @@ afterEach(() => {
 })
 
 describe("background provider authority", () => {
+  it("preserves tuning while the root configuration is unavailable and reconciles after recovery", async () => {
+    const runtime = await import("../resource-runtime")
+    await runtime.initializeProviderResources()
+    await runtime.resourcePerformanceWriter.reconcile()
+    const before = await storage.getItem("local:performanceOverrides")
+    await put(`local:${CONFIG_STORAGE_KEY}`, null)
+    await expect(runtime.resourcePerformanceWriter.reconcile()).rejects.toThrow(
+      "configuration-changed",
+    )
+    expect(await storage.getItem("local:performanceOverrides")).toEqual(before)
+    await put("local:performanceOverrides", before)
+    await expect(runtime.resourcePerformanceWriter.reconcile()).rejects.toThrow(
+      "configuration-changed",
+    )
+    expect(await storage.getItem("local:performanceOverrides")).toEqual(before)
+    await put(`local:${CONFIG_STORAGE_KEY}`, config())
+    await expect(runtime.getResourceProvider("a")).resolves.toMatchObject({ id: "a" })
+  })
+  it("reconciles removed provider policies and orphan members, preserving a disabled account alias", async () => {
+    const runtime = await import("../resource-runtime")
+    await runtime.initializeProviderResources()
+    const old = runtime.getResourceIdentities().get("a")!
+    await put("local:performanceOverrides", {
+      version: 1,
+      revision: 2,
+      providers: { a: { rate: 12 }, b: { maxInFlight: 4 }, deleted: { rate: 1 } },
+      groups: { shared: { name: "Keep", members: [old], policy: { maxInFlight: 3 } } },
+    })
+    await put(
+      `local:${CONFIG_STORAGE_KEY}`,
+      config([
+        { ...provider, apiKey: "rotated" },
+        { ...alias, enabled: false },
+      ]),
+    )
+    await runtime.getProviderResourceSnapshot()
+    await runtime.resourcePerformanceWriter.reconcile()
+    const read = () =>
+      storage.getItem<import("@/utils/request/performance-config").PerformanceOverrides>(
+        "local:performanceOverrides",
+      )
+    expect((await read())?.groups?.shared?.members).toEqual([old])
+    expect((await read())?.providers).toEqual({ a: { rate: 12 }, b: { maxInFlight: 4 } })
+    await put(`local:${CONFIG_STORAGE_KEY}`, config([{ ...provider, apiKey: "rotated" }]))
+    await runtime.getProviderResourceSnapshot()
+    await runtime.resourcePerformanceWriter.reconcile()
+    expect((await read())?.groups?.shared).toEqual({
+      name: "Keep",
+      members: [],
+      policy: { maxInFlight: 3 },
+    })
+    expect((await read())?.providers).toEqual({ a: { rate: 12 } })
+  })
   it("shares account aliases, keeps request hot paths free of storage/HMAC writes, and reuses installation identity", async () => {
     let runtime = await import("../resource-runtime")
     const { getLocalConfig } = await import("@/utils/config/storage")
@@ -120,6 +173,96 @@ describe("background provider authority", () => {
     await runtime.initializeProviderResources()
     expect(runtime.getResourceIdentities()).toEqual(ids)
   })
+  it.each(["hmac", "persistence"])(
+    "uses one immutable revision snapshot across delayed %s and rapid multi-provider/group edits",
+    async (delay) => {
+      const runtime = await import("../resource-runtime")
+      await runtime.initializeProviderResources()
+      const old = runtime.getResourceIdentities().get("a")!
+      await put("local:performanceOverrides", {
+        version: 1,
+        revision: 2,
+        groups: { shared: { name: "Old account", members: [old], policy: { maxInFlight: 1 } } },
+      })
+      await runtime.getProviderResourceSnapshot()
+      const entered = deferred(),
+        release = deferred()
+      const sign = crypto.subtle.sign.bind(crypto.subtle)
+      const setItems = storage.setItems.bind(storage)
+      let held = false
+      const hold = async () => {
+        if (!held) {
+          held = true
+          entered.resolve()
+          await release.promise
+        }
+      }
+      const hook =
+        delay === "hmac"
+          ? vi.spyOn(crypto.subtle, "sign").mockImplementation(async (...args) => {
+              await hold()
+              return sign(...args)
+            })
+          : vi.spyOn(storage, "setItems").mockImplementation(async (...args) => {
+              await hold()
+              return setItems(...args)
+            })
+      try {
+        await put(`local:${CONFIG_STORAGE_KEY}`, config([{ ...provider, apiKey: "key-a1" }, alias]))
+        await entered.promise
+        const waitingBeforeLatest = runtime.getResourceProvider("b")
+        await put(
+          `local:${CONFIG_STORAGE_KEY}`,
+          config([
+            { ...provider, apiKey: "key-a2" },
+            { ...alias, apiKey: "key-b2" },
+          ]),
+        )
+        const latestA = { ...provider, apiKey: "key-a3" },
+          latestB = { ...alias, apiKey: "key-b3" }
+        const oldAlias = { ...provider, id: "old-alias" }
+        await put(`local:${CONFIG_STORAGE_KEY}`, config([latestA, latestB, oldAlias]))
+        await put("local:performanceOverrides", {
+          version: 1,
+          revision: 3,
+          groups: {
+            moved: { name: "Moved while resolving", members: [old], policy: { maxInFlight: 4 } },
+          },
+        })
+        release.resolve()
+        expect((await waitingBeforeLatest).apiKey).toBe("key-b3")
+        const snapshot = await runtime.getProviderResourceSnapshot()
+        expect(snapshot.identities.get("b")).not.toBe(old)
+        expect(snapshot.identities.get("a")).not.toBe(snapshot.identities.get("b"))
+        expect(snapshot.identities.get("old-alias")).toBe(old)
+        expect(runtime.providerResourceScheduler.policy(old).maxInFlight).toBe(4)
+        for (const id of ["a", "b"]) {
+          const effective = await runtime.getResourceProvider(id)
+          expect(Object.isFrozen(effective)).toBe(true)
+          expect(
+            runtime.providerResourceScheduler.policy(snapshot.identities.get(id)!).maxInFlight,
+          ).toBe(2)
+        }
+        // Re-resolve the same material under fresh aliases: identity cannot be a stale cache tag.
+        await put(
+          `local:${CONFIG_STORAGE_KEY}`,
+          config([
+            latestA,
+            latestB,
+            oldAlias,
+            { ...latestA, id: "check-a" },
+            { ...latestB, id: "check-b" },
+          ]),
+        )
+        const verified = await runtime.getProviderResourceSnapshot()
+        expect(verified.identities.get("a")).toBe(verified.identities.get("check-a"))
+        expect(verified.identities.get("b")).toBe(verified.identities.get("check-b"))
+      } finally {
+        release.resolve()
+        hook.mockRestore()
+      }
+    },
+  )
   it("keeps names stable but a changed key leaves the old manual group and rejects obsolete queued transport", async () => {
     const runtime = await import("../resource-runtime")
     await runtime.initializeProviderResources()

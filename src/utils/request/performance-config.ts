@@ -24,6 +24,8 @@ export const subtitlePerformanceSchema = z.object({
   diagnostics: z.boolean(),
   maxPendingBatches: z.number().int().min(1).max(16),
   batchSize: z.number().int().min(1).max(32),
+  cacheRestoreTimeoutMs: z.number().int().min(50).max(5000),
+  cacheRestoreRetryMs: z.number().int().min(1000).max(60_000),
   fastAheadMs: z.number().int().min(1000).max(120_000),
   qualityAheadMs: z.number().int().min(1000).max(300_000),
   lowMinMs: z.number().int().min(1000).max(60_000),
@@ -46,7 +48,7 @@ export const performanceOverridesSchema = z.object({
       z.string(),
       z.object({
         name: z.string().trim().min(1).max(80),
-        members: z.array(z.string().min(1).max(128)).min(1).max(128),
+        members: z.array(z.string().min(1).max(128)).max(128),
         policy: resourcePolicySchema.partial().optional(),
       }),
     )

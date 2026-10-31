@@ -26,7 +26,7 @@ import { adPlayingAtom, subtitlesStore } from "./atoms"
 export interface TranslationCoordinatorOptions {
   trace?: SubtitleTraceSink
   candidateCache?: {
-    read: (start: number, end: number) => Promise<SubtitleCandidateBundle[]>
+    read: (start: number, end: number, signal?: AbortSignal) => Promise<SubtitleCandidateBundle[]>
     write: (cues: SubtitlesFragment[], lane: "fast" | "quality", lease: string) => Promise<void>
   }
   session?: SubtitleSession
@@ -80,6 +80,11 @@ export class TranslationCoordinator {
   }
   private cacheWindows = new Set<number>()
   private cacheTask: SubtitleTask | null = null
+  // A background read may ignore Abort. Keep its physical occupancy across seeks
+  // and stop/start, while bounding how long playback waits for it.
+  private cacheReadInFlight = false
+  private cacheWaitTimer: ReturnType<typeof setTimeout> | undefined
+  private cacheRetryAfter = 0
   private readyList = { fast: [] as SubtitlesFragment[], quality: [] as SubtitlesFragment[] }
   private buffer = new SubtitleBufferController()
   private unwatchPerformance?: () => void
@@ -329,15 +334,42 @@ export class TranslationCoordinator {
     const cache = this.options.candidateCache
     if (!cache) return false
     const window = Math.floor(timeMs / 60_000)
-    if (this.cacheWindows.has(window)) return false
-    if (this.cacheTask?.key === String(window)) return true
-    this.cacheTask?.cancel()
+    if (this.cacheTask?.key === String(window)) return this.cacheWaitTimer !== undefined
+    if (this.cacheTask) {
+      this.cacheTask.cancel()
+      this.cacheTask = null
+    }
+    if (
+      this.cacheReadInFlight ||
+      this.cacheWindows.has(window) ||
+      Date.now() < this.cacheRetryAfter
+    )
+      return false
     const task = this.session.begin("context", String(window), 3)
     this.cacheTask = task
-    void cache
-      .read(Math.max(0, window - 1) * 60_000, Math.max(0, window - 1) * 60_000 + 300_000)
+    this.cacheReadInFlight = true
+    const policy = getPerformanceSnapshot().subtitles
+    let restoreSucceeded = false
+    const stopWaiting = () => {
+      clearTimeout(this.cacheWaitTimer)
+      this.cacheWaitTimer = undefined
+    }
+    task.signal.addEventListener("abort", stopWaiting, { once: true })
+    this.cacheWaitTimer = setTimeout(() => {
+      stopWaiting()
+      this.cacheRetryAfter = Date.now() + policy.cacheRestoreRetryMs
+      this.trace("cache-timeout")
+      this.requestTick()
+    }, policy.cacheRestoreTimeoutMs)
+    void Promise.resolve()
+      .then(() => {
+        task.signal.throwIfAborted()
+        const start = Math.max(0, window - 1) * 60_000
+        return cache.read(start, start + 300_000, task.signal)
+      })
       .then((bundles) => {
         if (!task.isCurrent()) return
+        restoreSucceeded = true
         const restored = { fast: [] as SubtitlesFragment[], quality: [] as SubtitlesFragment[] }
         for (const bundle of bundles) {
           this.trace("cache-restored", bundle.lane, bundle.cues.length)
@@ -354,10 +386,37 @@ export class TranslationCoordinator {
           fast: [...this.ready.fast.values()],
           quality: [...this.ready.quality.values()],
         }
+        // A late cache response can cover work dispatched after the deadline.
+        // Detach just those redundant subscribers, preserving unrelated work.
+        for (const batch of [...this.pending]) {
+          if (
+            batch.cues.every(
+              (cue) =>
+                this.translated.has(`${batch.lane}:${cueIdentity(cue)}`) ||
+                (batch.lane === "fast" &&
+                  continuousReadyMs(
+                    [cue],
+                    this.readyList.quality,
+                    cue.start,
+                    cue.end - cue.start,
+                  ) >=
+                    cue.end - cue.start),
+            )
+          )
+            this.cancelBatch(batch)
+        }
       })
-      .catch(() => {})
-      .finally(() => {
+      .catch(() => {
         if (task.isCurrent()) {
+          this.cacheRetryAfter = Date.now() + policy.cacheRestoreRetryMs
+          this.trace("cache-failed")
+        }
+      })
+      .finally(() => {
+        stopWaiting()
+        task.signal.removeEventListener("abort", stopWaiting)
+        this.cacheReadInFlight = false
+        if (task.isCurrent() && restoreSucceeded) {
           this.cacheWindows.add(window)
           if (this.cacheWindows.size > 256)
             this.cacheWindows.delete(this.cacheWindows.values().next().value!)

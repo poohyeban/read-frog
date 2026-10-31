@@ -95,6 +95,8 @@ options:
       diagnostics: "記錄有界字幕診斷"
       maxPendingBatches: "最多待處理字幕批次"
       batchSize: "每批字幕條數"
+      cacheRestoreTimeoutMs: "快取恢復等待上限（毫秒）"
+      cacheRestoreRetryMs: "快取讀取失敗冷卻（毫秒）"
       fastAheadMs: "Fast 預讀時長（媒體毫秒）"
       qualityAheadMs: "Quality 預讀時長（媒體毫秒）"
       lowMinMs: "緩衝低水位下限（毫秒）"

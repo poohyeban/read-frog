@@ -129,6 +129,60 @@ describe("translation queue helpers", () => {
     })
   })
 
+  it("preserves a partially valid subtitle batch under its exact prompt and reuses its successful positions", async () => {
+    const { executeBatchTranslation } = await import("../translation-queues")
+    const data = ["first", "second", "third"].map((text) => ({
+      text,
+      provider: llmProvider,
+      hash: text,
+      scheduleAt: 0,
+      langConfig: DEFAULT_CONFIG.language,
+      subtitlePromptConfig: DEFAULT_CONFIG.videoSubtitles,
+    }))
+    const output = `一\n\n${BATCH_SEPARATOR}\n\n \n\n${BATCH_SEPARATOR}\n\n三`
+    executeTranslateMock.mockResolvedValue(output)
+    const prompt = async () => ({ systemPrompt: "translate", prompt: "batch" })
+    await expect(executeBatchTranslation(data, prompt)).resolves.toEqual(["一", "", "三"])
+    const row = translationCachePutMock.mock.calls[0]![0]
+    expect(row).toMatchObject({ translation: output, subtitleInputs: ["first", "second", "third"] })
+    translationCacheGetMock.mockResolvedValue(row)
+    await expect(executeBatchTranslation(data, prompt)).resolves.toEqual(["一", "", "三"])
+    expect(executeTranslateMock).toHaveBeenCalledTimes(1)
+  })
+
+  it("routes only blank subtitle members through singleton recovery in the real queue factory", async () => {
+    const { createSubtitlesTranslationQueues } = await import("../translation-queues")
+    const { batchQueue } = await createSubtitlesTranslationQueues().queuesPromise
+    const rows = new Map<string, any>()
+    translationCacheGetMock.mockImplementation(async (key: string) => rows.get(key))
+    translationCachePutMock.mockImplementation(async (row) => rows.set(row.key, row))
+    executeTranslateMock.mockImplementation(async (text: string) =>
+      text.includes(BATCH_SEPARATOR)
+        ? `一\n\n${BATCH_SEPARATOR}\n\n \n\n${BATCH_SEPARATOR}\n\n三`
+        : "二",
+    )
+    const inputs = ["first", "second", "third"].map((text) => ({
+      text,
+      provider: llmProvider,
+      hash: text,
+      scheduleAt: Date.now(),
+      langConfig: DEFAULT_CONFIG.language,
+      subtitlePromptConfig: DEFAULT_CONFIG.videoSubtitles,
+    }))
+    const results = await Promise.all(inputs.map((data) => batchQueue.enqueue(data)))
+    expect(results).toEqual([
+      expect.objectContaining({ translation: "一", batchIndex: 0 }),
+      expect.objectContaining({ translation: "二", batchIndex: 0 }),
+      expect.objectContaining({ translation: "三", batchIndex: 2 }),
+    ])
+    expect(executeTranslateMock).toHaveBeenCalledTimes(2)
+    expect(executeTranslateMock.mock.calls[1]![0]).toBe("second")
+    await expect(Promise.all(inputs.map((data) => batchQueue.enqueue(data)))).resolves.toEqual(
+      results,
+    )
+    expect(executeTranslateMock).toHaveBeenCalledTimes(2)
+  })
+
   it("keeps request-local marker zero isolated across LLM batch items", async () => {
     ensureInitializedConfigMock.mockResolvedValue({
       ...DEFAULT_CONFIG,

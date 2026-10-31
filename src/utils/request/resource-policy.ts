@@ -18,6 +18,8 @@ export const SUBTITLE_PERFORMANCE_DEFAULTS = Object.freeze({
   diagnostics: false,
   maxPendingBatches: 2,
   batchSize: 5,
+  cacheRestoreTimeoutMs: 250,
+  cacheRestoreRetryMs: 5000,
   fastAheadMs: 30_000,
   qualityAheadMs: 60_000,
   lowMinMs: 8000,

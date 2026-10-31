@@ -82,6 +82,7 @@ export class ResourceIdentityResolver {
   private writes: Promise<unknown> = Promise.resolve()
   private pending = new Map<string, Promise<string>>()
   private snapshots = new Map<string, { revision: string; id: string }>()
+  private latest = new Map<string, symbol>()
   private resolutions = 0
   constructor(private readonly persistence: IdentityPersistence) {}
 
@@ -130,10 +131,13 @@ export class ResourceIdentityResolver {
 
   /** Called on provider configuration changes, not per frame or per remote request. */
   async update(providerId: string, revision: string, material: IdentityMaterial): Promise<string> {
+    const ticket = Symbol(providerId)
+    this.latest.set(providerId, ticket)
     const cached = this.snapshots.get(providerId)
     if (cached?.revision === revision) return cached.id
-    await this.initialize()
+    // Serialize the effective credential material before the first asynchronous boundary.
     const input = materialKey(material)
+    await this.initialize()
     let operation = this.pending.get(input)
     if (!operation) {
       operation = this.identify(input)
@@ -145,7 +149,7 @@ export class ResourceIdentityResolver {
         .catch(() => {})
     }
     const id = await operation
-    this.snapshots.set(providerId, { revision, id })
+    if (this.latest.get(providerId) === ticket) this.snapshots.set(providerId, { revision, id })
     return id
   }
   get(providerId: string, revision: string): string | undefined {
@@ -153,6 +157,7 @@ export class ResourceIdentityResolver {
     return snapshot?.revision === revision ? snapshot.id : undefined
   }
   remove(providerId: string) {
+    this.latest.delete(providerId)
     this.snapshots.delete(providerId)
   }
   get resolutionCount() {

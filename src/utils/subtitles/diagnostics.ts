@@ -11,6 +11,8 @@ export const SUBTITLE_TRACE_EVENTS = [
   "ready",
   "selected",
   "cache-restored",
+  "cache-timeout",
+  "cache-failed",
   "stale-result",
   "stop-requested",
   "stopped",

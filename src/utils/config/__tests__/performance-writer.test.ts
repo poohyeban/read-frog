@@ -20,6 +20,68 @@ beforeEach(() => {
   write.mockClear()
 })
 describe("Defaults + Sparse Overrides serialized writer", () => {
+  it("cleans only unreferenced identities/deleted providers and preserves disabled aliases and group policy", async () => {
+    stored = {
+      version: 1,
+      revision: 4,
+      providers: { provider: { rate: 12 }, disabled: { maxInFlight: 4 }, deleted: { rate: 1 } },
+      groups: {
+        shared: { name: "Keep my policy", members: ["resource-a", "retired"], policy: { rate: 3 } },
+      },
+      subtitles: { fastAheadMs: 40000 },
+    }
+    const resources = new Set(["resource-a", "resource-new"])
+    const writer = createPerformanceWriter({
+      read: async () => stored,
+      write,
+      context: async () => ({
+        identities: new Map([["provider", "resource-new"]]),
+        providerIds: new Set(["provider", "disabled"]),
+        resourceIds: resources,
+      }),
+    })
+    await Promise.all([
+      writer.reconcile(),
+      writer.patch({
+        kind: "set",
+        target: { section: "provider", id: "provider" },
+        field: "maxAttempts",
+        value: 5,
+      }),
+    ])
+    expect(stored?.providers).toEqual({
+      provider: { rate: 12, maxAttempts: 5 },
+      disabled: { maxInFlight: 4 },
+    })
+    expect(stored?.groups?.shared?.members).toEqual(["resource-a"])
+    expect(stored?.subtitles?.fastAheadMs).toBe(40000)
+    resources.delete("resource-a")
+    await writer.reconcile()
+    expect(stored?.groups?.shared).toEqual({
+      name: "Keep my policy",
+      members: [],
+      policy: { rate: 3 },
+    })
+    const writes = write.mock.calls.length
+    await writer.reconcile()
+    expect(write).toHaveBeenCalledTimes(writes)
+  })
+  it("does not erase group membership when identity resolution is incomplete", async () => {
+    stored = {
+      version: 1,
+      revision: 1,
+      providers: { deleted: { rate: 1 } },
+      groups: { shared: { name: "Keep", members: ["resource-a"] } },
+    }
+    const writer = createPerformanceWriter({
+      read: async () => stored,
+      write,
+      context: async () => ({ identities: new Map(), providerIds: new Set(["provider"]) }),
+    })
+    await writer.reconcile()
+    expect(stored?.providers).toBeUndefined()
+    expect(stored?.groups?.shared?.members).toEqual(["resource-a"])
+  })
   it("does not persist defaults, identical values or empty resets", async () => {
     const writer = create()
     for (const [field, value] of Object.entries(RESOURCE_DEFAULTS))
