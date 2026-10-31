@@ -1,9 +1,12 @@
 import type { SpeechProvider, TranscriptionProvider } from "./types"
 import type { Config } from "@/types/config/config"
+import type { ExecutionPermit } from "@/utils/request/resource-scheduler"
 import { createOpenAI } from "@ai-sdk/openai"
 import { z } from "zod"
+import { attachRequestErrorMeta } from "@/utils/request/retry-policy"
 import { getProviderHeaders } from "../headers"
 import { resolveProviderRefForCapability } from "../provider-registry"
+import { runProviderOperation } from "../resource-runtime"
 import { AudioServiceError } from "./types"
 
 const MAX_AUDIO_BYTES = 25 * 1024 * 1024
@@ -58,60 +61,71 @@ function service(config: Config, capability: "tts" | "transcription") {
       "NOT_CONFIGURED",
       "Audio Base URL must be HTTP(S), without embedded credentials, query or fragment.",
     )
-  const secureFetch: typeof fetch = async (input, init) => {
-    const response = await fetch(input, { ...init, credentials: "omit", redirect: "error" })
-    const reader = response.body?.getReader()
-    if (!reader)
-      throw new AudioServiceError("INVALID_RESPONSE", "Audio service returned an empty body.")
-    const chunks: Uint8Array[] = []
-    let size = 0
-    try {
-      for (;;) {
-        const chunk = await reader.read()
-        if (chunk.done) break
-        size += chunk.value.byteLength
-        if (size > MAX_AUDIO_BYTES)
-          throw new AudioServiceError("INVALID_RESPONSE", "Audio service response exceeds 25 MiB.")
-        chunks.push(chunk.value)
+  const secureFetch =
+    (permit: ExecutionPermit): typeof fetch =>
+    async (input, init) => {
+      permit.start()
+      const response = await fetch(input, { ...init, credentials: "omit", redirect: "error" })
+      const reader = response.body?.getReader()
+      if (!reader)
+        throw new AudioServiceError("INVALID_RESPONSE", "Audio service returned an empty body.")
+      const chunks: Uint8Array[] = []
+      let size = 0
+      try {
+        for (;;) {
+          const chunk = await reader.read()
+          if (chunk.done) break
+          size += chunk.value.byteLength
+          if (size > MAX_AUDIO_BYTES)
+            throw new AudioServiceError(
+              "INVALID_RESPONSE",
+              "Audio service response exceeds 25 MiB.",
+            )
+          chunks.push(chunk.value)
+        }
+      } catch (error) {
+        await reader.cancel().catch(() => {})
+        throw error
       }
-    } catch (error) {
-      await reader.cancel().catch(() => {})
-      throw error
-    }
-    if (!response.ok)
-      throw new AudioServiceError("HTTP", `Audio service returned HTTP ${response.status}.`)
-    const type = response.headers.get("content-type")?.split(";")[0]?.toLowerCase() ?? ""
-    if (
-      capability === "tts"
-        ? !(
-            config.tts.outputFormat === "wav"
-              ? ["audio/wav", "audio/x-wav", "audio/wave"]
-              : ["audio/mpeg", "audio/mp3"]
-          ).includes(type)
-        : type !== "application/json"
-    )
-      throw new AudioServiceError(
-        "INVALID_RESPONSE",
-        "Audio service returned an unexpected Content-Type.",
+      if (!response.ok)
+        throw attachRequestErrorMeta(
+          new AudioServiceError("HTTP", `Audio service returned HTTP ${response.status}.`),
+          { statusCode: response.status, responseHeaders: response.headers },
+        )
+      const type = response.headers.get("content-type")?.split(";")[0]?.toLowerCase() ?? ""
+      if (
+        capability === "tts"
+          ? !(
+              config.tts.outputFormat === "wav"
+                ? ["audio/wav", "audio/x-wav", "audio/wave"]
+                : ["audio/mpeg", "audio/mp3"]
+            ).includes(type)
+          : type !== "application/json"
       )
-    if (!size)
-      throw new AudioServiceError("INVALID_RESPONSE", "Audio service returned an empty body.")
-    const bytes = new Uint8Array(size)
-    let offset = 0
-    for (const chunk of chunks) {
-      bytes.set(chunk, offset)
-      offset += chunk.byteLength
+        throw new AudioServiceError(
+          "INVALID_RESPONSE",
+          "Audio service returned an unexpected Content-Type.",
+        )
+      if (!size)
+        throw new AudioServiceError("INVALID_RESPONSE", "Audio service returned an empty body.")
+      const bytes = new Uint8Array(size)
+      let offset = 0
+      for (const chunk of chunks) {
+        bytes.set(chunk, offset)
+        offset += chunk.byteLength
+      }
+      return new Response(bytes, { status: response.status, headers: response.headers })
     }
-    return new Response(bytes, { status: response.status, headers: response.headers })
-  }
   return {
     settings,
-    sdk: createOpenAI({
-      baseURL: baseURL.toString().replace(/\/$/, ""),
-      apiKey: provider.apiKey ?? "",
-      headers: getProviderHeaders(provider.headers),
-      fetch: secureFetch,
-    }),
+    provider,
+    sdk: (permit: ExecutionPermit) =>
+      createOpenAI({
+        baseURL: baseURL.toString().replace(/\/$/, ""),
+        apiKey: provider.apiKey ?? "",
+        headers: getProviderHeaders(provider.headers),
+        fetch: secureFetch(permit),
+      }),
   }
 }
 async function request<T>(
@@ -149,7 +163,7 @@ function toBase64(bytes: Uint8Array) {
   return btoa(binary)
 }
 export function getSpeechProvider(config: Config): SpeechProvider {
-  const { sdk } = service(config, "tts")
+  const { sdk, provider } = service(config, "tts")
   const settings = config.tts
   return {
     synthesize: ({ text, voice, speed = 1, signal }) =>
@@ -166,9 +180,18 @@ export function getSpeechProvider(config: Config): SpeechProvider {
             "INVALID_INPUT",
             "Speech requires text, a voice and speed between 0.25 and 4.",
           )
-        const result = await sdk
-          .speech(settings.model)
-          .doGenerate({ text, voice, speed, outputFormat: settings.outputFormat, abortSignal })
+        const result = await runProviderOperation(
+          provider,
+          abortSignal,
+          async (remoteSignal, permit) =>
+            sdk(permit).speech(settings.model).doGenerate({
+              text,
+              voice,
+              speed,
+              outputFormat: settings.outputFormat,
+              abortSignal: remoteSignal,
+            }),
+        )
         const bytes =
           typeof result.audio === "string"
             ? Uint8Array.from(atob(result.audio), (c) => c.charCodeAt(0))
@@ -183,7 +206,7 @@ export function getSpeechProvider(config: Config): SpeechProvider {
   }
 }
 export function getTranscriptionProvider(config: Config): TranscriptionProvider {
-  const { sdk } = service(config, "transcription")
+  const { sdk, provider } = service(config, "transcription")
   const settings = config.transcription
   return {
     transcribe: ({ audio, format, language, signal }) =>
@@ -206,17 +229,26 @@ export function getTranscriptionProvider(config: Config): TranscriptionProvider 
           )
         const bytes = new Uint8Array(await audio.arrayBuffer())
         abortSignal.throwIfAborted()
-        const result = await sdk.transcription(settings.model).doGenerate({
-          audio: bytes,
-          mediaType: format,
+        const result = await runProviderOperation(
+          provider,
           abortSignal,
-          providerOptions: {
-            openai: {
-              responseFormat: settings.responseFormat,
-              ...(language || settings.language ? { language: language || settings.language } : {}),
-            },
-          },
-        })
+          async (remoteSignal, permit) =>
+            sdk(permit)
+              .transcription(settings.model)
+              .doGenerate({
+                audio: bytes,
+                mediaType: format,
+                abortSignal: remoteSignal,
+                providerOptions: {
+                  openai: {
+                    responseFormat: settings.responseFormat,
+                    ...(language || settings.language
+                      ? { language: language || settings.language }
+                      : {}),
+                  },
+                },
+              }),
+        )
         const parsed = z
           .object({
             text: z.string(),

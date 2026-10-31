@@ -11,6 +11,7 @@ let overrides = emptyPerformanceOverrides()
 let effective = effectivePerformance(overrides)
 let initializing: Promise<void> | undefined
 let generation = 0
+let watching = false
 const listeners = new Set<() => void>()
 
 function accept(value: unknown) {
@@ -38,14 +39,17 @@ export function watchPerformance(listener: () => void) {
 export function initializePerformance() {
   if (!initializing)
     initializing = (async () => {
-      storage.watch<PerformanceOverrides>(PERFORMANCE_STORAGE_KEY, (value) => {
-        generation++
-        try {
-          accept(value)
-        } catch {
-          /* Keep the last valid snapshot; never rewrite user storage on read. */
-        }
-      })
+      if (!watching) {
+        watching = true
+        storage.watch<PerformanceOverrides>(PERFORMANCE_STORAGE_KEY, (value) => {
+          generation++
+          try {
+            accept(value)
+          } catch {
+            /* Keep the last valid snapshot; never rewrite user storage on read. */
+          }
+        })
+      }
       const revision = generation
       const value = await storage.getItem(PERFORMANCE_STORAGE_KEY)
       if (revision === generation) accept(value)

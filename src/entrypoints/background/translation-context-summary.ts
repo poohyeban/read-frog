@@ -16,7 +16,6 @@ import {
 } from "@/utils/request/cancellation"
 import { getRequestErrorMeta } from "@/utils/request/retry-policy"
 import { generateTextForProviderRef } from "./background-stream"
-import { providerExecutionKey } from "./translation-queues"
 
 // Queue retries run first. Only terminal failures enter this bounded, temporary
 // cooldown; they are never written to the successful Dexie cache.
@@ -94,7 +93,7 @@ export async function getOrGenerateTranslationContextSummary(
       Date.now(),
       taskKey,
       scope ? [scope] : undefined,
-      { priority: args.priority, providerKey: providerExecutionKey(providerRef) },
+      { priority: args.priority },
     )
     assertCurrent()
     return summary || null

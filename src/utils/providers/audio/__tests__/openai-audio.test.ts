@@ -1,6 +1,7 @@
 import { createServer } from "node:http"
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest"
-import { DEFAULT_CONFIG } from "@/utils/constants/config"
+import { storage } from "#imports"
+import { DEFAULT_CONFIG, CONFIG_STORAGE_KEY } from "@/utils/constants/config"
 import { getSpeechProvider, getTranscriptionProvider } from "../openai-audio"
 
 const seen: { path: string; auth: string | undefined; cookie: string | undefined; body: string }[] =
@@ -58,9 +59,12 @@ const server = createServer(async (req, res) => {
 function config() {
   const c = structuredClone(DEFAULT_CONFIG)
   c.providersConfig = [
+    ...c.providersConfig,
     {
       ...c.providersConfig.find((p) => p.provider === "openai")!,
       id: "audio-test",
+      name: "Mock Audio",
+      enabled: true,
       baseURL,
       apiKey: "test-private-key",
     },
@@ -84,7 +88,13 @@ afterAll(async () => {
   server.closeAllConnections()
   await new Promise<void>((resolve, reject) => server.close((e) => (e ? reject(e) : resolve())))
 })
-beforeEach(() => {
+beforeEach(async () => {
+  await storage.setItem(`local:${CONFIG_STORAGE_KEY}`, config())
+  await storage.setItem("local:performanceOverrides", {
+    version: 1,
+    revision: 1,
+    providers: { "audio-test": { maxAttempts: 1, rate: 100, capacity: 100 } },
+  })
   seen.length = 0
   mode = "ok"
 })

@@ -3,7 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { generateArticleSummary, ARTICLE_SUMMARY_RULE_VERSION } from "@/utils/content/summary"
 import { Sha256Hex } from "@/utils/hash"
 import { getProviderCacheIdentity } from "@/utils/providers/provider-ref"
+import { getExecutionContext } from "@/utils/request/execution-context"
 import { RequestQueue } from "@/utils/request/request-queue"
+import { resolveResourcePolicy } from "@/utils/request/resource-policy"
+import { ResourceScheduler } from "@/utils/request/resource-scheduler"
 import { getRequestErrorMeta } from "@/utils/request/retry-policy"
 import { getOrGenerateTranslationContextSummary } from "../translation-context-summary"
 
@@ -29,8 +32,6 @@ const providerRef = {
 
 function setup() {
   const requestQueue = new RequestQueue({
-    rate: 100,
-    capacity: 100,
     timeoutMs: 5000,
     maxRetries: 2,
     baseRetryDelayMs: 100,
@@ -97,9 +98,35 @@ describe("article context queue integration", () => {
   })
   it("aborts an uncooperative timed-out attempt without dispatching overlapping retries", async () => {
     const signals: AbortSignal[] = []
+    let finish!: (value: string) => void
+    const scheduler = new ResourceScheduler()
+    scheduler.configure(
+      [{ id: "test", policy: resolveResourcePolicy({ timeoutMs: 5000 }) }],
+      new Map([["test", ["test"]]]),
+    )
     mocks.generate.mockImplementation((_payload, options) => {
-      signals.push(options.signal)
-      return new Promise(() => {})
+      const context = getExecutionContext(options.signal)!
+      let settle!: () => void
+      context.physicalSettled = new Promise<void>((resolve) => {
+        settle = resolve
+      })
+      return scheduler.run(
+        {
+          resourceId: "test",
+          consumer: "summary",
+          signal: options.signal,
+          attempts: context.attempts,
+          onAbort: context.abort,
+          onSettled: settle,
+        },
+        async (signal, permit) => {
+          permit.start()
+          signals.push(signal)
+          return new Promise<string>((resolve) => {
+            finish = resolve
+          })
+        },
+      )
     })
     const failed = setup()
       .run()
@@ -108,6 +135,10 @@ describe("article context queue integration", () => {
     expect(getRequestErrorMeta(await failed).kind).toBe("timeout")
     expect(signals).toHaveLength(1)
     expect(signals.every((signal) => signal.aborted)).toBe(true)
+    expect(scheduler.inspect().active).toBe(1)
+    finish("late output")
+    await vi.advanceTimersByTimeAsync(0)
+    expect(scheduler.inspect().active).toBe(0)
     expect(mocks.put).not.toHaveBeenCalled()
   })
   it("does not let an unscoped caller pin a scoped task", async () => {

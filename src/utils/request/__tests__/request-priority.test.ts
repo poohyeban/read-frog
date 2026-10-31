@@ -1,11 +1,53 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
+import { getExecutionContext } from "../execution-context"
 import { RequestQueue } from "../request-queue"
+import { resolveResourcePolicy } from "../resource-policy"
+import { ResourceScheduler } from "../resource-scheduler"
 
 function queue() {
-  return new RequestQueue(
-    { rate: 100, capacity: 1, timeoutMs: 1000, maxRetries: 0, baseRetryDelayMs: 10 },
-    30_000,
+  const scheduler = new ResourceScheduler()
+  scheduler.configure(
+    [{ id: "provider", policy: resolveResourcePolicy({ maxInFlight: 1 }) }],
+    new Map([["provider", ["provider"]]]),
   )
+  // Occupy the physical slot until all simultaneous logical producers have queued.
+  void scheduler.run({ resourceId: "provider", consumer: "in-flight" }, async (_signal, permit) => {
+    permit.start()
+    await new Promise((resolve) => setTimeout(resolve, 101))
+  })
+  const logical = new RequestQueue({ timeoutMs: 1000, maxRetries: 0, baseRetryDelayMs: 10 })
+  return {
+    cancelByScope: (scope: string) => logical.cancelByScope(scope),
+    enqueue: <T>(
+      run: () => Promise<T>,
+      time: number,
+      key: string,
+      scopes: string[],
+      options: { priority: number },
+    ) =>
+      logical.enqueue(
+        (signal) => {
+          const context = getExecutionContext(signal)!
+          return scheduler.run(
+            {
+              resourceId: "provider",
+              consumer: key,
+              priority: context.priority,
+              signal,
+              attempts: context.attempts,
+            },
+            async (_signal, permit) => {
+              permit.start()
+              return run()
+            },
+          )
+        },
+        time,
+        key,
+        scopes,
+        options,
+      ),
+  }
 }
 afterEach(() => vi.useRealTimers())
 describe("subtitle queue priority and aging", () => {

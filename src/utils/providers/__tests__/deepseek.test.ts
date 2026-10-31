@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { storage } from "#imports"
 import { runStructuredObjectStreamInBackground } from "@/entrypoints/background/background-stream"
-import { DEFAULT_CONFIG } from "@/utils/constants/config"
+import { DEFAULT_CONFIG, CONFIG_STORAGE_KEY } from "@/utils/constants/config"
 import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
 import { getProviderOptionsWithOverride } from "../options"
 
@@ -34,15 +34,23 @@ afterEach(() => {
 })
 
 describe("dedicated DeepSeek structured streaming", () => {
-  function setup(output: Record<string, unknown>) {
+  async function setup(output: Record<string, unknown>) {
     const provider = {
       ...DEFAULT_PROVIDER_CONFIG.deepseek,
       apiKey: "test-secret",
+      enabled: true,
       baseURL: "https://user-api.example/v1",
     }
-    vi.spyOn(storage, "getItem").mockResolvedValue({
+    await storage.setItem(`local:${CONFIG_STORAGE_KEY}`, {
       ...DEFAULT_CONFIG,
-      providersConfig: [provider],
+      providersConfig: DEFAULT_CONFIG.providersConfig.map((p) =>
+        p.id === provider.id ? provider : p,
+      ),
+    })
+    await storage.setItem("local:performanceOverrides", {
+      version: 1,
+      revision: 1,
+      providers: { [provider.id]: { maxAttempts: 1 } },
     })
     const fetchMock = vi.fn<typeof fetch>().mockImplementation(async () => sseResponse(output))
     vi.stubGlobal("fetch", fetchMock)
@@ -50,7 +58,10 @@ describe("dedicated DeepSeek structured streaming", () => {
   }
 
   it("uses JSON mode plus a schema prompt and returns validated action output", async () => {
-    const { provider, fetchMock } = setup({ definition: "awkward or cumbersome", difficulty: 2 })
+    const { provider, fetchMock } = await setup({
+      definition: "awkward or cumbersome",
+      difficulty: 2,
+    })
     const result = await runStructuredObjectStreamInBackground({
       providerId: provider.id,
       prompt: "Explain clunky",
@@ -89,7 +100,7 @@ describe("dedicated DeepSeek structured streaming", () => {
   })
 
   it("still rejects invalid model output instead of silently accepting arbitrary JSON", async () => {
-    const { provider } = setup({ definition: 42 })
+    const { provider } = await setup({ definition: 42 })
     await expect(
       runStructuredObjectStreamInBackground({
         providerId: provider.id,

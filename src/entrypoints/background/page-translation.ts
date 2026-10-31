@@ -30,7 +30,6 @@ import {
   getLocalProviderConfig,
   getQueuedTranslationRouting,
   shouldUseBatchQueue,
-  providerExecutionKey,
 } from "./translation-queues"
 
 async function getValidatedCachedTranslation(
@@ -167,9 +166,13 @@ export function setupPageTranslationHandlers(): void {
             preserveLineBreaks,
             signal,
           })
-        result = await requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined, {
-          providerKey: providerExecutionKey(providerRef),
-        })
+        result = await requestQueue.enqueue(
+          thunk,
+          scheduleAt,
+          hash,
+          scope ? [scope] : undefined,
+          {},
+        )
       }
 
       if (validateHtmlAttributeMarkers) {

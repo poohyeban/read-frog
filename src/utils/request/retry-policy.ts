@@ -12,6 +12,7 @@ export interface RequestErrorMeta {
   isRetryable?: boolean
   retryAfterMs?: number
   kind?: RequestErrorKind
+  rateLimitScope?: "credential" | "shared"
 }
 
 export interface RequestRetryContext {
@@ -19,11 +20,8 @@ export interface RequestRetryContext {
   maxRetries: number
   baseRetryDelayMs: number
   now: number
-  // 429 retries already spent on THIS task; a separate budget from retryCount
-  // so a rate-limited task is not double-charged for ordinary failures.
-  rateLimitRetryCount: number
-  // Queue-level count of pause windows without an intervening success.
-  consecutiveRateLimits: number
+  maxRetryDelayMs?: number
+  cooldownMs?: number
 }
 
 export type RetryDecision =
@@ -36,18 +34,6 @@ export interface RequestRetryPolicy {
 }
 
 export const REQUEST_ERROR_META = Symbol("requestErrorMeta")
-
-export const MAX_RETRY_AFTER_MS = 5 * 60_000
-// Base queue pause after a 429 with no Retry-After header. Doubles per
-// consecutive rate-limit window; sized for the slowest common free tier
-// (Gemini free RPM=15 → ≥4s spacing).
-export const RATE_LIMIT_BASE_PAUSE_MS = 5_000
-// Pause windows without an intervening success before the queue gives up and
-// surfaces errors (the pre-pause failQueue behavior, kept as a backstop).
-export const MAX_CONSECUTIVE_RATE_LIMIT_PAUSES = 5
-// Per-task 429 retry cap: guards the pathological case where queue-level
-// counters keep resetting (alternating success) but one task keeps 429ing.
-export const MAX_RATE_LIMIT_RETRIES_PER_TASK = 8
 
 interface RetryAwareError {
   [REQUEST_ERROR_META]?: RequestErrorMeta
@@ -112,6 +98,7 @@ export function getRequestErrorMeta(error: unknown): RequestErrorMeta {
     retryAfterMs,
     isRetryable,
     kind,
+    rateLimitScope: attachedMeta?.rateLimitScope,
   })
 }
 
@@ -167,37 +154,32 @@ export const defaultRequestRetryPolicy: RequestRetryPolicy = {
   decide(error, context) {
     const meta = getRequestErrorMeta(error)
 
-    // 401/403/404 or an access denial: the config (key/model/endpoint) is
-    // wrong or the account cannot use this service — retrying any queued task
-    // is pointless, so drain the backlog immediately.
-    if (isQueueFatalRequestErrorMeta(meta)) {
-      return { action: "fail", failQueue: true }
-    }
-
-    // 429: pause the whole queue and re-enqueue this task instead of nuking
-    // the backlog — a transient rate limit must not fail hundreds of pending
-    // paragraphs (they'd all paint errors at once and never cache).
-    if (isRateLimitRequestErrorMeta(meta)) {
-      if (
-        context.consecutiveRateLimits >= MAX_CONSECUTIVE_RATE_LIMIT_PAUSES ||
-        context.rateLimitRetryCount >= MAX_RATE_LIMIT_RETRIES_PER_TASK
-      ) {
-        return { action: "fail", failQueue: true }
-      }
-      const retryAfterMs = getRetryAfterMs(meta, context.now)
-      const backoffMs = RATE_LIMIT_BASE_PAUSE_MS * 2 ** context.consecutiveRateLimits
-      const pauseMs = clampRetryDelay(Math.max(retryAfterMs ?? 0, withJitter(backoffMs, false)))
-      return { action: "pause-and-retry", pauseMs }
-    }
-
-    if (context.retryCount >= context.maxRetries || !isRetryableRequestErrorMeta(meta)) {
+    const maximum = context.maxRetryDelayMs ?? 30_000
+    // Permanent/authentication failures affect this request, never unrelated queue consumers.
+    if (
+      meta.isRetryable === false ||
+      isPermanentRequestErrorMeta(meta) ||
+      context.retryCount >= context.maxRetries
+    )
       return { action: "fail" }
+    if (isRateLimitRequestErrorMeta(meta)) {
+      const retryAfterMs = getRetryAfterMs(meta, context.now) ?? 0
+      // An oversized Retry-After ends this task. The scheduler retains the full cooldown.
+      if (retryAfterMs > maximum) return { action: "fail" }
+      const backoff = Math.min(maximum, (context.cooldownMs ?? 5000) * 2 ** context.retryCount)
+      return {
+        action: "pause-and-retry",
+        pauseMs: Math.max(retryAfterMs, Math.min(maximum, withJitter(backoff, false))),
+      }
     }
-
-    const baseDelayMs = context.baseRetryDelayMs * 2 ** context.retryCount
-    const delayMs = clampRetryDelay(withJitter(baseDelayMs, false))
-
-    return { action: "retry", delayMs }
+    if (!isRetryableRequestErrorMeta(meta)) return { action: "fail" }
+    return {
+      action: "retry",
+      delayMs: Math.min(
+        maximum,
+        withJitter(context.baseRetryDelayMs * 2 ** context.retryCount, false),
+      ),
+    }
   },
 }
 
@@ -205,11 +187,7 @@ function isRateLimitRequestErrorMeta(meta: RequestErrorMeta): boolean {
   return meta.kind === "rate-limit" || meta.statusCode === 429
 }
 
-function isQueueFatalRequestErrorMeta(meta: RequestErrorMeta): boolean {
-  // restricted / unauthenticated): every queued sibling would fail
-  // identically, so drain like 401/403/404. Draining also fails unrelated
-  // tasks sharing the queue (e.g. a queued summary) — rare, and consistent
-  // with the status-code drains below.
+function isPermanentRequestErrorMeta(meta: RequestErrorMeta): boolean {
   return (
     meta.kind === "access-denied" ||
     meta.statusCode === 401 ||
@@ -382,10 +360,6 @@ function withJitter(delayMs: number, disabled: boolean): number {
     return delayMs
   }
   return delayMs + Math.random() * 0.1 * delayMs
-}
-
-function clampRetryDelay(delayMs: number): number {
-  return Math.min(Math.max(0, delayMs), MAX_RETRY_AFTER_MS)
 }
 
 function removeUndefined<T extends Record<string, unknown>>(value: T): T {

@@ -2,14 +2,13 @@ import type { LLMProviderConfig } from "@/types/config/provider"
 import type { MatchedTerm } from "@/utils/glossary/types"
 import type { TranslatePromptOptions, TranslatePromptResult } from "@/utils/prompts/translate"
 import type { SubtitleModelGuard } from "@/utils/subtitles/work-policy"
-import { generateText } from "ai"
 import { extractAISDKErrorMessage } from "@/utils/error/extract-message"
-import { getLanguageModelForConfig } from "@/utils/providers/model"
 import { resolveModelId } from "@/utils/providers/model-id"
 import { getProviderOptionsWithOverride } from "@/utils/providers/options"
 import { getTopLevelReasoning } from "@/utils/providers/reasoning"
+import { generateRemoteText } from "@/utils/providers/remote-executor"
+import { ResourceRejected } from "@/utils/request/resource-error"
 import { attachRequestErrorMeta, getRequestErrorMeta } from "@/utils/request/retry-policy"
-import { SubtitleWorkRejected } from "@/utils/subtitles/work-policy"
 
 const THINK_TAG_RE = /<\/think>([\s\S]*)/
 
@@ -44,7 +43,6 @@ export async function aiTranslate<TContext>(
   } = providerConfig
   const reasoning = getTopLevelReasoning(providerConfig)
   const modelName = resolveModelId(providerModel)
-  const model = getLanguageModelForConfig(providerConfig)
 
   const providerOptions = getProviderOptionsWithOverride(
     modelName ?? "",
@@ -57,22 +55,23 @@ export async function aiTranslate<TContext>(
   try {
     await options?.modelGuard?.beforeCall(`${systemPrompt}\n${prompt}`, options.maxOutputTokens!)
     options?.signal?.throwIfAborted()
-    options?.modelGuard?.onDispatch?.()
     const {
       text: translatedText,
       usage,
       finishReason,
-    } = await generateText({
-      model,
-      instructions: systemPrompt,
-      prompt,
-      reasoning,
-      temperature,
-      providerOptions,
-      abortSignal: options?.signal,
-      maxRetries: 0, // Disable SDK built-in retries, let RequestQueue/BatchQueue handle it
-      maxOutputTokens: options?.maxOutputTokens,
-    })
+    } = await generateRemoteText(
+      providerConfig,
+      {
+        instructions: systemPrompt,
+        prompt,
+        reasoning,
+        temperature,
+        providerOptions,
+        maxOutputTokens: options?.maxOutputTokens,
+      },
+      options?.signal,
+      options?.modelGuard?.onDispatch,
+    )
     await options?.modelGuard?.usage(usage)
     if (options?.maxOutputTokens && finishReason === "length")
       throw new Error("Subtitle translation output limit reached")
@@ -81,7 +80,7 @@ export async function aiTranslate<TContext>(
 
     return finalTranslation
   } catch (error) {
-    if (error instanceof SubtitleWorkRejected) throw error
+    if (error instanceof ResourceRejected) throw error
     const message = extractAISDKErrorMessage(error)
     const meta = getRequestErrorMeta(error)
     if (error instanceof Error) {

@@ -3,7 +3,6 @@ import { browser, storage } from "#imports"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { BATCH_SEPARATOR } from "@/utils/constants/prompt"
 import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
-import { providerExecutionSlots, ExecutionSlots } from "@/utils/request/execution-slots"
 import { attachRequestErrorMeta } from "@/utils/request/retry-policy"
 import { unwrapSubtitleResult, subtitleFailure } from "@/utils/subtitles/result"
 import { createSubtitleTranslationPlan } from "@/utils/subtitles/translation-plan"
@@ -64,7 +63,6 @@ const plan = (sessionId = "scope") =>
 
 describe("subtitle background contracts using real RequestQueue and BatchQueue", () => {
   beforeEach(() => {
-    Object.assign(providerExecutionSlots, new ExecutionSlots())
     Object.assign(subtitleWorkRuntime, new SubtitleWorkRuntime())
     vi.useFakeTimers()
     vi.resetAllMocks()

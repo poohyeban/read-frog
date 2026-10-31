@@ -5,7 +5,7 @@ import { ProviderSetupError } from "@/utils/providers/provider-setup-error"
 
 const streamTextMock = vi.fn<(...args: any[]) => any>()
 const outputObjectMock = vi.fn<(...args: any[]) => any>((params: Record<string, unknown>) => params)
-const getModelByIdMock = vi.fn<(...args: any[]) => any>()
+const getResourceProviderMock = vi.fn<(...args: any[]) => any>()
 const getLanguageModelForConfigMock = vi.fn<(...args: any[]) => any>()
 const loggerErrorMock = vi.fn<(...args: any[]) => any>()
 
@@ -41,10 +41,26 @@ vi.mock("ai", () => ({
 }))
 
 vi.mock("@/utils/providers/model", () => ({
-  getModelById: getModelByIdMock,
   getLanguageModelForConfig: getLanguageModelForConfigMock,
 }))
 
+// This suite verifies stream parsing/ports. Physical dispatch is exercised by
+// resource-runtime.test.ts with the real scheduler and transport boundary.
+vi.mock("@/utils/providers/resource-runtime", () => ({
+  getResourceProvider: getResourceProviderMock,
+  runProviderOperation: async (
+    _provider: unknown,
+    signal: AbortSignal | undefined,
+    run: Function,
+    beforeSend?: () => void,
+  ) => {
+    beforeSend?.()
+    return run(signal ?? new AbortController().signal, {
+      physicalRequestId: "mock",
+      start: () => {},
+    })
+  },
+}))
 vi.mock("@/utils/logger", () => ({
   logger: {
     error: loggerErrorMock,
@@ -111,7 +127,8 @@ describe("background-stream", () => {
   })
 
   it("streams structured object output from background", async () => {
-    getModelByIdMock.mockResolvedValue("mock-model")
+    getResourceProviderMock.mockResolvedValue(DEFAULT_PROVIDER_CONFIG.openai)
+    getLanguageModelForConfigMock.mockReturnValue("mock-model")
     streamTextMock.mockReturnValue({
       stream: (async function* () {
         yield { type: "text-delta", text: '{"score":97' }
@@ -144,7 +161,7 @@ describe("background-stream", () => {
       },
     )
 
-    expect(getModelByIdMock).toHaveBeenCalledWith("openai-default")
+    expect(getResourceProviderMock).toHaveBeenCalledWith("openai-default")
     expect(streamTextMock).toHaveBeenCalledWith(
       expect.objectContaining({
         model: "mock-model",
@@ -212,7 +229,8 @@ describe("background-stream", () => {
   // backoff budget on a pricing wall that never moves.
 
   it("treats structured object streams without finish as protocol errors", async () => {
-    getModelByIdMock.mockResolvedValue("mock-model")
+    getResourceProviderMock.mockResolvedValue(DEFAULT_PROVIDER_CONFIG.openai)
+    getLanguageModelForConfigMock.mockReturnValue("mock-model")
     streamTextMock.mockReturnValue({
       stream: (async function* () {
         yield { type: "text-delta", text: '{"score":97}' }
@@ -231,7 +249,8 @@ describe("background-stream", () => {
   })
 
   it("treats length-finished structured object streams as truncated output", async () => {
-    getModelByIdMock.mockResolvedValue("mock-model")
+    getResourceProviderMock.mockResolvedValue(DEFAULT_PROVIDER_CONFIG.openai)
+    getLanguageModelForConfigMock.mockReturnValue("mock-model")
     streamTextMock.mockReturnValue({
       stream: (async function* () {
         yield { type: "text-delta", text: '{"summary":"partial but parseable' }
@@ -253,7 +272,8 @@ describe("background-stream", () => {
   })
 
   it("treats text streams without finish as protocol errors", async () => {
-    getModelByIdMock.mockResolvedValue("mock-model")
+    getResourceProviderMock.mockResolvedValue(DEFAULT_PROVIDER_CONFIG.openai)
+    getLanguageModelForConfigMock.mockReturnValue("mock-model")
     streamTextMock.mockReturnValue({
       stream: (async function* () {
         yield { type: "text-delta", text: "Hello" }
@@ -272,7 +292,8 @@ describe("background-stream", () => {
   })
 
   it("treats length-finished text streams as truncated output", async () => {
-    getModelByIdMock.mockResolvedValue("mock-model")
+    getResourceProviderMock.mockResolvedValue(DEFAULT_PROVIDER_CONFIG.openai)
+    getLanguageModelForConfigMock.mockReturnValue("mock-model")
     streamTextMock.mockReturnValue({
       stream: (async function* () {
         yield { type: "text-delta", text: "partial" }
@@ -294,7 +315,8 @@ describe("background-stream", () => {
   })
 
   it("streams text via background stream port handler", async () => {
-    getModelByIdMock.mockResolvedValue("mock-model")
+    getResourceProviderMock.mockResolvedValue(DEFAULT_PROVIDER_CONFIG.openai)
+    getLanguageModelForConfigMock.mockReturnValue("mock-model")
     streamTextMock.mockReturnValue({
       stream: (async function* () {
         yield { type: "text-delta", text: "Hello" }
@@ -320,7 +342,7 @@ describe("background-stream", () => {
       },
     })
 
-    expect(getModelByIdMock).toHaveBeenCalledWith("openai-default")
+    expect(getResourceProviderMock).toHaveBeenCalledWith("openai-default")
     expect(streamTextMock).toHaveBeenCalledWith(
       expect.objectContaining({
         instructions: "Be concise",
@@ -370,7 +392,7 @@ describe("background-stream", () => {
       reasoning: "low" as const,
     }
     // Storage may now contain another model, or the provider may have been deleted.
-    getModelByIdMock.mockRejectedValue(new Error("Provider deleted"))
+    getResourceProviderMock.mockRejectedValue(new Error("Provider deleted"))
     getLanguageModelForConfigMock.mockReturnValue("snapshot-model")
     streamTextMock.mockReturnValue({
       stream: (async function* () {
@@ -395,8 +417,11 @@ describe("background-stream", () => {
       },
     })
 
-    expect(getModelByIdMock).not.toHaveBeenCalled()
-    expect(getLanguageModelForConfigMock).toHaveBeenCalledWith(providerConfig)
+    expect(getResourceProviderMock).not.toHaveBeenCalled()
+    expect(getLanguageModelForConfigMock).toHaveBeenCalledWith(
+      providerConfig,
+      expect.objectContaining({ start: expect.any(Function) }),
+    )
     expect(streamTextMock).toHaveBeenCalledWith(
       expect.objectContaining({
         model: "snapshot-model",
@@ -414,7 +439,8 @@ describe("background-stream", () => {
   })
 
   it("prefers stream onError root cause and posts error once", async () => {
-    getModelByIdMock.mockResolvedValue("mock-model")
+    getResourceProviderMock.mockResolvedValue(DEFAULT_PROVIDER_CONFIG.openai)
+    getLanguageModelForConfigMock.mockReturnValue("mock-model")
     const rootCause = Object.assign(new Error("Incorrect API key provided"), {
       responseBody: '{"error":{"message":"Incorrect API key provided"}}',
     })
@@ -461,7 +487,7 @@ describe("background-stream", () => {
   })
 
   it("keeps outer catch as fallback for pre-stream errors", async () => {
-    getModelByIdMock.mockRejectedValue(new ProviderSetupError("Model is undefined"))
+    getResourceProviderMock.mockRejectedValue(new ProviderSetupError("Model is undefined"))
     const { handleStreamTextPort } = await import("../background-stream")
     const mockPort = createMockPort("stream-text")
 
@@ -489,7 +515,8 @@ describe("background-stream", () => {
   })
 
   it("treats stream port disconnect aborts as expected cancellation", async () => {
-    getModelByIdMock.mockResolvedValue("mock-model")
+    getResourceProviderMock.mockResolvedValue(DEFAULT_PROVIDER_CONFIG.openai)
+    getLanguageModelForConfigMock.mockReturnValue("mock-model")
     let streamSignal: AbortSignal | undefined
 
     streamTextMock.mockImplementation((options: { abortSignal?: AbortSignal }) => {
@@ -565,7 +592,7 @@ describe("background-stream", () => {
       },
     })
     expect(mockPort.disconnect).toHaveBeenCalledTimes(1)
-    expect(getModelByIdMock).not.toHaveBeenCalled()
+    expect(getResourceProviderMock).not.toHaveBeenCalled()
   })
 
   it("returns error for invalid structured payload and disconnects", async () => {

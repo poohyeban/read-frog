@@ -1,121 +1,76 @@
+import type { ResourcePolicy } from "./resource-policy"
 import type { RequestRetryPolicy } from "./retry-policy"
-import { deepmerge } from "deepmerge-ts"
-import { requestQueueConfigSchema } from "@/types/config/translate"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { AttemptContext } from "./attempt-context"
 import { TranslationCancelledError } from "./cancellation"
-import { ExecutionSlots } from "./execution-slots"
+import { bindExecutionContext, type RequestExecutionContext } from "./execution-context"
 import { BinaryHeapPQ } from "./priority-queue"
 import { ResourceRejected } from "./resource-error"
+import { RESOURCE_DEFAULTS } from "./resource-policy"
 import { defaultRequestRetryPolicy } from "./retry-policy"
-
-export interface RequestTask {
-  id: string
-  thunk: (signal?: AbortSignal, liveScopes?: () => readonly string[] | undefined) => Promise<any>
-  promise: Promise<any>
-  resolve: (value: any) => void
-  reject: (error: any) => void
-  scheduleAt: number
-  createdAt: number
-  retryCount: number
-  // 429 retries spent on this task; a separate budget from retryCount (see
-  // RequestRetryContext.rateLimitRetryCount).
-  rateLimitRetryCount: number
-  drained: boolean
-  // Per-task timeout override; falls back to QueueOptions.timeoutMs. Large
-  // LLM batches need proportionally more time than single requests.
-  timeoutMs?: number
-  priority?: number
-  providerKey?: string
-}
-
-type QueuedRequestTask = RequestTask & {
-  hash: string
-  abortController?: AbortController
-  // Cancellation scopes subscribed to this task. Dedup can attach several
-  // (same hash from multiple tabs/sessions); the task is only cancelled when
-  // its LAST scope is cancelled. `null` means an unscoped subscriber exists,
-  // which pins the task as uncancellable.
-  cancelScopes: Set<string> | null
-}
 
 export interface QueueOptions {
   onDeduplicate?: () => void
   onRetry?: (delayMs: number, rateLimited: boolean) => void
-  rate: number // tokens/sec
-  capacity: number // token bucket size
   timeoutMs: number
   maxRetries: number
   baseRetryDelayMs: number
-  retryPolicy?: RequestRetryPolicy
-  maxInFlight?: number
   maxQueued?: number
-  slots?: ExecutionSlots
+  retryPolicy?: RequestRetryPolicy
+  consumer?: string
+}
+export interface RequestTask {
+  id: string
+  hash: string
+  thunk: (signal?: AbortSignal, liveScopes?: () => readonly string[] | undefined) => Promise<any>
+  promise: Promise<any>
+  resolve: (value: any) => void
+  reject: (error: unknown) => void
+  scheduleAt: number
+  drained: boolean
+  running: boolean
+  scopes: Set<string> | null
+  controller?: AbortController
+  attempts: AttemptContext
+  failures: number
+  priority: number
+  timeoutMs?: number
+  policy?: ResourcePolicy
+  context?: RequestExecutionContext
 }
 
+/** Logical requests and subscriptions only. No token bucket, physical slots or shared cooldown. */
 export class RequestQueue {
-  private waitingQueue: BinaryHeapPQ<QueuedRequestTask>
-  private waitingTasks = new Map<string, QueuedRequestTask>()
-  private executingTasks = new Map<string, QueuedRequestTask>()
-  private nextScheduleTimer: NodeJS.Timeout | null = null
-  private retryPolicy: RequestRetryPolicy
-  private slots: ExecutionSlots
-  private unwatchSlots?: () => void
-
-  // token bucket
-  private bucketTokens: number
-  private lastRefill: number
-
-  // rate-limit pause: no dispatching while Date.now() < pausedUntil. Set on a
-  // 429 (pause-and-retry decision); the backlog stays intact instead of being
-  // mass-rejected.
-  private pausedUntil = 0
-  // Pause windows since the last successful request; feeds the retry policy's
-  // give-up cap (MAX_CONSECUTIVE_RATE_LIMIT_PAUSES).
-  private consecutiveRateLimits = 0
-
-  constructor(
-    private options: QueueOptions,
-    private priorityAgingMs?: number,
-  ) {
-    this.retryPolicy = options.retryPolicy ?? defaultRequestRetryPolicy
-    this.slots = options.slots ?? new ExecutionSlots(options.maxInFlight ?? Infinity)
-    this.bucketTokens = options.capacity
-    this.lastRefill = Date.now()
-    this.waitingQueue = new BinaryHeapPQ<QueuedRequestTask>()
-  }
+  private scheduled = new BinaryHeapPQ<RequestTask>(undefined, true)
+  private tasks = new Map<string, RequestTask>()
+  private timer?: ReturnType<typeof setTimeout>
+  constructor(private options: QueueOptions) {}
 
   enqueue<T>(
     thunk: (signal?: AbortSignal, liveScopes?: () => readonly string[] | undefined) => Promise<T>,
     scheduleAt: number,
     hash: string,
     scopes?: readonly string[],
-    taskOptions?: { timeoutMs?: number; priority?: number; providerKey?: string },
+    taskOptions?: { timeoutMs?: number; priority?: number; attempts?: AttemptContext },
   ): Promise<T> {
-    const duplicateTask = this.duplicateTask(hash)
-    if (duplicateTask) {
+    const duplicate = this.tasks.get(hash)
+    if (duplicate) {
+      taskOptions?.attempts?.join(duplicate.attempts)
       this.options.onDeduplicate?.()
-      // console.info(`🔄 Found duplicate task for hash: ${hash}, returning existing promise`)
-      if (!scopes?.length) {
-        duplicateTask.cancelScopes = null
-      } else if (duplicateTask.cancelScopes !== null) {
-        scopes.forEach((scope) => duplicateTask.cancelScopes!.add(scope))
-      }
-      duplicateTask.priority = Math.min(duplicateTask.priority ?? 1, taskOptions?.priority ?? 1)
-      return duplicateTask.promise
+      if (!scopes?.length) duplicate.scopes = null
+      else if (duplicate.scopes) scopes.forEach((scope) => duplicate.scopes!.add(scope))
+      duplicate.priority = Math.min(duplicate.priority, taskOptions?.priority ?? 1)
+      duplicate.context?.promote?.(duplicate.priority)
+      return duplicate.promise
     }
-
-    if (this.waitingTasks.size >= (this.options.maxQueued ?? Infinity))
+    if (this.tasks.size >= (this.options.maxQueued ?? 64))
       return Promise.reject(new ResourceRejected("queue-full"))
-    this.unwatchSlots ??= this.slots.watch(() => this.schedule())
-
-    let resolve!: (value: T) => void
-    let reject!: (error: Error) => void
-    const promise = new Promise<T>((res, rej) => {
-      resolve = res
-      reject = rej
+    let resolve!: (value: T) => void, reject!: (reason: unknown) => void
+    const promise = new Promise<T>((yes, no) => {
+      resolve = yes
+      reject = no
     })
-
-    const task: QueuedRequestTask = {
+    const task: RequestTask = {
       id: getRandomUUID(),
       hash,
       thunk,
@@ -123,408 +78,133 @@ export class RequestQueue {
       resolve,
       reject,
       scheduleAt,
-      createdAt: Date.now(),
-      retryCount: 0,
-      rateLimitRetryCount: 0,
-      drained: false,
-      timeoutMs: taskOptions?.timeoutMs,
+      scopes: scopes?.length ? new Set(scopes) : null,
+      attempts: taskOptions?.attempts ?? AttemptContext.create([hash]),
+      failures: 0,
       priority: Math.min(3, Math.max(0, taskOptions?.priority ?? 1)),
-      providerKey: taskOptions?.providerKey,
-      cancelScopes: scopes?.length ? new Set(scopes) : null,
+      timeoutMs: taskOptions?.timeoutMs,
+      running: false,
+      drained: false,
     }
-
-    this.waitingTasks.set(hash, task)
-    this.waitingQueue.push(task, scheduleAt)
-
-    // console.info(`✅ Task ${task.id} added to queue. Queue size: ${this.waitingQueue.size()}, waiting: ${this.waitingTasks.size}, executing: ${this.executingTasks.size}`)
-
+    this.tasks.set(hash, task)
+    this.scheduled.push(task, scheduleAt)
     this.schedule()
     return promise
   }
-
   setQueueOptions(options: Partial<QueueOptions>) {
-    const { retryPolicy, ...queueOptions } = options
-    const parseConfigStatus = requestQueueConfigSchema.partial().safeParse(queueOptions)
-    if (parseConfigStatus.error) {
-      throw new Error(parseConfigStatus.error.issues[0]!.message)
-    }
-    // Settle token accrual under the OLD rate before switching.
-    this.refillTokens()
-    this.options = deepmerge(this.options, queueOptions) as QueueOptions
-    if (retryPolicy) {
-      this.retryPolicy = retryPolicy
-    }
-    // Clamp, never refill-to-full: a capacity edit must not grant a free
-    // burst, and repeated identical calls (config sync) must be no-ops.
-    this.bucketTokens = Math.min(this.bucketTokens, this.options.capacity)
-    // The pending timer's delay was computed under the old rate — recompute.
+    if (
+      options.maxQueued !== undefined &&
+      (!Number.isInteger(options.maxQueued) || options.maxQueued < 1 || options.maxQueued > 4096)
+    )
+      throw new ResourceRejected("input-limit")
+    if (
+      options.maxRetries !== undefined &&
+      (!Number.isInteger(options.maxRetries) || options.maxRetries < 0 || options.maxRetries > 9)
+    )
+      throw new ResourceRejected("input-limit")
+    this.options = { ...this.options, ...options }
     this.schedule()
   }
-
-  /**
-   * Cancel every task subscribed to the given scope. Refcounted: a task shared
-   * with another scope (dedup) or with an unscoped subscriber survives; only
-   * tasks whose LAST scope this is are rejected/aborted (#1881).
-   */
-  cancelByScope(scopeKey: string): number {
-    return this.cancelWhere((scope) => scope === scopeKey)
+  cancelByScope(scope: string) {
+    return this.cancelWhere((candidate) => candidate === scope)
   }
-
-  /**
-   * Cancel every task all of whose scopes match the predicate. Unscoped tasks
-   * (`cancelScopes === null`) never match.
-   */
-  cancelWhere(scopeMatches: (scopeKey: string) => boolean): number {
-    let cancelled = 0
-
-    const cancelMatchingScopes = (task: QueuedRequestTask): boolean => {
-      if (task.cancelScopes === null) return false
-      let matchedScope: string | undefined
-      for (const scope of task.cancelScopes) {
-        if (scopeMatches(scope)) {
-          matchedScope = scope
-          task.cancelScopes.delete(scope)
+  cancelWhere(matches: (scope: string) => boolean) {
+    let count = 0
+    for (const task of this.tasks.values()) {
+      if (!task.scopes || task.drained) continue
+      let removed = false
+      for (const scope of task.scopes)
+        if (matches(scope)) {
+          task.scopes.delete(scope)
+          removed = true
         }
-      }
-      if (matchedScope === undefined || task.cancelScopes.size > 0) return false
-      this.rejectDrainedTask(task, new TranslationCancelledError(matchedScope))
-      return true
+      if (!removed || task.scopes.size) continue
+      count++
+      this.drain(task, new TranslationCancelledError(task.hash))
     }
-
-    for (const [hash, task] of [...this.waitingTasks]) {
-      if (!cancelMatchingScopes(task)) continue
-      this.waitingTasks.delete(hash)
-      cancelled++
-    }
-    this.waitingQueue.removeWhere((task) => task.drained)
-
-    for (const task of [...this.executingTasks.values()]) {
-      if (!cancelMatchingScopes(task)) continue
-      // Keep a tombstone and its physical slot until the underlying call settles.
-      // An uncooperative transport must not be retried under the same hash.
-      cancelled++
-    }
-
-    if (cancelled > 0) {
-      this.schedule()
-    }
-    return cancelled
+    this.schedule()
+    return count
   }
-
-  /**
-   * Milliseconds until this queue could START one more (newly enqueued)
-   * request: accounts for the rate-limit pause, available tokens, and the
-   * requests already waiting ahead of it. 0 = a slot is available now.
-   * Consumed by the BatchQueue's dispatch gate so batches keep filling while
-   * dispatch is blocked instead of flushing tiny.
-   */
-  nextDispatchEtaMs(): number {
-    this.refillTokens()
-    const now = Date.now()
-    const pauseDelayMs = Math.max(0, this.pausedUntil - now)
-    const tokensNeeded = this.waitingQueue.size() + 1
-    const tokenDelayMs =
-      this.bucketTokens >= tokensNeeded
-        ? 0
-        : Math.ceil(((tokensNeeded - this.bucketTokens) / this.options.rate) * 1000)
-    return Math.max(pauseDelayMs, tokenDelayMs)
+  private drain(task: RequestTask, error: unknown) {
+    if (task.drained) return
+    task.drained = true
+    task.reject(error)
+    task.controller?.abort(error)
+    if (!task.running) {
+      this.scheduled.remove(task)
+      this.tasks.delete(task.hash)
+    }
   }
-
   private schedule() {
-    this.refillTokens()
-    this.clearScheduleTimer()
-
-    const pauseRemainingMs = this.pausedUntil - Date.now()
-    if (pauseRemainingMs > 0) {
-      if (this.waitingQueue.size() > 0) {
-        this.armScheduleTimer(pauseRemainingMs)
-      }
-      return
+    clearTimeout(this.timer)
+    this.timer = undefined
+    const now = Date.now()
+    while (this.scheduled.peek() && this.scheduled.peek()!.scheduleAt <= now) {
+      const task = this.scheduled.pop()!
+      if (!task.drained) void this.execute(task)
     }
-
-    while (this.bucketTokens >= 1 && this.waitingQueue.size() > 0) {
-      const now = Date.now()
-
-      let task = this.waitingQueue.peek()
-      // Subtitle admission is bounded. Aging lets old auxiliary work eventually
-      // outrank new current cues without bypassing retry times or provider pauses.
-      if (task && task.scheduleAt <= now) {
-        let best = Infinity
-        task = undefined
-        for (const candidate of this.waitingTasks.values()) {
-          if (candidate.drained || candidate.scheduleAt > now) continue
-          if (
-            !this.slots.available(
-              candidate.providerKey ?? "default",
-              this.options.maxInFlight ?? Infinity,
-            )
-          )
-            continue
-          const score = this.priorityAgingMs
-            ? (candidate.priority ?? 1) - (now - candidate.createdAt) / this.priorityAgingMs
-            : candidate.scheduleAt
-          if (score < best) {
-            task = candidate
-            best = score
-          }
-        }
-      }
-      if (task?.drained) {
-        // Safety net: a drained task should have been removed from the heap,
-        // but never dispatch or let one stall the timer computation below.
-        this.waitingQueue.pop()
-        this.waitingTasks.delete(task.hash)
-        continue
-      }
-      if (task && task.scheduleAt <= now) {
-        if (task === this.waitingQueue.peek()) this.waitingQueue.pop()
-        else this.waitingQueue.removeWhere((candidate) => candidate === task)
-        this.waitingTasks.delete(task.hash)
-        this.executingTasks.set(task.hash, task)
-        const release = this.slots.acquire(
-          task.providerKey ?? "default",
-          this.options.maxInFlight ?? Infinity,
-        )!
-        this.bucketTokens--
-        void this.executeTask(task, release)
-      } else {
-        break
-      }
-    }
-
-    if (this.waitingQueue.size() > 0) {
-      const nextTask = this.waitingQueue.peek()
-      if (nextTask) {
-        const now = Date.now()
-        const delayUntilScheduled = Math.max(0, nextTask.scheduleAt - now)
-        const msUntilNextToken =
-          this.bucketTokens >= 1
-            ? 0
-            : Math.ceil(((1 - this.bucketTokens) / this.options.rate) * 1000)
-        const delay = Math.max(delayUntilScheduled, msUntilNextToken)
-
-        // Physical concurrency wakes through slot release, never a zero-delay busy loop.
-        if (delay > 0) this.armScheduleTimer(delay)
-      }
-    }
-    if (!this.waitingTasks.size && !this.executingTasks.size) {
-      this.unwatchSlots?.()
-      this.unwatchSlots = undefined
-    }
+    const next = this.scheduled.peek()
+    if (next) this.timer = setTimeout(() => this.schedule(), Math.max(1, next.scheduleAt - now))
   }
-
-  private clearScheduleTimer() {
-    if (this.nextScheduleTimer) {
-      clearTimeout(this.nextScheduleTimer)
-      this.nextScheduleTimer = null
+  private async execute(task: RequestTask) {
+    task.running = true
+    const controller = new AbortController()
+    task.controller = controller
+    const context: RequestExecutionContext = {
+      attempts: task.attempts,
+      priority: task.priority,
+      consumer: `${this.options.consumer ?? "request"}:${task.scopes?.values().next().value?.split(":").slice(0, 3).join(":") ?? "interactive"}`,
+      requestKey: task.hash,
+      timeoutMs: task.timeoutMs,
+      policy: task.policy,
+      abort: (reason) => this.drain(task, reason),
     }
-  }
-
-  private armScheduleTimer(delayMs: number) {
-    this.nextScheduleTimer = setTimeout(() => {
-      this.nextScheduleTimer = null
-      this.schedule()
-    }, delayMs)
-  }
-
-  private async executeTask(task: QueuedRequestTask, release: () => void) {
-    // console.info(`🏃 Starting execution of task ${task.id} (attempt ${task.retryCount + 1}) at ${Date.now()}`)
-
-    let timeoutId: NodeJS.Timeout | null = null
-    const abortController = new AbortController()
-    task.abortController = abortController
-    const timeoutMs = task.timeoutMs ?? this.options.timeoutMs
-    let physicallySettled = false
-    let actual: Promise<any>
+    bindExecutionContext(controller.signal, context)
+    task.context = context
     try {
-      abortController.signal.throwIfAborted()
-      actual = task.thunk(abortController.signal, () =>
-        task.cancelScopes ? [...task.cancelScopes] : undefined,
+      const result = await task.thunk(controller.signal, () =>
+        task.scopes ? [...task.scopes] : undefined,
       )
-    } catch (error) {
-      actual = Promise.reject(error)
-    }
-    const settle = () => {
-      physicallySettled = true
-      release()
-      if (task.drained && this.executingTasks.get(task.hash) === task)
-        this.executingTasks.delete(task.hash)
-      this.schedule()
-    }
-    void actual.then(settle, settle)
-
-    let abortListener: (() => void) | undefined
-    try {
-      const cancelled = new Promise<never>((_, reject) => {
-        abortListener = () => reject(abortController.signal.reason)
-        abortController.signal.addEventListener("abort", abortListener, { once: true })
-      })
-      // Create a timeout promise
-      const timeoutPromise = new Promise((_, reject) => {
-        timeoutId = setTimeout(() => {
-          // console.info(`⏰ Task ${task.id} timed out after ${timeoutMs}ms`)
-          const timeoutError = new Error(`Task ${task.id} timed out after ${timeoutMs}ms`)
-          // Reject before aborting: the race must settle with the timeout error
-          // (which the retry policy treats as retryable), not with whatever abort
-          // error the cancelled thunk rejects with.
-          reject(timeoutError)
-          abortController.abort(timeoutError)
-        }, timeoutMs)
-      })
-
-      // Race between the actual task and timeout; the signal cancels the
-      // in-flight attempt on timeout so a retry never runs concurrently with it
-      const result = await Promise.race([actual, timeoutPromise, cancelled])
-
-      // Clear timeout if task completed successfully
-      if (timeoutId) {
-        clearTimeout(timeoutId)
-        timeoutId = null
-      }
-
-      // console.info(`✅ Task ${task.id} completed successfully at ${Date.now()}`)
-      // Any completed request proves the provider recovered from rate limiting.
-      this.consecutiveRateLimits = 0
       if (!task.drained) {
+        task.drained = true
         task.resolve(result)
       }
     } catch (error) {
-      // Clear timeout if it hasn't fired yet
-      if (timeoutId) {
-        clearTimeout(timeoutId)
-        timeoutId = null
-      }
-
-      // console.error(`❌ Task ${task.id} failed at ${Date.now()}:`, error)
-
-      if (task.drained) {
-        return
-      }
-      if (!physicallySettled) {
-        this.rejectDrainedTask(task, error)
-        return
-      }
-
-      const now = Date.now()
-      const decision = this.retryPolicy.decide(error, {
-        retryCount: task.retryCount,
-        maxRetries: this.options.maxRetries,
-        baseRetryDelayMs: this.options.baseRetryDelayMs,
-        now,
-        rateLimitRetryCount: task.rateLimitRetryCount,
-        consecutiveRateLimits: this.consecutiveRateLimits,
+      if (task.drained || controller.signal.aborted) return
+      // The scheduler may reject a timeout before an uncooperative transport has settled.
+      // It calls context.abort in that case; never start a concurrent retry of that operation.
+      if (context.physicalSettled) await context.physicalSettled
+      if (task.drained || controller.signal.aborted) return
+      task.policy ??= context.policy
+      task.failures++
+      const policy = task.policy
+      const maxAttempts = policy?.maxAttempts ?? this.options.maxRetries + 1
+      const decision = (this.options.retryPolicy ?? defaultRequestRetryPolicy).decide(error, {
+        retryCount: Math.max(task.attempts.starts, task.failures) - 1,
+        maxRetries: maxAttempts - 1,
+        baseRetryDelayMs: policy?.baseRetryDelayMs ?? this.options.baseRetryDelayMs,
+        maxRetryDelayMs: policy?.maxRetryDelayMs ?? RESOURCE_DEFAULTS.maxRetryDelayMs,
+        now: Date.now(),
+        cooldownMs: policy?.cooldownMs,
       })
-
-      // Check if we should retry
-      if (decision.action === "retry") {
-        this.options.onRetry?.(decision.delayMs, false)
-        task.retryCount++
-        // Schedule retry
-        const retryAt = now + decision.delayMs
-        task.scheduleAt = retryAt
-
-        // console.warn(`🔄 Retrying task ${task.id} (attempt ${task.retryCount}/${this.options.maxRetries}) after ${Math.round(decision.delayMs)}ms`)
-
-        // Move task back to waiting queue for retry
-        this.waitingTasks.set(task.hash, task)
-        this.waitingQueue.push(task, retryAt)
-      } else if (decision.action === "pause-and-retry") {
-        this.options.onRetry?.(decision.pauseMs, true)
-        // Rate limited: pause dispatching and re-enqueue the task instead of
-        // draining the backlog. Count one pause per pause WINDOW, not per
-        // failing sibling — with capacity>1 several in-flight attempts can all
-        // 429 within milliseconds; only the first (arriving un-paused)
-        // increments the consecutive counter, the rest just extend the pause.
-        if (now >= this.pausedUntil) {
-          this.consecutiveRateLimits++
-        }
-        this.pausedUntil = Math.max(this.pausedUntil, now + decision.pauseMs)
-        this.slots.pause(task.providerKey ?? "default", this.pausedUntil)
-        // Post-pause probe: resume with at most one token so recovery sends a
-        // single request first instead of bursting `capacity` requests at a
-        // provider that may still be limited.
-        this.bucketTokens = Math.min(this.bucketTokens, 1)
-        this.lastRefill = now
-        task.rateLimitRetryCount++
-        task.scheduleAt = this.pausedUntil
-        this.waitingTasks.set(task.hash, task)
-        this.waitingQueue.push(task, task.scheduleAt)
+      if (decision.action === "fail" || !task.attempts.canStart(maxAttempts)) {
+        task.drained = true
+        task.reject(error)
       } else {
-        // Max retries exceeded, reject the promise
-        // console.error(`💀 Task ${task.id} failed permanently after ${this.options.maxRetries} retries`)
-        if (decision.failQueue) {
-          this.failCurrentBacklog(error)
-        } else {
-          task.reject(error)
-        }
+        const delay = decision.action === "retry" ? decision.delayMs : decision.pauseMs
+        this.options.onRetry?.(delay, decision.action === "pause-and-retry")
+        task.scheduleAt = Date.now() + delay
+        this.scheduled.push(task, task.scheduleAt)
       }
     } finally {
-      if (abortListener) abortController.signal.removeEventListener("abort", abortListener)
-      // Ensure timeout is always cleared
-      if (timeoutId) {
-        clearTimeout(timeoutId)
+      const remove = () => {
+        task.running = false
+        if (task.drained && this.tasks.get(task.hash) === task) this.tasks.delete(task.hash)
+        this.schedule()
       }
-
-      if (task.abortController === abortController) {
-        task.abortController = undefined
-      }
-
-      if (physicallySettled && this.executingTasks.get(task.hash) === task) {
-        this.executingTasks.delete(task.hash)
-      }
-      this.schedule()
+      // Dedup tombstones survive a caller's cancellation until actual client completion.
+      if (context.physicalSettled) void context.physicalSettled.then(remove, remove)
+      else remove()
     }
-  }
-
-  private duplicateTask(hash: string) {
-    const duplicateTask = this.waitingTasks.get(hash) ?? this.executingTasks.get(hash)
-    if (duplicateTask) {
-      return duplicateTask
-    }
-    return undefined
-  }
-
-  private failCurrentBacklog(error: unknown) {
-    // A fresh user retry after this mass-fail gets a fresh pause budget, but
-    // pausedUntil is kept: new enqueues still respect the provider's cooldown.
-    this.consecutiveRateLimits = 0
-    if (this.nextScheduleTimer) {
-      clearTimeout(this.nextScheduleTimer)
-      this.nextScheduleTimer = null
-    }
-
-    for (const task of this.waitingTasks.values()) {
-      this.rejectDrainedTask(task, error)
-    }
-    this.waitingTasks.clear()
-    this.waitingQueue.clear()
-
-    for (const task of this.executingTasks.values()) {
-      this.rejectDrainedTask(task, error)
-    }
-    // Retain unresolved physical calls as dedup tombstones.
-  }
-
-  private rejectDrainedTask(task: QueuedRequestTask, error: unknown) {
-    if (task.drained) {
-      return
-    }
-
-    task.drained = true
-    task.reject(error)
-    task.abortController?.abort(error)
-  }
-
-  private refillTokens() {
-    const now = Date.now()
-    const timeSinceLastRefill = now - this.lastRefill
-    const tokensToAdd = (timeSinceLastRefill / 1000) * this.options.rate
-    this.bucketTokens = Math.min(this.bucketTokens + tokensToAdd, this.options.capacity)
-
-    // if (tokensToAdd > 0.01) { // Only log if meaningful tokens were added
-    //   console.log(`🪣 Token bucket refilled: ${oldTokens.toFixed(2)} -> ${this.bucketTokens.toFixed(2)} (+${tokensToAdd.toFixed(2)}) after ${timeSinceLastRefill}ms`)
-    // }
-
-    this.lastRefill = now
   }
 }

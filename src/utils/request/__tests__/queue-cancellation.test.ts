@@ -56,8 +56,8 @@ describe("requestQueue – cancelByScope", () => {
 
     const thunk2 = vi.fn<() => Promise<string>>(async () => "two")
     const thunk3 = vi.fn<() => Promise<string>>(async () => "three")
-    const p2 = q.enqueue(thunk2, Date.now(), "h2", ["A"])
-    const p3 = q.enqueue(thunk3, Date.now(), "h3", ["A"])
+    const p2 = q.enqueue(thunk2, Date.now() + 1000, "h2", ["A"])
+    const p3 = q.enqueue(thunk3, Date.now() + 1000, "h3", ["A"])
 
     await vi.advanceTimersByTimeAsync(0)
     expect(executingSignal).toBeDefined()
@@ -102,7 +102,7 @@ describe("requestQueue – cancelByScope", () => {
   })
 
   it("keeps a dedup-shared task alive while another scope still needs it", async () => {
-    const q = new RequestQueue({ ...baseConfig, rate: 100, capacity: 100 })
+    const q = new RequestQueue({ ...baseConfig })
 
     const gate = createDeferred<string>()
     const thunk = vi.fn<() => Promise<string>>(() => gate.promise)
@@ -156,7 +156,7 @@ describe("requestQueue – cancelByScope", () => {
 
   it("keeps the heap dispatching surviving tasks in schedule order after selective removal", async () => {
     vi.useFakeTimers()
-    const q = new RequestQueue({ ...baseConfig, rate: 1000, capacity: 1000 })
+    const q = new RequestQueue({ ...baseConfig })
     const started: string[] = []
     const now = Date.now()
 
@@ -265,7 +265,6 @@ function createBatchQueue(options: {
     maxCharactersPerBatch: 1_000,
     maxItemsPerBatch: options.maxItemsPerBatch ?? 10,
     batchDelay: options.batchDelay ?? 100,
-    maxRetries: options.maxRetries ?? 0,
     enableFallbackToIndividual: Boolean(options.executeIndividual),
     getBatchKey: () => "batch",
     getCharacters: (data) => data.text.length,
@@ -342,7 +341,7 @@ describe("batchQueue – cancelByScope", () => {
 
   it("aborts an in-flight all-cancelled batch through the request queue without individual fallback", async () => {
     vi.useFakeTimers()
-    const requestQueue = new RequestQueue({ ...baseConfig, rate: 100, capacity: 100 })
+    const requestQueue = new RequestQueue({ ...baseConfig })
     let batchSignal: AbortSignal | undefined
     const executeIndividual = vi.fn<(data: FakeBatchData) => Promise<string>>(
       async (item) => `solo:${item.text}`,
@@ -384,7 +383,7 @@ describe("batchQueue – cancelByScope", () => {
 
   it("lets an in-flight mixed batch complete for every member", async () => {
     vi.useFakeTimers()
-    const requestQueue = new RequestQueue({ ...baseConfig, rate: 100, capacity: 100 })
+    const requestQueue = new RequestQueue({ ...baseConfig })
     const gate = createDeferred<void>()
 
     const q = createBatchQueue({
@@ -417,7 +416,7 @@ describe("batchQueue – cancelByScope", () => {
 
   it("does not drop a later session's paragraph that dedups a same-hash request after flush (#1881)", async () => {
     vi.useFakeTimers()
-    const requestQueue = new RequestQueue({ ...baseConfig, rate: 100, capacity: 100 })
+    const requestQueue = new RequestQueue({ ...baseConfig })
     const gate = createDeferred<void>()
     const signals: Record<string, AbortSignal | undefined> = {}
     let rqSeq = 0
@@ -467,7 +466,7 @@ describe("batchQueue – cancelByScope", () => {
     expect(signals.B?.aborted).toBe(false)
   })
 
-  it("aborts the retry backoff when every scope was cancelled during the sleep (#1881)", async () => {
+  it("rejects a malformed result if every scope was revoked while the batch was in flight", async () => {
     vi.useFakeTimers()
     const cancelled = new Set<string>()
     // First attempt: LLM returns the wrong number of results → retry path.
@@ -477,6 +476,7 @@ describe("batchQueue – cancelByScope", () => {
         meta: { scopes: readonly string[] | undefined },
       ) => Promise<string[]>
     >(async () => {
+      cancelled.add("A")
       throw new BatchCountMismatchError(2, 1, ["only-one"])
     })
     const executeIndividual = vi.fn<(data: FakeBatchData) => Promise<string>>(
@@ -509,7 +509,7 @@ describe("batchQueue – cancelByScope", () => {
     await settled
   })
 
-  it("keeps retrying when the scopes stay live (control)", async () => {
+  it("recovers a malformed live member through its individual fallback", async () => {
     vi.useFakeTimers()
     const executeBatch = vi.fn<
       (
@@ -526,6 +526,7 @@ describe("batchQueue – cancelByScope", () => {
       batchDelay: 10,
       maxRetries: 3,
       executeBatch,
+      executeIndividual: async (item) => `t:${item.text}`,
       isScopeCancelled: () => false,
     })
 
@@ -535,7 +536,7 @@ describe("batchQueue – cancelByScope", () => {
     expect(executeBatch).toHaveBeenCalledTimes(1)
 
     await vi.advanceTimersByTimeAsync(60_000)
-    expect(executeBatch).toHaveBeenCalledTimes(2)
+    expect(executeBatch).toHaveBeenCalledTimes(1)
     await expect(a1).resolves.toBe("t:alpha")
   })
 })

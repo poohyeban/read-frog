@@ -1,41 +1,19 @@
-import { batchQueueConfigSchema } from "@/types/config/translate"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { AttemptContext } from "./attempt-context"
 import { TranslationCancelledError } from "./cancellation"
+import { batchOverridesSchema } from "./performance-config"
 import { ResourceRejected } from "./resource-error"
 
 export class BatchCountMismatchError extends Error {
+  readonly isRetryable = false
   constructor(expected: number, got: number, _results: unknown[]) {
     super(`Batch result count mismatch: expected ${expected}, got ${got}.`)
     this.name = "BatchCountMismatchError"
   }
 }
 
-const BASE_BACKOFF_DELAY_MS = 1000
-const MAX_BACKOFF_DELAY_MS = 8000
-// While the dispatch gate reports no free slot, re-poll it at least this often
-// (the ETA shrinks as tokens refill downstream).
-const MAX_GATE_POLL_MS = 1000
-// Absolute cap on holding an under-filled batch: escape hatch if the gate
-// reports large ETAs forever.
-const MAX_BATCH_HOLD_MS = 60_000
-
-/**
- * Port to the downstream dispatcher (ports & adapters: BatchQueue never learns
- * about RequestQueue). While the gate reports no free dispatch slot, pending
- * batches keep absorbing arrivals up to maxItems/maxChars instead of flushing
- * tiny at batchDelay — flushing earlier would not start the request any
- * earlier, it would only freeze the batch's composition.
- */
-export interface DispatchGate {
-  /**
-   * ms until the downstream dispatcher could start ONE MORE request,
-   * accounting for tokens, pauses, and requests already waiting ahead.
-   * 0 = a slot is available now.
-   */
-  nextDispatchEtaMs: () => number
-}
-
 interface BatchTask<T, R> {
+  memberId: string
   data: T
   resolve: (value: R) => void
   reject: (error: Error) => void
@@ -56,6 +34,7 @@ interface PendingBatch<T, R> {
 }
 
 export interface BatchExecutionMeta {
+  attempts: AttemptContext
   /**
    * Union of the live members' cancellation scopes at flush time, or
    * `undefined` when any member is uncancellable. Thread this into the
@@ -69,9 +48,7 @@ export interface BatchOptions<T, R> {
   maxCharactersPerBatch: number
   maxItemsPerBatch: number
   batchDelay: number
-  maxRetries?: number
   enableFallbackToIndividual?: boolean
-  dispatchGate?: DispatchGate
   getBatchKey: (data: T) => string
   getCharacters: (data: T) => number
   getDedupKey?: (data: T) => string | undefined
@@ -88,7 +65,6 @@ export interface BatchOptions<T, R> {
 }
 
 export class BatchQueue<T, R> {
-  private backoffs = new Set<{ tasks: BatchTask<T, R>[]; wake: () => void }>()
   private maxPending: number
   private outstanding = 0
   private pendingBatchMap = new Map<string, PendingBatch<T, R>>()
@@ -97,9 +73,7 @@ export class BatchQueue<T, R> {
   private maxCharactersPerBatch: number
   private maxItemsPerBatch: number
   private batchDelay: number
-  private maxRetries: number
   private enableFallbackToIndividual: boolean
-  private dispatchGate?: DispatchGate
   private getBatchKey: (data: T) => string
   private getCharacters: (data: T) => number
   private getDedupKey?: (data: T) => string | undefined
@@ -113,13 +87,11 @@ export class BatchQueue<T, R> {
   ) => void
 
   constructor(config: BatchOptions<T, R>) {
-    this.maxPending = config.maxPending ?? 4096
+    this.maxPending = config.maxPending ?? 128
     this.maxCharactersPerBatch = config.maxCharactersPerBatch
     this.maxItemsPerBatch = config.maxItemsPerBatch
     this.batchDelay = config.batchDelay
-    this.maxRetries = config.maxRetries ?? 3
     this.enableFallbackToIndividual = config.enableFallbackToIndividual ?? true
-    this.dispatchGate = config.dispatchGate
     this.getBatchKey = config.getBatchKey
     this.getCharacters = config.getCharacters
     this.getDedupKey = config.getDedupKey
@@ -174,6 +146,7 @@ export class BatchQueue<T, R> {
 
     const batchKey = this.getBatchKey(data)
     const task: BatchTask<T, R> = {
+      memberId: dedupKey ?? getRandomUUID(),
       data,
       resolve,
       reject,
@@ -244,12 +217,6 @@ export class BatchQueue<T, R> {
       clearTimeout(this.nextScheduleTimer)
       this.nextScheduleTimer = null
     }
-    for (const wait of this.backoffs) {
-      for (const task of wait.tasks)
-        for (const scope of task.cancelScopes ?? [])
-          if (scopeMatches(scope)) task.cancelScopes?.delete(scope)
-      if (wait.tasks.every((task) => task.cancelScopes?.size === 0)) wait.wake()
-    }
     return cancelled
   }
 
@@ -260,7 +227,6 @@ export class BatchQueue<T, R> {
     }
 
     const now = Date.now()
-    const etaMs = this.dispatchGate?.nextDispatchEtaMs() ?? 0
     const batchesToFlush: string[] = []
     let nextWakeMs = Infinity
 
@@ -272,22 +238,11 @@ export class BatchQueue<T, R> {
       }
 
       const ageMs = now - batch.createdAt
-      // A dispatch slot is (nearly) available downstream — flushing now costs
-      // nothing. Without a gate this is always true, preserving the original
-      // flush-at-batchDelay latency.
-      const slotNear = etaMs <= this.batchDelay
-      if (ageMs >= this.batchDelay && (slotNear || ageMs >= MAX_BATCH_HOLD_MS)) {
+      if (ageMs >= this.batchDelay) {
         batchesToFlush.push(batchKey)
         continue
       }
-
-      // Hold: wake when the min-age elapses, or poll the gate again soon —
-      // whichever is later — so held batches keep absorbing arrivals while
-      // dispatch is blocked.
-      const wakeMs = Math.max(
-        this.batchDelay - ageMs,
-        Math.min(Math.max(etaMs - this.batchDelay, this.batchDelay), MAX_GATE_POLL_MS),
-      )
+      const wakeMs = this.batchDelay - ageMs
       nextWakeMs = Math.min(nextWakeMs, wakeMs)
     }
 
@@ -365,16 +320,18 @@ export class BatchQueue<T, R> {
       }
       scopes.push(...task.cancelScopes)
     }
-    const meta: BatchExecutionMeta = { scopes: scopes ? [...new Set(scopes)] : undefined }
+    const meta: BatchExecutionMeta = {
+      scopes: scopes ? [...new Set(scopes)] : undefined,
+      attempts: AttemptContext.create(tasks.map((task) => task.memberId)),
+    }
 
-    void this.executeBatchWithRetry(tasks, batchKey, meta, 0)
+    void this.executeBatchWithRecovery(tasks, batchKey, meta)
   }
 
-  private async executeBatchWithRetry(
+  private async executeBatchWithRecovery(
     tasks: BatchTask<T, R>[],
     batchKey: string,
     meta: BatchExecutionMeta,
-    retryCount: number,
   ): Promise<void> {
     try {
       const results = await this.executeBatch(
@@ -394,19 +351,7 @@ export class BatchQueue<T, R> {
     } catch (error) {
       const err = error as Error
 
-      this.onError?.(err, { batchKey, retryCount, isFallback: false })
-
-      // Only retry on count mismatch errors (LLM returned wrong number of results)
-      if (retryCount < this.maxRetries && err instanceof BatchCountMismatchError) {
-        const delay = this.calculateBackoffDelay(retryCount)
-        await this.sleep(delay, tasks)
-        // During the backoff this batch lived in NO cancellable structure
-        // (its RequestQueue task already completed, it left pendingBatchMap at
-        // flush) — a cancel that arrived meanwhile drained nothing, so re-check
-        // scope liveness before burning another provider round trip (#1881).
-        if (this.rejectIfAllScopesCancelled(tasks, meta)) return
-        return this.executeBatchWithRetry(tasks, batchKey, meta, retryCount + 1)
-      }
+      this.onError?.(err, { batchKey, retryCount: 0, isFallback: false })
 
       if (
         this.enableFallbackToIndividual &&
@@ -416,7 +361,7 @@ export class BatchQueue<T, R> {
         // Same gate before the per-item fallback: the failed attempt's provider
         // call may have straddled the cancel.
         if (this.rejectIfAllScopesCancelled(tasks, meta)) return
-        return this.executeFallbackIndividual(tasks, batchKey)
+        return this.executeFallbackIndividual(tasks, batchKey, meta.attempts)
       }
 
       tasks.forEach((task) => task.reject(err))
@@ -437,7 +382,11 @@ export class BatchQueue<T, R> {
     return true
   }
 
-  private async executeFallbackIndividual(tasks: BatchTask<T, R>[], batchKey: string) {
+  private async executeFallbackIndividual(
+    tasks: BatchTask<T, R>[],
+    batchKey: string,
+    attempts: AttemptContext,
+  ) {
     await Promise.allSettled(
       tasks.map(async (task) => {
         try {
@@ -451,45 +400,37 @@ export class BatchQueue<T, R> {
               ? undefined
               : [...task.cancelScopes].filter((scope) => !this.isScopeCancelled?.(scope))
           if (scopes?.length === 0) throw new TranslationCancelledError("fallback")
-          const result = await this.executeIndividual(task.data, { scopes })
+          const result = await this.executeIndividual(task.data, {
+            scopes,
+            attempts: attempts.subset([task.memberId]),
+          })
           task.resolve(result)
         } catch (error) {
           const err = error as Error
-          this.onError?.(err, { batchKey, retryCount: this.maxRetries, isFallback: true })
+          this.onError?.(err, { batchKey, retryCount: attempts.starts, isFallback: true })
           task.reject(err)
         }
       }),
     )
   }
 
-  private calculateBackoffDelay(retryCount: number): number {
-    return Math.min(BASE_BACKOFF_DELAY_MS * 2 ** retryCount, MAX_BACKOFF_DELAY_MS)
-  }
-
-  private sleep(ms: number, tasks: BatchTask<T, R>[]): Promise<void> {
-    return new Promise((resolve) => {
-      const wait = {
-        tasks,
-        wake: () => {
-          clearTimeout(timer)
-          this.backoffs.delete(wait)
-          resolve()
-        },
-      }
-      const timer = setTimeout(wait.wake, ms)
-      this.backoffs.add(wait)
-    })
-  }
-
   setBatchConfig(
-    config: Partial<Pick<BatchOptions<T, R>, "maxCharactersPerBatch" | "maxItemsPerBatch">>,
+    config: Partial<
+      Pick<
+        BatchOptions<T, R>,
+        "maxCharactersPerBatch" | "maxItemsPerBatch" | "maxPending" | "batchDelay"
+      >
+    >,
   ) {
-    const parseConfigStatus = batchQueueConfigSchema.partial().safeParse(config)
+    const parseConfigStatus = batchOverridesSchema.safeParse(config)
     if (parseConfigStatus.error) {
       throw new Error(parseConfigStatus.error.issues[0]!.message)
     }
 
     this.maxCharactersPerBatch = config.maxCharactersPerBatch ?? this.maxCharactersPerBatch
     this.maxItemsPerBatch = config.maxItemsPerBatch ?? this.maxItemsPerBatch
+    this.maxPending = config.maxPending ?? this.maxPending
+    this.batchDelay = config.batchDelay ?? this.batchDelay
+    this.schedule()
   }
 }

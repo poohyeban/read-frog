@@ -3,7 +3,29 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { z } from "zod"
 import { llmProviderConfigItemSchema } from "@/types/config/provider"
 import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
+import { resolveResourcePolicy } from "@/utils/request/resource-policy"
+import { ResourceScheduler } from "@/utils/request/resource-scheduler"
 import { getLanguageModelForConfig } from "../model"
+
+async function scheduled(
+  provider: Parameters<typeof getLanguageModelForConfig>[0],
+  options: Record<string, unknown>,
+) {
+  const scheduler = new ResourceScheduler()
+  scheduler.configure(
+    [{ id: "test", policy: resolveResourcePolicy() }],
+    new Map([["test", ["test"]]]),
+  )
+  return scheduler.run({ resourceId: "test", consumer: "test" }, async (signal, permit) =>
+    generateText({
+      prompt: "Test",
+      ...options,
+      model: getLanguageModelForConfig(provider, permit),
+      abortSignal: signal,
+      maxRetries: 0,
+    }),
+  )
+}
 
 const secret = "lite-test-key-never-a-real-credential"
 
@@ -19,12 +41,14 @@ describe("direct user-configured provider requests", () => {
     )
     vi.stubGlobal("fetch", fetchMock)
     await expect(
-      generateText({
-        model: getLanguageModelForConfig({ ...DEFAULT_PROVIDER_CONFIG.openai, apiKey: secret }),
-        prompt: "Explain this word",
-        output: Output.object({ schema: z.object({ definition: z.string() }) }),
-        maxRetries: 0,
-      }),
+      scheduled(
+        { ...DEFAULT_PROVIDER_CONFIG.openai, apiKey: secret },
+        {
+          prompt: "Explain this word",
+          output: Output.object({ schema: z.object({ definition: z.string() }) }),
+          maxRetries: 0,
+        },
+      ),
     ).rejects.toBeInstanceOf(Error)
     expect(fetchMock).toHaveBeenCalledOnce()
     const [url, init] = fetchMock.mock.calls[0]!
@@ -63,8 +87,7 @@ describe("direct user-configured provider requests", () => {
         },
       })
       await expect(
-        generateText({
-          model: getLanguageModelForConfig(config),
+        scheduled(config, {
           prompt: "Translate this test sentence.",
           maxRetries: 0,
         }),

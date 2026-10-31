@@ -28,7 +28,6 @@ import {
   createSubtitlesTranslationQueues,
   getLocalProviderConfig,
   shouldUseBatchQueue,
-  providerExecutionKey,
 } from "./translation-queues"
 
 /** Register synchronously; all model work shares the existing subtitle queues. */
@@ -166,7 +165,6 @@ export function setupSubtitlesTranslationHandlers(): void {
           )
         result = await requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined, {
           priority: request.priority,
-          providerKey: providerExecutionKey(providerRef),
         })
       }
       assertCurrent(scope)
@@ -225,9 +223,7 @@ export function setupSubtitlesTranslationHandlers(): void {
       key,
       scope ? [scope] : undefined,
       {
-        timeoutMs: 60_000,
         priority: message.data.priority ?? 1,
-        providerKey: providerExecutionKey(message.data.providerRef),
       },
     )
     assertCurrent(scope)

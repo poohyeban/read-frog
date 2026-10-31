@@ -92,7 +92,6 @@ function createBatchQueue(
 ) {
   return new BatchQueue<TranslateBatchData, string>({
     ...config,
-    maxRetries: options?.maxRetries,
     enableFallbackToIndividual: options?.enableFallbackToIndividual,
     getDedupKey: options?.getDedupKey,
     getBatchKey: (data) => {
@@ -388,55 +387,6 @@ describe("batchQueue – error handling", () => {
     await expect(Promise.all(promises)).rejects.toThrow("Batch result count mismatch")
   })
 
-  it("retries BatchCountMismatchError with exponential backoff", async () => {
-    vi.useFakeTimers()
-    let attemptCount = 0
-    mockExecuteTranslate.mockImplementation(() => {
-      attemptCount++
-      const batchSeparator = `\n\n${BATCH_SEPARATOR}\n\n`
-      if (attemptCount <= 2) {
-        // Return wrong count (1 result instead of 2)
-        return Promise.resolve("single-result")
-      }
-      // Return correct count on 3rd attempt
-      return Promise.resolve(["result1", "result2"].join(batchSeparator))
-    })
-
-    const requestQueue = new RequestQueue(baseRequestQueueConfig)
-    const batchQueue = createBatchQueue(requestQueue, baseBatchConfig, {
-      maxRetries: 3,
-      enableFallbackToIndividual: false,
-    })
-
-    const promises = [
-      batchQueue.enqueue({
-        text: "Text 1",
-        langConfig: sampleLangConfig,
-        providerConfig: sampleProviderConfig,
-        hash: "hash1",
-      }),
-      batchQueue.enqueue({
-        text: "Text 2",
-        langConfig: sampleLangConfig,
-        providerConfig: sampleProviderConfig,
-        hash: "hash2",
-      }),
-    ]
-
-    // Initial execution
-    vi.advanceTimersByTime(baseBatchConfig.batchDelay)
-    vi.advanceTimersByTime(0)
-
-    // First retry (1s backoff)
-    await vi.advanceTimersByTimeAsync(1000)
-    // Second retry (2s backoff)
-    await vi.advanceTimersByTimeAsync(2000)
-
-    const results = await Promise.all(promises)
-    expect(results).toEqual(["result1", "result2"])
-    expect(attemptCount).toBe(3) // Initial + 2 retries
-  })
-
   it("does not retry regular request errors", async () => {
     vi.useFakeTimers()
     let attemptCount = 0
@@ -465,7 +415,7 @@ describe("batchQueue – error handling", () => {
     expect(attemptCount).toBe(1) // No retry for regular errors
   })
 
-  it("falls back to individual requests after BatchCountMismatchError retries exhausted", async () => {
+  it("immediately falls back to individual requests after a malformed batch", async () => {
     vi.useFakeTimers()
     let batchAttemptCount = 0
     mockExecuteTranslate.mockImplementation((text: string) => {
@@ -522,7 +472,7 @@ describe("batchQueue – error handling", () => {
 
     const results = await Promise.all(promises)
     expect(results).toEqual(["individual-Text1", "individual-Text2"])
-    expect(batchAttemptCount).toBe(3) // Initial + 2 retries before fallback
+    expect(batchAttemptCount).toBe(1) // No independent batch retry multiplier
   })
 
   it("does not fall back to individual requests on request errors", async () => {
@@ -614,7 +564,7 @@ describe("batchQueue – error handling", () => {
       return Promise.resolve(`individual-${text}`)
     })
 
-    const requestQueue = new RequestQueue(baseRequestQueueConfig)
+    const requestQueue = new RequestQueue({ ...baseRequestQueueConfig, maxRetries: 2 })
     const batchQueue = createBatchQueue(requestQueue, baseBatchConfig, {
       maxRetries: 3,
       enableFallbackToIndividual: true,
@@ -650,7 +600,7 @@ describe("batchQueue – error handling", () => {
     vi.mocked(Math.random).mockRestore()
   })
 
-  it("calls onError for each retry attempt on BatchCountMismatchError", async () => {
+  it("reports the single malformed batch without multiplying retries", async () => {
     vi.useFakeTimers()
     // Always return wrong count to trigger retries
     mockExecuteTranslate.mockImplementation(() => Promise.resolve("single-result"))
@@ -688,21 +638,11 @@ describe("batchQueue – error handling", () => {
     await vi.advanceTimersByTimeAsync(2000)
 
     await Promise.all(promises)
-    expect(onError).toHaveBeenCalledTimes(3) // Initial + 2 retries
+    expect(onError).toHaveBeenCalledTimes(1)
     expect(onError).toHaveBeenNthCalledWith(
       1,
       expect.any(Error),
       expect.objectContaining({ retryCount: 0 }),
-    )
-    expect(onError).toHaveBeenNthCalledWith(
-      2,
-      expect.any(Error),
-      expect.objectContaining({ retryCount: 1 }),
-    )
-    expect(onError).toHaveBeenNthCalledWith(
-      3,
-      expect.any(Error),
-      expect.objectContaining({ retryCount: 2 }),
     )
   })
 
@@ -916,133 +856,5 @@ describe("batchQueue – configuration", () => {
     expect(() => batchQueue.setBatchConfig({ maxItemsPerBatch: 0 })).toThrow(/Too small/)
     expect(() => batchQueue.setBatchConfig({ maxCharactersPerBatch: -1 })).toThrow(/Too small/)
     expect(() => batchQueue.setBatchConfig({ maxItemsPerBatch: -1 })).toThrow(/Too small/)
-  })
-})
-
-describe("batchQueue – dispatch gate", () => {
-  interface GateItem {
-    text: string
-    hash: string
-    scope?: string
-  }
-
-  function createGatedQueue(
-    etaRef: { value: number },
-    executeBatch: (dataList: GateItem[]) => Promise<string[]>,
-  ) {
-    return new BatchQueue<GateItem, string>({
-      maxCharactersPerBatch: 1000,
-      maxItemsPerBatch: 5,
-      batchDelay: 100,
-      dispatchGate: { nextDispatchEtaMs: () => etaRef.value },
-      getBatchKey: () => "gated",
-      getCharacters: (d) => d.text.length,
-      getScope: (d) => d.scope,
-      executeBatch,
-    })
-  }
-
-  it("flushes at batchDelay when the gate reports a free slot", async () => {
-    vi.useFakeTimers()
-    const executeBatch = vi.fn<(dataList: GateItem[]) => Promise<string[]>>(async (dataList) =>
-      dataList.map((d) => d.text),
-    )
-    const q = createGatedQueue({ value: 0 }, executeBatch)
-
-    const p1 = q.enqueue({ text: "a", hash: "a" })
-    const p2 = q.enqueue({ text: "b", hash: "b" })
-
-    await vi.advanceTimersByTimeAsync(100)
-
-    expect(executeBatch).toHaveBeenCalledTimes(1)
-    expect(executeBatch.mock.calls[0]![0]).toHaveLength(2)
-    await expect(Promise.all([p1, p2])).resolves.toEqual(["a", "b"])
-  })
-
-  it("holds an under-filled batch while the gate is blocked, but still flushes on size-full", async () => {
-    vi.useFakeTimers()
-    const executeBatch = vi.fn<(dataList: GateItem[]) => Promise<string[]>>(async (dataList) =>
-      dataList.map((d) => d.text),
-    )
-    const q = createGatedQueue({ value: 5_000 }, executeBatch)
-
-    // Items trickle in far slower than batchDelay — under the old behavior
-    // each 100ms window would flush a tiny batch.
-    const promises: Promise<string>[] = []
-    for (let i = 0; i < 4; i++) {
-      promises.push(q.enqueue({ text: `t${i}`, hash: `t${i}` }))
-      await vi.advanceTimersByTimeAsync(300)
-    }
-    expect(executeBatch).not.toHaveBeenCalled()
-
-    // The 5th item hits maxItemsPerBatch: size-full flushes immediately even
-    // while the gate is blocked (composition is already maximal).
-    promises.push(q.enqueue({ text: "t4", hash: "t4" }))
-    await vi.advanceTimersByTimeAsync(0)
-
-    expect(executeBatch).toHaveBeenCalledTimes(1)
-    expect(executeBatch.mock.calls[0]![0]).toHaveLength(5)
-    await expect(Promise.all(promises)).resolves.toEqual(["t0", "t1", "t2", "t3", "t4"])
-  })
-
-  it("flushes a trailing partial batch once the gate opens", async () => {
-    vi.useFakeTimers()
-    const etaRef = { value: 5_000 }
-    const executeBatch = vi.fn<(dataList: GateItem[]) => Promise<string[]>>(async (dataList) =>
-      dataList.map((d) => d.text),
-    )
-    const q = createGatedQueue(etaRef, executeBatch)
-
-    const p1 = q.enqueue({ text: "a", hash: "a" })
-    const p2 = q.enqueue({ text: "b", hash: "b" })
-
-    await vi.advanceTimersByTimeAsync(3_000)
-    expect(executeBatch).not.toHaveBeenCalled()
-
-    // A dispatch slot frees downstream: the next gate poll flushes the batch.
-    etaRef.value = 0
-    await vi.advanceTimersByTimeAsync(1_100)
-
-    expect(executeBatch).toHaveBeenCalledTimes(1)
-    expect(executeBatch.mock.calls[0]![0]).toHaveLength(2)
-    await expect(Promise.all([p1, p2])).resolves.toEqual(["a", "b"])
-  })
-
-  it("force-flushes after MAX_BATCH_HOLD_MS even if the gate never opens", async () => {
-    vi.useFakeTimers()
-    const executeBatch = vi.fn<(dataList: GateItem[]) => Promise<string[]>>(async (dataList) =>
-      dataList.map((d) => d.text),
-    )
-    const q = createGatedQueue({ value: 999_999 }, executeBatch)
-
-    const p = q.enqueue({ text: "a", hash: "a" })
-
-    await vi.advanceTimersByTimeAsync(59_000)
-    expect(executeBatch).not.toHaveBeenCalled()
-
-    await vi.advanceTimersByTimeAsync(2_100)
-    expect(executeBatch).toHaveBeenCalledTimes(1)
-    await expect(p).resolves.toBe("a")
-  })
-
-  it("lets cancellation prune a held batch before it ever flushes", async () => {
-    vi.useFakeTimers()
-    const executeBatch = vi.fn<(dataList: GateItem[]) => Promise<string[]>>(async (dataList) =>
-      dataList.map((d) => d.text),
-    )
-    const q = createGatedQueue({ value: 5_000 }, executeBatch)
-
-    const p1 = q.enqueue({ text: "a", hash: "a", scope: "tab" })
-    const p2 = q.enqueue({ text: "b", hash: "b", scope: "tab" })
-    p1.catch(() => {})
-    p2.catch(() => {})
-
-    await vi.advanceTimersByTimeAsync(1_000)
-    expect(q.cancelByScope("tab")).toBe(2)
-
-    await vi.advanceTimersByTimeAsync(120_000)
-    expect(executeBatch).not.toHaveBeenCalled()
-    await expect(p1).rejects.toMatchObject({ name: "TranslationCancelledError" })
-    await expect(p2).rejects.toMatchObject({ name: "TranslationCancelledError" })
   })
 })

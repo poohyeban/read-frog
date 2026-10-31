@@ -1,5 +1,6 @@
 import type { Config } from "@/types/config/config"
 import type { DedicatedLLMProviderTypes, LLMProviderConfig } from "@/types/config/provider"
+import type { ExecutionPermit } from "@/utils/request/resource-scheduler"
 import { createDeepSeek } from "@ai-sdk/deepseek"
 import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { createOpenAI } from "@ai-sdk/openai"
@@ -11,6 +12,7 @@ import {
   isDedicatedLLMProviderConfig,
   isOpenAICompatibleLLMProviderConfig,
 } from "@/types/config/provider"
+import { ResourceRejected } from "@/utils/request/resource-error"
 import { getLLMProvidersConfig, getProviderConfigById } from "../config/helpers"
 import { CONFIG_STORAGE_KEY } from "../constants/config"
 import { getProviderHeaders } from "./headers"
@@ -28,8 +30,13 @@ const DEDICATED_PROVIDER_FACTORY_BY_TYPE = {
 
 // Custom API credentials must stay on the configured endpoint, including when
 // a server responds with a redirect. Extension requests do not need cookies.
-const providerFetch: typeof fetch = (input, init) =>
-  fetch(input, { ...init, credentials: "omit", redirect: "error" })
+function providerFetch(permit?: ExecutionPermit): typeof fetch {
+  return (input, init) => {
+    if (!permit) throw new ResourceRejected("identity")
+    permit.start()
+    return fetch(input, { ...init, credentials: "omit", redirect: "error" })
+  }
+}
 
 async function getLanguageModelById(providerId: string) {
   const config = await storage.getItem<Config>(`local:${CONFIG_STORAGE_KEY}`)
@@ -54,13 +61,16 @@ async function getLanguageModelById(providerId: string) {
  * up edits made after the ref was captured, so the model would come from the
  * new row while the params derived from the ref came from the old one.
  */
-export function getLanguageModelForConfig(providerConfig: LLMProviderConfig) {
+export function getLanguageModelForConfig(
+  providerConfig: LLMProviderConfig,
+  permit?: ExecutionPermit,
+) {
   const headers = getProviderHeaders(providerConfig.headers)
 
   const provider = match(providerConfig)
     .when(isOpenAICompatibleLLMProviderConfig, (matchedConfig) =>
       createOpenAICompatible({
-        fetch: providerFetch,
+        fetch: providerFetch(permit),
         name: matchedConfig.provider,
         baseURL: matchedConfig.baseURL,
         supportsStructuredOutputs: true,
@@ -70,7 +80,7 @@ export function getLanguageModelForConfig(providerConfig: LLMProviderConfig) {
     )
     .when(isDedicatedLLMProviderConfig, (matchedConfig) =>
       DEDICATED_PROVIDER_FACTORY_BY_TYPE[matchedConfig.provider]({
-        fetch: providerFetch,
+        fetch: providerFetch(permit),
         ...(matchedConfig.baseURL && { baseURL: matchedConfig.baseURL }),
         ...(matchedConfig.apiKey && { apiKey: matchedConfig.apiKey }),
         ...(headers && { headers }),

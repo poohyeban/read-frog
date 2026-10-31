@@ -15,6 +15,18 @@ vi.mock("ai", () => ({
   generateText: mocks.generateText,
 }))
 
+vi.mock("@/utils/providers/resource-runtime", () => ({
+  runProviderOperation: async (
+    _provider: unknown,
+    signal: AbortSignal | undefined,
+    run: Function,
+    beforeSend?: () => void,
+  ) => {
+    beforeSend?.()
+    return run(signal, { physicalRequestId: "mock", start: () => {} })
+  },
+}))
+
 vi.mock("@/utils/providers/model", () => ({
   getLanguageModelForConfig: mocks.getLanguageModelForConfig,
 }))

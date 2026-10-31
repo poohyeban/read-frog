@@ -7,15 +7,14 @@ import type { ProviderRequestRouting } from "@/types/provider-request"
 import type { MatchedTerm } from "@/utils/glossary/types"
 import type { PromptResolver } from "@/utils/host/translate/api/ai"
 import type { SerializableProviderRef } from "@/utils/providers/provider-ref"
-import { storage } from "#imports"
 import { isLLMProviderConfig } from "@/types/config/provider"
-import { CONFIG_STORAGE_KEY, DEFAULT_CONFIG } from "@/utils/constants/config"
-import { BATCH_SEPARATOR, BATCH_SEPARATOR_LINE_PATTERN } from "@/utils/constants/prompt"
 import {
-  BATCH_TIMEOUT_BASE_MS,
-  BATCH_TIMEOUT_PER_CHAR_MS,
-  MAX_BATCH_TIMEOUT_MS,
-} from "@/utils/constants/translate"
+  getPerformanceSnapshot,
+  initializePerformance,
+  watchPerformance,
+} from "@/utils/config/performance"
+import { DEFAULT_CONFIG } from "@/utils/constants/config"
+import { BATCH_SEPARATOR, BATCH_SEPARATOR_LINE_PATTERN } from "@/utils/constants/prompt"
 import { db } from "@/utils/db/dexie/db"
 import { Sha256Hex } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
@@ -29,7 +28,6 @@ import {
 import { getTranslatePrompt, getTranslatePromptFromConfig } from "@/utils/prompts/translate"
 import { BatchCountMismatchError, BatchQueue } from "@/utils/request/batch-queue"
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
-import { providerExecutionSlots } from "@/utils/request/execution-slots"
 import { RequestQueue } from "@/utils/request/request-queue"
 import { RESOURCE_DEFAULTS } from "@/utils/request/resource-policy"
 import {
@@ -57,15 +55,6 @@ export function getLocalProviderConfig(provider: QueuedTranslationProvider): Pro
 
 function getQueuedProviderId(provider: QueuedTranslationProvider): string {
   return getLocalProviderConfig(provider).id
-}
-
-export function providerExecutionKey(provider: QueuedTranslationProvider): string {
-  const config = getLocalProviderConfig(provider)
-  return Sha256Hex(
-    config.provider,
-    JSON.stringify("baseURL" in config ? config.baseURL : ""),
-    JSON.stringify("apiKey" in config ? config.apiKey : ""),
-  )
 }
 
 async function executeQueuedTranslation<TContext>(
@@ -346,45 +335,25 @@ interface TranslationQueueSetupConfig<TContext = unknown> {
 }
 
 async function createTranslationQueues<TContext>(config: TranslationQueueSetupConfig<TContext>) {
-  const { rate, capacity, maxInFlight } = config.requestQueueConfig as RequestQueueConfig & {
-    maxInFlight?: number
-  }
-  const { maxCharactersPerBatch, maxItemsPerBatch } = config.batchQueueConfig
-  const { promptResolver, isScopeCancelled, queueName, configSource } = config
-
-  logger.info(`[translation-queues] ${queueName} queue init`, {
-    rate,
-    capacity,
-    maxCharactersPerBatch,
-    maxItemsPerBatch,
-    configSource,
+  await initializePerformance()
+  const { promptResolver, isScopeCancelled, queueName } = config
+  const performance = getPerformanceSnapshot()
+  const batch = performance.batches[queueName === "webpage" ? "page" : "subtitles"]
+  const { maxCharactersPerBatch, maxItemsPerBatch } = batch
+  const requestQueue = new RequestQueue({
+    timeoutMs: RESOURCE_DEFAULTS.timeoutMs,
+    maxRetries: RESOURCE_DEFAULTS.maxAttempts - 1,
+    baseRetryDelayMs: RESOURCE_DEFAULTS.baseRetryDelayMs,
+    maxQueued: performance.global.maxQueued,
+    consumer: queueName,
+    onDeduplicate: () => subtitleWorkRuntime.note(`deduplicated:${queueName}`),
+    onRetry: (delay, rateLimited) =>
+      subtitleWorkRuntime.note(
+        rateLimited ? `rate-limit-backoff-ms:${queueName}` : `retry-backoff-ms:${queueName}`,
+        undefined,
+        delay,
+      ),
   })
-  if (configSource === "default") {
-    logger.error(
-      `[translation-queues] ${queueName} queue running on DEFAULT config (rate ${rate}, capacity ${capacity}) — user config unavailable at init`,
-    )
-  }
-
-  const requestQueue = new RequestQueue(
-    {
-      rate,
-      capacity,
-      timeoutMs: 20_000,
-      maxRetries: 2,
-      baseRetryDelayMs: 1_000,
-      maxInFlight: maxInFlight ?? RESOURCE_DEFAULTS.maxInFlight,
-      maxQueued: SUBTITLE_WORK_LIMITS.queued,
-      slots: providerExecutionSlots,
-      onDeduplicate: () => subtitleWorkRuntime.note(`deduplicated:${queueName}`),
-      onRetry: (delay, rateLimited) =>
-        subtitleWorkRuntime.note(
-          rateLimited ? `rate-limit-backoff-ms:${queueName}` : `retry-backoff-ms:${queueName}`,
-          undefined,
-          delay,
-        ),
-    },
-    queueName === "subtitles" ? 30_000 : undefined,
-  )
   const batchQueue = new BatchQueue<
     TranslateBatchData<TContext>,
     string | { translation: string; batchKey: string; batchIndex: number }
@@ -397,20 +366,9 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       queueName === "subtitles"
         ? Math.min(maxItemsPerBatch, SUBTITLE_WORK_LIMITS.cues)
         : maxItemsPerBatch,
-    maxPending: queueName === "subtitles" ? SUBTITLE_WORK_LIMITS.batchMembers : 4096,
-    batchDelay: 100,
-    maxRetries: queueName === "subtitles" ? 1 : 3,
+    maxPending: batch.maxPending,
+    batchDelay: batch.batchDelay,
     enableFallbackToIndividual: true,
-    // Narrow port, not the whole queue: while the rate limiter has no free
-    // slot, pending batches keep filling to maxItems/maxChars instead of
-    // flushing tiny every batchDelay (they'd only freeze in the queue).
-    // Subtitle producers admit at most two batches. Flush after the normal 100ms
-    // aggregation window so current cues can enter the priority queue ahead of
-    // already waiting summaries/exports. Page batching keeps its pressure gate.
-    dispatchGate:
-      queueName === "subtitles"
-        ? undefined
-        : { nextDispatchEtaMs: () => requestQueue.nextDispatchEtaMs() },
     getBatchKey: (data) => {
       return Sha256Hex(
         `${data.langConfig.sourceCode}-${data.langConfig.targetCode}-${getQueuedProviderId(data.provider)}`,
@@ -444,12 +402,6 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
 
       const hash = Sha256Hex(...dataList.map((d) => d.hash))
       const earliestScheduleAt = Math.min(...dataList.map((d) => d.scheduleAt))
-      const totalCharacters = dataList.reduce((sum, d) => sum + d.text.length, 0)
-      const timeoutMs = Math.min(
-        BATCH_TIMEOUT_BASE_MS + totalCharacters * BATCH_TIMEOUT_PER_CHAR_MS,
-        MAX_BATCH_TIMEOUT_MS,
-      )
-
       const batchThunk = async (
         signal?: AbortSignal,
         liveScopes?: () => readonly string[] | undefined,
@@ -476,8 +428,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       }
 
       return requestQueue.enqueue(batchThunk, earliestScheduleAt, hash, meta.scopes, {
-        timeoutMs,
-        providerKey: providerExecutionKey(dataList[0]!.provider),
+        attempts: meta.attempts,
         priority: Math.min(...dataList.map((d) => d.priority ?? 1)),
       })
     },
@@ -525,7 +476,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
       }
       return requestQueue.enqueue(thunk, scheduleAt, hash, meta.scopes, {
         priority: data.priority,
-        providerKey: providerExecutionKey(data.provider),
+        attempts: meta.attempts,
       })
     },
     onError: (error, context) => {
@@ -580,43 +531,27 @@ function watchQueueConfig(
     requestQueue: RequestQueue
     batchQueue: { setBatchConfig: (config: Partial<BatchQueueConfig>) => void }
   }>,
-  selectConfig: (config: Config) => {
-    requestQueueConfig: RequestQueueConfig
-    batchQueueConfig: BatchQueueConfig
-  },
 ) {
-  let lastAppliedJson: string | null = null
-  storage.watch<Config>(`local:${CONFIG_STORAGE_KEY}`, (newConfig) => {
-    if (!newConfig) return
-    void queuesPromise.then(({ requestQueue, batchQueue }) => {
-      try {
-        const selected = selectConfig(newConfig)
-        const json = JSON.stringify(selected)
-        if (json === lastAppliedJson) return
-        requestQueue.setQueueOptions({
-          ...selected.requestQueueConfig,
-          maxInFlight: RESOURCE_DEFAULTS.maxInFlight,
-        })
+  watchPerformance(() => {
+    void queuesPromise
+      .then(({ requestQueue, batchQueue }) => {
+        const snapshot = getPerformanceSnapshot()
+        const batch = snapshot.batches[queueName === "webpage" ? "page" : "subtitles"]
+        requestQueue.setQueueOptions({ maxQueued: snapshot.global.maxQueued })
         batchQueue.setBatchConfig(
           queueName === "subtitles"
             ? {
+                ...batch,
                 maxCharactersPerBatch: Math.min(
-                  selected.batchQueueConfig.maxCharactersPerBatch,
+                  batch.maxCharactersPerBatch,
                   SUBTITLE_WORK_LIMITS.sourceCharacters,
                 ),
-                maxItemsPerBatch: Math.min(
-                  selected.batchQueueConfig.maxItemsPerBatch,
-                  SUBTITLE_WORK_LIMITS.cues,
-                ),
+                maxItemsPerBatch: Math.min(batch.maxItemsPerBatch, SUBTITLE_WORK_LIMITS.cues),
               }
-            : selected.batchQueueConfig,
+            : batch,
         )
-        lastAppliedJson = json
-        logger.info(`[translation-queues] ${queueName} queue config updated`, selected)
-      } catch {
-        logger.error(`[translation-queues] failed to apply ${queueName} queue config change`)
-      }
-    })
+      })
+      .catch(() => logger.error("Unable to update translation queue configuration"))
   })
 }
 
@@ -650,7 +585,7 @@ export function createWebPageTranslationQueues() {
       }),
   )
 
-  watchQueueConfig("webpage", queuesPromise, selectWebPageQueueConfig)
+  watchQueueConfig("webpage", queuesPromise)
 
   return { queuesPromise, cancelledScopes }
 }
@@ -680,7 +615,7 @@ export function createSubtitlesTranslationQueues() {
       }),
   )
 
-  watchQueueConfig("subtitles", queuesPromise, selectSubtitlesQueueConfig)
+  watchQueueConfig("subtitles", queuesPromise)
 
   return { queuesPromise, cancelledScopes }
 }

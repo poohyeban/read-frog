@@ -5,7 +5,6 @@ import type {
   BackgroundStreamSnapshot,
   BackgroundStreamStructuredObjectSerializablePayload,
   BackgroundStreamTextSerializablePayload,
-  BackgroundStructuredObjectOutputField,
   BackgroundStructuredObjectStreamSnapshot,
   BackgroundTextStreamSnapshot,
   StartMessageParseResult,
@@ -17,7 +16,7 @@ import type {
   ThinkingSnapshot,
 } from "@/types/background-stream"
 import type { ErrorAction } from "@/utils/error-action"
-import { generateText, Output, parsePartialJson, streamText } from "ai"
+import { Output, parsePartialJson } from "ai"
 import { z } from "zod"
 import { BACKGROUND_STREAM_PORTS } from "@/types/background-stream"
 import { isLLMProviderConfig, llmProviderConfigItemSchema } from "@/types/config/provider"
@@ -26,9 +25,10 @@ import { extractAISDKErrorMessage } from "@/utils/error/extract-message"
 import { createStreamDiagnostic, reportStreamDiagnostic } from "@/utils/error/stream-diagnostics"
 import { logger } from "@/utils/logger"
 import { buildLocalGenerateTextParams } from "@/utils/providers/generate-params"
-import { getLanguageModelForConfig, getModelById } from "@/utils/providers/model"
+import { generateRemoteText, consumeRemoteStream } from "@/utils/providers/remote-executor"
+import { getResourceProvider } from "@/utils/providers/resource-runtime"
+import { ResourceRejected } from "@/utils/request/resource-error"
 import { attachRequestErrorMeta, getRequestErrorMeta } from "@/utils/request/retry-policy"
-import { SubtitleWorkRejected } from "@/utils/subtitles/work-policy"
 
 const invalidStreamStartPayloadMessage = "Invalid stream start payload"
 const aiStreamProtocolErrorMessage = "Invalid AI stream response."
@@ -523,34 +523,6 @@ async function consumeStructuredObjectPartStream<TOutput extends Record<string, 
   }
 }
 
-async function createLocalTextPartStream(
-  serializablePayload: Extract<BackgroundStreamTextSerializablePayload, { providerKind: "local" }>,
-  options: StreamRuntimeOptions<BackgroundTextStreamSnapshot> = {},
-): Promise<AsyncIterable<unknown>> {
-  const {
-    providerKind: _providerKind,
-    providerId,
-    providerConfig,
-    ...streamTextParams
-  } = serializablePayload
-  const { signal, onError } = options
-
-  const model = providerConfig
-    ? getLanguageModelForConfig(providerConfig)
-    : await getModelById(providerId)
-  const result = streamText({
-    ...(streamTextParams as Parameters<typeof streamText>[0]),
-    ...(providerConfig ? buildLocalGenerateTextParams(providerConfig) : {}),
-    model,
-    abortSignal: signal,
-    onError: ({ error }) => {
-      onError?.(error)
-    },
-  })
-
-  return result.stream
-}
-
 export async function generateTextForProviderRef(
   payload: BackgroundGenerateTextPayload,
   options: {
@@ -558,7 +530,7 @@ export async function generateTextForProviderRef(
     modelGuard?: import("@/utils/subtitles/work-policy").SubtitleModelGuard
   } = {},
 ): Promise<string> {
-  const { providerRef, instructions, prompt, maxRetries, maxOutputTokens } = payload
+  const { providerRef, instructions, prompt, maxOutputTokens } = payload
   const { signal } = options
 
   if (signal?.aborted) {
@@ -574,28 +546,20 @@ export async function generateTextForProviderRef(
     throw new BackgroundStreamError("invalid_request", "Provider cannot generate text")
   }
 
-  // Built from the config the ref carries, not looked up by id: every other
-  // parameter below already comes from the ref, so re-reading storage would
-  // pair a model from the current row with reasoning/temperature/providerOptions
-  // computed from the snapshot the caller captured — and would fail outright
-  // for a row deleted from another tab while the config was already in hand.
-  const model = getLanguageModelForConfig(providerRef.config)
   try {
     await options.modelGuard?.beforeCall(`${instructions}\n${prompt}`, maxOutputTokens!)
     signal?.throwIfAborted()
-    options.modelGuard?.onDispatch?.()
-    const { text, finishReason, usage } = await generateText({
-      model,
-      instructions,
-      prompt,
-      // maxRetries: 0 — retries belong to the RequestQueue, which meters them
-      // against the token bucket; ai-sdk's hidden default (2) would issue extra
-      // HTTP attempts invisible to the rate limiter.
-      maxRetries: options.modelGuard ? 0 : (maxRetries ?? 0),
-      maxOutputTokens,
-      abortSignal: signal,
-      ...buildLocalGenerateTextParams(providerRef.config),
-    })
+    const { text, finishReason, usage } = await generateRemoteText(
+      providerRef.config,
+      {
+        instructions,
+        prompt,
+        maxOutputTokens,
+        ...buildLocalGenerateTextParams(providerRef.config),
+      },
+      signal,
+      options.modelGuard?.onDispatch,
+    )
     await options.modelGuard?.usage(usage)
     signal?.throwIfAborted()
     if (maxOutputTokens !== undefined && finishReason === "length") {
@@ -603,7 +567,7 @@ export async function generateTextForProviderRef(
     }
     return text.trim()
   } catch (error) {
-    if (error instanceof SubtitleWorkRejected) throw error
+    if (error instanceof ResourceRejected) throw error
     if (signal?.aborted) throw signal.reason
     if (isAbortLikeError(error)) throw error
     throw attachRequestErrorMeta(
@@ -623,38 +587,18 @@ export async function runStreamTextInBackground(
     throw new DOMException("stream aborted", "AbortError")
   }
 
-  const partStream = await createLocalTextPartStream(serializablePayload, options)
-
-  return consumeTextPartStream(partStream, {
-    onChunk,
-    signal,
-  })
-}
-
-async function createLocalStructuredObjectPartStream<TOutput extends Record<string, unknown>>(
-  serializablePayload: BackgroundStreamStructuredObjectSerializablePayload & {
-    outputSchema?: BackgroundStructuredObjectOutputField[]
-  },
-  objectSchema: z.ZodType<TOutput>,
-  options: StreamRuntimeOptions<BackgroundStructuredObjectStreamSnapshot> = {},
-): Promise<AsyncIterable<unknown>> {
-  const { providerId, outputSchema: _outputSchema, ...streamParams } = serializablePayload
-  const { signal, onError } = options
-
-  const model = await getModelById(providerId)
-  const result = streamText({
-    ...(streamParams as Parameters<typeof streamText>[0]),
-    model,
-    output: Output.object({
-      schema: objectSchema,
-    }),
-    abortSignal: signal,
-    onError: ({ error }) => {
-      onError?.(error)
+  const { providerKind: _kind, providerId, providerConfig, ...params } = serializablePayload
+  const provider = providerConfig ?? (await getResourceProvider(providerId))
+  return consumeRemoteStream(
+    provider,
+    {
+      ...(params as Parameters<typeof consumeRemoteStream>[1]),
+      ...(providerConfig ? buildLocalGenerateTextParams(provider) : {}),
+      onError: ({ error }) => options.onError?.(error),
     },
-  })
-
-  return result.stream
+    (stream, activeSignal) => consumeTextPartStream(stream, { onChunk, signal: activeSignal }),
+    signal,
+  )
 }
 
 export async function runStructuredObjectStreamInBackground(
@@ -668,17 +612,23 @@ export async function runStructuredObjectStreamInBackground(
   }
 
   const objectSchema = createStructuredObjectSchema(serializablePayload.outputSchema)
-  const partStream = await createLocalStructuredObjectPartStream(
-    serializablePayload,
-    objectSchema,
-    options,
-  )
-
-  return consumeStructuredObjectPartStream(partStream, {
-    objectSchema,
-    onChunk,
+  const { providerId, outputSchema: _schema, ...params } = serializablePayload
+  const provider = await getResourceProvider(providerId)
+  return consumeRemoteStream(
+    provider,
+    {
+      ...(params as Parameters<typeof consumeRemoteStream>[1]),
+      output: Output.object({ schema: objectSchema }),
+      onError: ({ error }) => options.onError?.(error),
+    },
+    (stream, activeSignal) =>
+      consumeStructuredObjectPartStream(stream, {
+        objectSchema,
+        onChunk,
+        signal: activeSignal,
+      }),
     signal,
-  })
+  )
 }
 
 const parseStreamTextStartMessage =

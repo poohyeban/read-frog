@@ -9,12 +9,60 @@ interface PriorityQueue<T> {
 }
 
 export class BinaryHeapPQ<T> implements PriorityQueue<T> {
-  private heap: { key: number; value: T }[] = []
+  private heap: { key: number; value: T; order: number }[] = []
+  private positions = new Map<T, number>()
+  private sequence = 0
 
-  constructor(private readonly compare = (a: number, b: number) => a - b) {}
+  constructor(
+    private readonly compare = (a: number, b: number) => a - b,
+    private readonly indexed = false,
+  ) {}
+
+  private compareAt(a: number, b: number) {
+    const x = this.heap[a]!,
+      y = this.heap[b]!
+    return this.compare(x.key, y.key) || x.order - y.order
+  }
+  private swap(a: number, b: number) {
+    ;[this.heap[a], this.heap[b]] = [this.heap[b]!, this.heap[a]!]
+    if (this.indexed) {
+      this.positions.set(this.heap[a].value, a)
+      this.positions.set(this.heap[b].value, b)
+    }
+  }
+  /** Indexed updates/removal for scheduler heads; existing heap consumers retain their API. */
+  set(value: T, key: number) {
+    const index = this.positions.get(value)
+    if (index === undefined) {
+      this.push(value, key)
+      return
+    }
+    this.heap[index]!.key = key
+    this.heap[index]!.order = this.sequence++
+    if (index > 0 && this.compareAt(index, Math.floor((index - 1) / 2)) < 0) this.heapifyUp(index)
+    else this.heapifyDown(index)
+  }
+  remove(value: T): boolean {
+    const index = this.positions.get(value)
+    if (index === undefined) return false
+    this.positions.delete(value)
+    const last = this.heap.pop()!
+    if (index < this.heap.length) {
+      this.heap[index] = last
+      this.positions.set(last.value, index)
+      if (index > 0 && this.compareAt(index, Math.floor((index - 1) / 2)) < 0) this.heapifyUp(index)
+      else this.heapifyDown(index)
+    }
+    return true
+  }
 
   push(item: T, priority: number) {
-    this.heap.push({ key: priority, value: item })
+    if (this.indexed && this.positions.has(item)) {
+      this.set(item, priority)
+      return
+    }
+    this.heap.push({ key: priority, value: item, order: this.sequence++ })
+    if (this.indexed) this.positions.set(item, this.heap.length - 1)
     this.heapifyUp(this.heap.length - 1)
   }
 
@@ -27,9 +75,11 @@ export class BinaryHeapPQ<T> implements PriorityQueue<T> {
 
     const result = this.heap[0]!.value
     const last = this.heap.pop()
+    if (this.indexed) this.positions.delete(result)
 
     if (this.heap.length > 0 && last) {
       this.heap[0] = last
+      if (this.indexed) this.positions.set(last.value, 0)
       this.heapifyDown(0)
     }
 
@@ -46,6 +96,7 @@ export class BinaryHeapPQ<T> implements PriorityQueue<T> {
 
   clear() {
     this.heap = []
+    this.positions.clear()
   }
 
   /**
@@ -58,6 +109,10 @@ export class BinaryHeapPQ<T> implements PriorityQueue<T> {
     const kept = this.heap.filter((entry) => !predicate(entry.value))
     if (kept.length === this.heap.length) return
     this.heap = kept
+    if (this.indexed) {
+      this.positions.clear()
+      kept.forEach((entry, i) => this.positions.set(entry.value, i))
+    }
     for (let i = Math.floor(this.heap.length / 2) - 1; i >= 0; i--) {
       this.heapifyDown(i)
     }
@@ -66,9 +121,9 @@ export class BinaryHeapPQ<T> implements PriorityQueue<T> {
   private heapifyUp(index: number) {
     while (index > 0) {
       const parentIndex = Math.floor((index - 1) / 2)
-      if (this.compare(this.heap[parentIndex]!.key, this.heap[index]!.key) <= 0) break
+      if (this.compareAt(parentIndex, index) <= 0) break
 
-      ;[this.heap[parentIndex], this.heap[index]] = [this.heap[index]!, this.heap[parentIndex]!]
+      this.swap(parentIndex, index)
       index = parentIndex
     }
   }
@@ -80,26 +135,17 @@ export class BinaryHeapPQ<T> implements PriorityQueue<T> {
       const leftChild = 2 * currentIndex + 1
       const rightChild = 2 * currentIndex + 2
 
-      if (
-        leftChild < this.heap.length &&
-        this.compare(this.heap[nextIndex]!.key, this.heap[leftChild]!.key) > 0
-      ) {
+      if (leftChild < this.heap.length && this.compareAt(nextIndex, leftChild) > 0) {
         nextIndex = leftChild
       }
 
-      if (
-        rightChild < this.heap.length &&
-        this.compare(this.heap[nextIndex]!.key, this.heap[rightChild]!.key) > 0
-      ) {
+      if (rightChild < this.heap.length && this.compareAt(nextIndex, rightChild) > 0) {
         nextIndex = rightChild
       }
 
       if (nextIndex === currentIndex) break
 
-      ;[this.heap[currentIndex], this.heap[nextIndex]] = [
-        this.heap[nextIndex]!,
-        this.heap[currentIndex]!,
-      ]
+      this.swap(currentIndex, nextIndex)
       currentIndex = nextIndex
     }
   }

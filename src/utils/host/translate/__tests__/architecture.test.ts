@@ -21,8 +21,10 @@ describe("translation architecture boundaries", () => {
   it("keeps provider execution on transported snapshots and SDK retries disabled", async () => {
     const api = await source("src/utils/host/translate/api/ai.ts")
     expect(api).not.toContain("getModelById")
-    expect(api).toContain("getLanguageModelForConfig(providerConfig)")
-    expect(api).toMatch(/maxRetries:\s*0/)
+    expect(api).toMatch(/generateRemoteText\(\s*providerConfig/)
+    const gateway = await source("src/utils/providers/remote-executor.ts")
+    expect(gateway).toMatch(/maxRetries:\s*0/)
+    expect(gateway).toContain("runProviderOperation")
   })
 })
 

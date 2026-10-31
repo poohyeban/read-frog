@@ -7,8 +7,6 @@ import { SubtitleSession } from "../session"
 describe("SubtitleSession and existing RequestQueue cancellation", () => {
   it("aborts actual queued work only after the last playback/export subscriber leaves", async () => {
     const queue = new RequestQueue({
-      rate: 10,
-      capacity: 2,
       timeoutMs: 1000,
       maxRetries: 0,
       baseRetryDelayMs: 1,

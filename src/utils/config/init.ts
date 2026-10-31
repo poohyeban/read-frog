@@ -22,6 +22,16 @@ export interface InitializeConfigResult {
   isFreshInstall: boolean
 }
 
+let initialization: Promise<InitializeConfigResult> | undefined
+/** Shared background barrier for message handlers and transport initialization. */
+export function ensureConfigInitialized() {
+  initialization ??= initializeConfig().catch((error) => {
+    initialization = undefined
+    throw error
+  })
+  return initialization
+}
+
 /**
  * Initialize the config, this function should only be called once in the background script
  * @returns The extension config
