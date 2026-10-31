@@ -8,7 +8,7 @@ import {
 } from "@/utils/content/summary"
 import { cleanText } from "@/utils/content/utils"
 import { db } from "@/utils/db/dexie/db"
-import { Sha256Hex } from "@/utils/hash"
+import { Sha256Hex, Sha256Fields, safeLegacyFieldsHash } from "@/utils/hash"
 import { getProviderCacheIdentity } from "@/utils/providers/provider-ref"
 import {
   isTranslationCancelledError,
@@ -26,6 +26,7 @@ export async function getOrGenerateTranslationContextSummary(
     title: string
     textContent: string
     cacheKeyParts: string[]
+    legacyCacheKeyParts?: string[]
     requestQueue: RequestQueue
     scope?: string
     priority?: number
@@ -42,18 +43,40 @@ export async function getOrGenerateTranslationContextSummary(
   }
   assertCurrent()
   if (!cleanText(textContent)) return null
-  const cacheKey = Sha256Hex(
+  const cacheKey = (args.modelGuard ? Sha256Fields : Sha256Hex)(
     ARTICLE_SUMMARY_RULE_VERSION,
     ...cacheKeyParts,
     getProviderCacheIdentity(providerRef),
   )
+  const legacyKey =
+    args.modelGuard && args.legacyCacheKeyParts
+      ? safeLegacyFieldsHash(
+          ARTICLE_SUMMARY_RULE_VERSION,
+          ...args.legacyCacheKeyParts,
+          getProviderCacheIdentity(providerRef),
+        )
+      : undefined
+  const readCache = async () => {
+    const cached =
+      (await db.articleSummaryCache.get(cacheKey)) ??
+      (legacyKey ? await db.articleSummaryCache.get(legacyKey) : undefined)
+    if (cached && isValidArticleSummary(cached.summary) && cached.key !== cacheKey) {
+      assertCurrent()
+      await db.articleSummaryCache.put({
+        key: cacheKey,
+        summary: cached.summary,
+        createdAt: cached.createdAt,
+      })
+    }
+    return cached
+  }
   let cooldowns = failures.get(requestQueue)
   if (!cooldowns) failures.set(requestQueue, (cooldowns = new Map()))
   const failure = cooldowns.get(cacheKey)
   if (failure && failure.until > Date.now()) throw failure.error
   cooldowns.delete(cacheKey)
 
-  const cached = await db.articleSummaryCache.get(cacheKey)
+  const cached = await readCache()
   assertCurrent()
   if (cached && isValidArticleSummary(cached.summary)) return cached.summary
 
@@ -62,7 +85,7 @@ export async function getOrGenerateTranslationContextSummary(
     liveScopes: () => readonly string[] | undefined = () => (scope ? [scope] : undefined),
   ) => {
     signal?.throwIfAborted()
-    const cachedAgain = await db.articleSummaryCache.get(cacheKey)
+    const cachedAgain = await readCache()
     signal?.throwIfAborted()
     if (cachedAgain && isValidArticleSummary(cachedAgain.summary)) return cachedAgain.summary
     const summary = await generateArticleSummary(

@@ -20,6 +20,12 @@
     ],
     "firstMs": 5,
     "fifthMs": 105,
+    "flushes": {
+      "flush:subtitles:items": 1,
+      "flush:subtitles:delay": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -40,6 +46,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -65,6 +78,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 300,
+    "flushes": {
+      "flush:subtitles:items": 1,
+      "flush:subtitles:delay": 1,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -85,6 +105,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -110,6 +137,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 105,
+    "flushes": {
+      "flush:subtitles:items": 1,
+      "flush:subtitles:delay": 1,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -130,6 +164,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -155,6 +196,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 300,
+    "flushes": {
+      "flush:subtitles:items": 1,
+      "flush:subtitles:delay": 1,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -175,6 +223,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -205,6 +260,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 2,
+      "flush:subtitles:delay": 1,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -225,6 +287,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -255,6 +324,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 2,
+      "flush:subtitles:delay": 1,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -275,6 +351,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -305,6 +388,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 2,
+      "flush:subtitles:delay": 1,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -325,6 +415,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -355,6 +452,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 2,
+      "flush:subtitles:delay": 1,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -375,6 +479,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -415,6 +526,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 5,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -435,6 +553,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -475,6 +600,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 5,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -495,6 +627,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -535,6 +674,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 5,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -560,6 +706,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 2
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -600,6 +753,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 5,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -625,6 +785,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 2
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -680,6 +847,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 8,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -700,6 +874,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -755,6 +936,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 8,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -775,6 +963,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 1
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -830,6 +1025,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 8,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -860,6 +1062,13 @@
     ],
     "firstMs": 5,
     "fifthMs": 5,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 3
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -915,6 +1124,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 8,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 0
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."
@@ -945,6 +1161,13 @@
     ],
     "firstMs": 200,
     "fifthMs": 200,
+    "flushes": {
+      "flush:subtitles:items": 0,
+      "flush:subtitles:delay": 0,
+      "flush:subtitles:planned": 3
+    },
+    "cacheHits": 0,
+    "deduplicated": 0,
     "actualUsage": null,
     "actualHttpRequests": null,
     "note": "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement."

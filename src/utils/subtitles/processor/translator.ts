@@ -7,7 +7,7 @@ import { getLocalConfig } from "@/utils/config/storage"
 import { cleanText } from "@/utils/content/utils"
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { resolveGlossaryBatch, resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
-import { Sha256Hex } from "@/utils/hash"
+import { Sha256Fields } from "@/utils/hash"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
@@ -20,7 +20,7 @@ import {
 } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { runSubtitleRequest } from "../recovery"
-import { subtitleFailure, unwrapSubtitleResult } from "../result"
+import { SubtitleResultError, subtitleFailure, unwrapSubtitleResult } from "../result"
 import { createSubtitleTranslationPlan } from "../translation-plan"
 import { assertSubtitleWindow, SUBTITLE_WORK_LIMITS } from "../work-policy"
 
@@ -61,8 +61,8 @@ export function buildSubtitlesSummaryContextHash(
     return undefined
   }
 
-  const textHash = Sha256Hex(videoContext.videoTitle ?? "", preparedText)
-  return Sha256Hex(textHash, providerRef ? getProviderCacheIdentity(providerRef) : "")
+  const textHash = Sha256Fields(videoContext.videoTitle ?? "", preparedText)
+  return Sha256Fields(textHash, providerRef ? getProviderCacheIdentity(providerRef) : "")
 }
 
 function normalizeSubtitlePromptContext(
@@ -327,7 +327,12 @@ export async function translateSubtitles(
     results = await Promise.allSettled(
       fragments.map(async (_fragment, index) => {
         const wire = response[index]
-        if (wire === undefined) throw new Error("Missing subtitle batch member")
+        if (wire === undefined)
+          throw new SubtitleResultError({
+            status: "temporary",
+            message: "Missing subtitle batch member",
+            retryExhausted: true,
+          })
         return {
           ...(typeof wire === "string" ? {} : wire),
           translation: unwrapSubtitleResult(wire),

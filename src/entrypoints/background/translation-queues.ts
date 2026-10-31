@@ -15,7 +15,7 @@ import {
 } from "@/utils/config/performance"
 import { BATCH_SEPARATOR, BATCH_SEPARATOR_LINE_PATTERN } from "@/utils/constants/prompt"
 import { db } from "@/utils/db/dexie/db"
-import { Sha256Hex } from "@/utils/hash"
+import { Sha256Hex, Sha256Fields, safeLegacyFieldsHash } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
@@ -208,7 +208,7 @@ export async function executeBatchTranslation<TContext>(
       context,
       glossaryTerms,
     })
-    cacheKey = Sha256Hex(
+    const cacheFields = [
       "subtitle-batch-prompt-v1",
       JSON.stringify(getLocalProviderConfig(dataList[0]!.provider)),
       langConfig.sourceCode,
@@ -216,18 +216,22 @@ export async function executeBatchTranslation<TContext>(
       JSON.stringify(texts),
       prompt.systemPrompt,
       prompt.prompt,
-    )
+    ]
+    cacheKey = Sha256Fields(...cacheFields)
+    const legacyKey = safeLegacyFieldsHash(...cacheFields)
     batchIdentity?.(cacheKey)
     resolver = async () => prompt
-    const cached = await db.translationCache.get(cacheKey)
+    const cached =
+      (await db.translationCache.get(cacheKey)) ??
+      (legacyKey ? await db.translationCache.get(legacyKey) : undefined)
     signal?.throwIfAborted()
     if (cached?.translation) {
       const parsed = parseBatchResult(cached.translation)
       if (parsed.length === texts.length && parsed.some((text) => text.trim())) {
         subtitleWorkRuntime.note("cache-hit")
-        if (!cached.subtitleInputs)
+        if (!cached.subtitleInputs || cached.key !== cacheKey)
           await db.translationCache.put({
-            key: cached.key,
+            key: cacheKey,
             translation: cached.translation,
             createdAt: cached.createdAt,
             subtitleInputs: texts,
@@ -367,7 +371,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
     batchDelay: batch.batchDelay,
     enableFallbackToIndividual: true,
     getBatchKey: (data) => {
-      return Sha256Hex(
+      return (queueName === "subtitles" ? Sha256Fields : Sha256Hex)(
         `${data.langConfig.sourceCode}-${data.langConfig.targetCode}-${getQueuedProviderId(data.provider)}`,
         data.context ? JSON.stringify(data.context) : "",
         JSON.stringify(data.provider),

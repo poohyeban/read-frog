@@ -1,0 +1,28 @@
+
+Running 1 test using 1 worker
+
+(node:13351) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] e2e/translation-performance.spec.mjs:10:1 › translation architecture: reproducible cold/warm browser benchmark
+e2e/translation-performance.spec.mjs:10:1 › translation architecture: reproducible cold/warm browser benchmark
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+benchmark: opening page false 0
+
+benchmark: measuring false 0 cold
+
+benchmark: measuring false 0 warm
+
+benchmark: opening page true 0
+
+benchmark: measuring true 0 cold
+
+benchmark: measuring true 0 warm
+
+  1 passed (24.5s)

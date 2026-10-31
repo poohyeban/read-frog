@@ -1,0 +1,14 @@
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 6612 modules transformed.
+rendering chunks...
+computing gzip size...
+docs/lite/review-reliability/evidence/export/browser-build/benchmark.js  231.19 kB │ gzip: 62.03 kB
+
+✓ built in 840ms
+/workspace/read-frog/docs/lite/review-reliability/evidence/export [] [
+  { size: 100, commits: undefined },
+  { size: 1000, commits: undefined },
+  { size: 10000, commits: undefined },
+  { size: 50000, commits: undefined }
+]

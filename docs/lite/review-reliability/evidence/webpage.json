@@ -1,0 +1,180 @@
+{
+  "browser": "154.0.8037.57",
+  "source": "subtitle-review",
+  "provider": "local mock, 80ms",
+  "samples": [
+    {
+      "smart": false,
+      "trial": 0,
+      "cache": "cold",
+      "firstVisibleMs": 388.20000000018626,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 209.5,
+        "translationReadyAt": 385.60000000009313
+      },
+      "longTasks": [108, 57, 173],
+      "maxFrameGapMs": 200.10000000000014,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1744,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 14238916,
+      "interaction": {
+        "keyToFrameMs": 13.5,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 10881112,
+      "heapAfterStop": 7822536,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 0,
+      "cache": "warm",
+      "firstVisibleMs": 49.10000000009313,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 66.70000000000005,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1466,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 10485344,
+      "interaction": {
+        "keyToFrameMs": 3.3000000002793968,
+        "scrollFrameGapMs": 16.800000000000182,
+        "scrollY": 630
+      },
+      "heapUsed": 10469468,
+      "heapAfterStop": 8099144,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 0,
+      "cache": "cold",
+      "firstVisibleMs": 527,
+      "phaseCosts": [
+        {
+          "phase": "defuddle-sync",
+          "ms": 49.89999999990687
+        },
+        {
+          "phase": "extraction-total",
+          "ms": 287.60000000009313
+        }
+      ],
+      "firstResultChain": {
+        "summaryRequestedAt": 361.29999999981374,
+        "summaryReadyAt": 441.70000000018626,
+        "translationRequestedAt": 445,
+        "translationReadyAt": 525.2000000001863
+      },
+      "longTasks": [70, 93],
+      "maxFrameGapMs": 116.69999999999999,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 9602,
+        "extractions": 1
+      },
+      "summaryMessages": 1,
+      "summaryCalls": 1,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 17731052,
+      "interaction": {
+        "keyToFrameMs": 5.100000000093132,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 17706072,
+      "heapAfterStop": 9506996,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 0,
+      "cache": "warm",
+      "firstVisibleMs": 80.20000000018626,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 83.29999999999995,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1439,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "sampledPeakHeapUsed": 13082108,
+      "interaction": {
+        "keyToFrameMs": 0.7999999998137355,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 11316292,
+      "heapAfterStop": 9757508,
+      "errors": []
+    }
+  ],
+  "transport": "browser harness; simulated extension storage and messages",
+  "compatibility": [
+    {
+      "fixture": "hover-after-navigation",
+      "passed": true
+    },
+    {
+      "fixture": "float",
+      "passed": true
+    },
+    {
+      "fixture": "markdown",
+      "passed": true
+    },
+    {
+      "fixture": "shadow",
+      "passed": true
+    },
+    {
+      "fixture": "giant",
+      "passed": true
+    },
+    {
+      "fixture": "spa",
+      "passed": true
+    },
+    {
+      "fixture": "virtual",
+      "passed": true
+    },
+    {
+      "fixture": "mutation",
+      "passed": true,
+      "mutationMs": 132.40454200000022
+    },
+    {
+      "fixture": "pending-mutation",
+      "passed": true
+    }
+  ]
+}

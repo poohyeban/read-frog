@@ -2,7 +2,7 @@ import type { SubtitleCandidateBundle, SubtitlesFragment } from "@/utils/subtitl
 import { storage } from "#imports"
 import { GLOSSARY_REVISION_KEY } from "@/utils/constants/glossary"
 import { db } from "@/utils/db/dexie/db"
-import { Sha256Hex } from "@/utils/hash"
+import { Sha256Fields } from "@/utils/hash"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { onMessage } from "@/utils/message"
 import { assertSubtitleWindow } from "@/utils/subtitles/work-policy"
@@ -58,7 +58,11 @@ export function setupSubtitleCandidateHandlers() {
       return []
     const revision = (await storage.getItem<number>(GLOSSARY_REVISION_KEY)) ?? 0
     const keys = [
-      ...new Set([data.trackKey, ...(data.legacyTrackKey ? [data.legacyTrackKey] : [])]),
+      ...new Set([
+        data.trackKey,
+        ...(data.legacyTrackKey ? [data.legacyTrackKey] : []),
+        ...(data.legacyTrackKeys ?? []).slice(0, 2),
+      ]),
     ]
     const bundles = (
       await Promise.all(
@@ -103,7 +107,7 @@ export function setupSubtitleCandidateHandlers() {
     }
     if (!subtitleWorkRuntime.hasLease(sender.tab?.id, data.lease)) return
     await db.subtitleCandidates.put({
-      key: Sha256Hex(
+      key: Sha256Fields(
         data.trackKey,
         data.lane,
         JSON.stringify(data.cues.map((c) => [c.translationBatchKey, c.translationBatchIndex])),

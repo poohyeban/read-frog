@@ -5,7 +5,7 @@ import { getPerformanceSnapshot, initializePerformance } from "@/utils/config/pe
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { cleanText } from "@/utils/content/utils"
 import { db } from "@/utils/db/dexie/db"
-import { Sha256Hex } from "@/utils/hash"
+import { Sha256Hex, Sha256Fields, safeLegacyFieldsHash } from "@/utils/hash"
 import { executeTranslate } from "@/utils/host/translate/execute-translate"
 import { onMessage } from "@/utils/message"
 import { getSubtitlesTranslatePromptFromConfig } from "@/utils/prompts/subtitles"
@@ -103,6 +103,7 @@ export function setupSubtitlesTranslationHandlers(): void {
     data: SubtitleRequestPayload
     sender: { tab?: { id?: number } }
   }) => {
+    let submitted = false
     const translate = async () => {
       const scope = scopeFor(message.sender, message.data.sessionId)
       admit(message.sender, scope, message.data.work)
@@ -115,8 +116,19 @@ export function setupSubtitlesTranslationHandlers(): void {
         message.data.promptConfig ??
         (await ensureInitializedConfig())?.videoSubtitles ??
         DEFAULT_CONFIG.videoSubtitles
-      const { request } = createSubtitleTranslationPlan({ ...message.data, promptConfig })
-      if (message.data.promptConfig && request.hash !== message.data.hash)
+      const { request, legacyHash } = createSubtitleTranslationPlan(
+        {
+          ...message.data,
+          promptConfig,
+        },
+        undefined,
+        true,
+      )
+      if (
+        message.data.promptConfig &&
+        request.hash !== message.data.hash &&
+        legacyHash !== message.data.hash
+      )
         throw new Error("Subtitle request identity does not match its snapshot")
       const {
         text,
@@ -141,6 +153,7 @@ export function setupSubtitlesTranslationHandlers(): void {
       // Timestamp is owned by the background; a sender cannot jump other tabs' work.
       const scheduleAt = Date.now()
       if (useBatch) {
+        submitted = true
         const batchResult = await batchQueue.enqueue({
           text,
           langConfig,
@@ -167,6 +180,7 @@ export function setupSubtitlesTranslationHandlers(): void {
               getSubtitlesTranslatePromptFromConfig(promptConfig, language, input, options),
             { signal, glossaryTerms },
           )
+        submitted = true
         result = await requestQueue.enqueue(thunk, scheduleAt, hash, scope ? [scope] : undefined, {
           priority: request.priority,
         })
@@ -194,7 +208,10 @@ export function setupSubtitlesTranslationHandlers(): void {
     } catch (error) {
       // Legacy content scripts still receive their original string/error protocol.
       if (message.data.resultFormat !== "outcome") throw error
-      return { outcome: subtitleFailure(error) }
+      const outcome = subtitleFailure(error)
+      if (submitted && outcome.status === "temporary" && outcome.code !== "queue-full")
+        outcome.retryExhausted = true
+      return { outcome }
     }
   }
   onMessage("enqueueSubtitlesTranslateRequest", handleSingle)
@@ -281,7 +298,7 @@ export function setupSubtitlesTranslationHandlers(): void {
         subtitleWorkRuntime.note("segmentation-cache-hit")
         return cached
       }
-      const key = Sha256Hex(
+      const key = Sha256Fields(
         "subtitle-segmentation-v2",
         message.data.jsonContent,
         JSON.stringify(message.data.providerRef),
@@ -324,7 +341,10 @@ export function setupSubtitlesTranslationHandlers(): void {
         title: videoTitle,
         textContent: subtitlesContext,
         providerRef,
-        cacheKeyParts: [Sha256Hex(videoTitle, cleanText(subtitlesContext))],
+        cacheKeyParts: [Sha256Fields(videoTitle, cleanText(subtitlesContext))],
+        legacyCacheKeyParts: safeLegacyFieldsHash(videoTitle, cleanText(subtitlesContext))
+          ? [Sha256Hex(videoTitle, cleanText(subtitlesContext))]
+          : undefined,
         requestQueue,
         scope,
         priority: 3,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { Sha256Hex } from "../hash"
+import { Sha256Hex, Sha256Fields, safeLegacyFieldsHash } from "../hash"
 
 describe("test Sha256Hex", () => {
   it("should generate SHA256 hash for single text", () => {
@@ -25,5 +25,9 @@ describe("test Sha256Hex", () => {
 })
 
 it("isolates semantic tuple boundaries even when fields contain separators", () => {
-  expect(Sha256Hex("a|b", "c")).not.toBe(Sha256Hex("a", "b|c"))
+  expect(Sha256Hex("a|b", "c")).toBe(Sha256Hex("a", "b|c"))
+  expect(Sha256Fields("a|b", "c")).not.toBe(Sha256Fields("a", "b|c"))
+  expect(Sha256Fields("a", "")).not.toBe(Sha256Fields("a"))
+  expect(safeLegacyFieldsHash("a", "b")).toBe(Sha256Hex("a", "b"))
+  expect(safeLegacyFieldsHash("a|b", "c")).toBeUndefined()
 })

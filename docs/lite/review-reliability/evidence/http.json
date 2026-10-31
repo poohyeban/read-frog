@@ -1,0 +1,86 @@
+{
+  "legacy": {
+    "requests": 2,
+    "members": [4, 1],
+    "ipc": 5,
+    "firstMs": 71,
+    "fifthMs": 134
+  },
+  "planned": {
+    "requests": 1,
+    "members": [5],
+    "ipc": 1,
+    "firstMs": 29,
+    "fifthMs": 29
+  },
+  "calls": [
+    {
+      "at": 1793464103829,
+      "members": 4,
+      "promptBytes": 1873,
+      "status": 200
+    },
+    {
+      "at": 1793464103902,
+      "members": 1,
+      "promptBytes": 1816,
+      "status": 200
+    },
+    {
+      "at": 1793464103932,
+      "members": 5,
+      "promptBytes": 1889,
+      "status": 200
+    },
+    {
+      "at": 1793464103960,
+      "members": 5,
+      "promptBytes": 1889,
+      "status": 429
+    },
+    {
+      "at": 1793464104169,
+      "members": 5,
+      "promptBytes": 1889,
+      "status": 200
+    },
+    {
+      "at": 1793464104197,
+      "members": 5,
+      "promptBytes": 1889,
+      "status": 0
+    },
+    {
+      "at": 1793464104315,
+      "members": 5,
+      "promptBytes": 1889,
+      "status": 200
+    },
+    {
+      "at": 1793464104344,
+      "members": 5,
+      "promptBytes": 1889,
+      "status": 200
+    },
+    {
+      "at": 1793464104373,
+      "members": 5,
+      "promptBytes": 1889,
+      "status": 429
+    },
+    {
+      "at": 1793464104580,
+      "members": 5,
+      "promptBytes": 1889,
+      "status": 429
+    },
+    {
+      "at": 1793464104803,
+      "members": 5,
+      "promptBytes": 1889,
+      "status": 429
+    }
+  ],
+  "usage": "Mock reports 100 input / 20 output tokens per successful response; synthetic, not real model tokenization.",
+  "scope": "Real local HTTP + AI SDK + ResourceScheduler + RequestQueue + BatchQueue + content translator; message bus and storage mocked, not native MV3."
+}

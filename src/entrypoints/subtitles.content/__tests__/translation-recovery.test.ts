@@ -4,17 +4,19 @@ import type { SubtitlesFragment, SubtitlesState } from "@/utils/subtitles/types"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { getLocalConfig } from "@/utils/config/storage"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
-import { translateSubtitles } from "@/utils/subtitles/processor/translator"
+import { translateSubtitles, fetchSubtitlesSummary } from "@/utils/subtitles/processor/translator"
+import { SubtitleResultError } from "@/utils/subtitles/result"
 import { TranslationCoordinator } from "../translation-coordinator"
 
 vi.mock("@/utils/config/storage", () => ({ getLocalConfig: vi.fn<typeof getLocalConfig>() }))
 vi.mock("@/utils/subtitles/processor/translator", () => ({
   translateSubtitles: vi.fn<typeof translateSubtitles>(),
+  fetchSubtitlesSummary: vi.fn<typeof fetchSubtitlesSummary>(),
 }))
 
 const coordinators: TranslationCoordinator[] = []
 
-function setup(fragments: SubtitlesFragment[], currentTime = 0) {
+function setup(fragments: SubtitlesFragment[], currentTime = 0, configSnapshot?: Config) {
   const video = document.createElement("video")
   video.currentTime = currentTime
   let state: SubtitlesState = "idle"
@@ -28,6 +30,7 @@ function setup(fragments: SubtitlesFragment[], currentTime = 0) {
     }
   })
   const coordinator = new TranslationCoordinator({
+    configSnapshot,
     getFragments: () => fragments,
     getVideoElement: () => video,
     getCurrentState: () => state,
@@ -255,3 +258,49 @@ it("reaches eligible members beyond the first 128 already settled candidates", a
       .some((c) => c.text === "cue-139"),
   ).toBe(true)
 })
+
+it("retries a temporary window summary without blocking Fast or retaining a failure after success", async () => {
+  vi.useFakeTimers()
+  const config = structuredClone(DEFAULT_CONFIG)
+  config.pageTranslation.enableAIContentAware = true
+  vi.mocked(fetchSubtitlesSummary)
+    .mockRejectedValueOnce(
+      new SubtitleResultError({ status: "temporary", message: "intake busy", retryAfterMs: 2000 }),
+    )
+    .mockResolvedValue("recovered summary")
+  const { coordinator, onTranslated } = setup(
+    [{ text: "still readable", start: 0, end: 10000 }],
+    0,
+    config,
+  )
+  coordinator.start()
+  await vi.advanceTimersByTimeAsync(1999)
+  expect(onTranslated).toHaveBeenCalledTimes(1)
+  expect(fetchSubtitlesSummary).toHaveBeenCalledTimes(1)
+  await vi.advanceTimersByTimeAsync(1)
+  expect(fetchSubtitlesSummary).toHaveBeenCalledTimes(2)
+  await vi.advanceTimersByTimeAsync(120000)
+  expect(fetchSubtitlesSummary).toHaveBeenCalledTimes(2)
+})
+
+it.each([false, true])(
+  "bounds summary recovery and cancels its timer on stop (exhausted=%s)",
+  async (exhausted) => {
+    vi.useFakeTimers()
+    const config = structuredClone(DEFAULT_CONFIG)
+    config.pageTranslation.enableAIContentAware = true
+    vi.mocked(fetchSubtitlesSummary).mockRejectedValue(
+      new SubtitleResultError({
+        status: "temporary",
+        message: "unavailable",
+        retryExhausted: exhausted,
+      }),
+    )
+    const { coordinator } = setup([{ text: "fallback", start: 0, end: 10000 }], 0, config)
+    coordinator.start()
+    await vi.advanceTimersByTimeAsync(120000)
+    expect(fetchSubtitlesSummary).toHaveBeenCalledTimes(exhausted ? 1 : 3)
+    await coordinator.stop()
+    expect(vi.getTimerCount()).toBe(0)
+  },
+)

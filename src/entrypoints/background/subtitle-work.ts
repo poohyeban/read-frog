@@ -46,6 +46,7 @@ export class SubtitleWorkRuntime extends SubtitleDiagnostics {
       // leases and another tab's lease must never authorize recovery.
       if (
         !lease &&
+        typeof context.lease === "string" &&
         context.lease.split(":").length === 2 &&
         !context.lease.startsWith(`${this.boot}:`)
       )

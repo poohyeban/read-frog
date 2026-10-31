@@ -1,7 +1,7 @@
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { z } from "zod"
 import { db } from "@/utils/db/dexie/db"
-import { Sha256Hex } from "@/utils/hash"
+import { Sha256Fields, safeLegacyFieldsHash } from "@/utils/hash"
 import { logger } from "@/utils/logger"
 import { getSubtitlesSegmentationPrompt } from "@/utils/prompts/subtitles-segmentation"
 import {
@@ -74,13 +74,15 @@ function prepareSegmentation(data: AiSegmentSubtitlesData) {
   assertSubtitleWindow(source)
 
   const { systemPrompt, prompt } = getSubtitlesSegmentationPrompt(jsonContent)
-  const cacheKey = Sha256Hex(
+  const fields = [
     "subtitle-segmentation-v5:bounded:indexed",
     systemPrompt,
     prompt,
     getProviderCacheIdentity(providerRef),
-  )
-  return { source, cacheKey, systemPrompt, prompt, providerRef }
+  ]
+  const cacheKey = Sha256Fields(...fields)
+  const legacyKey = safeLegacyFieldsHash(...fields)
+  return { source, cacheKey, legacyKey, systemPrompt, prompt, providerRef }
 }
 
 async function readSegmentationCache(
@@ -88,11 +90,19 @@ async function readSegmentationCache(
   signal?: AbortSignal,
 ) {
   signal?.throwIfAborted()
-  const { source, cacheKey } = plan
-  const cached = await db.aiSegmentationCache.get(cacheKey)
+  const { source, cacheKey, legacyKey } = plan
+  const cached =
+    (await db.aiSegmentationCache.get(cacheKey)) ??
+    (legacyKey ? await db.aiSegmentationCache.get(legacyKey) : undefined)
   signal?.throwIfAborted()
   if (cached) {
     if (isSegmentationAligned(source, parseSimplifiedVttToFragments(cached.result))) {
+      if (cached.key && cached.key !== cacheKey)
+        await db.aiSegmentationCache.put({
+          key: cacheKey,
+          result: cached.result,
+          createdAt: cached.createdAt,
+        })
       logger.info("[Background] AI subtitle segmentation cache hit")
       return cached.result
     }

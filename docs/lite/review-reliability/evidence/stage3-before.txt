@@ -57,4 +57,3 @@ AssertionError: expected { start: +0, end: 7200000, …(1) } to be { start: 1, e
       Tests  2 failed | 14 passed (16)
    Start at  15:39:19
    Duration  2.79s (transform 32%, import 29%, environment 18%, tests 13%, setup 8%)
-

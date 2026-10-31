@@ -55,6 +55,7 @@ interface ProtocolMap {
   getSubtitleCandidates: (data: {
     trackKey: string
     legacyTrackKey?: string
+    legacyTrackKeys?: string[]
     start: number
     end: number
   }) => import("@/utils/subtitles/types").SubtitleCandidateBundle[]

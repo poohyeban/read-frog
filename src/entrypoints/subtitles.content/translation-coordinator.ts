@@ -475,7 +475,10 @@ export class TranslationCoordinator {
     }
     void fetchSubtitlesSummary(context, config, undefined, task)
       .then((summary) => {
-        if (task.isCurrent() && summary) this.videoContext = { ...this.videoContext, summary }
+        if (task.isCurrent()) {
+          this.contextFailures.delete(key)
+          if (summary) this.videoContext = { ...this.videoContext, summary }
+        }
       })
       .catch((error) => {
         if (!task.isCurrent()) return
@@ -518,6 +521,7 @@ export class TranslationCoordinator {
           this.recordFailure(`${lane}:${key}`, {
             status: "temporary",
             message: "Missing subtitle result",
+            retryExhausted: true,
           })
       const publish = valid.map((cue) => {
         const status = cue.translationOutcome?.status

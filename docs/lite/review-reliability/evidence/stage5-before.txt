@@ -23,4 +23,3 @@ AssertionError: expected 'a52dd81bfd5e4e66d96b9f598382f6cbf8c5c…' not to be 'a
       Tests  1 failed | 4 passed (5)
    Start at  15:51:17
    Duration  474ms (setup 57%, transform 30%, import 6%, tests 4%, worker 3%)
-

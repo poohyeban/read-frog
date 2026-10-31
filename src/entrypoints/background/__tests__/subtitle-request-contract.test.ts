@@ -4,6 +4,9 @@ import { browser, storage } from "#imports"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { BATCH_SEPARATOR } from "@/utils/constants/prompt"
 import { DEFAULT_PROVIDER_CONFIG } from "@/utils/constants/providers"
+import { Sha256Hex, Sha256Fields } from "@/utils/hash"
+import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
+import { getSubtitlesTranslatePromptFromConfig } from "@/utils/prompts/subtitles"
 import { attachRequestErrorMeta } from "@/utils/request/retry-policy"
 import { unwrapSubtitleResult, subtitleFailure } from "@/utils/subtitles/result"
 import { createSubtitleTranslationPlan } from "@/utils/subtitles/translation-plan"
@@ -182,10 +185,12 @@ describe("subtitle background contracts using real RequestQueue and BatchQueue",
   })
   it("measures actual queue factory batching with deterministic mock transport latency", async () => {
     const rows: unknown[] = []
+    subtitleWorkRuntime.setDiagnostics(true)
     for (const size of [5, 10, 20, 32])
       for (const chars of [16, 200])
         for (const latency of [5, 200])
           for (const mode of ["legacy", "planned"] as const) {
+            const countersBefore = subtitleWorkRuntime.snapshot().counters
             const starts: {
               members: number
               promptCharacters: number
@@ -256,6 +261,17 @@ describe("subtitle background contracts using real RequestQueue and BatchQueue",
               requests: starts,
               firstMs: ready[0],
               fifthMs: ready[4],
+              flushes: Object.fromEntries(
+                Object.entries(subtitleWorkRuntime.snapshot().counters)
+                  .filter(([key]) => key.startsWith("flush:"))
+                  .map(([key, value]) => [key, value - (countersBefore[key] ?? 0)]),
+              ),
+              cacheHits:
+                (subtitleWorkRuntime.snapshot().counters["cache-hit"] ?? 0) -
+                (countersBefore["cache-hit"] ?? 0),
+              deduplicated:
+                (subtitleWorkRuntime.snapshot().counters["deduplicated:subtitles"] ?? 0) -
+                (countersBefore["deduplicated:subtitles"] ?? 0),
               actualUsage: null,
               actualHttpRequests: null,
               note: "Real queue factories, mocked executeTranslate transport; no paid API or HTTP measurement.",
@@ -264,6 +280,74 @@ describe("subtitle background contracts using real RequestQueue and BatchQueue",
     if (process.env.SUBTITLE_REVIEW_METRICS)
       writeFileSync(process.env.SUBTITLE_REVIEW_METRICS, JSON.stringify(rows, null, 2))
     expect(rows).toHaveLength(32)
+  })
+  it.each(["plain", "pipe|text"])(
+    "only restores provably unambiguous legacy complete-prompt cache: %s",
+    async (text) => {
+      const request = createSubtitleTranslationPlan({
+        ...plan(),
+        text,
+        promptConfig: DEFAULT_CONFIG.videoSubtitles,
+      }).request
+      const prompt = getSubtitlesTranslatePromptFromConfig(
+        DEFAULT_CONFIG.videoSubtitles,
+        LANG_CODE_TO_EN_NAME[request.langConfig.targetCode],
+        text,
+        { isBatch: true, context: {}, glossaryTerms: [] },
+      )
+      const fields = [
+        "subtitle-batch-prompt-v1",
+        JSON.stringify(request.providerRef.config),
+        request.langConfig.sourceCode,
+        request.langConfig.targetCode,
+        JSON.stringify([text]),
+        prompt.systemPrompt,
+        prompt.prompt,
+      ]
+      const oldKey = Sha256Hex(...fields),
+        newKey = Sha256Fields(...fields)
+      mocks.get.mockImplementation(async (key) =>
+        key === oldKey
+          ? {
+              key: oldKey,
+              translation: "legacy translation",
+              subtitleInputs: [text],
+              createdAt: new Date(),
+            }
+          : undefined,
+      )
+      mocks.execute.mockResolvedValue("fresh translation")
+      const result = await call("enqueueSubtitlesTranslateBatch", {
+        ...request,
+        members: [{ text }],
+      })
+      expect(result.results[0].batchKey).toBe(newKey)
+      const safe = text === "plain"
+      const expectedTranslation = safe ? "legacy translation" : "fresh translation"
+      expect(result.results[0].translation).toBe(expectedTranslation)
+      expect(mocks.execute).toHaveBeenCalledTimes(safe ? 0 : 1)
+      expect(mocks.put).toHaveBeenCalledWith(
+        expect.objectContaining({ key: newKey, translation: expectedTranslation }),
+      )
+      expect(mocks.get.mock.calls.some((entry) => entry[0] === oldKey)).toBe(safe)
+    },
+  )
+  it("never shares a complete batch cache across credentials", async () => {
+    const cache = new Map<string, any>()
+    mocks.get.mockImplementation(async (key) => cache.get(key))
+    mocks.put.mockImplementation(async (row) => cache.set(row.key, row))
+    mocks.execute.mockResolvedValue("translated")
+    const request = { ...plan(), members: [{ text: "same source" }] }
+    await call("enqueueSubtitlesTranslateBatch", request)
+    await call("enqueueSubtitlesTranslateBatch", {
+      ...request,
+      providerRef: {
+        ...request.providerRef,
+        config: { ...request.providerRef.config, apiKey: "another-mock-account" },
+      },
+    })
+    expect(mocks.execute).toHaveBeenCalledTimes(2)
+    expect(cache.size).toBe(2)
   })
   it("starts zero Provider requests after root lease revocation acknowledgement", async () => {
     const pending = call("enqueueSubtitlesTranslateRequest", plan("pending")).catch(

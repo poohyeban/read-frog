@@ -128,7 +128,9 @@ export class RequestQueue {
   private drain(task: RequestTask, error: unknown) {
     if (task.drained) return
     task.drained = true
-    task.reject(error)
+    task.reject(
+      error instanceof Error ? attachRequestErrorMeta(error, { retryExhausted: true }) : error,
+    )
     task.controller?.abort(error)
     if (!task.running) {
       this.scheduled.remove(task)

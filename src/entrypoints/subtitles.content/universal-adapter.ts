@@ -22,7 +22,7 @@ import { getDocumentDescription } from "@/utils/content/metadata"
 import { resolveLanguageCodeFromLocale } from "@/utils/content/page-language"
 import { waitForElement } from "@/utils/dom/wait-for-element"
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
-import { Sha256Hex } from "@/utils/hash"
+import { Sha256Fields, safeLegacyFieldsHash } from "@/utils/hash"
 import { i18n } from "@/utils/i18n"
 import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
@@ -1172,12 +1172,15 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       })
     }
 
-    const trackKey = Sha256Hex(
+    const serializedTrack = JSON.stringify(this.sessionSubtitles)
+    const serializedContext = JSON.stringify(videoContext)
+    const currentFields = [
       this.sessionVideoId ?? "",
-      JSON.stringify(this.sessionSubtitles),
+      serializedTrack,
       subtitleCacheIdentity(config),
-      JSON.stringify(videoContext),
-    )
+      serializedContext,
+    ]
+    const trackKey = Sha256Fields(...currentFields)
     const legacyConfig = config
       ? {
           ...config,
@@ -1188,12 +1191,15 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
           ),
         }
       : null
-    const legacyTrackKey = Sha256Hex(
-      this.sessionVideoId ?? "",
-      JSON.stringify(this.sessionSubtitles),
-      legacySubtitleConfigIdentity(legacyConfig),
-      JSON.stringify(videoContext),
-    )
+    const legacyTrackKeys = [
+      safeLegacyFieldsHash(...currentFields),
+      safeLegacyFieldsHash(
+        this.sessionVideoId ?? "",
+        serializedTrack,
+        legacySubtitleConfigIdentity(legacyConfig),
+        serializedContext,
+      ),
+    ].filter((key): key is string => key !== undefined)
     await initializePerformance().catch(() => {})
     const trace = createSubtitleTrace(getPerformanceSnapshot().subtitles.diagnostics, session.id)
     scheduler.setDiagnostics(trace)
@@ -1202,7 +1208,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       trace,
       candidateCache: {
         read: (start, end) =>
-          sendMessage("getSubtitleCandidates", { trackKey, legacyTrackKey, start, end }),
+          sendMessage("getSubtitleCandidates", { trackKey, legacyTrackKeys, start, end }),
         write: (cues, lane, lease) =>
           sendMessage("saveSubtitleCandidates", { trackKey, cues, lane, lease }),
       },

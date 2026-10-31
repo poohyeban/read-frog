@@ -1,6 +1,6 @@
 import type { SubtitleRequestPayload } from "@/types/subtitle-request"
 import { isLLMProviderConfig } from "@/types/config/provider"
-import { Sha256Hex } from "@/utils/hash"
+import { Sha256Hex, Sha256Fields } from "@/utils/hash"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
 import { freezeData } from "@/utils/immutable"
 import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
@@ -15,6 +15,7 @@ export interface SubtitleSourceIdentity {
   cueKey: string
 }
 export interface SubtitleTranslationPlan {
+  readonly legacyHash?: string
   readonly source?: Readonly<SubtitleSourceIdentity>
   readonly request: Readonly<SubtitleRequestPayload>
 }
@@ -25,6 +26,7 @@ export function createSubtitleTranslationPlan(
     promptConfig: NonNullable<SubtitleRequestPayload["promptConfig"]>
   },
   source?: SubtitleSourceIdentity,
+  legacyCompatibility = false,
 ): SubtitleTranslationPlan {
   const data = structuredClone(input)
   data.text = prepareTranslationText(data.text)
@@ -57,6 +59,7 @@ export function createSubtitleTranslationPlan(
   }
   return freezeData({
     source: source ? structuredClone(source) : undefined,
-    request: { ...data, hash: Sha256Hex(...identity) },
+    legacyHash: legacyCompatibility ? Sha256Hex(...identity) : undefined,
+    request: { ...data, hash: Sha256Fields(...identity) },
   })
 }

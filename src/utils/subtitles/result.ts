@@ -46,6 +46,7 @@ export function subtitleFailure(error: unknown): SubtitleOutcome {
       status: ["lease-expired", "queue-full"].includes(error.code) ? "temporary" : "permanent",
       message,
       code: error.code,
+      retryExhausted: getRequestErrorMeta(error).retryExhausted,
     }
   }
   const meta = getRequestErrorMeta(error)
