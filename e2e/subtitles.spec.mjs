@@ -111,15 +111,21 @@ test("subtitles retain timing across batches, AI recuts and extension reloads", 
       config.videoSubtitles.enabled = true
       config.videoSubtitles.autoStart.youtube = true
       config.videoSubtitles.aiSegmentation = false
-      config.videoSubtitles.requestQueueConfig = { rate: 20, capacity: 20 }
-      config.videoSubtitles.batchQueueConfig.maxItemsPerBatch = 5
       config.videoSubtitles.style.displayMode = "bilingual"
       config.pageTranslation.enableAIContentAware = false
       config.language.sourceCode = "eng"
       config.language.targetCode = "cmn"
       config.glossary.enabled = false
       config.uiLanguage = "en"
-      await chrome.storage.local.set({ readFrogLiteConfig: config })
+      await chrome.storage.local.set({
+        readFrogLiteConfig: config,
+        performanceOverrides: {
+          version: 1,
+          revision: 1,
+          providers: { [providerId]: { rate: 20, capacity: 20 } },
+          batches: { subtitles: { maxItemsPerBatch: 5 } },
+        },
+      })
     }, endpoint)
     const page = await context.newPage()
     page.on("pageerror", (error) => evidence.pageErrors.push(error.message))

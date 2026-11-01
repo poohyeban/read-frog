@@ -148,8 +148,8 @@ Transcription 设置提供独立 Provider、模型、语言、超时和 `json` /
 
 ## 本地数据、网络与权限
 
-- 配置在浏览器本地 Storage 的 `readFrogLiteConfig`；当前 schema version 为 `4`。不会导入官方账户数据或进行云同步。
-- `ReadFrogLiteDB` 当前为 Dexie version `3`，保存翻译 / 摘要 / 分段缓存及术语表。定时任务只清理本地缓存，不轮询云端服务。
+- 配置在浏览器本地 Storage 的 `readFrogLiteConfig`；当前 schema version 为 `6`，性能覆盖配置独立保存在 `performanceOverrides`。不会导入官方账户数据或进行云同步。
+- `ReadFrogLiteDB` 当前为 Dexie version `7`，保存翻译 / 摘要 / 分段 / 字幕候选缓存及术语表。定时任务只清理本地缓存，不轮询云端服务。
 - Key 保存在扩展本地配置中，不是系统密码保险库；普通网页 DOM / main-world 消息不应包含凭据。配置导出默认去除 Key 和自定义请求头。
 - 用户触发翻译、Actions、摘要、朗读，或启用相应自动功能后，内容发送到该功能选择的服务。模型发现和连接测试仅在用户主动操作时请求服务。
 - 原生字幕仍需要读取 YouTube / Netflix / X 自身的字幕资源；这不属于 Read Frog 官方中转。具体请求目标与数据流见[网络审计](docs/restore/REPORT.md#4-官方依赖网络与权限审计)。
