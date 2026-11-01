@@ -138,7 +138,7 @@ try {
       sizes: process.env.BENCHMARK_SIZES?.split(",").map(Number),
     },
   )
-  if (["continuity", "matrix", "lifecycle"].includes(process.env.BENCHMARK_KIND))
+  if (["continuity", "matrix", "lifecycle", "cache"].includes(process.env.BENCHMARK_KIND))
     await page.clock.install()
   await page.addInitScript((cases) => {
     window.__matrixCases = cases
@@ -158,7 +158,7 @@ try {
     .finally(() => {
       finished = true
     })
-  if (["continuity", "matrix", "lifecycle"].includes(process.env.BENCHMARK_KIND)) {
+  if (["continuity", "matrix", "lifecycle", "cache"].includes(process.env.BENCHMARK_KIND)) {
     for (let step = 0; step < 10000; step++) {
       if (finished) break
       await page.clock.runFor(process.env.BENCHMARK_KIND === "matrix" ? 60000 : 10000)

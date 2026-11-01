@@ -85,6 +85,8 @@ export class TranslationCoordinator {
   // and stop/start, while bounding how long playback waits for it.
   private cacheReadInFlight = false
   private cacheWaitTimer: ReturnType<typeof setTimeout> | undefined
+  private cacheUrgentTimer: ReturnType<typeof setTimeout> | undefined
+  private cacheUrgentAt = 0
   private cacheRetryAfter = 0
   private readyList = { fast: [] as SubtitlesFragment[], quality: [] as SubtitlesFragment[] }
   private buffer = new SubtitleBufferController()
@@ -245,6 +247,7 @@ export class TranslationCoordinator {
   private canPrepareQuality() {
     if (
       !this.active ||
+      this.cacheWaitTimer !== undefined ||
       this.options.canRequest?.() === false ||
       this.isHidden() ||
       subtitlesStore.get(adPlayingAtom)
@@ -270,7 +273,8 @@ export class TranslationCoordinator {
     const video = this.options.getVideoElement()
     if (!video) return
     const timeMs = video.currentTime * 1000
-    if (this.restoreCandidates(timeMs)) return
+    const waitingForCache = this.restoreCandidates(timeMs)
+    if (waitingForCache && Date.now() < this.cacheUrgentAt) return
     // Cache restoration and display selection always run, even with admission disabled.
     if (this.options.canRequest?.() === false) {
       this.options.onStateChange("idle")
@@ -297,14 +301,14 @@ export class TranslationCoordinator {
       if (!relevant || speculativeFast) this.cancelBatch(batch)
     }
     for (const lane of ["fast", "quality"] as const) {
-      if (lane === "quality" && this.isHidden()) continue
+      if (lane === "quality" && (this.isHidden() || waitingForCache)) continue
       const fragments =
         lane === "fast" ? source : (this.options.segmentationPipeline?.processedFragments ?? [])
       const timeline = getCueTimeline(fragments)
       const laneAhead =
         lane === "quality"
           ? Math.min(300_000, policy.qualityAheadMs * rate)
-          : !allowFastSpeculation
+          : waitingForCache || !allowFastSpeculation
             ? Math.min(ahead, this.buffer.lowMs * rate)
             : ahead
       const candidates = timeline.window(timeMs, timeMs + laneAhead, 128, (c) => {
@@ -355,7 +359,7 @@ export class TranslationCoordinator {
       }
     }
     this.options.segmentationPipeline?.reprioritize()
-    this.prepareContext(timeMs, ahead)
+    if (!waitingForCache) this.prepareContext(timeMs, ahead)
     this.updateLoadingStateAt(timeMs, source)
   }
   private restoreCandidates(timeMs: number): boolean {
@@ -380,9 +384,18 @@ export class TranslationCoordinator {
     let restoreSucceeded = false
     const stopWaiting = () => {
       clearTimeout(this.cacheWaitTimer)
+      clearTimeout(this.cacheUrgentTimer)
       this.cacheWaitTimer = undefined
+      this.cacheUrgentTimer = undefined
     }
     task.signal.addEventListener("abort", stopWaiting, { once: true })
+    // One frame gives a warm cache a chance; only the urgent Fast window bypasses a slow read.
+    const urgentWait = Math.min(16, policy.cacheRestoreTimeoutMs)
+    this.cacheUrgentAt = Date.now() + urgentWait
+    this.cacheUrgentTimer = setTimeout(() => {
+      this.cacheUrgentTimer = undefined
+      this.requestTick()
+    }, urgentWait)
     this.cacheWaitTimer = setTimeout(() => {
       stopWaiting()
       this.cacheRetryAfter = Date.now() + policy.cacheRestoreRetryMs

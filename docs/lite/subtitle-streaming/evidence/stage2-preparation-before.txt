@@ -1,0 +1,30 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/subtitles/processor/__tests__/translator.test.ts (11 tests | 1 failed) 1254ms
+   ❯ subtitles translator (11)
+     × prepares the glossary while the session lease is pending, without sending translation 1013ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/subtitles/processor/__tests__/translator.test.ts > subtitles translator > prepares the glossary while the session lease is pending, without sending translation
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'getGlossarySnapshot', Anything ]
+
+Number of calls: 0
+
+ ❯ src/utils/subtitles/processor/__tests__/translator.test.ts:123:52
+    121|       { prepareWork: () => lease },
+    122|     )
+    123|     await vi.waitFor(() => expect(sendMessageMock).toHaveBeenCalledWit…
+       |                                                    ^
+    124|     expect(sendMessageMock.mock.calls.some(([type]) => type === "enque…
+    125|     grant({ lease: "lease", lane: "fast", urgent: true, logicalKey: "b…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  03:41:34
+   Duration  1.94s (tests 75%, transform 14%, setup 7%, import 5%)
+

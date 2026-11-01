@@ -284,21 +284,27 @@ export async function translateSubtitles(
     }))
   }
 
-  const work =
+  // Lease admission and the glossary snapshot are independent reads. Neither
+  // can send a model request; translation still waits for both and checks abort.
+  const [work, glossary] = await Promise.all([
     task.work ??
-    (await task.prepareWork?.(
-      task.lane ?? (task.kind === "export" ? "export" : "fast"),
-      Math.min(...fragments.map((f) => f.start)),
-      Math.max(...fragments.map((f) => f.end)),
-    ))
+      task.prepareWork?.(
+        task.lane ?? (task.kind === "export" ? "export" : "fast"),
+        Math.min(...fragments.map((f) => f.start)),
+        Math.max(...fragments.map((f) => f.end)),
+      ),
+    task.work || task.prepareWork
+      ? resolveGlossaryBatch(
+          fragments.map((f) => prepareTranslationText(f.text)),
+          config.glossary.enabled,
+          config.language.targetCode,
+        )
+      : undefined,
+  ])
+  task.signal?.throwIfAborted()
   let results: PromiseSettledResult<Awaited<ReturnType<typeof translateSingleSubtitle>>>[]
-  if (work) {
+  if (work && glossary) {
     const context = normalizeSubtitlePromptContext(videoContext)
-    const glossary = await resolveGlossaryBatch(
-      fragments.map((f) => prepareTranslationText(f.text)),
-      config.glossary.enabled,
-      config.language.targetCode,
-    )
     const response = await runSubtitleRequest(task, work, async (currentWork) => {
       const wire = await sendMessage("enqueueSubtitlesTranslateBatch", {
         members: fragments.map((fragment, index) => ({

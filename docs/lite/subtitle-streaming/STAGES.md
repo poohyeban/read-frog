@@ -13,3 +13,21 @@
 物理请求上界不变：每个翻译/分段/摘要逻辑操作仍由自己的 AttemptContext 和 RequestQueue 限制（默认 maxAttempts=3）；明确未发送的准入恢复最多 2 次，消耗 0 个物理许可。未知是否已发送的 RPC/流错误及队列耗尽带 retryExhausted，不获得新的业务额度。长 429 若物理策略已结束请求，仍保持 exhausted，不因 Retry-After 到期自动铸造额度。
 
 红灯见 `evidence/stage1-before.txt`，绿灯见 `stage1-after.txt`。长时间离开后未花掉的恢复由永久空白变为返回窗口后执行一次；耗尽后无新增请求。只改变故障路径，正常成功路径请求/IPC/Token 不变。状态查询仍 O(1)，移除每条记录的过期时间字段；不新增轮询或常驻 worker。这里没有声称可测的正常路径 CPU 加速，测试使用虚拟时钟和本地函数 Mock，不代表真实模型质量或原生 MV3。
+
+## Phase 2 — urgent cache opportunity and independent preparation
+
+The old coordinator returned until candidate restoration completed or timed out at 250ms. A never-settling DB therefore delayed the current cue even when the physical Provider was idle. An additional 16ms opportunity now permits only low-water Fast work; farther Fast, Quality and summary preparation retain the ordinary 250ms policy. Existing source/batch validation and fully-covered-task cancellation are retained. Cache callbacks remain guarded by Session task identity, including 100 seeks/Stop/Start and late results. A partial one-member hit cannot cancel an uncovered multi-member request.
+
+Lease acquisition and glossary loading now run concurrently after the config/provider snapshot is resolved. Both finish before enqueue; an abort is checked again. No model prewarming or Worker keepalive was added. The new deferred-lease test failed before the change and passes after it. `stage2-before.txt`, `stage2-preparation-before.txt` and `stage2-after.txt` retain red/green evidence (36 tests).
+
+`BENCHMARK_KIND=cache node e2e/subtitle-harness/run.mjs SOURCE OUTPUT` ran 200 cases per revision in real Chromium, with real Coordinator/Session/renderer/resource scheduling and a **Mock** 100ms processor under a virtual clock. Baseline is exact `2d22b43b`; no paid API or real model quality measurement. P50/P95 are identical for each deterministic scenario:
+
+| DB latency | hit      | old/new first visible and confirmed (ms) | old/new Mock starts per case |
+| ---------- | -------- | ---------------------------------------- | ---------------------------- |
+| 0          | no / yes | 101/101; 1/1                             | 3/3; 0/0                     |
+| 8          | no / yes | 108/108; 8/8                             | 3/3; 0/0                     |
+| 40         | no / yes | 140/116; 40/40                           | 3/4; 0/1                     |
+| 300        | no / yes | 350/116; 300/116                         | 3/4; 2/3                     |
+| hung       | either   | 350/116                                  | 3/4                          |
+
+This is a latency/cost tradeoff, **not** a claim of fewer calls: urgent four-cue work can split the usual five-cue batches, and a 40ms cache hit can race one already-started request. No member is duplicated by the split; the partial-hit test protects useful outstanding members. Choosing zero wait would also race the 8ms warm cache; 16ms retains that hit while reducing hung-cache delay by 234ms. Server-side cancellation is not guaranteed. CPU for the complete 200-case run was 2.69→3.02 seconds; ending JS heap 78.5→90.7MB (not a peak or retained-leak claim; GC cadence differs). One additional short timer per pending read; Stop clears both timers, and every case reports zero post-Stop starts and one physical cache read. No token billing is represented by this harness. Cold-path HTTP/IPC and streaming measurements are recorded separately in subsequent phases.

@@ -198,3 +198,48 @@ it("aborts waiting on stop and rejects stale cache publication across restart", 
   ).toBe(false)
   expect(SUBTITLE_PERFORMANCE_DEFAULTS.cacheRestoreTimeoutMs).toBeLessThanOrEqual(500)
 })
+
+it("admits only urgent Fast before the ordinary 250ms cache deadline", async () => {
+  const pending = deferred<SubtitleCandidateBundle[]>()
+  mock.translate.mockImplementation(() => new Promise(() => {}))
+  setup(() => pending.promise, true, true)
+  await vi.advanceTimersByTimeAsync(50)
+  expect(mock.translate).toHaveBeenCalled()
+  expect(mock.translate.mock.calls.every((call) => call[3].lane === "fast")).toBe(true)
+  expect(
+    mock.translate.mock.calls
+      .flatMap((call) => call[0])
+      .every((c: SubtitlesFragment) => c.start < 8000),
+  ).toBe(true)
+})
+it("gives a short responsive cache a chance before submitting urgent work", async () => {
+  const pending = deferred<SubtitleCandidateBundle[]>()
+  const { source } = setup(() => pending.promise)
+  await vi.advanceTimersByTimeAsync(8)
+  pending.resolve([
+    {
+      lane: "quality",
+      cues: source.slice(0, 150).map((c) => ({ ...c, translation: "quality" })),
+    } as SubtitleCandidateBundle,
+  ])
+  await vi.advanceTimersByTimeAsync(250)
+  expect(mock.translate).not.toHaveBeenCalled()
+})
+it("a partial cache hit never cancels a batch with uncovered members", async () => {
+  const pending = deferred<SubtitleCandidateBundle[]>()
+  mock.translate.mockImplementation(() => new Promise(() => {}))
+  const { source } = setup(() => pending.promise)
+  await vi.advanceTimersByTimeAsync(50)
+  const tasks = mock.translate.mock.calls.map((call) => ({
+    cues: call[0] as SubtitlesFragment[],
+    signal: call[3].signal as AbortSignal,
+  }))
+  expect(tasks.length).toBeGreaterThan(0)
+  pending.resolve([
+    { lane: "fast", cues: [{ ...source[0]!, translation: "cached" }] } as SubtitleCandidateBundle,
+  ])
+  await vi.advanceTimersByTimeAsync(1)
+  expect(tasks.filter((task) => task.cues.length > 1).every((task) => !task.signal.aborted)).toBe(
+    true,
+  )
+})

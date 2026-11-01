@@ -1,0 +1,39 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts (9 tests | 2 failed) 201ms
+   × admits only urgent Fast before the ordinary 250ms cache deadline 4ms
+   × a partial cache hit never cancels a batch with uncovered members 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts > admits only urgent Fast before the ordinary 250ms cache deadline
+AssertionError: expected "vi.fn()" to be called at least once
+ ❯ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts:207:26
+    205|   setup(() => pending.promise, true, true)
+    206|   await vi.advanceTimersByTimeAsync(50)
+    207|   expect(mock.translate).toHaveBeenCalled()
+       |                          ^
+    208|   expect(mock.translate.mock.calls.every((call) => call[3].lane === "f…
+    209|   expect(mock.translate.mock.calls.flatMap((call) => call[0]).every((c…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts > a partial cache hit never cancels a batch with uncovered members
+AssertionError: expected 0 to be greater than 0
+ ❯ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts:225:24
+    223|   await vi.advanceTimersByTimeAsync(50)
+    224|   const tasks = mock.translate.mock.calls.map((call) => ({ cues: call[…
+    225|   expect(tasks.length).toBeGreaterThan(0)
+       |                        ^
+    226|   pending.resolve([{ lane: "fast", cues: [{ ...source[0]!, translation…
+    227|   await vi.advanceTimersByTimeAsync(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 passed (9)
+   Start at  03:35:31
+   Duration  2.37s (import 45%, transform 40%, tests 10%, setup 5%)
+

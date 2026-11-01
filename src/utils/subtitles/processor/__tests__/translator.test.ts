@@ -104,6 +104,37 @@ describe("subtitles translator", () => {
     expect(sendMessageMock).toHaveBeenCalledTimes(1)
     expect(getSubtitlesTranslatePromptMock).not.toHaveBeenCalled()
   })
+  it("prepares the glossary while the session lease is pending, without sending translation", async () => {
+    const { translateSubtitles } = await import("../translator")
+    let grant!: (work: any) => void
+    const lease = new Promise<any>((resolve) => {
+      grant = resolve
+    })
+    sendMessageMock.mockImplementation(async (type, data) => {
+      if (type === "enqueueSubtitlesTranslateBatch")
+        return { results: data.members.map(() => "translated") }
+      return { revision: 1, scopeKey: "test", entries: [] }
+    })
+    const pending = translateSubtitles(
+      [{ text: "hello", start: 0, end: 1000 }],
+      { videoTitle: "test", subtitlesTextContent: "" },
+      {
+        ...DEFAULT_CONFIG,
+        glossary: { ...DEFAULT_CONFIG.glossary, enabled: true },
+        videoSubtitles: { ...DEFAULT_CONFIG.videoSubtitles, providerId: "openai-default" },
+      },
+      { prepareWork: () => lease },
+    )
+    await vi.waitFor(() =>
+      expect(sendMessageMock).toHaveBeenCalledWith("getGlossarySnapshot", expect.anything()),
+    )
+    expect(
+      sendMessageMock.mock.calls.some(([type]) => type === "enqueueSubtitlesTranslateBatch"),
+    ).toBe(false)
+    grant({ lease: "lease", lane: "fast", urgent: true, logicalKey: "batch", start: 0, end: 1000 })
+    await expect(pending).resolves.toMatchObject([{ translation: "translated" }])
+  })
+
   it("includes summary in subtitle requests and uses it in the cache hash", async () => {
     const { translateSubtitles } = await import("../translator")
 
