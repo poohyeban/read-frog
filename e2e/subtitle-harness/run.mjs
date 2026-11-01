@@ -152,6 +152,7 @@ try {
     await cdp.send("Profiler.enable")
     await cdp.send("Profiler.start")
   }
+  const heapSamples = []
   let finished = false
   const running = page
     .evaluate(() => window.runSubtitleBenchmark())
@@ -162,6 +163,11 @@ try {
     for (let step = 0; step < 10000; step++) {
       if (finished) break
       await page.clock.runFor(process.env.BENCHMARK_KIND === "matrix" ? 60000 : 10000)
+      // Playwright's clock replaces performance.memory; sample real heap via CDP.
+      const snapshot = await cdp.send("Performance.getMetrics")
+      heapSamples.push(
+        snapshot.metrics.find((metric) => metric.name === "JSHeapUsedSize")?.value ?? 0,
+      )
     }
   }
   const results = await running
@@ -198,6 +204,8 @@ try {
           before: beforeMetrics.metrics,
           after: (await cdp.send("Performance.getMetrics")).metrics,
         },
+        heapSamples,
+        observedHeapPeakBytes: heapSamples.length ? Math.max(...heapSamples) : null,
         rendererCpuSeconds: processes.processInfo
           .filter((p) => p.type === "renderer")
           .reduce((n, p) => n + p.cpuTime, 0),

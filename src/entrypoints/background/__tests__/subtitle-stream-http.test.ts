@@ -115,6 +115,7 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
       at: performance.now(),
       stream: !!body.stream,
       members: members.length,
+      memberIds: members,
       promptBytes: Buffer.byteLength(JSON.stringify(body.messages)),
       status: 200,
       usage: undefined as unknown,
@@ -259,12 +260,13 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
     })
   }) as typeof providerResourceScheduler.run)
   const { RequestQueue } = await import("@/utils/request/request-queue")
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- The spy explicitly restores the receiver with call(this).
   const originalEnqueue = RequestQueue.prototype.enqueue
   vi.spyOn(RequestQueue.prototype, "enqueue").mockImplementation(function (
     this: InstanceType<typeof RequestQueue>,
     thunk: any,
     scheduleAt: number,
-    key?: string,
+    key: string,
     scopes?: string[],
     options?: any,
   ) {
@@ -449,6 +451,10 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
     expect((await run(true).promise).every((c) => c.translationOutcome?.status === "success")).toBe(
       true,
     )
+    const memberAttempts: Record<string, number> = {}
+    for (const call of calls)
+      for (const id of call.memberIds) memberAttempts[id] = (memberAttempts[id] ?? 0) + 1
+    expect(Math.max(...Object.values(memberAttempts))).toBeLessThanOrEqual(3)
     for (const session of sessions) await session.stop()
     await vi.waitFor(() =>
       expect(providerResourceScheduler.inspect()).toMatchObject({
@@ -473,6 +479,7 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
             calls,
             admissionWaits,
             queueWaits,
+            memberAttempts,
             scope:
               "Real local HTTP and AI SDK; simulated IPC ports/storage, synthetic usage, not native MV3 or real model quality/cost",
           },

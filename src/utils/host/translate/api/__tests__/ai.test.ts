@@ -74,6 +74,14 @@ describe("aiTranslate", () => {
     expect(getRequestErrorMeta(error).isRetryable).toBe(false)
     expect(mocks.generateText).toHaveBeenCalledTimes(1)
   })
+  it("also rejects a Provider-owned length cap when the caller did not set an output limit", async () => {
+    mocks.generateText.mockResolvedValue({ text: "cut off", finishReason: "length", usage: {} })
+    const error = await aiTranslate("hello", "Chinese", providerConfig, promptResolver).catch(
+      (caught) => caught,
+    )
+    expect(getRequestErrorMeta(error).isRetryable).toBe(false)
+    expect(error).toBeInstanceOf(Error)
+  })
   it("never returns unfinished inline reasoning as a translation", async () => {
     mocks.generateText.mockResolvedValue({
       text: "<think>unfinished private reasoning",

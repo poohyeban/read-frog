@@ -567,7 +567,7 @@ export async function generateTextForProviderRef(
     )
     await options.modelGuard?.usage(usage)
     signal?.throwIfAborted()
-    if (maxOutputTokens !== undefined && finishReason === "length") {
+    if (finishReason === "length") {
       throw outputLimitError("Article summary output budget exhausted")
     }
     return visibleModelText(text).trim()

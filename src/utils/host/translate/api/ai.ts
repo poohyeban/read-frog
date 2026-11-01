@@ -76,7 +76,7 @@ export async function aiTranslate<TContext>(
       options?.modelGuard?.onDispatch,
     )
     await options?.modelGuard?.usage(usage)
-    if (options?.maxOutputTokens && finishReason === "length")
+    if (finishReason === "length")
       throw outputLimitError("Subtitle translation output limit reached")
 
     return visibleModelText(translatedText)

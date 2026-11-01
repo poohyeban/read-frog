@@ -1,5 +1,7 @@
 # 小范围收敛验收（2026-11-01）
 
+后续 `2d22b43b` 基线上的六阶段可靠性与流式实验已记录于[新验收报告](../subtitle-streaming/REPORT.md)。本文保留上轮历史证据。
+
 基于 `4d65db035fc318a493cf8a70291d8d9f45ae5a85`。本轮只修改分段缓存删除目标、历史轨道身份的计算/读取入口与测试证据；ResourceScheduler、Session、TranslationCoordinator、SegmentationPipeline、双通道 Scheduler 均无交付代码变化。只使用本地 Mock，没有推送、PR、Actions 或 Release。
 
 ## 1. 无效旧分段缓存的删除目标

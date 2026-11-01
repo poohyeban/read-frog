@@ -1,0 +1,656 @@
+{
+  "environment": {
+    "source": "/workspace/read-frog",
+    "browser": "154.0.8037.57",
+    "node": "v24.19.0",
+    "kind": "real Chromium; bundled actual scheduler/coordinator/atoms; deterministic local Provider; NOT native MV3"
+  },
+  "errors": [],
+  "browserMetrics": {
+    "before": [
+      {
+        "name": "Timestamp",
+        "value": 11706.331396
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 4
+      },
+      {
+        "name": "Frames",
+        "value": 4
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 17
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 9
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 18
+      },
+      {
+        "name": "Resources",
+        "value": 2
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 9
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 4
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 0
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 4
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 2
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 2
+      },
+      {
+        "name": "LayoutCount",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 0
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 0.000016
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0
+      },
+      {
+        "name": "TaskDuration",
+        "value": 0.000019
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 0.000003
+      },
+      {
+        "name": "ThreadTime",
+        "value": 0.000066
+      },
+      {
+        "name": "ProcessTime",
+        "value": 0.11
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 3058360
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 6098944
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 0
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 11706.28815
+      },
+      {
+        "name": "NavigationStart",
+        "value": 11706.204371
+      }
+    ],
+    "after": [
+      {
+        "name": "Timestamp",
+        "value": 11706.407778
+      },
+      {
+        "name": "AudioHandlers",
+        "value": 0
+      },
+      {
+        "name": "AudioWorkletProcessors",
+        "value": 0
+      },
+      {
+        "name": "Documents",
+        "value": 4
+      },
+      {
+        "name": "Frames",
+        "value": 4
+      },
+      {
+        "name": "JSEventListeners",
+        "value": 91
+      },
+      {
+        "name": "LayoutObjects",
+        "value": 9
+      },
+      {
+        "name": "MediaKeySessions",
+        "value": 0
+      },
+      {
+        "name": "MediaKeys",
+        "value": 0
+      },
+      {
+        "name": "Nodes",
+        "value": 18
+      },
+      {
+        "name": "Resources",
+        "value": 2
+      },
+      {
+        "name": "ContextLifecycleStateObservers",
+        "value": 11
+      },
+      {
+        "name": "V8PerContextDatas",
+        "value": 4
+      },
+      {
+        "name": "WorkerGlobalScopes",
+        "value": 0
+      },
+      {
+        "name": "UACSSResources",
+        "value": 0
+      },
+      {
+        "name": "RTCPeerConnections",
+        "value": 0
+      },
+      {
+        "name": "ResourceFetchers",
+        "value": 4
+      },
+      {
+        "name": "AdSubframes",
+        "value": 0
+      },
+      {
+        "name": "DetachedScriptStates",
+        "value": 2
+      },
+      {
+        "name": "ArrayBufferContents",
+        "value": 103
+      },
+      {
+        "name": "LayoutCount",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleCount",
+        "value": 0
+      },
+      {
+        "name": "LayoutDuration",
+        "value": 0
+      },
+      {
+        "name": "RecalcStyleDuration",
+        "value": 0
+      },
+      {
+        "name": "DevToolsCommandDuration",
+        "value": 0.001541
+      },
+      {
+        "name": "ScriptDuration",
+        "value": 0.009834
+      },
+      {
+        "name": "V8CompileDuration",
+        "value": 0
+      },
+      {
+        "name": "TaskDuration",
+        "value": 0.057205
+      },
+      {
+        "name": "TaskOtherDuration",
+        "value": 0.04583
+      },
+      {
+        "name": "ThreadTime",
+        "value": 0.051068
+      },
+      {
+        "name": "ProcessTime",
+        "value": 0.17
+      },
+      {
+        "name": "JSHeapUsedSize",
+        "value": 4956632
+      },
+      {
+        "name": "JSHeapTotalSize",
+        "value": 9768960
+      },
+      {
+        "name": "FirstMeaningfulPaint",
+        "value": 0
+      },
+      {
+        "name": "DomContentLoaded",
+        "value": 11706.28815
+      },
+      {
+        "name": "NavigationStart",
+        "value": 11706.204371
+      }
+    ]
+  },
+  "rendererCpuSeconds": 0.63,
+  "rendererMemory": [
+    {
+      "type": "renderer",
+      "peakRssKiB": 34264,
+      "rssKiB": 34264
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 71308,
+      "rssKiB": 71308
+    },
+    {
+      "type": "renderer",
+      "peakRssKiB": 72696,
+      "rssKiB": 72360
+    }
+  ],
+  "checks": {
+    "obsoleteAccountingRemoved": true,
+    "translationPreserved": true,
+    "glossaryPreserved": true,
+    "segmentationPreserved": true,
+    "indexUpgraded": true,
+    "stop100ZeroStarts": true,
+    "independentExport": true,
+    "workerRestartInvalidatesLeases": true,
+    "noResourceLeaks": true,
+    "defaultResetDoesNotWrite": true,
+    "concurrentSettingsMerge": true
+  },
+  "afterStopStarts": 0,
+  "starts": 1,
+  "diagnostics": {
+    "counters": {
+      "estimated-input-tokens": 7178,
+      "cancel": 101,
+      "queue-wait-ms": 0,
+      "batch-members": 1,
+      "provider-start": 1
+    },
+    "events": [],
+    "sessions": {
+      "1ebac510002f": {
+        "estimated-input-tokens:fast": 71
+      },
+      "3adb6aa65f9e": {
+        "estimated-input-tokens:fast": 71
+      },
+      "661ea99ed560": {
+        "estimated-input-tokens:fast": 71
+      },
+      "b83525412553": {
+        "estimated-input-tokens:fast": 71
+      },
+      "2ede18852c35": {
+        "estimated-input-tokens:fast": 71
+      },
+      "a04d72aea3b6": {
+        "estimated-input-tokens:fast": 71
+      },
+      "7426a5e433f9": {
+        "estimated-input-tokens:fast": 71
+      },
+      "ff7986bdb55b": {
+        "estimated-input-tokens:fast": 71
+      },
+      "560253903de1": {
+        "estimated-input-tokens:fast": 71
+      },
+      "227148d09f68": {
+        "estimated-input-tokens:fast": 71
+      },
+      "28859602dcfd": {
+        "estimated-input-tokens:fast": 71
+      },
+      "47f9327b0c1e": {
+        "estimated-input-tokens:fast": 71
+      },
+      "d4a9e261ad10": {
+        "estimated-input-tokens:fast": 71
+      },
+      "7fe2d6ae6bb6": {
+        "estimated-input-tokens:fast": 71
+      },
+      "7dd44338e23c": {
+        "estimated-input-tokens:fast": 71
+      },
+      "1240d052e0fd": {
+        "estimated-input-tokens:fast": 71
+      },
+      "d374ae4d5fd5": {
+        "estimated-input-tokens:fast": 71
+      },
+      "abb2e5a4eb15": {
+        "estimated-input-tokens:fast": 71
+      },
+      "0114085d9aff": {
+        "estimated-input-tokens:fast": 71
+      },
+      "5f8c321c2123": {
+        "estimated-input-tokens:fast": 71
+      },
+      "32c81de453ca": {
+        "estimated-input-tokens:fast": 71
+      },
+      "65470cbfc057": {
+        "estimated-input-tokens:fast": 71
+      },
+      "594eb273fb64": {
+        "estimated-input-tokens:fast": 71
+      },
+      "62b17ddde765": {
+        "estimated-input-tokens:fast": 71
+      },
+      "806939aa2e1f": {
+        "estimated-input-tokens:fast": 71
+      },
+      "ac9a6631ec0c": {
+        "estimated-input-tokens:fast": 71
+      },
+      "14f673086d38": {
+        "estimated-input-tokens:fast": 71
+      },
+      "1c9d252d3d86": {
+        "estimated-input-tokens:fast": 71
+      },
+      "70e86e2da7aa": {
+        "estimated-input-tokens:fast": 71
+      },
+      "98ded931f627": {
+        "estimated-input-tokens:fast": 71
+      },
+      "8827c5d236c5": {
+        "estimated-input-tokens:fast": 71
+      },
+      "093a7a320c0a": {
+        "estimated-input-tokens:fast": 71
+      },
+      "ee8cd29b9670": {
+        "estimated-input-tokens:fast": 71
+      },
+      "7223f7167451": {
+        "estimated-input-tokens:fast": 71
+      },
+      "6c8211535255": {
+        "estimated-input-tokens:fast": 71
+      },
+      "fc8645fc2509": {
+        "estimated-input-tokens:fast": 71
+      },
+      "40f5996df37e": {
+        "estimated-input-tokens:fast": 71
+      },
+      "8cf580dd3124": {
+        "estimated-input-tokens:fast": 71
+      },
+      "1fe6711c23a9": {
+        "estimated-input-tokens:fast": 71
+      },
+      "1df858da0895": {
+        "estimated-input-tokens:fast": 71
+      },
+      "2d1a1cc4b77f": {
+        "estimated-input-tokens:fast": 71
+      },
+      "9818d184de55": {
+        "estimated-input-tokens:fast": 71
+      },
+      "2f56f96f4d74": {
+        "estimated-input-tokens:fast": 71
+      },
+      "bec1848f1382": {
+        "estimated-input-tokens:fast": 71
+      },
+      "02f026110513": {
+        "estimated-input-tokens:fast": 71
+      },
+      "3a57692f2708": {
+        "estimated-input-tokens:fast": 71
+      },
+      "71589aa2eccf": {
+        "estimated-input-tokens:fast": 71
+      },
+      "f89d1da198aa": {
+        "estimated-input-tokens:fast": 71
+      },
+      "b2a51f6cdbc6": {
+        "estimated-input-tokens:fast": 71
+      },
+      "43ed5278dfeb": {
+        "estimated-input-tokens:fast": 71
+      },
+      "1479f80128af": {
+        "estimated-input-tokens:fast": 71
+      },
+      "9a05e7374153": {
+        "estimated-input-tokens:fast": 71
+      },
+      "2dde15a02996": {
+        "estimated-input-tokens:fast": 71
+      },
+      "e4874638b18b": {
+        "estimated-input-tokens:fast": 71
+      },
+      "e7642ef2d267": {
+        "estimated-input-tokens:fast": 71
+      },
+      "1c5dc6c04c1a": {
+        "estimated-input-tokens:fast": 71
+      },
+      "037342bb6fba": {
+        "estimated-input-tokens:fast": 71
+      },
+      "6a8d77536cc9": {
+        "estimated-input-tokens:fast": 71
+      },
+      "9119564fe28b": {
+        "estimated-input-tokens:fast": 71
+      },
+      "8b6b8284b7ec": {
+        "estimated-input-tokens:fast": 71
+      },
+      "545110dcce7b": {
+        "estimated-input-tokens:fast": 71
+      },
+      "206f3063ab61": {
+        "estimated-input-tokens:fast": 71
+      },
+      "604a0383e0a4": {
+        "estimated-input-tokens:fast": 71
+      },
+      "077b699ef555": {
+        "estimated-input-tokens:fast": 71
+      },
+      "6bae81707847": {
+        "estimated-input-tokens:fast": 71
+      },
+      "23d24a778b62": {
+        "estimated-input-tokens:fast": 71
+      },
+      "5cfd5e6fc5ae": {
+        "estimated-input-tokens:fast": 71
+      },
+      "863d71e85091": {
+        "estimated-input-tokens:fast": 71
+      },
+      "e5b2e2c71904": {
+        "estimated-input-tokens:fast": 71
+      },
+      "e8629cad8cd9": {
+        "estimated-input-tokens:fast": 71
+      },
+      "6e93afdf603d": {
+        "estimated-input-tokens:fast": 71
+      },
+      "58b92d286aaf": {
+        "estimated-input-tokens:fast": 71
+      },
+      "f4f84d57e1a0": {
+        "estimated-input-tokens:fast": 71
+      },
+      "78ce19694a3a": {
+        "estimated-input-tokens:fast": 71
+      },
+      "b4f38446cc9d": {
+        "estimated-input-tokens:fast": 71
+      },
+      "bf670413af5f": {
+        "estimated-input-tokens:fast": 71
+      },
+      "adc030988b3e": {
+        "estimated-input-tokens:fast": 71
+      },
+      "2e319e803436": {
+        "estimated-input-tokens:fast": 71
+      },
+      "7b95c53c261e": {
+        "estimated-input-tokens:fast": 71
+      },
+      "934f3affd945": {
+        "estimated-input-tokens:fast": 71
+      },
+      "895e13174ba9": {
+        "estimated-input-tokens:fast": 71
+      },
+      "5aa9cd946471": {
+        "estimated-input-tokens:fast": 71
+      },
+      "0b1343b35189": {
+        "estimated-input-tokens:fast": 71
+      },
+      "3d70a1ccba16": {
+        "estimated-input-tokens:fast": 71
+      },
+      "db2c62dcc56f": {
+        "estimated-input-tokens:fast": 71
+      },
+      "814d668bef9a": {
+        "estimated-input-tokens:fast": 71
+      },
+      "6813c746c010": {
+        "estimated-input-tokens:fast": 71
+      },
+      "9524ab8aaa7f": {
+        "estimated-input-tokens:fast": 71
+      },
+      "e3227ee45e23": {
+        "estimated-input-tokens:fast": 71
+      },
+      "4e05f522118f": {
+        "estimated-input-tokens:fast": 71
+      },
+      "96db0e7bb935": {
+        "estimated-input-tokens:fast": 71
+      },
+      "770e38d64ad5": {
+        "estimated-input-tokens:fast": 71
+      },
+      "4545f798ddb4": {
+        "estimated-input-tokens:fast": 71
+      },
+      "8284ecd0b534": {
+        "estimated-input-tokens:fast": 71
+      },
+      "b1edb65c309a": {
+        "estimated-input-tokens:fast": 71
+      },
+      "5870fc10e4b4": {
+        "estimated-input-tokens:fast": 71
+      },
+      "2cfe5109e6e5": {
+        "estimated-input-tokens:fast": 71
+      },
+      "58775815bfb9": {
+        "estimated-input-tokens:fast": 71
+      },
+      "7c4e5a2a10e1": {
+        "estimated-input-tokens:fast": 71
+      },
+      "176d6e58eac1": {
+        "estimated-input-tokens:fast": 71
+      },
+      "7ad24b94b9f4": {
+        "estimated-input-tokens:export": 78,
+        "queue-wait-ms:export": 0,
+        "batch-members:export": 1,
+        "provider-start:export": 1
+      }
+    }
+  },
+  "storedSettingsWrites": 3,
+  "note": "Real Chromium IndexedDB upgrade and production lease/scheduler/config writer. All provider executions are local mocks; real usage unavailable."
+}
