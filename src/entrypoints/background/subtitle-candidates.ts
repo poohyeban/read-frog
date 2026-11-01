@@ -48,7 +48,13 @@ async function candidateValidator(cues: SubtitlesFragment[], revision: number) {
 
 let nextPrune = 0
 export function setupSubtitleCandidateHandlers() {
-  onMessage("getSubtitleCandidates", async ({ data }) => {
+  const readCandidates = async (data: {
+    trackKey: string
+    legacyTrackKey?: string
+    legacyTrackKeys?: string[]
+    start: number
+    end: number
+  }) => {
     if (
       !Number.isFinite(data.start) ||
       !Number.isFinite(data.end) ||
@@ -88,6 +94,17 @@ export function setupSubtitleCandidateHandlers() {
     const valid: SubtitleCandidateBundle[] = bundles.filter((bundle) => validate(bundle.cues))
     if (valid.length) subtitleWorkRuntime.note("candidate-cache-hit", undefined, valid.length)
     return valid
+  }
+  onMessage("getSubtitleCandidates", ({ data }) => readCandidates(data))
+  onMessage("getSubtitleCandidateWindow", async ({ data }) => {
+    const bundles = await readCandidates(data)
+    // A bounded existing-index probe, not a scan of payloads or a cache-hit heuristic.
+    // Another identity may be historical even when the new key has partial results.
+    const tracks = db.subtitleCandidates.where("trackKey")
+    const mayHaveLegacy =
+      (await tracks.below(data.trackKey).limit(1).count()) > 0 ||
+      (await tracks.above(data.trackKey).limit(1).count()) > 0
+    return { bundles, mayHaveLegacy }
   })
   onMessage("saveSubtitleCandidates", async ({ data, sender }) => {
     if (!subtitleWorkRuntime.hasLease(sender.tab?.id, data.lease)) return

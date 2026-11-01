@@ -1029,11 +1029,13 @@ describe("universalVideoAdapter", () => {
     const messages = vi
       .spyOn(messaging, "sendMessage")
       .mockImplementation(async (type: string): Promise<any> =>
-        type === "getSubtitleCandidates"
-          ? []
-          : type === "getProviderResourcePolicy"
-            ? { maxInFlight: 2 }
-            : undefined,
+        type === "getSubtitleCandidateWindow"
+          ? { bundles: [], mayHaveLegacy: false }
+          : type === "getSubtitleCandidates"
+            ? []
+            : type === "getProviderResourcePolicy"
+              ? { maxInFlight: 2 }
+              : undefined,
       )
     const documentMock = Object.assign(new EventTarget(), {
       title: "Mock video",

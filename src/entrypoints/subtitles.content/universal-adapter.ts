@@ -22,17 +22,13 @@ import { getDocumentDescription } from "@/utils/content/metadata"
 import { resolveLanguageCodeFromLocale } from "@/utils/content/page-language"
 import { waitForElement } from "@/utils/dom/wait-for-element"
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
-import { Sha256Fields, safeLegacyFieldsHash } from "@/utils/hash"
 import { i18n } from "@/utils/i18n"
 import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { removeReactShadowHost } from "@/utils/react-shadow-host/create-shadow-host"
-import {
-  subtitleConfigIdentity,
-  subtitleCacheIdentity,
-  legacySubtitleConfigIdentity,
-} from "@/utils/subtitles/config-identity"
+import { createSubtitleCandidateReader } from "@/utils/subtitles/candidate-reader"
+import { subtitleConfigIdentity } from "@/utils/subtitles/config-identity"
 import { createSubtitleTrace } from "@/utils/subtitles/diagnostics"
 import { NoSubtitlesError, ToastSubtitlesError } from "@/utils/subtitles/errors"
 import { optimizeSubtitles } from "@/utils/subtitles/processor/optimizer"
@@ -40,6 +36,7 @@ import { resolveSubtitlesProviderRef } from "@/utils/subtitles/processor/transla
 import { SubtitleSession } from "@/utils/subtitles/session"
 import { downloadSubtitlesAsSrt } from "@/utils/subtitles/srt"
 import { showAiSubtitlesWallToast, showSubtitlesErrorToast } from "@/utils/subtitles/toast"
+import { createSubtitleTrackIdentity } from "@/utils/subtitles/track-identity"
 import { requestVideoSummary, VIDEO_SUMMARY_QUERY_SCOPE } from "@/utils/subtitles/video-summary"
 import { boundedSourceCues } from "@/utils/subtitles/work-policy"
 import { queryClient } from "@/utils/tanstack-query"
@@ -1172,34 +1169,13 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       })
     }
 
-    const serializedTrack = JSON.stringify(this.sessionSubtitles)
-    const serializedContext = JSON.stringify(videoContext)
-    const currentFields = [
+    const identity = createSubtitleTrackIdentity(
       this.sessionVideoId ?? "",
-      serializedTrack,
-      subtitleCacheIdentity(config),
-      serializedContext,
-    ]
-    const trackKey = Sha256Fields(...currentFields)
-    const legacyConfig = config
-      ? {
-          ...config,
-          providersConfig: config.providersConfig.map((provider) =>
-            provider.id === config.videoSubtitles.providerId
-              ? { ...provider, enabled: true }
-              : provider,
-          ),
-        }
-      : null
-    const legacyTrackKeys = [
-      safeLegacyFieldsHash(...currentFields),
-      safeLegacyFieldsHash(
-        this.sessionVideoId ?? "",
-        serializedTrack,
-        legacySubtitleConfigIdentity(legacyConfig),
-        serializedContext,
-      ),
-    ].filter((key): key is string => key !== undefined)
+      this.sessionSubtitles,
+      config,
+      videoContext,
+    )
+    const { trackKey } = identity
     await initializePerformance().catch(() => {})
     const trace = createSubtitleTrace(getPerformanceSnapshot().subtitles.diagnostics, session.id)
     scheduler.setDiagnostics(trace)
@@ -1207,8 +1183,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     this.translationCoordinator = new TranslationCoordinator({
       trace,
       candidateCache: {
-        read: (start, end) =>
-          sendMessage("getSubtitleCandidates", { trackKey, legacyTrackKeys, start, end }),
+        read: createSubtitleCandidateReader(identity),
         write: (cues, lane, lease) =>
           sendMessage("saveSubtitleCandidates", { trackKey, cues, lane, lease }),
       },

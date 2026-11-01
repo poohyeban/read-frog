@@ -26,7 +26,18 @@ vi.mock("@/utils/db/dexie/db", () => ({
         fixture.bundles.push(row)
       },
       where: () => ({
-        below: () => ({ delete: async () => {} }),
+        below: (key: string | Date) => ({
+          delete: async () => {},
+          limit: () => ({
+            count: async () =>
+              Number(fixture.bundles.some((b) => typeof key === "string" && b.trackKey < key)),
+          }),
+        }),
+        above: (key: string) => ({
+          limit: () => ({
+            count: async () => Number(fixture.bundles.some((b) => b.trackKey > key)),
+          }),
+        }),
         between: ([key, start]: [string, number], [, end]: [string, number]) => ({
           filter: (predicate: (b: SubtitleCandidateBundle) => boolean) => ({
             limit: () => ({
@@ -116,3 +127,23 @@ it("restores a valid position from a partial aligned batch but never its empty p
   ]
   expect(await read()).toEqual([])
 })
+
+it.each(["old-track", "z-old-track"])(
+  "probes other indexed identities (%s) without treating a partial current hit as historical completeness",
+  async (oldTrack) => {
+    const probe = () =>
+      fixture.handlers.get("getSubtitleCandidateWindow")!({
+        data: { trackKey: "track", start: 0, end: 60000 },
+      })
+    expect(await probe()).toEqual({ bundles: [], mayHaveLegacy: false })
+    await save()
+    expect(await probe()).toMatchObject({ bundles: [expect.anything()], mayHaveLegacy: false })
+    fixture.bundles.push({ ...fixture.bundles[0]!, key: "old", trackKey: oldTrack })
+    expect(await probe()).toMatchObject({ bundles: [expect.anything()], mayHaveLegacy: true })
+    const combined = await fixture.handlers.get("getSubtitleCandidates")!({
+      data: { trackKey: "track", legacyTrackKeys: [oldTrack], start: 0, end: 60000 },
+    })
+    expect(combined.map((b: SubtitleCandidateBundle) => b.key)).toContain("old")
+    expect(combined).toHaveLength(2)
+  },
+)

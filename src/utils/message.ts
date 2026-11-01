@@ -52,6 +52,10 @@ interface ProtocolMap {
   enqueueSubtitlesTranslateRequest: (data: SubtitleRequestPayload) => Promise<SubtitleWireResult>
   cancelSubtitleRequests: (data: { sessionId: string }) => Promise<void>
   releaseSubtitleTask: (data: { sessionId: string }) => void
+  getSubtitleCandidateWindow: (data: { trackKey: string; start: number; end: number }) => {
+    bundles: import("@/utils/subtitles/types").SubtitleCandidateBundle[]
+    mayHaveLegacy: boolean
+  }
   getSubtitleCandidates: (data: {
     trackKey: string
     legacyTrackKey?: string
