@@ -318,7 +318,8 @@ vi.mock("@/utils/content-script/background-stream-client", () => ({
     streamBackgroundStructuredObjectMock(...args),
 }))
 
-vi.mock("@/utils/host/translate/webpage-context", () => ({
+vi.mock("@/utils/host/translate/webpage-context", async (original) => ({
+  ...(await original<object>()),
   getOrCreateWebPageContext: (...args: unknown[]) => getOrCreateWebPageContextMock(...args),
 }))
 
@@ -1916,7 +1917,7 @@ describe("selection toolbar requests", () => {
     )
   })
 
-  it("keeps runtime errors out of the action panel and still allows a successful rerun", async () => {
+  it("shows runtime errors in the action panel and still allows a successful rerun", async () => {
     streamBackgroundStructuredObjectMock.mockRejectedValue(new Error("Structured output failed"))
 
     const paragraph = document.createElement("p")
@@ -1936,8 +1937,11 @@ describe("selection toolbar requests", () => {
       await Promise.resolve()
     })
     expect(streamBackgroundStructuredObjectMock).toHaveBeenCalled()
-    expect(screen.queryByRole("alert")).toBeNull()
-    expect(screen.queryByText("Structured output failed")).toBeNull()
+    expect(screen.queryByRole("alert")).not.toBeNull()
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "options.selectionToolbar.errors.customActionFailed",
+    )
+    expect(screen.queryByText("Structured output failed")).toBeNull() // Provider error text stays sanitized.
 
     const callsBeforeRerun = streamBackgroundStructuredObjectMock.mock.calls.length
     streamBackgroundStructuredObjectMock.mockResolvedValue(

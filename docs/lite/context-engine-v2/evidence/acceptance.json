@@ -1,0 +1,37 @@
+{
+  "baseline": "1af30d16e66871ebb3509a76f0df62aaa090c263",
+  "branch": "codex/subtitle-engine-v2",
+  "date": "2026-11-01",
+  "vitest": {
+    "exitCode": 0,
+    "files": 336,
+    "tests": 3031,
+    "seconds": 133.32
+  },
+  "lintTypecheck": {
+    "exitCode": 0
+  },
+  "productionBuild": {
+    "exitCode": 0,
+    "target": "chrome-mv3",
+    "seconds": 19.5
+  },
+  "browser": {
+    "exitCode": 0,
+    "cases": 8,
+    "physicalHTTP": 28,
+    "lifetimePages": 2,
+    "cyclesPerPage": 100
+  },
+  "nativeMV3": {
+    "exitCode": 2,
+    "status": "blocked-by-policy"
+  },
+  "paidProviderCalls": 0,
+  "pushed": false,
+  "actionsTriggered": false,
+  "formatCheck": {
+    "exitCode": 0
+  },
+  "phase": "local validation before separately authorized branch publication"
+}

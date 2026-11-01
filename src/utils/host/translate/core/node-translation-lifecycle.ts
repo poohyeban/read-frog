@@ -1,4 +1,5 @@
-import { getPageTranslationSessionId } from "../translation-session"
+import { createTranslationTaskOwner } from "../context/task-owner"
+import { getPageTranslationSession, getPageTranslationSessionId } from "../translation-session"
 
 interface TrackedUnit {
   source: Node
@@ -9,6 +10,7 @@ interface TrackedUnit {
 
 interface NodeTranslation {
   root: HTMLElement
+  owner: ReturnType<typeof createTranslationTaskOwner>
   active: boolean
   pending: boolean
   units: Set<TrackedUnit>
@@ -62,7 +64,10 @@ function reconcile(records?: MutationRecord[]): void {
   let released = false
   for (const [walkId, translation] of translations) {
     const connected = translation.root.isConnected
-    if (!connected) translation.active = false
+    if (!connected) {
+      translation.active = false
+      translation.owner.dispose()
+    }
     for (const unit of translation.units) {
       const affected =
         !connected ||
@@ -88,6 +93,7 @@ function reconcile(records?: MutationRecord[]): void {
     }
     if ((!translation.pending || !translation.active) && translation.units.size === 0) {
       translation.active = false
+      translation.owner.dispose()
       translations.delete(walkId)
       released = true
     }
@@ -96,7 +102,13 @@ function reconcile(records?: MutationRecord[]): void {
 }
 
 export function beginNodeTranslation(root: HTMLElement, walkId: string) {
-  const translation: NodeTranslation = { root, active: true, pending: true, units: new Set() }
+  const translation: NodeTranslation = {
+    root,
+    owner: createTranslationTaskOwner("manual", root.ownerDocument),
+    active: true,
+    pending: true,
+    units: new Set(),
+  }
   translations.set(walkId, translation)
   observer ??= new MutationObserver(reconcile)
   observeSource(root)
@@ -128,9 +140,18 @@ export function trackNodeTranslation(walkId: string, unit: TrackedUnit): void {
 export function cleanupNodeTranslations(): void {
   for (const translation of translations.values()) {
     translation.active = false
+    translation.owner.dispose()
     for (const unit of translation.units) unit.dispose()
     translation.units.clear()
   }
   translations.clear()
   releaseUnusedObservers()
+}
+
+export function getTranslationOwner(walkId: string) {
+  return translations.get(walkId)?.owner ?? getPageTranslationSession() ?? null
+}
+export function isIndependentTranslation(walkId: string): boolean {
+  const translation = translations.get(walkId)
+  return !!translation?.active && translation.owner.isCurrent()
 }

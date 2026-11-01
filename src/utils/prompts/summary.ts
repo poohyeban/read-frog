@@ -1,11 +1,12 @@
+import { contextData, CONTEXT_DATA_RULE } from "./context-data"
+
 export function getArticleSummaryPrompt(
   title: string,
   preparedText: string,
 ): { systemPrompt: string; prompt: string } {
   return {
-    systemPrompt:
-      "Summarize the following article in 2-3 sentences. Focus on the main topic and key points. Return ONLY the summary, no explanations or formatting.",
-    prompt: `Title: ${title}\n\nContent:\n${preparedText}`,
+    systemPrompt: `Summarize the following article in 2-3 sentences. Focus on the main topic and key points. Return ONLY the summary, no explanations or formatting. ${CONTEXT_DATA_RULE}`,
+    prompt: `Title: ${contextData("title", title)}\n\nContent:\n${contextData("content", preparedText)}`,
   }
 }
 

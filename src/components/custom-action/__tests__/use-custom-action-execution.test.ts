@@ -64,7 +64,9 @@ function WebPageContextProbe({
       ? "pending"
       : webPageContext === null
         ? "null"
-        : webPageContext.webTitle
+        : webPageContext instanceof Error
+          ? webPageContext.message
+          : webPageContext.webTitle
 
   return createElement("div", { "data-testid": "web-page-context" }, status)
 }
@@ -291,4 +293,40 @@ describe("useCustomActionExecution", () => {
     ])
     expect(payload.instructions).not.toContain(`- key: ${JSON.stringify(sentence)}`)
   })
+})
+
+it("invalidates a pending custom action when its provider transport changes without changing id", async () => {
+  const request = createCustomActionRequest()
+  if (request.provider?.kind !== "local") throw new Error("Local fixture required")
+  const captured: AbortSignal[] = []
+  streamBackgroundStructuredObjectMock.mockReset().mockImplementation((_payload, options) => {
+    captured.push(options.signal)
+    return new Promise(() => {})
+  })
+  const context = buildCustomActionExecutionPlan(
+    request,
+    "selected word",
+    "paragraph",
+    null,
+  ).executionContext!
+  const { rerender, unmount } = renderHook(
+    ({ executionContext }) =>
+      useCustomActionExecution({
+        bodyRef: { current: null },
+        executionContext,
+        open: true,
+        popoverSessionKey: 10,
+        rerunNonce: 0,
+      }),
+    { initialProps: { executionContext: context } },
+  )
+  await waitFor(() => expect(captured).toHaveLength(1))
+  const updated = structuredClone(context)
+  updated.provider.config.baseURL = "https://different-provider.invalid/v1"
+  rerender({ executionContext: updated })
+  await waitFor(() => expect(captured).toHaveLength(2))
+  expect(captured[0]!.aborted).toBe(true)
+  expect(captured[1]!.aborted).toBe(false)
+  unmount()
+  expect(captured[1]!.aborted).toBe(true)
 })

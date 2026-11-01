@@ -35,6 +35,7 @@ export interface VirtualParagraphGroup {
 }
 
 export interface BilingualTranslationState {
+  pendingSourceCurrent?: () => boolean
   layoutSource: HTMLElement
   sourceTextContent: string
   status: "active" | "disposed"
@@ -133,6 +134,7 @@ export interface TranslationOnlyAnchorState {
   // elements registers every record on a descendant and may cut nothing, so
   // neither `swaps` nor `splitRecords` can answer that question.
   virtualGeneration?: number
+  virtualOwnerWalkId?: string
 }
 
 const translationOnlyAnchorStates = new WeakMap<HTMLElement, TranslationOnlyAnchorState>()
@@ -345,6 +347,7 @@ export function attachBilingualTranslationWrapper(
 ): void {
   if (
     state.status !== "active" ||
+    (state.wrapperTextContent === null && state.pendingSourceCurrent?.() === false) ||
     bilingualTranslationsBySource.get(state.layoutSource) !== state
   ) {
     return
@@ -444,6 +447,7 @@ export function isBilingualWrapperContentTampered(state: BilingualTranslationSta
 export function isBilingualTranslationStateCurrent(state: BilingualTranslationState): boolean {
   if (
     state.status !== "active" ||
+    (state.wrapperTextContent === null && state.pendingSourceCurrent?.() === false) ||
     bilingualTranslationsBySource.get(state.layoutSource) !== state ||
     !state.layoutSource.isConnected
   ) {

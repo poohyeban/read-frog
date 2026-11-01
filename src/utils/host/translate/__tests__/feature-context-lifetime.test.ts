@@ -47,7 +47,7 @@ afterEach(() => {
 })
 
 describe("cross-feature context ownership", () => {
-  it("keeps the real input pipeline running when the page session leaves their shared summary", async () => {
+  it("keeps independent input running while page-only summary preparation is cancelled", async () => {
     let finish!: (value: string) => void
     message.mockImplementation((name) =>
       name === "getOrGenerateWebPageSummary"
@@ -76,7 +76,7 @@ describe("cross-feature context ownership", () => {
     await expect(input).resolves.toBe("Translated input")
     expect(
       message.mock.calls.filter(([name]) => name === "cancelPageTranslationRequests"),
-    ).toHaveLength(0)
+    ).toHaveLength(1)
     const execution = message.mock.calls.find(([name]) => name === "enqueueTranslateRequest")!
     expect(execution[1].sessionId).toMatch(/^request-/)
   })
@@ -139,4 +139,44 @@ it("cancels a title request without draining the page's body scope", async () =>
   expect(cancellations[0]![1].sessionId).toMatch(/^title-/)
   requests.get(pageId)!("Body translation")
   expect(await body).toBe("Body translation")
+})
+
+it("does not start translation after its source changes while the one summary request is pending", async () => {
+  const settings = await config()
+  document.body.innerHTML = `<article><h1>Original title</h1><p>${"Original English source. ".repeat(200)}</p></article>`
+  const source = document.querySelector("p")!
+  const original = source.textContent
+  let finish!: (text: string) => void
+  message.mockImplementation((name) =>
+    name === "getOrGenerateWebPageSummary"
+      ? new Promise((resolve) => {
+          finish = resolve
+        })
+      : Promise.resolve("Old translation"),
+  )
+  // Explicit custom summary keeps this reproduction independent of projection length.
+  settings.pageTranslation.customPromptsConfig = {
+    promptId: "model-summary",
+    patterns: [
+      {
+        id: "model-summary",
+        name: "Model summary",
+        systemPrompt: "Translate with {{webSummary}}",
+        prompt: "{{input}}",
+      },
+    ],
+  }
+  const pending = translateTextForPage(original, "plain", {
+    source,
+    config: settings,
+    isSourceCurrent: () => source.isConnected && source.textContent === original,
+  }).catch((error) => error)
+  await vi.waitFor(() => expect(finish).toBeTypeOf("function"))
+  source.textContent = "Edited while preparing context"
+  finish("The already-issued summary completed once")
+  expect(await pending).toMatchObject({ name: "TranslationCancelledError" })
+  expect(
+    message.mock.calls.filter(([name]) => name === "getOrGenerateWebPageSummary"),
+  ).toHaveLength(1)
+  expect(message.mock.calls.filter(([name]) => name === "enqueueTranslateRequest")).toHaveLength(0)
 })

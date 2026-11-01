@@ -15,7 +15,7 @@ import {
   isTransNode,
 } from "../../dom/filter"
 import { pageLocalScheduler } from "../local-scheduler"
-import { getPageTranslationSession } from "../translation-session"
+import { getTranslationOwner } from "./node-translation-lifecycle"
 import { translateNodes } from "./translation-modes"
 import { getTranslationOnlyAnchorState } from "./translation-state"
 
@@ -50,7 +50,7 @@ export async function translateWalkedElement(
   shouldContinue: () => boolean = () => true,
   forceRetranslation: boolean = false,
 ): Promise<void> {
-  const signal = getPageTranslationSession()?.signal
+  const signal = getTranslationOwner(walkId)?.signal
   const promises: Promise<void>[] = []
   function* expand(element: HTMLElement): Generator<void> {
     yield

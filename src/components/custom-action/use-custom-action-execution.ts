@@ -8,8 +8,10 @@ import type {
 import type { Config } from "@/types/config/config"
 import type { AISDKReasoning } from "@/types/config/provider"
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
+import type { ContextSource } from "@/utils/host/translate/context/types"
 import type { CachedWebPageContext } from "@/utils/host/translate/webpage-context"
 import type { LangCodeISO6393 } from "@/utils/languages"
+import type { ContextRequirements } from "@/utils/prompts/translation-template"
 import type { CustomActionProviderRef } from "@/utils/providers/provider-registry"
 
 export interface SelectionToolbarCustomActionRequestSlice {
@@ -35,11 +37,18 @@ import {
   buildSelectionToolbarCustomActionSystemPrompt,
   replaceSelectionToolbarCustomActionPromptTokens,
 } from "@/utils/custom-action-prompt"
-import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
+import { Sha256Fields as hashContextFields } from "@/utils/hash"
+import { scopeRootIdentity } from "@/utils/host/translate/context/scope-resolver"
+import { createTranslationTaskOwner } from "@/utils/host/translate/context/task-owner"
+import {
+  getDocumentContextSignal,
+  getOrCreateWebPageContext,
+} from "@/utils/host/translate/webpage-context"
 import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { resolveModelId } from "@/utils/providers/model-id"
 import { getProviderOptionsWithOverride } from "@/utils/providers/options"
 import { getTopLevelReasoning } from "@/utils/providers/reasoning"
+import { providerTransportRevision } from "@/utils/providers/resource-material"
 
 export interface CustomActionExecutionContext {
   action: SelectionToolbarCustomAction
@@ -63,7 +72,9 @@ interface CustomActionExecutionPlan {
 
 interface ResolvedWebPageContext {
   popoverSessionKey: number
-  value: CachedWebPageContext | null
+  key: string
+  retryNonce: number
+  value: CachedWebPageContext | Error | null
 }
 
 interface CustomActionExecutionRequest {
@@ -134,7 +145,7 @@ export function buildCustomActionExecutionPlan(
   customActionRequest: SelectionToolbarCustomActionRequestSlice,
   cleanSelection: string,
   contextText: string,
-  webPageContext?: CachedWebPageContext | null,
+  webPageContext?: CachedWebPageContext | Error | null,
 ): CustomActionExecutionPlan {
   const action = customActionRequest.action
 
@@ -167,6 +178,12 @@ export function buildCustomActionExecutionPlan(
     }
   }
 
+  if (webPageContext instanceof Error)
+    return {
+      error: createSelectionToolbarRuntimeError("customAction", webPageContext),
+      executionContext: null,
+    }
+
   if (webPageContext === undefined) {
     return {
       error: null,
@@ -192,45 +209,74 @@ export function buildCustomActionExecutionPlan(
   }
 }
 
-export function useCustomActionWebPageContext(open: boolean, popoverSessionKey: number) {
-  const [resolvedWebPageContext, setResolvedWebPageContext] =
-    useState<ResolvedWebPageContext | null>(null)
-
+export function useCustomActionWebPageContext(
+  open: boolean,
+  popoverSessionKey: number,
+  source: ContextSource = {},
+  requirements: ContextRequirements = {
+    title: true,
+    description: false,
+    content: true,
+    summary: false,
+  },
+  retryNonce = 0,
+) {
+  const [resolved, setResolved] = useState<ResolvedWebPageContext | null>(null)
+  const previous = useRef(resolved)
+  const {
+    source: sourceNode,
+    text: sourceText,
+    kind: sourceKind,
+    document: sourceDocument,
+  } = source
+  const { title, description, content, summary } = requirements
+  const key = `${popoverSessionKey}:${source.source ? scopeRootIdentity(source.source) : "independent"}:${hashContextFields(sourceText ?? "")}:${+requirements.title}${+requirements.description}${+requirements.content}${+requirements.summary}`
   useEffect(() => {
-    if (!open) {
+    if (!open) return undefined
+    // Regenerating an action reuses its immutable prompt snapshot. A failed
+    // preparation may be explicitly retried without replaying a model request.
+    if (
+      previous.current?.key === key &&
+      (!(previous.current.value instanceof Error) || previous.current.retryNonce === retryNonce)
+    )
       return undefined
-    }
-
-    let isCancelled = false
-
-    void getOrCreateWebPageContext()
-      .then((nextContext) => {
-        if (!isCancelled) {
-          setResolvedWebPageContext({
-            popoverSessionKey,
-            value: nextContext,
+    const owner = createTranslationTaskOwner("custom-context")
+    const preparation =
+      title || description || content || summary
+        ? getOrCreateWebPageContext(content, owner.signal, {
+            source: sourceNode,
+            text: sourceText,
+            kind: sourceKind,
+            document: sourceDocument,
+            requirements: { title, description, content, summary },
           })
-        }
-      })
-      .catch(() => {
-        if (!isCancelled) {
-          setResolvedWebPageContext({
-            popoverSessionKey,
-            value: null,
-          })
-        }
-      })
-
-    return () => {
-      isCancelled = true
+        : Promise.resolve({ url: window.location.href, webTitle: "", webContent: "" })
+    const finish = (value: ResolvedWebPageContext["value"]) => {
+      if (!owner.isCurrent()) return
+      const next = { key, popoverSessionKey, retryNonce, value }
+      previous.current = next
+      setResolved(next)
     }
-  }, [open, popoverSessionKey])
-
-  if (!open || resolvedWebPageContext?.popoverSessionKey !== popoverSessionKey) {
-    return undefined
-  }
-
-  return resolvedWebPageContext.value
+    void preparation
+      .then(finish)
+      .catch((error: unknown) => finish(error instanceof Error ? error : new Error(String(error))))
+    return owner.dispose
+  }, [
+    open,
+    key,
+    popoverSessionKey,
+    retryNonce,
+    sourceNode,
+    sourceText,
+    sourceKind,
+    sourceDocument,
+    title,
+    description,
+    content,
+    summary,
+  ])
+  if (!open || resolved?.key !== key) return undefined
+  return resolved.value
 }
 
 function buildCustomActionExecutionRequest({
@@ -281,6 +327,7 @@ function buildCustomActionExecutionRequest({
       promptTokens,
       provider: providerKey,
       providerId: provider.id,
+      providerTransport: hashContextFields(providerTransportRevision(provider.config)),
       providerOptions,
       reasoning,
       rerunNonce,
@@ -360,6 +407,7 @@ export function useCustomActionExecution({
 
     let isCancelled = false
     const abortController = new AbortController()
+    const signal = AbortSignal.any([abortController.signal, getDocumentContextSignal()])
 
     const run = async () => {
       setIsRunning(true)
@@ -376,9 +424,9 @@ export function useCustomActionExecution({
             ...request.payload,
           },
           {
-            signal: abortController.signal,
+            signal,
             onChunk: (partial: BackgroundStructuredObjectStreamSnapshot) => {
-              if (isCancelled) {
+              if (isCancelled || signal.aborted) {
                 return
               }
 
@@ -389,7 +437,7 @@ export function useCustomActionExecution({
           },
         )
 
-        if (isCancelled) {
+        if (isCancelled || signal.aborted) {
           return
         }
 
@@ -400,7 +448,7 @@ export function useCustomActionExecution({
           return
         }
 
-        if (isCancelled) {
+        if (isCancelled || signal.aborted) {
           return
         }
 

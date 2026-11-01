@@ -1,4 +1,5 @@
-import type { PageSession } from "./translation-session"
+import type { TranslationTaskOwner } from "./context/task-owner"
+import type { ContextSource } from "./context/types"
 import type { InputTranslationLang } from "@/types/config/config"
 import type { Config } from "@/types/config/config"
 import type { TranslateProviderConfig } from "@/types/config/provider"
@@ -6,7 +7,10 @@ import type { TranslationTextFormat } from "@/types/config/translate"
 import type { LangCodeISO6393 } from "@/utils/languages"
 import type { ResolvedProviderRef } from "@/utils/providers/provider-registry"
 import { getDetectedCodeFromStorage, getFinalSourceCode } from "@/utils/config/languages"
-import { getConfigSnapshotRevision } from "@/utils/config/snapshot-revision"
+import {
+  captureInputConfigValidity,
+  getConfigSnapshotRevision,
+} from "@/utils/config/snapshot-revision"
 import { logger } from "@/utils/logger"
 import { getContextRequirements } from "@/utils/prompts/translate"
 import { serializeProviderRef } from "@/utils/providers/provider-ref"
@@ -15,11 +19,9 @@ import {
   resolvePageTranslationProvider,
 } from "@/utils/providers/provider-ref"
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
-import {
-  isTranslationCancelledError,
-  TranslationCancelledError,
-} from "@/utils/request/cancellation"
+import { TranslationCancelledError } from "@/utils/request/cancellation"
 import { getLocalConfig } from "../../config/storage"
+import { requiresModelSummary } from "./context/summary-policy"
 import { translationActivity } from "./engine-state"
 import { shouldSkipAsTargetLanguage } from "./target-language-skip"
 import { prepareTranslationText } from "./text-preparation"
@@ -29,15 +31,7 @@ import {
   translateTextCore,
 } from "./translate-text"
 import { getPageTranslationSession } from "./translation-session"
-import {
-  getOrCreateWebPageContext,
-  getWebPageContentRevision,
-  waitForStableWebPageContext,
-  ContextUnstableError,
-  getDocumentContextSignal,
-  isInPageAnchorChange,
-  isWebPageContextCurrent,
-} from "./webpage-context"
+import { getOrCreateWebPageContext, getDocumentContextSignal } from "./webpage-context"
 import { getOrGenerateWebPageSummary } from "./webpage-summary"
 
 async function getConfigOrThrow(): Promise<Config> {
@@ -51,31 +45,10 @@ async function getConfigOrThrow(): Promise<Config> {
 async function getWebPagePromptContext(
   ...args: Parameters<typeof prepareWebPagePromptContext>
 ): ReturnType<typeof prepareWebPagePromptContext> {
-  const session = args[4] === undefined ? (getPageTranslationSession() ?? null) : args[4]
-  args[4] = session
-  const url = window.location.href
-  const signal = session?.signal ?? getDocumentContextSignal()
-  const finish = translationActivity.track("context", session?.id)
+  const owner = args[4]
+  const finish = translationActivity.track("context", owner?.id)
   try {
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const revision = getWebPageContentRevision()
-      try {
-        return await prepareWebPagePromptContext(...args)
-      } catch (error) {
-        // An unaffected visible paragraph must not be stranded when another
-        // region changes while its context is pending. Retry only content
-        // invalidation, never a stopped session, navigation or provider error.
-        if (
-          !isTranslationCancelledError(error) ||
-          session?.signal.aborted ||
-          revision === getWebPageContentRevision() ||
-          (url !== window.location.href && !isInPageAnchorChange(url, window.location.href))
-        )
-          throw error
-        await waitForStableWebPageContext(signal)
-      }
-    }
-    throw new ContextUnstableError()
+    return await prepareWebPagePromptContext(...args)
   } catch (error) {
     finish(error)
     throw error
@@ -89,7 +62,8 @@ async function prepareWebPagePromptContext(
   enableAIContentAware: boolean,
   includeSummary: boolean,
   config: Config,
-  session: PageSession | null = getPageTranslationSession() ?? null,
+  session: TranslationTaskOwner | null = null,
+  source: ContextSource = {},
 ): Promise<
   { webTitle: string; webDescription?: string; webContent: string; webSummary?: string } | undefined
 > {
@@ -106,55 +80,29 @@ async function prepareWebPagePromptContext(
   const webPageContext = await getOrCreateWebPageContext(
     requirements.content || needsSummary,
     session?.signal,
+    { ...source, requirements: { ...requirements, summary: needsSummary } },
   )
   if (!webPageContext) {
     return undefined
   }
 
-  let webSummary: string | null | undefined
-  if (needsSummary) {
-    try {
-      webSummary = await getOrGenerateWebPageSummary(
+  const webSummary = needsSummary
+    ? await getOrGenerateWebPageSummary(
         webPageContext,
         serializeProviderRef(providerConfig),
-        enableAIContentAware,
+        true,
         session,
+        { requireModel: requiresModelSummary(config.pageTranslation) },
       )
-    } catch (error) {
-      if (
-        isTranslationCancelledError(error) ||
-        (error instanceof Error && error.name === "AbortError")
-      )
-        throw error
-      // Explicit upper-layer fallback, after RequestQueue exhausted retries.
-      // Failed summaries remain temporary cooldown entries, never successes.
-      logger.warn("Optional page summary failed after queue retry budget", error)
-      webSummary = undefined
-    }
-  }
+    : undefined
 
-  if (!isWebPageContextCurrent(webPageContext)) throw new TranslationCancelledError(session?.id)
+  if (session?.signal.aborted) throw new TranslationCancelledError(session.id)
   return {
-    webTitle: webPageContext.webTitle,
-    webDescription: webPageContext.webDescription,
-    webContent: webPageContext.webContent,
+    webTitle: requirements.title ? webPageContext.webTitle : "",
+    webDescription: requirements.description ? webPageContext.webDescription : undefined,
+    webContent: requirements.content ? webPageContext.webContent : "",
     webSummary: webSummary ?? undefined,
   }
-}
-
-export function primePageTranslationContext(config: Config): void {
-  void getWebPagePromptContext(
-    resolvePageTranslationProvider(config),
-    config.pageTranslation.enableAIContentAware,
-    true,
-    config,
-  ).catch((error) => {
-    if (
-      !isTranslationCancelledError(error) &&
-      !(error instanceof Error && error.name === "AbortError")
-    )
-      logger.warn("Context prefetch failed", error)
-  })
 }
 
 async function translateTextUsingPageConfig(
@@ -174,6 +122,7 @@ async function translateTextUsingPageConfig(
     // Session captured at pipeline entry by the caller; see translateTextForPage.
     sessionId?: string
     signal?: AbortSignal
+    isCurrent?: () => boolean
     requestScopeId?: string
     forceRetranslation?: boolean
   } = {},
@@ -224,12 +173,16 @@ async function translateTextUsingPageConfig(
     preserveLineBreaks: options.preserveLineBreaks,
     sessionId: options.sessionId,
     signal: options.signal,
+    isCurrent: options.isCurrent,
     requestScopeId: options.requestScopeId,
     forceRetranslation: options.forceRetranslation,
   })
 }
 
-export interface PageTranslationRequestOptions {
+export interface PageTranslationRequestOptions extends ContextSource {
+  owner?: TranslationTaskOwner | null
+  isSourceCurrent?: () => boolean
+  config?: Config
   preserveLineBreaks?: boolean
   forceRetranslation?: boolean
 }
@@ -247,23 +200,28 @@ export async function translateTextForPage(
   // (after the awaits below, e.g. the network-backed page summary) could see
   // null if the user cancelled mid-request — the request would then be sent
   // unscoped and stay permanently uncancellable, re-creating #1881.
-  const session = getPageTranslationSession()
-  const sessionId = session?.id
-  const config = await getConfigOrThrow()
+  const page = getPageTranslationSession()
+  const owner = options?.owner === undefined ? (page ?? null) : options.owner
+  const sessionId = owner === page ? page?.id : undefined
+  const config = options?.config ?? (await getConfigOrThrow())
   const providerConfig = resolvePageTranslationProvider(config)
   const webPageContext = await getWebPagePromptContext(
     providerConfig,
     config.pageTranslation.enableAIContentAware,
     true,
     config,
-    session,
+    owner,
+    options,
   )
-
+  if (owner?.signal.aborted) throw new TranslationCancelledError(owner.id)
   return translateTextUsingPageConfig(config, text, {
     webPageContext,
     textFormat,
     preserveLineBreaks: options?.preserveLineBreaks,
     sessionId,
+    signal: owner?.signal,
+    isCurrent: options?.isSourceCurrent,
+    requestScopeId: owner?.id,
     forceRetranslation: options?.forceRetranslation,
   })
 }
@@ -327,8 +285,10 @@ export async function translateTextForInput(
   fromLang: InputTranslationLang,
   toLang: InputTranslationLang,
   onTargetLanguageResolved?: (targetLanguage: LangCodeISO6393) => void,
+  options?: ContextSource & { owner?: TranslationTaskOwner; isSourceCurrent?: () => boolean },
 ): Promise<string> {
   const config = await getConfigOrThrow()
+  const configCurrent = captureInputConfigValidity(config)
   // Capability-based, not resolveProviderConfig: that helper looks the id up in
   // providersConfig and throws for a built-in provider, which is never a row
   // there.
@@ -354,10 +314,15 @@ export async function translateTextForInput(
     config.pageTranslation.enableAIContentAware,
     true,
     config,
-    null,
+    options?.owner ?? null,
+    options ?? { kind: "independent", text },
   )
 
-  return translateTextCore({
+  if (!configCurrent()) throw new TranslationCancelledError(options?.owner?.id)
+  const translated = await translateTextCore({
+    signal: options?.owner?.signal ?? getDocumentContextSignal(),
+    requestScopeId: options?.owner?.id,
+    isCurrent: () => configCurrent() && options?.isSourceCurrent?.() !== false,
     origin: "input",
     mode: "independent",
     configRevision: getConfigSnapshotRevision(config),
@@ -376,4 +341,6 @@ export async function translateTextForInput(
     // User-typed newlines are always meaningful.
     preserveLineBreaks: true,
   })
+  if (!configCurrent()) throw new TranslationCancelledError(options?.owner?.id)
+  return translated
 }

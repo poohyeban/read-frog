@@ -10,6 +10,7 @@ import {
   SPINNER_CLASS,
   TRANSLATION_MODE_ATTRIBUTE,
   TRANSLATION_ONLY_ATTRIBUTE,
+  WALKED_ATTRIBUTE,
   VIRTUAL_PARAGRAPH_ATTRIBUTE,
 } from "../../../constants/dom-labels"
 import { removeReactShadowHost } from "../../../react-shadow-host/create-shadow-host"
@@ -301,7 +302,7 @@ export function dropTranslationOnlySwapRecordsForNodes(
 export function restoreTranslationOnlySwapsForAnchor(
   anchor: HTMLElement,
   filterNodes?: readonly ChildNode[],
-  options?: { keepRecords?: boolean },
+  options?: { keepRecords?: boolean; keepWalk?: (walkId: string) => boolean },
 ): boolean {
   const state = getTranslationOnlyAnchorState(anchor)
   if (!state) {
@@ -314,8 +315,13 @@ export function restoreTranslationOnlySwapsForAnchor(
   // A full restore that keeps nothing is the end of a virtual generation, so
   // release it here rather than at each call site: the anchor may only finalize
   // once no unit can still be waiting on it.
-  if (!filterNodes && !options?.keepRecords) {
+  if (
+    !filterNodes &&
+    !options?.keepRecords &&
+    !(state.virtualOwnerWalkId && options?.keepWalk?.(state.virtualOwnerWalkId))
+  ) {
     state.virtualGeneration = undefined
+    state.virtualOwnerWalkId = undefined
   }
 
   // Records whose every node the host disconnected are unrestorable debris;
@@ -325,7 +331,9 @@ export function restoreTranslationOnlySwapsForAnchor(
   dropTranslationOnlySwapRecords(state, deadRecords)
 
   const toRestore = state.swaps.filter(
-    (record) => !filterNodes || swapRecordIntersectsNodes(record, filterNodes),
+    (record) =>
+      !options?.keepWalk?.(record.walkId) &&
+      (!filterNodes || swapRecordIntersectsNodes(record, filterNodes)),
   )
   if (toRestore.length === 0) {
     finalizeTranslationOnlyAnchorIfEmpty(state)
@@ -405,27 +413,33 @@ export function removeTranslatedWrapperWithRestore(wrapper: HTMLElement): ChildN
   return []
 }
 
-export function removeAllTranslatedWrapperNodes(root: Document | ShadowRoot = document): void {
+export function removeAllTranslatedWrapperNodes(
+  root: Document | ShadowRoot = document,
+  keepWalk?: (walkId: string) => boolean,
+): void {
   const isInsideRoot = (source: HTMLElement) =>
     root.nodeType === Node.DOCUMENT_NODE
       ? source.ownerDocument === root && source.isConnected
       : source.getRootNode() === root || root.contains(source)
 
   getPendingBilingualTranslationStates()
-    .filter((state) => isInsideRoot(state.layoutSource))
+    .filter((state) => isInsideRoot(state.layoutSource) && !keepWalk?.(state.walkId))
     .forEach(unregisterBilingualTranslationState)
   getPendingVirtualParagraphGroups()
-    .filter((group) => isInsideRoot(group.layoutSource))
+    .filter((group) => isInsideRoot(group.layoutSource) && !keepWalk?.(group.walkId))
     .forEach(disposeVirtualParagraphGroup)
   const translatedNodes = deepQueryTopLevelSelector(root, isTranslatedWrapperNode)
   translatedNodes.forEach((contentWrapperNode) => {
-    removeTranslatedWrapperWithRestore(contentWrapperNode)
+    if (!keepWalk?.(contentWrapperNode.getAttribute(WALKED_ATTRIBUTE) ?? ""))
+      removeTranslatedWrapperWithRestore(contentWrapperNode)
   })
   // In-place-swapped paragraphs have no wrapper; their anchors are found by
   // marker attribute. Collect ALL matches — nested anchors are independent.
   const swapAnchors = deepQueryAllSelector(root, (element) =>
     element.hasAttribute(TRANSLATION_ONLY_ATTRIBUTE),
   )
-  swapAnchors.forEach((anchor) => restoreTranslationOnlySwapsForAnchor(anchor))
+  swapAnchors.forEach((anchor) =>
+    restoreTranslationOnlySwapsForAnchor(anchor, undefined, { keepWalk }),
+  )
   restoreLatexmlTextBoxes(root)
 }

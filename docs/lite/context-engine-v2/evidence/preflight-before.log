@@ -1,0 +1,37 @@
+$ vitest run src/utils/host/translate/__tests__/feature-context-lifetime.test.ts -t 'source changes while'
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/host/translate/__tests__/feature-context-lifetime.test.ts (4 tests | 1 failed | 3 skipped) 143ms
+   × does not start translation after its source changes while the one summary request is pending 142ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/host/translate/__tests__/feature-context-lifetime.test.ts > does not start translation after its source changes while the one summary request is pending
+AssertionError: expected 'Old translation' to match object { name: 'TranslationCancelledError' }
+
+- Expected:
+{
+  "name": "TranslationCancelledError",
+}
+
++ Received:
+"Old translation"
+
+ ❯ src/utils/host/translate/__tests__/feature-context-lifetime.test.ts:157:25
+    155|   source.textContent = "Edited while preparing context"
+    156|   finish("The already-issued summary completed once")
+    157|   expect(await pending).toMatchObject({ name: "TranslationCancelledErr…
+       |                         ^
+    158|   expect(message.mock.calls.filter(([name]) => name === "getOrGenerate…
+    159|   expect(message.mock.calls.filter(([name]) => name === "enqueueTransl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 skipped (4)
+   Start at  12:41:28
+   Duration  1.86s (transform 40%, environment 34%, import 10%, tests 9%, setup 7%)
+
+[ELIFECYCLE] Test failed. See above for more details.

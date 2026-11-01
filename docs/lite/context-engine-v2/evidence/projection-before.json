@@ -1,0 +1,19 @@
+{
+  "phase": "V2 development before bounded opaque probes and shadow privacy",
+  "passed": 0,
+  "failed": 2,
+  "cases": [
+    {
+      "file": "scope-resolver.test.ts",
+      "name": "bounds probes even when every child is an opaque semantic item",
+      "status": "failed",
+      "failure": "AssertionError: expected 1001 to be less than or equal to 193"
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "excludes sources under a hidden shadow host",
+      "status": "failed",
+      "failure": "AssertionError: expected 'Private headingPRIVATE_SHADOW_SOURCE' not to contain 'PRIVATE_SHADOW_SOURCE'"
+    }
+  ]
+}

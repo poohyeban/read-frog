@@ -1,0 +1,199 @@
+{
+  "phase": "V2 boundary contracts after fixes",
+  "passed": 32,
+  "failed": 0,
+  "cases": [
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "replaceSelectionToolbarCustomActionPromptTokens replaces selection and paragraphs tokens",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "replaceSelectionToolbarCustomActionPromptTokens replaces targetLanguage, webTitle, webUrl, and webContent tokens",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "replaceSelectionToolbarCustomActionPromptTokens leaves unrelated text unchanged",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt appends structured output contract with resolved fields and defaults",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt includes description in contract when provided",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt resolves tokens in field description but keeps key names unchanged",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt preserves multiline field description in yaml block",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt returns contract when prompt content is empty",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "truncateContextTextForCustomAction keeps only the leading characters for custom action context tokens",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "includes context variables used only by structured output descriptions",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "reports separate owner, route, config, source and render generation reasons",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "route owners survive real anchors but expire on query/hash navigation and pagehide",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "context-stale affects future reads, never an issued prompt or unchanged unit",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "checking an ended document lease does not resurrect route listeners",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "freezes scoped snapshots and rebuilds only the affected scope",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "deletes only detached scopes and leaves a retained snapshot immutable",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "moves preserve scope identity and virtualized text replacement changes the fingerprint",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "tracks explicit reference dependencies without linking unrelated posts",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "does no projection for metadata-only or unused context",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "ignores inserted translations and excludes private controls and hidden source",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "bounded index and cache converge after 500 acquire/remove operations",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "one cancelled consumer cannot cancel a shared extraction still needed by another",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "limits a giant scope projection without copying its complete subtree",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "releases old route registrations and followed shadow roots",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "never extracts a hidden ancestor or SVG script, including a local fallback",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "metadata is an explicit dependency only of scopes which use it",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "rebinds explicit dependencies when a recycled reply changes its reference",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "does not resurrect a coordinator result after a detached source entry was removed",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "retries preparation once before any model request, and bounds continued source churn",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "invalidates an acquired scope when an ancestor becomes hidden",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "does not read translated or hidden text into a scoped title",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "bounds pending extraction across repeated generations of one scope",
+      "status": "passed",
+      "failure": null
+    }
+  ]
+}

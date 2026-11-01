@@ -23,6 +23,7 @@ import {
   walkAndLabelElement,
   walkAndLabelElementChunked,
 } from "@/utils/host/dom/traversal"
+import { isIndependentTranslation } from "@/utils/host/translate/core/node-translation-lifecycle"
 import { carryTranslationsAcrossRewrite } from "@/utils/host/translate/core/translation-carry"
 import {
   findEnclosingBilingualLayoutSource,
@@ -42,7 +43,6 @@ import {
   translateWalkedElement,
 } from "@/utils/host/translate/node-manipulation"
 import { cancelTranslationScope } from "@/utils/host/translate/request-cancellation"
-import { primePageTranslationContext } from "@/utils/host/translate/translate-variants"
 import {
   beginPageTranslationSession,
   getPageTranslationSession,
@@ -58,15 +58,11 @@ import { validateTranslationConfigAndToast } from "@/utils/host/translate/ui/tra
 import {
   getWebPageContentRevision,
   isInPageAnchorChange,
-  releaseWebPageContext,
+  synchronizeWebPageContext,
 } from "@/utils/host/translate/webpage-context"
 import { logger } from "@/utils/logger"
 import { sendMessage } from "@/utils/message"
-import {
-  canResolvedProviderRefGenerateText,
-  resolvePageTranslationProvider,
-  resolvePageTranslationProviderOrNull,
-} from "@/utils/providers/provider-ref"
+import { resolvePageTranslationProviderOrNull } from "@/utils/providers/provider-ref"
 import { removeReactShadowHost } from "@/utils/react-shadow-host/create-shadow-host"
 import { getEffectiveSiteRule } from "@/utils/site-rules/effective"
 import { DocumentTitleTask } from "./document-title-task"
@@ -159,7 +155,6 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
   private walkId: string | null = null
   private readonly onPageHide = () => this.stop()
   private requestSessionUrl: string | undefined
-  private contextPrimed = false
   private paragraphChildren = new WeakMap<HTMLElement, HTMLElement[]>()
   private intersectionOptions: IntersectionObserverInit
   private walkBlockedElementsCache = new WeakSet<HTMLElement>()
@@ -262,8 +257,6 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
       return
     }
 
-    const providerConfig = resolvePageTranslationProvider(config)
-
     // Activate before the notify round trip: once the flag is set, stop()
     // is authoritative for teardown, so a cancel arriving during any await
     // below tears the session down instead of racing a pending start. The
@@ -275,7 +268,6 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
     this.session.own(() => this.releaseDomResources())
     const sessionVersion = this.translationSessionVersion
     window.addEventListener("pagehide", this.onPageHide)
-    this.contextPrimed = false
 
     try {
       await sendMessage("setAndNotifyPageTranslationStateChangedByManager", {
@@ -300,15 +292,7 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
       void ensureSiteRuleCSS(document, siteRule.injectedCss)
     }
 
-    // Capture only source metadata before title translation. Content and
-    // summary preparation begin when the walk discovers its first paragraph.
-    await this.titleTask.prime(
-      config.pageTranslation.enableAIContentAware &&
-        canResolvedProviderRefGenerateText(providerConfig),
-    )
-    if (this.translationSessionVersion !== sessionVersion) {
-      return
-    }
+    // Context is prepared by the actual translation unit from its prompt requirements.
     // The live value, not the config read above: the switch may have been
     // flipped while this start was awaiting.
     if (this.titleTranslationEnabled) {
@@ -395,8 +379,7 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
           logger.warn("Failed to cancel navigation requests"),
         )
       this.session = getPageTranslationSession()
-      releaseWebPageContext()
-      this.contextPrimed = false
+      synchronizeWebPageContext()
       this.titleTask.invalidate()
     }
     this.requestSessionUrl = url
@@ -454,7 +437,6 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
     window.removeEventListener("pagehide", this.onPageHide)
     this.session = undefined
     this.walkId = null
-    this.contextPrimed = false
     this.paragraphChildren = new WeakMap()
     this.walkBlockedElementsCache = new WeakSet()
     this.ancestorsWithWalkBlockedElements = new WeakSet()
@@ -472,7 +454,7 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
     this.domObservation.dispose()
 
     removeSiteRuleCSS(document)
-    removeAllTranslatedWrapperNodes()
+    removeAllTranslatedWrapperNodes(document, isIndependentTranslation)
     cleanupNodeSiteRuleCSSIfUnused(document)
   }
 
@@ -555,10 +537,6 @@ export class PageTranslationManager implements IPageTranslationManager, Translat
     const discovered: HTMLElement[] = []
     const onParagraph = (element: HTMLElement) => {
       discovered.push(element)
-      if (!this.contextPrimed) {
-        this.contextPrimed = true
-        primePageTranslationContext(config)
-      }
     }
     const onBlockedElement = (element: HTMLElement) => {
       this.cacheWalkBlockedElement(element)

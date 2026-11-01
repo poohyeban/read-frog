@@ -1,0 +1,51 @@
+{
+  "baseline": "1af30d16e66871ebb3509a76f0df62aaa090c263",
+  "passed": 1,
+  "failed": 10,
+  "cases": [
+    {
+      "name": "keeps article contexts separate on the same URL",
+      "status": "failed"
+    },
+    {
+      "name": "recognizes generic repeated feed items without article tags or domain rules",
+      "status": "failed"
+    },
+    {
+      "name": "uses a proven explicit quote dependency without borrowing the adjacent post",
+      "status": "failed"
+    },
+    {
+      "name": "refreshes a recycled post node's context after its own text changes",
+      "status": "failed"
+    },
+    {
+      "name": "keeps moved but semantically unchanged content reusable",
+      "status": "failed"
+    },
+    {
+      "name": "excludes inputs, scripts and hidden content from context",
+      "status": "failed"
+    },
+    {
+      "name": "extracts only within the source shadow root",
+      "status": "failed"
+    },
+    {
+      "name": "does not let context expiry revoke an unchanged render source",
+      "status": "failed"
+    },
+    {
+      "name": "keeps six bilingual translations during unrelated scope removal",
+      "status": "failed"
+    },
+    {
+      "name": "keeps six translationOnly translations during unrelated scope removal",
+      "status": "failed"
+    },
+    {
+      "name": "still rejects replaced source nodes",
+      "status": "passed"
+    }
+  ]
+}

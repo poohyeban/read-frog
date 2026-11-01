@@ -1,11 +1,15 @@
 import type { APICallError } from "ai"
+import { SummaryConsentRequiredError } from "@/utils/host/translate/context/summary-policy"
 import { ErrorButton } from "./error-button"
 import { RetryButton } from "./retry-button"
 
 export function TranslationError({ nodes, error }: { nodes: ChildNode[]; error: APICallError }) {
   return (
     <div className="notranslate inline-flex items-center justify-center gap-1 px-1.5">
-      <RetryButton nodes={nodes} />
+      <RetryButton
+        nodes={nodes}
+        consent={error instanceof SummaryConsentRequiredError ? error : undefined}
+      />
       <ErrorButton error={error} />
     </div>
   )

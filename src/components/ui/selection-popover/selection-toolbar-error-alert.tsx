@@ -8,9 +8,11 @@ import { cn } from "@/utils/styles/utils"
 export function SelectionToolbarErrorAlert({
   className,
   error,
+  onRetry,
 }: {
   className?: string
   error: SelectionToolbarInlineError | null
+  onRetry?: () => void
 }) {
   if (!error) {
     return null
@@ -30,6 +32,18 @@ export function SelectionToolbarErrorAlert({
         <IconAlertCircle className="size-4" />
         <AlertTitle>{error.title}</AlertTitle>
         <AlertDescription className="col-start-2">{error.description}</AlertDescription>
+        {error.consent && onRetry && (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              error.consent!.authorize()
+              onRetry()
+            }}
+          >
+            {error.consent.actionLabel}
+          </Button>
+        )}
         {action && (
           <Button
             size="sm"

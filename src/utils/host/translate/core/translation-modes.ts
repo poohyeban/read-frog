@@ -62,7 +62,11 @@ import { pageLocalScheduler } from "../local-scheduler"
 import { translateTextForPage } from "../translate-variants"
 import { setTranslationDirAndLang } from "../translation-attributes"
 import { createSpinnerInside, getTranslatedTextAndRemoveSpinner } from "../ui/spinner"
-import { getNodeTranslation, trackNodeTranslation } from "./node-translation-lifecycle"
+import {
+  getNodeTranslation,
+  getTranslationOwner,
+  trackNodeTranslation,
+} from "./node-translation-lifecycle"
 import {
   createPageTranslationRequest,
   getDisplayTranslation,
@@ -144,7 +148,17 @@ async function translateVirtualParagraph(
   forceRetranslation: boolean = false,
 ): Promise<void> {
   const { unit, wrapper } = entry
-  const isCurrent = () => gate.isCurrent() && isVirtualParagraphGroupCurrent(group, wrapper)
+  const isCurrent = () =>
+    gate.isCurrent() &&
+    (isVirtualParagraphGroupCurrent(group, wrapper) ||
+      gate.reject(
+        !group.layoutSource.isConnected
+          ? "source-detached"
+          : group.status !== "active" ||
+              getVirtualParagraphGroupForSource(group.layoutSource) !== group
+            ? "render-superseded"
+            : "source-changed",
+      ))
   if (!isCurrent()) return
 
   const realTranslatedText = await getTranslatedTextAndRemoveSpinner(
@@ -158,6 +172,10 @@ async function translateVirtualParagraph(
     // interior single newlines (bullet lists) are always semantic.
     () =>
       translateTextForPage(unit.text, "plain", {
+        source: group.layoutSource,
+        isSourceCurrent: isCurrent,
+        owner: gate.owner,
+        config,
         preserveLineBreaks: true,
         forceRetranslation,
       }),
@@ -181,7 +199,13 @@ async function translateVirtualParagraph(
 
   await insertTranslatedNodeIntoWrapper(
     wrapper,
-    { isCurrent, signal: gate.signal, layoutSource: group.layoutSource, sourceText: unit.text },
+    {
+      isCurrent,
+      owner: gate.owner,
+      signal: gate.signal,
+      layoutSource: group.layoutSource,
+      sourceText: unit.text,
+    },
     translatedText,
     config.pageTranslation.translationNodeStyle,
     config,
@@ -200,7 +224,7 @@ async function translateVirtualParagraphs(
   forceBlockTranslation: boolean,
   forceRetranslation: boolean = false,
 ): Promise<void> {
-  const gate = captureCommitGate(undefined, config)
+  const gate = captureCommitGate(undefined, config, getTranslationOwner(walkId))
   const group: VirtualParagraphGroup = {
     id: `${walkId}:${virtualParagraphGroupSequence++}`,
     walkId,
@@ -470,13 +494,14 @@ export async function translateNodesBilingualMode(
     if (!atomExtraction) return
     const requestText = atomExtraction.requestText
     const sourceSnapshot = snapshotSourceTextNodes(transNodes)
-    const gate = captureCommitGate(undefined, config)
+    const gate = captureCommitGate(undefined, config, getTranslationOwner(walkId))
 
     let bilingualState: BilingualTranslationState | undefined
     if (isHTMLElement(layoutSource) && sourceTextBeforeFilter !== null) {
       bilingualState = {
         layoutSource,
         sourceTextContent: sourceTextBeforeFilter,
+        pendingSourceCurrent: () => verifySourceSnapshot(transNodes, sourceSnapshot),
         status: "active",
         walkId,
         wrapper: null,
@@ -578,10 +603,22 @@ export async function translateNodesBilingualMode(
     let disposed = false
     const isCurrent = () =>
       gate.isCurrent() &&
-      !disposed &&
-      (bilingualState
-        ? isBilingualTranslationStateCurrent(bilingualState)
-        : translatedWrapperNode.isConnected && verifySourceSnapshot(transNodes, sourceSnapshot))
+      ((!disposed &&
+        (bilingualState
+          ? isBilingualTranslationStateCurrent(bilingualState)
+          : translatedWrapperNode.isConnected &&
+            verifySourceSnapshot(transNodes, sourceSnapshot))) ||
+        gate.reject(
+          !layoutSource.isConnected
+            ? "source-detached"
+            : disposed ||
+                !translatedWrapperNode.isConnected ||
+                (bilingualState &&
+                  getBilingualTranslationStateForSource(bilingualState.layoutSource) !==
+                    bilingualState)
+              ? "render-superseded"
+              : "source-changed",
+        ))
     if (!bilingualState)
       trackNodeTranslation(walkId, {
         source: isHTMLElement(layoutSource) ? layoutSource : layoutSource.parentElement!,
@@ -607,6 +644,10 @@ export async function translateNodesBilingualMode(
     const preserveLineBreaks = flowContainer ? isNewlinePreservingElement(flowContainer) : false
 
     const request = createPageTranslationRequest(atomExtraction, config, "plain", {
+      source: layoutSource,
+      isSourceCurrent: isCurrent,
+      owner: gate.owner,
+      config,
       preserveLineBreaks,
       forceRetranslation,
     })
@@ -644,6 +685,7 @@ export async function translateNodesBilingualMode(
       {
         isCurrent,
         signal: gate.signal,
+        owner: gate.owner,
         layoutSource,
         styleSources: transNodes,
         // Wrapper-content integrity snapshot (#1918): armed synchronously at
@@ -773,7 +815,11 @@ async function translateNonMaterializableGiant(
   // observer already refused to lose it.
   if (!canSplitGiantWithoutStrandingOwnText(layoutSource)) return false
 
-  const gate = captureCommitGate(() => layoutSource.isConnected, config)
+  const gate = captureCommitGate(
+    () => layoutSource.isConnected,
+    config,
+    getTranslationOwner(walkId),
+  )
   const paragraphs = collectTopLevelParagraphDescendants(layoutSource)
   if (paragraphs.length === 0) return false
 
@@ -807,7 +853,11 @@ async function maybeTranslateVirtualUnitRuns(
   toggle: boolean,
   forceRetranslation: boolean,
 ): Promise<boolean> {
-  const gate = captureCommitGate(() => layoutSource.isConnected, config)
+  const gate = captureCommitGate(
+    () => layoutSource.isConnected,
+    config,
+    getTranslationOwner(walkId),
+  )
   const previousState = getTranslationOnlyAnchorState(layoutSource)
   const hasPreviousGeneration =
     previousState !== undefined &&
@@ -852,6 +902,7 @@ async function maybeTranslateVirtualUnitRuns(
     virtualTranslationOnlyGenerationSequence += 1
     const generation = virtualTranslationOnlyGenerationSequence
     state.virtualGeneration = generation
+    state.virtualOwnerWalkId = walkId
     const isCurrent = () =>
       getTranslationOnlyAnchorState(layoutSource)?.virtualGeneration === generation
     const disposeGeneration = () => {
@@ -1072,14 +1123,23 @@ async function translateTranslationOnlyRun(
 
     // Capture before filtering as well as the provider round-trip: both await.
     const sourceSnapshot = snapshotSourceTextNodes(transNodes)
-    const gate = captureCommitGate(undefined, config)
+    const gate = captureCommitGate(undefined, config, getTranslationOwner(walkId))
     let disposed = false
     const isRunCurrent = () =>
-      !disposed &&
       gate.isCurrent() &&
-      nodeTranslation?.active !== false &&
-      isCurrent() &&
-      verifySourceSnapshot(transNodes, sourceSnapshot)
+      ((!disposed &&
+        nodeTranslation?.active !== false &&
+        isCurrent() &&
+        verifySourceSnapshot(transNodes, sourceSnapshot)) ||
+        gate.reject(
+          !parentNode.isConnected
+            ? "source-detached"
+            : disposed || !isCurrent()
+              ? "render-superseded"
+              : nodeTranslation?.active === false
+                ? "owner-ended"
+                : "source-changed",
+        ))
     const source = preparePageTranslationSource(transNodes, config)
     if (!source || (await shouldSkipPageTranslationText(source.filterText, config))) return
     if (!isRunCurrent()) {
@@ -1093,6 +1153,10 @@ async function translateTranslationOnlyRun(
     // text/plain page's <pre>, a GameFAQs guide, an X tweet. Without the flag
     // Google returns an ASCII banner and the paragraph under it as one line.
     const request = createPageTranslationRequest(source, config, "html", {
+      source: parentNode,
+      isSourceCurrent: isRunCurrent,
+      owner: gate.owner,
+      config,
       preserveLineBreaks: isNewlinePreservingElement(parentNode),
       forceRetranslation,
     })

@@ -26,7 +26,9 @@ export function ErrorButton({ error }: { error: APICallError }) {
         <IconAlertCircle className="size-4 text-destructive!" />
         <AlertTitle>Translation Error</AlertTitle>
         <AlertDescription className="break-all">
-          {!isContextInvalidated && <StatusCode statusCode={error.statusCode ?? 500} />}
+          {!isContextInvalidated && error.statusCode !== undefined && (
+            <StatusCode statusCode={error.statusCode} />
+          )}
           <p className="text-zinc-900 dark:text-zinc-100">
             {isContextInvalidated
               ? i18n.t("translation.extensionContextInvalidated")

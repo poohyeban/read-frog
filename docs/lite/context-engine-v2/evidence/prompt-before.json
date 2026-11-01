@@ -1,0 +1,25 @@
+{
+  "phase": "before one-pass context-data assembly",
+  "passed": 0,
+  "failed": 3,
+  "cases": [
+    {
+      "file": "prompt-data.test.ts",
+      "name": "never recursively evaluates tokens contained in source or page data",
+      "status": "failed",
+      "failure": "AssertionError: expected 'Literal Literal PRIVATE_OTHER_FIELD' to be 'Literal {{webTitle}}' // Object.is equality"
+    },
+    {
+      "file": "prompt-data.test.ts",
+      "name": "marks page data as untrusted without allowing it to close the data block",
+      "status": "failed",
+      "failure": "AssertionError: expected 'You are a professional Chinese native…' to contain 'untrusted'"
+    },
+    {
+      "file": "prompt-data.test.ts",
+      "name": "does not expand page variables written inside a custom action's selected text",
+      "status": "failed",
+      "failure": "AssertionError: expected 'Literal OTHER_SCOPE' to be 'Literal {{webContent}}' // Object.is equality"
+    }
+  ]
+}

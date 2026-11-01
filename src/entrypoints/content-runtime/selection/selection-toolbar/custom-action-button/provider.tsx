@@ -10,6 +10,7 @@ import { SelectionPopover } from "@/components/ui/selection-popover"
 import { createSelectionToolbarPrecheckError } from "@/components/ui/selection-popover/inline-error"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { findSelectionToolbarAction, getSelectionToolbarActions } from "@/utils/custom-actions"
+import { contextSourceForSelection } from "@/utils/host/translate/context/selection-source"
 import { onMessage } from "@/utils/message"
 import { ShadowWrapperContext } from "@/utils/react-shadow-host/create-shadow-host"
 import { normalizeSelectedText } from "../../utils"
@@ -90,6 +91,10 @@ export function SelectionCustomActionProvider({ children }: { children: ReactNod
               actionId: pendingRequest.actionId,
               selectionText,
               cleanSelection,
+              contextSource: contextSourceForSelection(
+                session?.selectionSnapshot,
+                session?.contextSnapshot.text,
+              ),
               contextText: cleanSelection ? session?.contextSnapshot.text || cleanSelection : "",
 
               sessionKey: sessionKeyRef.current,

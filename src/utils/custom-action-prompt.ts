@@ -1,5 +1,8 @@
-import type { SelectionToolbarCustomActionOutputField } from "@/types/config/selection-toolbar"
-import { getSelectionToolbarCustomActionTokenCellText } from "@/utils/constants/custom-action"
+import type {
+  SelectionToolbarCustomAction,
+  SelectionToolbarCustomActionOutputField,
+} from "@/types/config/selection-toolbar"
+import { contextData, CONTEXT_DATA_RULE } from "@/utils/prompts/context-data"
 
 export interface SelectionToolbarCustomActionPromptTokens {
   selection: string
@@ -14,16 +17,15 @@ export function replaceSelectionToolbarCustomActionPromptTokens(
   prompt: string,
   tokens: SelectionToolbarCustomActionPromptTokens,
 ) {
-  return prompt
-    .replaceAll(getSelectionToolbarCustomActionTokenCellText("selection"), tokens.selection)
-    .replaceAll(getSelectionToolbarCustomActionTokenCellText("paragraphs"), tokens.paragraphs)
-    .replaceAll(
-      getSelectionToolbarCustomActionTokenCellText("targetLanguage"),
-      tokens.targetLanguage,
-    )
-    .replaceAll(getSelectionToolbarCustomActionTokenCellText("webTitle"), tokens.webTitle)
-    .replaceAll(getSelectionToolbarCustomActionTokenCellText("webUrl"), tokens.webUrl)
-    .replaceAll(getSelectionToolbarCustomActionTokenCellText("webContent"), tokens.webContent)
+  return prompt.replace(
+    /\{\{(selection|paragraphs|targetLanguage|webTitle|webUrl|webContent)\}\}/g,
+    (_, name: keyof SelectionToolbarCustomActionPromptTokens) => {
+      const value = tokens[name]
+      return value && (name === "webTitle" || name === "webUrl" || name === "webContent")
+        ? contextData(name, value)
+        : value
+    },
+  )
 }
 
 export type StructuredOutputField = Pick<
@@ -96,7 +98,7 @@ export function buildSelectionToolbarCustomActionSystemPrompt(
   const resolvedPrompt = replaceSelectionToolbarCustomActionPromptTokens(prompt, tokens).trim()
   const contract = buildStructuredOutputContract(outputSchema, tokens)
 
-  return resolvedPrompt ? `${resolvedPrompt}\n\n${contract}` : contract
+  return `${resolvedPrompt ? `${resolvedPrompt}\n\n` : ""}${contract}\n${CONTEXT_DATA_RULE}`
 }
 
 export const CUSTOM_ACTION_CONTEXT_CHAR_LIMIT = 2000
@@ -106,4 +108,20 @@ export function truncateContextTextForCustomAction(
   limit = CUSTOM_ACTION_CONTEXT_CHAR_LIMIT,
 ) {
   return contextText.slice(0, limit)
+}
+
+export function getCustomActionContextRequirements(
+  action?: Pick<SelectionToolbarCustomAction, "systemPrompt" | "prompt" | "outputSchema"> | null,
+) {
+  const template = [
+    action?.systemPrompt,
+    action?.prompt,
+    ...(action?.outputSchema.map((field) => field.description) ?? []),
+  ].join("\n")
+  return {
+    title: template.includes("{{webTitle}}"),
+    description: false,
+    content: template.includes("{{webContent}}"),
+    summary: false,
+  }
 }

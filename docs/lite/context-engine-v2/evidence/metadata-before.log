@@ -1,0 +1,49 @@
+$ vitest run src/utils/host/translate/context/__tests__/snapshot-manager.test.ts -t 'ancestor becomes hidden|scoped title'
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/host/translate/context/__tests__/snapshot-manager.test.ts (17 tests | 2 failed | 15 skipped) 269ms
+   × invalidates an acquired scope when an ancestor becomes hidden 245ms
+   × does not read translated or hidden text into a scoped title 22ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/host/translate/context/__tests__/snapshot-manager.test.ts > invalidates an acquired scope when an ancestor becomes hidden
+AssertionError: expected 'A titleA_SOURCE' not to contain 'A_SOURCE'
+
+Expected: "A_SOURCE"
+Received: "A titleA_SOURCE"
+
+ ❯ src/utils/host/translate/context/__tests__/snapshot-manager.test.ts:223:33
+    221|   document.querySelector("main")!.hidden = true
+    222|   const hidden = await read("a")
+    223|   expect(hidden.webContent).not.toContain("A_SOURCE")
+       |                                 ^
+    224|   expect(hidden.webTitle).not.toContain("A title")
+    225| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/utils/host/translate/context/__tests__/snapshot-manager.test.ts > does not read translated or hidden text into a scoped title
+AssertionError: expected 'A titleTRANSLATED_HEADINGPRIVATE_HEAD…' to be 'A title' // Object.is equality
+
+Expected: "A title"
+Received: "A titleTRANSLATED_HEADINGPRIVATE_HEADING"
+
+ ❯ src/utils/host/translate/context/__tests__/snapshot-manager.test.ts:229:26
+    227|   document.querySelector("#a h2")!.insertAdjacentHTML("beforeend", `<s…
+    228|   const value = await read("a")
+    229|   expect(value.webTitle).toBe("A title")
+       |                          ^
+    230| })
+    231|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 15 skipped (17)
+   Start at  12:52:54
+   Duration  1.81s (environment 43%, transform 26%, tests 18%, setup 9%, import 3%)
+
+[ELIFECYCLE] Test failed. See above for more details.

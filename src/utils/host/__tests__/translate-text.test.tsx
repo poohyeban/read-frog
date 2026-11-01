@@ -110,7 +110,7 @@ describe("translate-text", () => {
   })
 
   describe("translateTextForPage", () => {
-    it("rejoins the new content revision when an unrelated article mutation invalidates pending context", async () => {
+    it("keeps its issued summary snapshot when unrelated context is invalidated", async () => {
       const context = await import("@/utils/host/translate/webpage-context")
       const config = structuredClone(DEFAULT_CONFIG)
       config.pageTranslation.enableAIContentAware = true
@@ -128,20 +128,21 @@ describe("translate-text", () => {
         await expect(translateTextForPage("Unchanged English source")).resolves.toBe(
           "translated text",
         )
-        expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(2)
+        expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(1)
         expect(mockSendMessage).toHaveBeenCalledWith(
           "enqueueTranslateRequest",
-          expect.objectContaining({ webSummary: "Fresh summary" }),
+          expect.objectContaining({ webSummary: "Stale summary" }),
         )
       } finally {
         endPageTranslationSession()
       }
     })
-    it("terminates repeated whole-document invalidation after three context attempts", async () => {
+    it("does not replay an issued summary when document context repeatedly expires", async () => {
       const context = await import("@/utils/host/translate/webpage-context")
       const config = structuredClone(DEFAULT_CONFIG)
       config.pageTranslation.enableAIContentAware = true
       mockGetConfigFromStorage.mockResolvedValue(config)
+      mockSendMessage.mockResolvedValue("translated text")
       mockGetOrGenerateWebPageSummary.mockImplementation(async () => {
         context.invalidateWebPageContext()
         vi.mocked(context.isWebPageContextCurrent).mockReturnValueOnce(false)
@@ -149,11 +150,15 @@ describe("translate-text", () => {
       })
       beginPageTranslationSession(config)
       try {
-        await expect(translateTextForPage("A continually replaced source")).rejects.toMatchObject({
-          code: "CONTEXT_UNSTABLE",
-        })
-        expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(3)
-        expect(mockSendMessage).not.toHaveBeenCalled()
+        await expect(
+          translateTextForPage("An unchanged source with expiring context"),
+        ).resolves.toBe("translated text")
+        expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(1)
+        expect(
+          mockSendMessage.mock.calls.filter(
+            ([name]: [string]) => name === "enqueueTranslateRequest",
+          ),
+        ).toHaveLength(1)
       } finally {
         endPageTranslationSession()
       }
@@ -401,7 +406,7 @@ describe("translate-text", () => {
       expect(mockGetOrGenerateWebPageSummary).not.toHaveBeenCalled()
     })
 
-    it("should include webpage content for AI-aware title translation", async () => {
+    it("only reads metadata needed by the title prompt", async () => {
       const llmConfig = {
         ...DEFAULT_CONFIG,
         pageTranslation: {
@@ -429,7 +434,7 @@ describe("translate-text", () => {
         expect.objectContaining({
           text: "Source Title To Translate",
           webTitle: "Source Title To Translate",
-          webContent: "Body content",
+          webContent: null,
           webSummary: undefined,
         }),
       )
@@ -542,6 +547,12 @@ describe("translate-text", () => {
     expect(requests[1].providerRef.config.apiKey).toBe("edited-key")
     // The second template uses title only even though smart context is enabled.
     expect(mockGetOrGenerateWebPageSummary).toHaveBeenCalledTimes(1)
-    expect(mockGetOrCreateWebPageContext).toHaveBeenLastCalledWith(false, undefined)
+    expect(mockGetOrCreateWebPageContext).toHaveBeenLastCalledWith(
+      false,
+      undefined,
+      expect.objectContaining({
+        requirements: { title: true, description: false, content: false, summary: false },
+      }),
+    )
   })
 })

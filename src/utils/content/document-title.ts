@@ -14,10 +14,9 @@ declare global {
  * yet. Reading it directly made the same paragraph hash differently from one
  * visit to the next, and re-translate.
  */
-export function getSourceDocumentTitle(): string {
-  const currentTitle = document.title || ""
-  const applied =
-    typeof window === "undefined" ? undefined : window.__READ_FROG_TRANSLATED_DOCUMENT_TITLE__
+export function getSourceDocumentTitle(doc: Document = document): string {
+  const currentTitle = doc.title || ""
+  const applied = doc.defaultView?.__READ_FROG_TRANSLATED_DOCUMENT_TITLE__
   // Compared rather than trusted: once the page sets a title of its own, that
   // title is the source again.
   return applied?.translated === currentTitle ? applied.source : currentTitle

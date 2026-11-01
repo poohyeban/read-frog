@@ -102,10 +102,10 @@ it.each(["bilingual", "translationOnly"] as const)(
     const originalNode = source.firstChild
     await translateNodes([source], "pipeline", false, config)
     flushBatchedOperations()
-    expect(io.summary).toHaveBeenCalledTimes(1)
+    expect(io.summary).not.toHaveBeenCalled()
     expect(io.provider).toHaveBeenCalledTimes(1)
     expect(io.requests[0]).toMatchObject({
-      webSummary: "Article summary",
+      webSummary: "Original article context.",
       planIdentity: { version: 1 },
     })
     expect(io.provider.mock.calls[0]![2]).toEqual(io.requests[0].providerRef.config)

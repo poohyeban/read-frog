@@ -1,0 +1,17 @@
+{
+  "baseline": "V2 phase 3 before cost admission",
+  "tests": [
+    {
+      "name": "uses complete short source context for 100 feed items with zero summary RPCs",
+      "status": "passed"
+    },
+    {
+      "name": "retains explicit model-summary capability and shares equal requests",
+      "status": "failed"
+    },
+    {
+      "name": "bounds automatic long-feed summary fanout and requires explicit admission for another source",
+      "status": "failed"
+    }
+  ]
+}

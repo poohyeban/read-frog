@@ -56,6 +56,7 @@ export interface TranslateTextOptions {
   configRevision?: number
   documentRevision?: number
   signal?: AbortSignal
+  isCurrent?: () => boolean
   text: string
   langConfig: {
     sourceCode: LangCodeISO6393 | "auto"
@@ -164,6 +165,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     activitySessionId: sessionId,
     isCurrent: () =>
       isLocationCurrent() &&
+      options.isCurrent?.() !== false &&
       (sessionId === undefined || getPageTranslationSessionId() === sessionId),
   })
   return result.text
