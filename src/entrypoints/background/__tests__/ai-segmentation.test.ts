@@ -1,4 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { Sha256Fields, safeLegacyFieldsHash } from "@/utils/hash"
+import { getSubtitlesSegmentationPrompt } from "@/utils/prompts/subtitles-segmentation"
+import { getProviderCacheIdentity } from "@/utils/providers/provider-ref"
 
 const generateTextForProviderRefMock = vi.fn<(...args: any[]) => any>()
 const cacheGetMock = vi.fn<(...args: any[]) => any>()
@@ -108,4 +111,64 @@ describe("runAiSegmentSubtitles result validation", () => {
     expect(cacheDeleteMock).toHaveBeenCalledTimes(1)
     expect(generateTextForProviderRefMock).toHaveBeenCalledTimes(1)
   })
+})
+
+it("evicts only the misaligned legacy hit, preserving a concurrently filled new key and unrelated rows", async () => {
+  vi.resetAllMocks()
+  const { systemPrompt, prompt } = getSubtitlesSegmentationPrompt(jsonContent)
+  const fields = [
+    "subtitle-segmentation-v5:bounded:indexed",
+    systemPrompt,
+    prompt,
+    getProviderCacheIdentity(providerRef),
+  ]
+  const cacheKey = Sha256Fields(...fields),
+    legacyKey = safeLegacyFieldsHash(...fields)!
+  expect(legacyKey).toBeDefined()
+  const invalid = {
+    key: legacyKey,
+    result: "WEBVTT\n\n0 --> 1000\nHello world.",
+    createdAt: new Date(),
+  }
+  const valid = { key: cacheKey, result: parseableVtt, createdAt: new Date() }
+  const unrelated = { key: "unrelated", result: parseableVtt, createdAt: new Date() }
+  const rows = new Map([
+    [legacyKey, invalid],
+    [unrelated.key, unrelated],
+  ])
+  cacheGetMock.mockImplementation(async (key) => {
+    const row = rows.get(key)
+    // Another request fills the new identity after this reader missed it.
+    if (key === legacyKey) rows.set(cacheKey, valid)
+    return row
+  })
+  cacheDeleteMock.mockImplementation(async (key) => rows.delete(key))
+  const { getCachedAiSegmentation } = await import("../ai-segmentation")
+  expect(await getCachedAiSegmentation({ jsonContent, providerRef })).toBeNull()
+  expect(cacheDeleteMock).toHaveBeenCalledExactlyOnceWith(legacyKey)
+  expect(rows.has(legacyKey)).toBe(false)
+  expect(rows.get(cacheKey)).toBe(valid)
+  expect(rows.get(unrelated.key)).toBe(unrelated)
+  expect(await getCachedAiSegmentation({ jsonContent, providerRef })).toBe(parseableVtt)
+  expect(cacheGetMock.mock.calls.filter(([key]) => key === legacyKey)).toHaveLength(1)
+})
+
+it("promotes an aligned safe legacy hit to the new identity without deleting it or generating", async () => {
+  vi.resetAllMocks()
+  const { systemPrompt, prompt } = getSubtitlesSegmentationPrompt(jsonContent)
+  const fields = [
+    "subtitle-segmentation-v5:bounded:indexed",
+    systemPrompt,
+    prompt,
+    getProviderCacheIdentity(providerRef),
+  ]
+  const cacheKey = Sha256Fields(...fields),
+    legacyKey = safeLegacyFieldsHash(...fields)!
+  const row = { key: legacyKey, result: parseableVtt, createdAt: new Date(1) }
+  cacheGetMock.mockImplementation(async (key) => (key === legacyKey ? row : undefined))
+  const { getCachedAiSegmentation } = await import("../ai-segmentation")
+  expect(await getCachedAiSegmentation({ jsonContent, providerRef })).toBe(parseableVtt)
+  expect(cachePutMock).toHaveBeenCalledExactlyOnceWith({ ...row, key: cacheKey })
+  expect(cacheDeleteMock).not.toHaveBeenCalled()
+  expect(generateTextForProviderRefMock).not.toHaveBeenCalled()
 })

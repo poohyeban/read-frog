@@ -1,0 +1,38 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/entrypoints/background/__tests__/ai-segmentation.test.ts (8 tests | 1 failed) 116ms
+   × evicts only the misaligned legacy hit, preserving a concurrently filled new key and unrelated rows 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/background/__tests__/ai-segmentation.test.ts > evicts only the misaligned legacy hit, preserving a concurrently filled new key and unrelated rows
+AssertionError: expected "vi.fn()" to be called once with arguments: [ Array(1) ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+-   "4e4edf6383f54b80b7e922d8b292e0ee07e2d922a2ac4bea95bd73f034c16724",
++   "06b5c34c495e41a5b4a857c4d7857ed2314854edeaebe0a8b265999d42cd9aef",
+  ]
+
+
+Number of calls: 1
+
+ ❯ src/entrypoints/background/__tests__/ai-segmentation.test.ts:136:27
+    134|   const { getCachedAiSegmentation } = await import("../ai-segmentation…
+    135|   expect(await getCachedAiSegmentation({ jsonContent, providerRef })).…
+    136|   expect(cacheDeleteMock).toHaveBeenCalledExactlyOnceWith(legacyKey)
+       |                           ^
+    137|   expect(rows.has(legacyKey)).toBe(false)
+    138|   expect(rows.get(cacheKey)).toBe(valid)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  01:42:39
+   Duration  699ms (setup 35%, transform 28%, tests 20%, import 15%, worker 1%)

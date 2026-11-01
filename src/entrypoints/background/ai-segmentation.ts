@@ -91,13 +91,16 @@ async function readSegmentationCache(
 ) {
   signal?.throwIfAborted()
   const { source, cacheKey, legacyKey } = plan
-  const cached =
-    (await db.aiSegmentationCache.get(cacheKey)) ??
-    (legacyKey ? await db.aiSegmentationCache.get(legacyKey) : undefined)
+  let hitKey = cacheKey
+  let cached = await db.aiSegmentationCache.get(hitKey)
+  if (!cached && legacyKey) {
+    hitKey = legacyKey
+    cached = await db.aiSegmentationCache.get(hitKey)
+  }
   signal?.throwIfAborted()
   if (cached) {
     if (isSegmentationAligned(source, parseSimplifiedVttToFragments(cached.result))) {
-      if (cached.key && cached.key !== cacheKey)
+      if (hitKey !== cacheKey)
         await db.aiSegmentationCache.put({
           key: cacheKey,
           result: cached.result,
@@ -107,7 +110,7 @@ async function readSegmentationCache(
       return cached.result
     }
     // Old caches can contain parseable but shifted/missing cues too.
-    await db.aiSegmentationCache.delete(cacheKey)
+    await db.aiSegmentationCache.delete(hitKey)
   }
 
   return null

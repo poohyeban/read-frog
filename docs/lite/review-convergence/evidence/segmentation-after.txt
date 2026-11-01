@@ -1,0 +1,8 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  01:43:16
+   Duration  697ms (transform 34%, tests 25%, setup 24%, import 15%, worker 1%)
