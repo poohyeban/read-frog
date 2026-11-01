@@ -1,0 +1,8 @@
+{
+  "scenarios": 165,
+  "requests": 6850,
+  "changedRequestScenarios": [],
+  "afterStopRequests": 0,
+  "resourceLeaks": 0,
+  "errors": []
+}

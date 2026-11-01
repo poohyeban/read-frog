@@ -102,3 +102,7 @@ PERF_RUNS=1 PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium node_modules/.bin/p
 ```
 
 Before/after 基准均使用同一 harness 与机器：timeline/overlap/hotspots/transcript 的 before 指向独立 `50c1395b` worktree，after 指向当前工作树；startup 比较明确保留在 harness 中的两代启动公式。测试 build 目录已忽略，不纳入代码提交。
+
+## 后续小范围收敛
+
+基于已推送的 `4d65db03`，2026-11-01 完成分段旧缓存删除目标修正、按需历史哈希评估和 165 场景请求差异归因，详见[收敛验收报告](../review-convergence/REPORT.md)。本轮新增工作仍仅保留在本地。

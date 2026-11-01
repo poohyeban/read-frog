@@ -1,7 +1,15 @@
 import { physical } from "./physical"
 // Deterministic local Provider double: no network, credentials, or model billing.
 export const model = {
-  events: [] as { type: string; at: number; start?: number; count?: number; lane?: string }[],
+  events: [] as {
+    type: string
+    at: number
+    start?: number
+    count?: number
+    lane?: string
+    key?: string
+    end?: number
+  }[],
   delay: 40,
   usePhysical: false,
   concurrency: 2,
@@ -45,6 +53,8 @@ async function wait(
   const execute = async (signal?: AbortSignal) => {
     model.events.push({
       type: `${kind}:execute`,
+      key,
+      end: Math.max(...fragments.map((c) => c.end)),
       at: performance.now(),
       start: fragments[0]?.start,
       count: fragments.length,
@@ -71,6 +81,7 @@ async function wait(
           clearTimeout(timer)
           model.events.push({
             type: `${kind}:cancel`,
+            key,
             at: performance.now(),
             start: fragments[0]?.start,
           })
@@ -88,6 +99,7 @@ async function wait(
       })
       model.events.push({
         type: `${kind}:complete`,
+        key,
         at: performance.now(),
         start: fragments[0]?.start,
       })

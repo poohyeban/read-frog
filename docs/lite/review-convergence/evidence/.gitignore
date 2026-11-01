@@ -1,1 +1,4 @@
 **/browser-build/
+/matrix-trace-before/raw.json
+/matrix-trace-after/raw.json
+/matrix-window-control/raw.json

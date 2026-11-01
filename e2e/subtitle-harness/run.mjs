@@ -140,6 +140,9 @@ try {
   )
   if (["continuity", "matrix", "lifecycle"].includes(process.env.BENCHMARK_KIND))
     await page.clock.install()
+  await page.addInitScript((cases) => {
+    window.__matrixCases = cases
+  }, process.env.MATRIX_CASES?.split(",").map(Number))
   await page.goto(`${server.url}/index.html`)
   await page.waitForFunction(() => window.runSubtitleBenchmark)
   const cdp = await page.context().newCDPSession(page)

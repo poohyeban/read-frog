@@ -46,7 +46,9 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
         requestRate,
         burst,
       })
-  for (const test of cases) {
+  const selected = (window as any).__matrixCases as number[] | undefined
+  for (const [caseIndex, test] of cases.entries()) {
+    if (selected && !selected.includes(caseIndex)) continue
     ;(window as any).__matrixProgress = { completed: samples.length, total: cases.length, test }
     model.requestRate = test.requestRate ?? 8
     model.burst = test.burst ?? 20
@@ -154,6 +156,8 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
     await wait(1)
     samples.push({
       ...test,
+      caseIndex,
+      ...(selected ? { events: model.events, memberAttempts: [...model.attempts.entries()] } : {}),
       firstMs: completed.find((c) => c.start <= 5400000 && c.end > 5400000)?.at ?? null,
       readyBeforeDisplay:
         deadlines.filter((d) => d.at !== null && d.at <= d.deadline).length / deadlines.length,

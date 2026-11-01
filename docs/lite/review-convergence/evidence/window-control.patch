@@ -1,0 +1,13 @@
+diff --git a/src/entrypoints/subtitles.content/translation-coordinator.ts b/src/entrypoints/subtitles.content/translation-coordinator.ts
+index f581277c..43914c93 100644
+--- a/src/entrypoints/subtitles.content/translation-coordinator.ts
++++ b/src/entrypoints/subtitles.content/translation-coordinator.ts
+@@ -304,7 +304,7 @@ export class TranslationCoordinator {
+           : !allowFastSpeculation
+             ? Math.min(ahead, this.buffer.lowMs * rate)
+             : ahead
+-      const candidates = timeline.window(timeMs, timeMs + laneAhead, 128, (c) => {
++      const candidates = timeline.window(timeMs, timeMs + laneAhead, 128).filter((c) => {
+         const key = `${lane}:${cueIdentity(c)}`
+         // A complete quality interval makes the corresponding Fast request unnecessary.
+         if (
