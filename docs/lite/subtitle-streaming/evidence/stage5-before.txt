@@ -1,0 +1,28 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/entrypoints/background/__tests__/subtitle-candidates.test.ts (6 tests | 1 failed) 16ms
+   × does not mistake another versioned new video for a historical track 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-candidates.test.ts > does not mistake another versioned new video for a historical track
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/entrypoints/background/__tests__/subtitle-candidates.test.ts:156:56
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  03:53:52
+   Duration  572ms (transform 46%, setup 39%, import 6%, tests 5%, worker 3%)
+

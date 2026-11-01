@@ -67,7 +67,7 @@ export function setupSubtitleCandidateHandlers() {
       ...new Set([
         data.trackKey,
         ...(data.legacyTrackKey ? [data.legacyTrackKey] : []),
-        ...(data.legacyTrackKeys ?? []).slice(0, 2),
+        ...(data.legacyTrackKeys ?? []).slice(0, 3),
       ]),
     ]
     const bundles = (
@@ -98,12 +98,11 @@ export function setupSubtitleCandidateHandlers() {
   onMessage("getSubtitleCandidates", ({ data }) => readCandidates(data))
   onMessage("getSubtitleCandidateWindow", async ({ data }) => {
     const bundles = await readCandidates(data)
-    // A bounded existing-index probe, not a scan of payloads or a cache-hit heuristic.
-    // Another identity may be historical even when the new key has partial results.
-    const tracks = db.subtitleCandidates.where("trackKey")
+    // Every pre-v3 identity is a lowercase SHA-256 hex string. New keys carry
+    // a lexical version prefix, so the existing index can prove absence with
+    // one seek. Old content-script writes remain visible; no persistent flag.
     const mayHaveLegacy =
-      (await tracks.below(data.trackKey).limit(1).count()) > 0 ||
-      (await tracks.above(data.trackKey).limit(1).count()) > 0
+      (await db.subtitleCandidates.where("trackKey").below("g").limit(1).count()) > 0
     return { bundles, mayHaveLegacy }
   })
   onMessage("saveSubtitleCandidates", async ({ data, sender }) => {

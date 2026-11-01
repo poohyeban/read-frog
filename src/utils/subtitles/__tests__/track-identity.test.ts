@@ -10,7 +10,7 @@ it("defers both full-track legacy hashes until compatibility lookup is necessary
   const identity = createSubtitleTrackIdentity("video", source, DEFAULT_CONFIG, context)
   expect(legacyHash).not.toHaveBeenCalled()
   const keys = identity.getLegacyTrackKeys()
-  expect(keys).toHaveLength(2)
+  expect(keys).toHaveLength(3)
   expect(identity.getLegacyTrackKeys()).toBe(keys)
   expect(legacyHash).toHaveBeenCalledTimes(2)
 })
@@ -23,6 +23,7 @@ it("captures source/context/config before deferral and retains the exact safe hi
   const original = JSON.stringify(cues),
     originalContext = JSON.stringify(ctx)
   const expected = [
+    hash.Sha256Fields("video", original, subtitleCacheIdentity(config), originalContext),
     hash.safeLegacyFieldsHash("video", original, subtitleCacheIdentity(config), originalContext),
     hash.safeLegacyFieldsHash(
       "video",
@@ -54,13 +55,14 @@ it.each(["credentials", "language", "context"])(
     ).toBe(false)
   },
 )
-it("never attempts an ambiguous historical identity", () => {
-  expect(
-    createSubtitleTrackIdentity(
-      "video",
-      [{ ...source[0]!, text: "pipe|text" }],
-      DEFAULT_CONFIG,
-      context,
-    ).getLegacyTrackKeys(),
-  ).toEqual([])
+it("retains the unambiguous previous version but never delimiter-ambiguous historical identities", () => {
+  const identity = createSubtitleTrackIdentity(
+    "video",
+    [{ ...source[0]!, text: "pipe|text" }],
+    DEFAULT_CONFIG,
+    context,
+  )
+  expect(identity.getLegacyTrackKeys()).toEqual([
+    identity.trackKey.slice("subtitle-track-v3:".length),
+  ])
 })

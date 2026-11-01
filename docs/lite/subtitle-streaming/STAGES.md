@@ -59,3 +59,21 @@ Red tests (`stage4-before.txt`) reproduced both unsafe behaviors: a length finis
 `stage4-after.txt`: 35 tests pass, including real HTTP length completion. A non-streaming length result makes exactly one HTTP call (no whole-batch or individual fallback). A streamed batch with member 0 complete and the next record truncated uses five calls total, not repeated whole batches. All four missing members inherit their batch attempt. No unlimited budget, speculative extra retry, or default reasoning parameter change was introduced.
 
 The extension's hard maximum remains 4096 output tokens; its subtitle estimate remains UTF-8 input bytes plus 64, scaled by 1.5 (segmentation 1.25), minimum 128. This cap is distinct from a Provider/model's actual context/output limit and the user's reasoning settings, which still flow through the existing `buildLocalGenerateTextParams`/Provider override logic. A Mock can demonstrate that reasoning spends a 128-token budget before a short final answer, but cannot establish a quality-equivalent replacement budget for real models. Defaults therefore remain unchanged. Returned reasoning usage in HTTP evidence is synthetic; it is not an observed real model billing comparison. Added validation is a linear pass over the returned text and allocates only tag matches; no CPU/heap speedup or quality parity is claimed. No change to the physical attempt maximum.
+
+## Phase 5 — historical cache cost without a schema migration
+
+The regression is reproducible with another new video's records: the former `below(current) OR above(current)` probe always reports possible history. `stage5-before.txt` contains the failing false-positive test. New track identities now use `subtitle-track-v3:<existing versioned SHA-256>`. All previous identities are lowercase hexadecimal, so the **existing** `trackKey` index proves historical absence with one bounded `.below("g").limit(1).count()`. This requires no schema upgrade, full-table scan, persistent flag, or additional playback writes.
+
+Compatibility includes the exact previous versioned digest plus both safe older delimiter digests (maximum three keys). The previous digest is already computed, while the two large historical hashes stay lazy. Ambiguous delimiter inputs still exclude the old unsafe digests; the unambiguous prior version remains recoverable. Provider/account/language/context identities are unchanged. Mixed/new partial hits still read historical Quality, and each probe observes cross-tab old-script writes. Existing old records are neither removed nor rewritten. During a mixed-version rollout, historical records still incur compatibility work; this is intentional, not an immediate promise to make every existing DB cheap.
+
+`stage5-after.txt`: 16 tests pass. Real Chromium IndexedDB over 2,000 other-video bundles and actual 50,000-cue / 3-hour identity, 20 samples:
+
+| Case                             | P50 / P95 total (ms) | historical hash computations |
+| -------------------------------- | -------------------- | ---------------------------- |
+| 2d22 baseline, another new video | 289.0 / 315.0        | 20 sessions                  |
+| prefixed new videos              | 115.9 / 119.2        | 0                            |
+| actual historical records        | 304.2 / 327.4        | 20 sessions                  |
+
+Probe median 1.0→0.85ms. Whole-run renderer CPU 6.89→3.42 seconds. No extra index/storage flag was added; the prefix adds 18 ASCII characters per new track key. The previous digest is retained in the bounded compatibility array. IPC remains one window read when history is absent; first historical window adds one read, as before. Historical recovery still pays full safe hash cost.
+
+Complete-batch cache gets were measured separately in actual IndexedDB, 100 samples per condition: new hit P50/P95 0.2/0.3ms (100 gets), legacy hit 0.3/0.6ms (200), full miss 0.3/0.5ms (200). The additional lookup is approximately 0.1ms at median here. It does not justify a migration or a potentially stale absence flag: **batch-cache lookup remains unchanged**. No Provider starts/tokens, no translation quality or default Provider change. Raw data and the repeatable `history-cost` harness are retained. Database upgrade preservation is included in final Chromium resource acceptance.

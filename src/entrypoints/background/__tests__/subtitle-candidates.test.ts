@@ -128,7 +128,7 @@ it("restores a valid position from a partial aligned batch but never its empty p
   expect(await read()).toEqual([])
 })
 
-it.each(["old-track", "z-old-track"])(
+it.each(["0".repeat(64), "f".repeat(64)])(
   "probes other indexed identities (%s) without treating a partial current hit as historical completeness",
   async (oldTrack) => {
     const probe = () =>
@@ -147,3 +147,15 @@ it.each(["old-track", "z-old-track"])(
     expect(combined).toHaveLength(2)
   },
 )
+it("does not mistake another versioned new video for a historical track", async () => {
+  await save()
+  fixture.bundles.push({
+    ...fixture.bundles[0]!,
+    key: "other",
+    trackKey: "subtitle-track-v3:" + "a".repeat(64),
+  })
+  const probe = await fixture.handlers.get("getSubtitleCandidateWindow")!({
+    data: { trackKey: "track", start: 0, end: 60000 },
+  })
+  expect(probe.mayHaveLegacy).toBe(false)
+})

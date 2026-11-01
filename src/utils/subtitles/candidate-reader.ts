@@ -1,7 +1,7 @@
 import type { createSubtitleTrackIdentity } from "./track-identity"
 import { sendMessage } from "@/utils/message"
 
-/** Skip legacy hashing only when the cache proves no other track identity exists. */
+/** Skip historical hashing only when the indexed version range proves no pre-v3 records exist. */
 export function createSubtitleCandidateReader(
   identity: ReturnType<typeof createSubtitleTrackIdentity>,
 ) {

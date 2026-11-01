@@ -14,7 +14,8 @@ export function createSubtitleTrackIdentity(
   const serializedTrack = JSON.stringify(source),
     serializedContext = JSON.stringify(context)
   const fields = [videoId, serializedTrack, subtitleCacheIdentity(config), serializedContext]
-  const trackKey = Sha256Fields(...fields)
+  const previousTrackKey = Sha256Fields(...fields)
+  const trackKey = `subtitle-track-v3:${previousTrackKey}`
   const legacyConfig = config
     ? {
         ...config,
@@ -31,6 +32,7 @@ export function createSubtitleTrackIdentity(
     trackKey,
     getLegacyTrackKeys: () =>
       (legacyTrackKeys ??= [
+        previousTrackKey,
         safeLegacyFieldsHash(...fields),
         safeLegacyFieldsHash(videoId, serializedTrack, legacyConfigKey, serializedContext),
       ].filter((key): key is string => key !== undefined)),
