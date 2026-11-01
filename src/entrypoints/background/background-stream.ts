@@ -119,7 +119,7 @@ function createStartMessageParser<TSerializablePayload>(payloadSchema: z.ZodType
   }
 }
 
-function createStreamPortHandler<TSerializablePayload, TResponse>(
+export function createStreamPortHandler<TSerializablePayload, TResponse>(
   streamFn: (
     serializablePayload: TSerializablePayload,
     options: StreamRuntimeOptions<TResponse>,

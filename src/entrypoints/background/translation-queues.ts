@@ -29,6 +29,7 @@ import { BatchCountMismatchError, BatchQueue } from "@/utils/request/batch-queue
 import { CancelledScopeRegistry } from "@/utils/request/cancellation"
 import { RequestQueue } from "@/utils/request/request-queue"
 import { RESOURCE_DEFAULTS } from "@/utils/request/resource-policy"
+import { streamSubtitleBatch, subtitleStreamPrompt } from "@/utils/subtitles/stream-executor"
 import {
   subtitleOutputLimit,
   SUBTITLE_WORK_LIMITS,
@@ -36,6 +37,7 @@ import {
   type SubtitleWorkContext,
 } from "@/utils/subtitles/work-policy"
 import { ensureInitializedConfig } from "./config"
+import { publishSubtitleStream } from "./subtitle-stream-updates"
 import { subtitleWorkRuntime } from "./subtitle-work"
 
 type QueuedTranslationProvider = ProviderConfig | SerializableProviderRef
@@ -190,11 +192,15 @@ export async function executeBatchTranslation<TContext>(
   signal?: AbortSignal,
   modelGuard?: SubtitleModelGuard,
   batchIdentity?: (key: string) => void,
+  onMember?: (id: number, text: string) => void,
 ): Promise<string[]> {
   const { langConfig, context, promptConfig, subtitlePromptConfig } = dataList[0]!
   const texts = dataList.map((d) => d.text)
 
-  const batchText = prepareTranslationText(texts.join(`\n\n${BATCH_SEPARATOR}\n\n`))
+  const streaming = dataList[0]!.executionStrategy === "stream-v1"
+  const batchText = streaming
+    ? JSON.stringify(texts.map((text, id) => ({ id, text })))
+    : prepareTranslationText(texts.join(`\n\n${BATCH_SEPARATOR}\n\n`))
   const glossaryTerms = mergeBatchGlossaryTerms(dataList)
   let resolver = snapshotPromptResolver(promptResolver, promptConfig, subtitlePromptConfig)
   let cacheKey: string | undefined
@@ -203,11 +209,12 @@ export async function executeBatchTranslation<TContext>(
   // candidate restoration validates each referenced position independently.
   // A singleton (including fallback) has its own identity.
   if (subtitlePromptConfig) {
-    const prompt = await resolver(LANG_CODE_TO_EN_NAME[langConfig.targetCode], batchText, {
-      isBatch: true,
+    let prompt = await resolver(LANG_CODE_TO_EN_NAME[langConfig.targetCode], batchText, {
+      isBatch: !streaming,
       context,
       glossaryTerms,
     })
+    if (streaming) prompt = subtitleStreamPrompt(prompt)
     const cacheFields = [
       "subtitle-batch-prompt-v1",
       JSON.stringify(getLocalProviderConfig(dataList[0]!.provider)),
@@ -240,16 +247,34 @@ export async function executeBatchTranslation<TContext>(
       }
     }
   }
-  const result = await executeQueuedTranslation(batchText, langConfig, dataList[0]!, resolver, {
-    isBatch: true,
-    context,
-    signal,
+  const streamProvider = getLocalProviderConfig(dataList[0]!.provider)
+  const streamed =
+    streaming && isLLMProviderConfig(streamProvider)
+      ? await streamSubtitleBatch(
+          streamProvider,
+          await resolver(LANG_CODE_TO_EN_NAME[langConfig.targetCode], batchText, {
+            context,
+            glossaryTerms,
+          }),
+          texts.length,
+          subtitleOutputLimit(batchText),
+          signal,
+          modelGuard,
+          onMember,
+        )
+      : undefined
+  const result = streamed
+    ? streamed.join(`\n${BATCH_SEPARATOR}\n`)
+    : await executeQueuedTranslation(batchText, langConfig, dataList[0]!, resolver, {
+        isBatch: true,
+        context,
+        signal,
 
-    glossaryTerms,
-    modelGuard,
-    maxOutputTokens: subtitlePromptConfig ? subtitleOutputLimit(batchText) : undefined,
-  })
-  const parsed = parseBatchResult(result)
+        glossaryTerms,
+        modelGuard,
+        maxOutputTokens: subtitlePromptConfig ? subtitleOutputLimit(batchText) : undefined,
+      })
+  const parsed = streamed ?? parseBatchResult(result)
   if (subtitlePromptConfig) subtitleWorkRuntime.note("batch-results", undefined, parsed.length)
   if (cacheKey) {
     signal?.throwIfAborted()
@@ -292,6 +317,7 @@ function snapshotPromptResolver<TContext>(
 }
 
 export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & {
+  executionStrategy?: "stream-v1"
   work?: SubtitleWorkContext
   text: string
   langConfig: Config["language"]
@@ -386,6 +412,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
         // batch can only ever hold one glossary state, which is the only way to
         // represent a REMOVAL: see `mergeBatchGlossaryTerms`.
         `glossaryRevision:${data.glossaryRevision ?? 0}`,
+        data.executionStrategy ?? "",
       )
     },
     getCharacters: (data) => data.text.length,
@@ -426,6 +453,11 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
           (key) => {
             batchKey = key
           },
+          (id, translation) =>
+            publishSubtitleStream((liveScopes ?? (() => meta.scopes))(), {
+              hash: dataList[id]!.hash,
+              translation,
+            }),
         )
         return results.map((translation, batchIndex) =>
           batchKey ? { translation, batchKey, batchIndex } : translation,
@@ -456,6 +488,8 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
             (key) => {
               batchKey = key
             },
+            (_id, translation) =>
+              publishSubtitleStream((liveScopes ?? (() => meta.scopes))(), { hash, translation }),
           )
           if (results.length !== 1) throw new BatchCountMismatchError(1, results.length, results)
           return { translation: results[0]!, batchKey, batchIndex: 0 }

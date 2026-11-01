@@ -149,6 +149,7 @@ it("runs the real SDK, scheduler, queues and content translator against local HT
       },
     },
   })
+  browser.runtime.onConnect.addListener = vi.fn<(...args: any[]) => any>()
   browser.tabs.onRemoved.addListener = vi.fn<(...args: any[]) => any>()
   const { setupSubtitlesTranslationHandlers } = await import("../subtitles-translation")
   const { subtitleWorkRuntime, SubtitleWorkRuntime } = await import("../subtitle-work")

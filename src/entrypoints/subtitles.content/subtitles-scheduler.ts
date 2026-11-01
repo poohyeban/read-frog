@@ -25,6 +25,12 @@ export class SubtitlesScheduler {
   setDiagnostics(trace?: SubtitleTraceSink) {
     this.trace = trace
   }
+  private provisional = new Map<string, { lane: "fast" | "quality"; timeline: CueTimeline }>()
+  setProvisional(key: string, cues: SubtitlesFragment[], lane: "fast" | "quality") {
+    if (cues.length) this.provisional.set(key, { lane, timeline: new CueTimeline(cues) })
+    else this.provisional.delete(key)
+    this.updateSubtitles(this.videoElement.currentTime)
+  }
   private selected: SubtitlesFragment | null = null
   private get subtitles() {
     return this.timeline.cues
@@ -141,6 +147,7 @@ export class SubtitlesScheduler {
 
   stop() {
     this.clearErrorAutoHide()
+    this.provisional.clear()
     this.active = false
     this.detachListeners()
     this.updateVisibility()
@@ -183,6 +190,7 @@ export class SubtitlesScheduler {
 
   reset() {
     this.setState("idle")
+    this.provisional.clear()
     this.timeline = new CueTimeline()
     this.qualityTimeline = new CueTimeline()
     this.selected = null
@@ -228,7 +236,14 @@ export class SubtitlesScheduler {
 
     const newIndex = this.timeline.indexAt(timeMs)
 
-    const selected = this.qualityTimeline.at(timeMs) ?? this.timeline.at(timeMs)
+    // Provisional content never enters translatedTrackAtom, exports or ready coverage.
+    const provisional = [...this.provisional.values()]
+    const selected =
+      this.qualityTimeline.at(timeMs) ??
+      this.timeline.at(timeMs) ??
+      provisional.find((p) => p.lane === "quality" && p.timeline.at(timeMs))?.timeline.at(timeMs) ??
+      provisional.find((p) => p.timeline.at(timeMs))?.timeline.at(timeMs) ??
+      null
     if (selected !== this.selected) {
       this.trace?.({
         event: "selected",

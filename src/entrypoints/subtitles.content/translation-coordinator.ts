@@ -25,6 +25,8 @@ import { boundedSourceCues, chunkSubtitleWork } from "@/utils/subtitles/work-pol
 import { adPlayingAtom, subtitlesStore } from "./atoms"
 
 export interface TranslationCoordinatorOptions {
+  executionStrategy?: "stream-v1"
+  onProvisional?: (key: string, cues: SubtitlesFragment[], lane: "fast" | "quality") => void
   trace?: SubtitleTraceSink
   candidateCache?: {
     read: (start: number, end: number, signal?: AbortSignal) => Promise<SubtitleCandidateBundle[]>
@@ -166,6 +168,8 @@ export class TranslationCoordinator {
     this.unwatchPerformance = undefined
     this.trace("stop-requested")
     const stopped = this.session.stop()
+    for (const batch of this.pending)
+      this.options.onProvisional?.(batch.task.sessionId, [], batch.lane)
     this.pending.clear()
     this.pendingKeys.clear()
     this.contextTask = null
@@ -237,6 +241,7 @@ export class TranslationCoordinator {
   }
   private cancelBatch(batch: PendingBatch) {
     this.trace("task-cancel", batch.lane, batch.cues.length)
+    this.options.onProvisional?.(batch.task.sessionId, [], batch.lane)
     batch.task.cancel()
     this.pending.delete(batch)
     for (const cue of batch.cues) this.pendingKeys.delete(`${batch.lane}:${cueIdentity(cue)}`)
@@ -517,9 +522,16 @@ export class TranslationCoordinator {
     try {
       config = this.options.configSnapshot ?? (await getLocalConfig())
       if (!task.isCurrent()) return
+      const provisional = new Map<number, SubtitlesFragment>()
       const translated = await translateSubtitles(cues, context, config ?? undefined, {
         ...task,
         lane,
+        executionStrategy: this.options.executionStrategy,
+        onProvisional: (index, translation) => {
+          if (!task.isCurrent() || !cues[index]) return
+          provisional.set(index, { ...cues[index], translation })
+          this.options.onProvisional?.(task.sessionId, [...provisional.values()], lane)
+        },
       })
       if (!task.isCurrent()) {
         this.trace("stale-result", lane)
@@ -608,6 +620,7 @@ export class TranslationCoordinator {
         message: error instanceof Error ? error.message : String(error),
       })
     } finally {
+      this.options.onProvisional?.(task.sessionId, [], lane)
       if (this.pending.delete(batch))
         for (const cue of cues) this.pendingKeys.delete(`${batch.lane}:${cueIdentity(cue)}`)
       task.complete()

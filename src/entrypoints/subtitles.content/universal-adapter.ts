@@ -1188,6 +1188,10 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     scheduler.setDiagnostics(trace)
     this.segmentationPipeline?.setDiagnostics(trace)
     this.translationCoordinator = new TranslationCoordinator({
+      // Explicit development experiment; production builds retain complete responses.
+      executionStrategy:
+        import.meta.env.VITE_EXPERIMENTAL_SUBTITLE_STREAMING === "true" ? "stream-v1" : undefined,
+      onProvisional: (key, cues, lane) => scheduler.setProvisional(key, cues, lane),
       trace,
       candidateCache: {
         read: createSubtitleCandidateReader(identity),

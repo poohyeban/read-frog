@@ -5,6 +5,8 @@ import { TranslationCancelledError } from "@/utils/request/cancellation"
 
 export type SubtitleTaskKind = "playback" | "segmentation" | "context" | "export"
 export interface SubtitleTaskOptions {
+  executionStrategy?: "stream-v1"
+  onProvisional?: (index: number, translation: string) => void
   kind?: SubtitleTaskKind
   lane?: SubtitleLane
   sessionId?: string

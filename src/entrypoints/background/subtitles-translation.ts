@@ -1,5 +1,5 @@
 import type { SubtitlePromptContext } from "@/types/content"
-import type { SubtitleRequestPayload } from "@/types/subtitle-request"
+import type { SubtitleBatchRequestPayload, SubtitleRequestPayload } from "@/types/subtitle-request"
 import { browser } from "#imports"
 import { getPerformanceSnapshot, initializePerformance } from "@/utils/config/performance"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
@@ -13,6 +13,11 @@ import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
 import { SUBTITLE_TRACE_EVENTS } from "@/utils/subtitles/diagnostics"
 import { subtitleFailure } from "@/utils/subtitles/result"
+import {
+  SUBTITLE_STREAM_PORT,
+  subtitleStreamStrategy,
+  type SubtitleStreamUpdate,
+} from "@/utils/subtitles/stream-protocol"
 import { createSubtitleTranslationPlan } from "@/utils/subtitles/translation-plan"
 import {
   SUBTITLE_WORK_LIMITS,
@@ -20,8 +25,10 @@ import {
   type SubtitleWorkContext,
 } from "@/utils/subtitles/work-policy"
 import { getCachedAiSegmentation, runAiSegmentSubtitles } from "./ai-segmentation"
+import { createStreamPortHandler } from "./background-stream"
 import { ensureInitializedConfig } from "./config"
 import { setupSubtitleCandidateHandlers } from "./subtitle-candidates"
+import { subscribeSubtitleStream } from "./subtitle-stream-updates"
 import { subtitleWorkRuntime } from "./subtitle-work"
 import { getOrGenerateTranslationContextSummary } from "./translation-context-summary"
 import {
@@ -215,9 +222,13 @@ export function setupSubtitlesTranslationHandlers(): void {
     }
   }
   onMessage("enqueueSubtitlesTranslateRequest", handleSingle)
-  onMessage("enqueueSubtitlesTranslateBatch", async (message) => {
+  const handleBatch = async (message: {
+    data: SubtitleBatchRequestPayload
+    sender: { tab?: { id?: number } }
+  }) => {
     try {
       const { members, ...snapshot } = message.data
+      snapshot.executionStrategy = subtitleStreamStrategy(snapshot)
       const scope = scopeFor(message.sender, snapshot.sessionId)
       admit(message.sender, scope, snapshot.work)
       if (
@@ -265,6 +276,7 @@ export function setupSubtitlesTranslationHandlers(): void {
           subtitlePromptConfig: promptConfig,
           priority: request.priority,
           work: snapshot.work,
+          executionStrategy: snapshot.executionStrategy,
         })),
       )
       assertCurrent(scope)
@@ -285,6 +297,56 @@ export function setupSubtitlesTranslationHandlers(): void {
     } catch (error) {
       return { outcome: subtitleFailure(error) }
     }
+  }
+  onMessage("enqueueSubtitlesTranslateBatch", handleBatch)
+  browser.runtime?.onConnect?.addListener((port) => {
+    if (port.name !== SUBTITLE_STREAM_PORT) return
+    type Response =
+      | { member: SubtitleStreamUpdate }
+      | { result: Awaited<ReturnType<typeof handleBatch>> }
+    createStreamPortHandler<SubtitleBatchRequestPayload, Response>(
+      async (payload, options) => {
+        const scope = scopeFor(port.sender, payload.sessionId)
+        if (!scope) throw new SubtitleWorkRejected("lease")
+        const unsubscribe = subscribeSubtitleStream(scope, (member) =>
+          options.onChunk?.({ member }),
+        )
+        const cancel = () => {
+          void cancelScope(scope).catch(() => {})
+        }
+        options.signal?.addEventListener("abort", cancel, { once: true })
+        try {
+          options.signal?.throwIfAborted()
+          return { result: await handleBatch({ data: payload, sender: port.sender ?? {} }) }
+        } finally {
+          unsubscribe()
+          options.signal?.removeEventListener("abort", cancel)
+        }
+      },
+      (raw) => {
+        const message = raw as {
+          type?: string
+          streamRequestId?: string
+          payload?: SubtitleBatchRequestPayload
+        }
+        return message?.type === "start" &&
+          typeof message.streamRequestId === "string" &&
+          message.streamRequestId.length < 128 &&
+          !!message.payload &&
+          typeof message.payload.sessionId === "string" &&
+          Array.isArray(message.payload.members) &&
+          message.payload.members.length <= SUBTITLE_WORK_LIMITS.cues
+          ? {
+              success: true,
+              message: {
+                type: "start",
+                streamRequestId: message.streamRequestId,
+                payload: message.payload,
+              },
+            }
+          : { success: false }
+      },
+    )(port)
   })
   onMessage("aiSegmentSubtitles", async (message) => {
     try {
@@ -361,14 +423,16 @@ export function setupSubtitlesTranslationHandlers(): void {
       return { outcome: subtitleFailure(error) }
     }
   })
-  onMessage("cancelSubtitleRequests", async (message) => {
-    const scope = scopeFor(message.sender, message.data.sessionId)
-    if (!scope) return
+  const cancelScope = async (scope: string) => {
     subtitleWorkRuntime.release(scope, true)
     cancelledScopes.markScope(scope)
     const { requestQueue, batchQueue } = await queuesPromise
     batchQueue.cancelByScope(scope)
     requestQueue.cancelByScope(scope)
+  }
+  onMessage("cancelSubtitleRequests", async (message) => {
+    const scope = scopeFor(message.sender, message.data.sessionId)
+    if (scope) await cancelScope(scope)
   })
   browser.tabs.onRemoved.addListener((tabId) => {
     subtitleWorkRuntime.closeTab(tabId)

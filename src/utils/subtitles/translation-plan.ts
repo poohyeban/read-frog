@@ -57,6 +57,7 @@ export function createSubtitleTranslationPlan(
     )
     identity.push(prompt.systemPrompt, prompt.prompt)
   }
+  if (data.executionStrategy) identity.push(data.executionStrategy)
   return freezeData({
     source: source ? structuredClone(source) : undefined,
     legacyHash: legacyCompatibility ? Sha256Hex(...identity) : undefined,

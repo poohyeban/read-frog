@@ -86,7 +86,8 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
           firstVisible,
           firstConfirmed,
           cacheReads,
-          providerStart: events.find((e) => e.type === "translate:execute")?.at! - started || null,
+          providerStart:
+            (events.find((e) => e.type === "translate:execute")?.at ?? NaN) - started || null,
           requests: events.filter((e) => e.type.endsWith(":execute")).length,
           cancelled: events.filter((e) => e.type.endsWith(":cancel")).length,
           afterStopRequests: events.filter((e) => e.type.endsWith(":execute") && e.at > stopped)

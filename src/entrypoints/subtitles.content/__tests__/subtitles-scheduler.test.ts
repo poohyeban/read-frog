@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import {
   adPlayingAtom,
   currentSubtitleAtom,
+  translatedTrackAtom,
   currentTimeMsAtom,
   subtitlesStateAtom,
   subtitlesStore,
@@ -23,6 +24,26 @@ describe("subtitles scheduler", () => {
     subtitlesStore.set(subtitlesStateAtom, null)
     subtitlesStore.set(currentTimeMsAtom, 0)
     subtitlesStore.set(adPlayingAtom, false)
+  })
+
+  it("retracts provisional UI without publishing it to transcript/cache readiness or clearing confirmed cues", () => {
+    const scheduler = new SubtitlesScheduler({ videoElement: createVideo(0.25) })
+    scheduler.reset()
+    scheduler.start()
+    const cue = { text: "source", start: 0, end: 1000, translation: "provisional" }
+    scheduler.setProvisional("old", [cue], "fast")
+    expect(subtitlesStore.get(currentSubtitleAtom)?.translation).toBe("provisional")
+    expect(subtitlesStore.get(translatedTrackAtom)).toEqual([])
+    scheduler.setProvisional("old", [], "fast")
+    expect(subtitlesStore.get(currentSubtitleAtom)).toBeNull()
+    scheduler.setProvisional("current", [cue], "quality")
+    scheduler.supplementSubtitles([{ ...cue, translation: "confirmed" }], "fast")
+    scheduler.setProvisional("old", [], "fast")
+    scheduler.setProvisional("current", [], "quality")
+    expect(subtitlesStore.get(currentSubtitleAtom)?.translation).toBe("confirmed")
+    expect(subtitlesStore.get(translatedTrackAtom)).toHaveLength(1)
+    scheduler.stop()
+    scheduler.reset()
   })
 
   it("syncs currentTimeMsAtom on start without waiting for timeupdate", () => {

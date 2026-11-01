@@ -82,6 +82,7 @@ describe("subtitle background contracts using real RequestQueue and BatchQueue",
     mocks.get.mockResolvedValue(undefined)
     mocks.put.mockResolvedValue(undefined)
     storage.watch = vi.fn<(...args: any[]) => any>(() => () => {})
+    browser.runtime.onConnect.addListener = vi.fn<(...args: any[]) => any>()
     browser.tabs.onRemoved.addListener = vi.fn<(...args: any[]) => any>()
     setupSubtitlesTranslationHandlers()
   })

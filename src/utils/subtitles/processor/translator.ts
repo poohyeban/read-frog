@@ -2,6 +2,7 @@ import type { SubtitleTaskOptions } from "../session"
 import type { SubtitlesFragment } from "../types"
 import type { Config } from "@/types/config/config"
 import type { SubtitlePromptContext } from "@/types/content"
+import type { SubtitleBatchRequestPayload } from "@/types/subtitle-request"
 import type { PromptableProviderRef, SerializableProviderRef } from "@/utils/providers/provider-ref"
 import { getLocalConfig } from "@/utils/config/storage"
 import { cleanText } from "@/utils/content/utils"
@@ -21,6 +22,8 @@ import {
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { runSubtitleRequest } from "../recovery"
 import { SubtitleResultError, subtitleFailure, unwrapSubtitleResult } from "../result"
+import { requestSubtitleStream } from "../stream-client"
+import { subtitleStreamStrategy } from "../stream-protocol"
 import { createSubtitleTranslationPlan } from "../translation-plan"
 import { assertSubtitleWindow, SUBTITLE_WORK_LIMITS } from "../work-policy"
 
@@ -306,7 +309,7 @@ export async function translateSubtitles(
   if (work && glossary) {
     const context = normalizeSubtitlePromptContext(videoContext)
     const response = await runSubtitleRequest(task, work, async (currentWork) => {
-      const wire = await sendMessage("enqueueSubtitlesTranslateBatch", {
+      const payload: SubtitleBatchRequestPayload = {
         members: fragments.map((fragment, index) => ({
           text: fragment.text,
           glossaryTerms: glossary.terms[index],
@@ -323,7 +326,28 @@ export async function translateSubtitles(
         webDescription: context.webDescription,
         summary: config.pageTranslation.enableAIContentAware ? context.videoSummary : undefined,
         glossaryRevision: glossary.revision,
-      })
+        executionStrategy: task.kind === "export" ? undefined : task.executionStrategy,
+      }
+      payload.executionStrategy = subtitleStreamStrategy(payload)
+      const hashes = payload.executionStrategy
+        ? new Map(
+            payload.members.map((member, index) => [
+              createSubtitleTranslationPlan({
+                ...payload,
+                ...member,
+                promptConfig: payload.promptConfig!,
+              }).request.hash,
+              index,
+            ]),
+          )
+        : undefined
+      const wire = payload.executionStrategy
+        ? await requestSubtitleStream(payload, task.signal, ({ hash, translation }) => {
+            const index = hashes?.get(hash)
+            if (!task.signal?.aborted && index !== undefined)
+              task.onProvisional?.(index, translation)
+          })
+        : await sendMessage("enqueueSubtitlesTranslateBatch", payload)
       if ("outcome" in wire) {
         unwrapSubtitleResult(wire)
         throw new Error("Missing batch results")
