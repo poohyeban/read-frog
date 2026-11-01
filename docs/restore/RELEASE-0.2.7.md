@@ -20,7 +20,13 @@
 
 首次发布 CI 的类型检查、2976 项测试及打包通过；原生字幕夹具在初始化时引用了已移除的 `batchQueueConfig`，尚未进入字幕行为断言就失败。夹具改为当前 `performanceOverrides` 配置入口，保留全部行为断言并重新运行完整 CI。失败记录：[41285559221](https://github.com/poohyeban/read-frog/actions/runs/41285559221)。
 
-发布附件只使用完整 GitHub Actions 检查通过的原始生产 ZIP，校验 Manifest、许可证和 SHA256。实际 CI 来源、校验值及浏览器验收结果将在发布前写入本版本构建记录。
+[CI 41285865314](https://github.com/poohyeban/read-frog/actions/runs/41285865314) 已完整通过：类型 / 静态检查、328 个测试文件 / 2976 项测试、生产 ZIP 和 4 项原生 Chromium 受控浏览器回归。浏览器覆盖网页翻译、凭据隔离、扩展上下文失效、连续字幕 / 长 cue / 分段 / 重载恢复及冷暖性能夹具；未覆盖全部真实站点与自然 Worker 休眠，也不代表默认关闭的流式实验完成原生验收。
+
+发布复用该成功 CI 的原始 ZIP，并验证 Manifest、许可证和 SHA256。它与本地生产 ZIP 逐字节一致。详细记录见[本版本构建指标](https://github.com/poohyeban/read-frog/blob/main/docs/restore/metrics-0.2.7.json)。
+
+- ZIP：4,743,617 字节；解压后 14,952,945 字节。
+- SHA256：`a41e75430101567035e2140e89ffe3c99035cd39b2a282b2d073fac7ab62ef12`。
+- 本次共运行两轮完整 CI，首轮暴露旧夹具字段，修复后第二轮全部通过。发布流程只校验并上传已验证产物，不再重复构建。
 
 ## 安装与升级
 
