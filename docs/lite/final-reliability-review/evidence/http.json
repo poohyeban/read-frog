@@ -1,0 +1,1686 @@
+{
+  "samples": [
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.2191939999997885,
+        "provider": 0.6181820000001608,
+        "glossary": 0.9080400000002555,
+        "lease": 1.4456340000001546,
+        "ipc": 130.3977789999999
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 147.98460700000032,
+      "firstConfirmed": 147.98460700000032,
+      "complete": 147.98460700000032,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.007231000000047061,
+        "provider": 0.11696299999994153,
+        "glossary": 0.11527999999998428,
+        "lease": 0.18589499999961845,
+        "ipc": 92.85072200000013
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 38.00525800000014,
+      "firstConfirmed": 94.02265100000022,
+      "complete": 94.02265100000022,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.00705100000004677,
+        "provider": 0.021682000000055268,
+        "glossary": 0.36400800000001254,
+        "lease": 0.4568850000000566,
+        "ipc": 75.74999600000001
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 76.46647299999995,
+      "firstConfirmed": 76.46647299999995,
+      "complete": 76.46647299999995,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.006719999999859283,
+        "provider": 0.023114000000077795,
+        "glossary": 0.11407799999960844,
+        "lease": 0.2412970000000314,
+        "ipc": 86.86738000000014
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 20.668216999999913,
+      "firstConfirmed": 87.93119999999999,
+      "complete": 87.93119999999999,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.00701100000014776,
+        "provider": 0.02680999999984124,
+        "glossary": 0.12194999999974243,
+        "lease": 0.212554000000182,
+        "ipc": 83.91278899999998
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 84.42943100000002,
+      "firstConfirmed": 84.42943100000002,
+      "complete": 84.42943100000002,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.005407999999988533,
+        "provider": 0.01985899999999674,
+        "glossary": 0.09366799999997966,
+        "lease": 0.14777800000001662,
+        "ipc": 74.7642249999999
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 15.767264000000068,
+      "firstConfirmed": 75.399633,
+      "complete": 75.399633,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.00574800000003961,
+        "provider": 0.017455999999583582,
+        "glossary": 0.08491600000024846,
+        "lease": 0.14885899999990215,
+        "ipc": 77.23124699999971
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 80.3739959999998,
+      "firstConfirmed": 80.3739959999998,
+      "complete": 80.3739959999998,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.005167000000255939,
+        "provider": 0.01988900000014837,
+        "glossary": 0.3045799999999872,
+        "lease": 0.4109859999998662,
+        "ipc": 74.54156700000021
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 13.416533999999956,
+      "firstConfirmed": 75.74430200000006,
+      "complete": 75.74430200000006,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.006679999999960273,
+        "provider": 0.022013000000242755,
+        "glossary": 0.08878099999992628,
+        "lease": 0.14239999999972497,
+        "ipc": 73.26740599999994
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 73.58758899999975,
+      "firstConfirmed": 73.58758899999975,
+      "complete": 73.58758899999975,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.006048999999620719,
+        "provider": 0.027540999999928317,
+        "glossary": 0.09035300000005009,
+        "lease": 0.1507120000001123,
+        "ipc": 73.99220500000001
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 13.116441000000123,
+      "firstConfirmed": 74.6958340000001,
+      "complete": 74.6958340000001,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.0033749999997780833,
+        "provider": 0.02225300000009156,
+        "glossary": 0.1773920000000544,
+        "lease": 0.2244510000000446,
+        "ipc": 71.14402199999995
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 71.53005200000007,
+      "firstConfirmed": 71.53005200000007,
+      "complete": 71.53005200000007,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0030440000000453438,
+        "provider": 0.017765999999937776,
+        "glossary": 0.16163899999992282,
+        "lease": 0.20309999999972206,
+        "ipc": 81.99961500000018
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 29.433575999999903,
+      "firstConfirmed": 90.08577100000002,
+      "complete": 90.08577100000002,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.0025840000002972374,
+        "provider": 0.013490000000274449,
+        "glossary": 0.07726400000001377,
+        "lease": 0.10901100000000952,
+        "ipc": 71.03255799999988
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 71.26723400000037,
+      "firstConfirmed": 71.26723400000037,
+      "complete": 71.26723400000037,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.031525999999757914,
+        "provider": 0.013210000000071886,
+        "glossary": 0.07933699999966848,
+        "lease": 0.11443899999994755,
+        "ipc": 74.1497430000004
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 13.05234500000006,
+      "firstConfirmed": 74.78509000000031,
+      "complete": 74.78509000000031,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.00355600000011691,
+        "provider": 0.011837000000014086,
+        "glossary": 0.09814499999993131,
+        "lease": 0.13817400000016278,
+        "ipc": 70.84265199999982
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 71.1639369999998,
+      "firstConfirmed": 71.1639369999998,
+      "complete": 71.1639369999998,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.003244999999878928,
+        "provider": 0.011156000000028143,
+        "glossary": 0.10345300000017232,
+        "lease": 0.1413590000001932,
+        "ipc": 76.18418100000008
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 12.9967630000001,
+      "firstConfirmed": 76.94974000000002,
+      "complete": 76.94974000000002,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.0028650000003835885,
+        "provider": 0.010284999999839783,
+        "glossary": 0.11481999999978143,
+        "lease": 0.14854000000013912,
+        "ipc": 69.9469039999999
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 70.25496999999996,
+      "firstConfirmed": 70.25496999999996,
+      "complete": 70.25496999999996,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0032350000001315493,
+        "provider": 0.009884999999940192,
+        "glossary": 0.07958700000017416,
+        "lease": 0.1135180000001128,
+        "ipc": 79.85426900000039
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 21.494447000000036,
+      "firstConfirmed": 80.39596800000027,
+      "complete": 80.39596800000027,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.0034860000000662694,
+        "provider": 0.009585000000242871,
+        "glossary": 0.15638999999964653,
+        "lease": 0.19712100000015198,
+        "ipc": 70.31374100000039
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 70.65695800000003,
+      "firstConfirmed": 70.65695800000003,
+      "complete": 70.65695800000003,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0031850000000304135,
+        "provider": 0.01792699999987235,
+        "glossary": 0.15041100000007646,
+        "lease": 0.20073499999989508,
+        "ipc": 75.37616000000025
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 14.402176999999938,
+      "firstConfirmed": 76.35164900000018,
+      "complete": 76.35164900000018,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.003834999999980937,
+        "provider": 0.011517000000367261,
+        "glossary": 0.08293199999980061,
+        "lease": 0.1512920000000122,
+        "ipc": 88.95018600000003
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 18.047063999999864,
+      "firstConfirmed": 89.85840999999982,
+      "complete": 89.85840999999982,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004226000000016938,
+        "provider": 0.010115000000041618,
+        "glossary": 0.07846500000005108,
+        "lease": 0.14712600000029852,
+        "ipc": 74.79649500000005
+      },
+      "mode": "normal",
+      "size": 8,
+      "firstVisible": 15.234612999999626,
+      "firstConfirmed": 76.018642,
+      "complete": 76.018642,
+      "httpStarts": 1,
+      "partials": 8,
+      "successful": 8
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.00364499999977852,
+        "provider": 0.010615999999572523,
+        "glossary": 0.07435900000018592,
+        "lease": 0.12862900000027366,
+        "ipc": 72.97632999999996
+      },
+      "mode": "normal",
+      "size": 12,
+      "firstVisible": 11.45697999999993,
+      "firstConfirmed": 74.20428399999992,
+      "complete": 74.20428399999992,
+      "httpStarts": 1,
+      "partials": 12,
+      "successful": 12
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004166000000168424,
+        "provider": 0.010886000000027707,
+        "glossary": 0.08121899999969173,
+        "lease": 0.1846810000001824,
+        "ipc": 87.40419099999963
+      },
+      "mode": "normal",
+      "size": 20,
+      "firstVisible": 32.67488699999967,
+      "firstConfirmed": 93.97129399999994,
+      "complete": 93.97129399999994,
+      "httpStarts": 1,
+      "partials": 20,
+      "successful": 20
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.003945999999814376,
+        "provider": 0.013619999999718857,
+        "glossary": 0.0960720000002766,
+        "lease": 0.14122799999950075,
+        "ipc": 75.40338300000076
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 20.016341000000466,
+      "firstConfirmed": 76.09919499999978,
+      "complete": 76.09919499999978,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0034949999999298598,
+        "provider": 0.010005000000091968,
+        "glossary": 0.07459999999991851,
+        "lease": 0.11021200000050158,
+        "ipc": 0.5066049999995812
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 1.1052440000003116,
+      "firstConfirmed": 1.1052440000003116,
+      "complete": 1.1052440000003116,
+      "httpStarts": 0,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0021940000005997717,
+        "provider": 0.0031149999995250255,
+        "glossary": 0.027461000000585045,
+        "lease": 0.043303999999807274,
+        "ipc": 68.56136499999957
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 68.69087599999966,
+      "firstConfirmed": 68.69087599999966,
+      "complete": 68.69087599999966,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.003275000000030559,
+        "provider": 0.009774000000106753,
+        "glossary": 0.06753899999966961,
+        "lease": 0.10091899999952147,
+        "ipc": 174.09295199999997
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 110.34280800000033,
+      "firstConfirmed": 174.81926900000053,
+      "complete": 174.81926900000053,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004938000000038301,
+        "provider": 0.011646999999356922,
+        "glossary": 0.08134900000004563,
+        "lease": 0.11688199999935023,
+        "ipc": 194.99167899999975
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 127.15294600000016,
+      "firstConfirmed": 196.0142620000006,
+      "complete": 196.0142620000006,
+      "httpStarts": 2,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004305999999814958,
+        "provider": 0.010275999999976193,
+        "glossary": 0.070252999999866,
+        "lease": 0.10081799999989016,
+        "ipc": 27.313656999999694
+      },
+      "mode": "disconnect",
+      "size": 5,
+      "firstVisible": 19.24572800000078,
+      "firstConfirmed": 27.989080000000286,
+      "complete": 27.989080000000286,
+      "httpStarts": 1,
+      "partials": 1,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0037449999999807915,
+        "provider": 0.010686000000532658,
+        "glossary": 0.07677299999977549,
+        "lease": 0.1086299999997209,
+        "ipc": 11.33001399999921
+      },
+      "mode": "disconnect-before-text",
+      "size": 5,
+      "firstVisible": 11.937707000000046,
+      "firstConfirmed": 11.937707000000046,
+      "complete": 11.937707000000046,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004226000000016938,
+        "provider": 0.010044999999990978,
+        "glossary": 0.10344199999963166,
+        "lease": 0.13245499999993626,
+        "ipc": 74.70156099999986
+      },
+      "mode": "duplicate",
+      "size": 5,
+      "firstVisible": 18.471870999999737,
+      "firstConfirmed": 79.89304099999936,
+      "complete": 79.89304099999936,
+      "httpStarts": 1,
+      "partials": 1,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004246000000421191,
+        "provider": 0.011556999999811524,
+        "glossary": 0.07131500000014057,
+        "lease": 0.13019199999962439,
+        "ipc": 244.7999209999998
+      },
+      "mode": "length",
+      "size": 5,
+      "firstVisible": 20.9433939999999,
+      "firstConfirmed": 245.3234910000001,
+      "complete": 245.3234910000001,
+      "httpStarts": 5,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.003635000000031141,
+        "provider": 0.009784000000763626,
+        "glossary": 0.06986299999971379,
+        "lease": 0.10237000000051921,
+        "ipc": 223.35783400000037
+      },
+      "mode": "length-tail",
+      "size": 5,
+      "firstVisible": 10.65349900000001,
+      "firstConfirmed": 223.8452299999999,
+      "complete": 223.8452299999999,
+      "httpStarts": 5,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.0036860000000160653,
+        "provider": 0.01033499999994092,
+        "glossary": 0.06703899999956775,
+        "lease": 0.09619199999997363,
+        "ipc": 74.6465990000006
+      },
+      "mode": "generate-length",
+      "size": 5,
+      "firstVisible": 75.04636699999992,
+      "firstConfirmed": 75.04636699999992,
+      "complete": 75.04636699999992,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 1.0497329999998328,
+        "provider": 0.0025040000000444707,
+        "glossary": 0.08055899999999383,
+        "lease": 0.09361700000044948,
+        "ipc": 75.28754200000003
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 16.624104999999872,
+      "firstConfirmed": 77.53308199999992,
+      "complete": 77.53308199999992,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0072600000003149034,
+        "provider": 0.011646999999356922,
+        "glossary": 0.0819099999998798,
+        "lease": 0.12787800000023708,
+        "ipc": 70.05482999999913
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 9.8839480000006,
+      "firstConfirmed": 70.88061500000003,
+      "complete": 70.88061500000003,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    }
+  ],
+  "calls": [
+    {
+      "at": 2242.402341,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-100", "mockcue-101", "mockcue-102", "mockcue-103", "mockcue-104"],
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2343.017268,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-200", "mockcue-201", "mockcue-202", "mockcue-203", "mockcue-204"],
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.285090999999738
+    },
+    {
+      "at": 2430.152854,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-300", "mockcue-301", "mockcue-302", "mockcue-303", "mockcue-304"],
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2507.330888,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-400", "mockcue-401", "mockcue-402", "mockcue-403", "mockcue-404"],
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 6.397332000000006
+    },
+    {
+      "at": 2604.988035,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-500", "mockcue-501", "mockcue-502", "mockcue-503", "mockcue-504"],
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2677.742243,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-600", "mockcue-601", "mockcue-602", "mockcue-603", "mockcue-604"],
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.565624999999727
+    },
+    {
+      "at": 2754.111548,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-700", "mockcue-701", "mockcue-702", "mockcue-703", "mockcue-704"],
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2834.478753,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-800", "mockcue-801", "mockcue-802", "mockcue-803", "mockcue-804"],
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.711501000000226
+    },
+    {
+      "at": 2911.332222,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-900", "mockcue-901", "mockcue-902", "mockcue-903", "mockcue-904"],
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2983.703385,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-1000", "mockcue-1001", "mockcue-1002", "mockcue-1003", "mockcue-1004"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.189080000000104
+    },
+    {
+      "at": 3057.703472,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-1100", "mockcue-1101", "mockcue-1102", "mockcue-1103", "mockcue-1104"],
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 3147.342664,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-1200", "mockcue-1201", "mockcue-1202", "mockcue-1203", "mockcue-1204"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.244342000000415
+    },
+    {
+      "at": 3218.883572,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-1300", "mockcue-1301", "mockcue-1302", "mockcue-1303", "mockcue-1304"],
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 3292.791423,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-1400", "mockcue-1401", "mockcue-1402", "mockcue-1403", "mockcue-1404"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.142269999999826
+    },
+    {
+      "at": 3365.607578,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-1500", "mockcue-1501", "mockcue-1502", "mockcue-1503", "mockcue-1504"],
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 3439.027654,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-1600", "mockcue-1601", "mockcue-1602", "mockcue-1603", "mockcue-1604"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.147668999999951
+    },
+    {
+      "at": 3513.159266,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-1700", "mockcue-1701", "mockcue-1702", "mockcue-1703", "mockcue-1704"],
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 3592.61125,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-1800", "mockcue-1801", "mockcue-1802", "mockcue-1803", "mockcue-1804"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.179065000000264
+    },
+    {
+      "at": 3664.669281,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-1900", "mockcue-1901", "mockcue-1902", "mockcue-1903", "mockcue-1904"],
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 3737.856867,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-2000", "mockcue-2001", "mockcue-2002", "mockcue-2003", "mockcue-2004"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 6.165276000000176
+    },
+    {
+      "at": 3813.658968,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-2100", "mockcue-2101", "mockcue-2102", "mockcue-2103", "mockcue-2104"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.156898999999612
+    },
+    {
+      "at": 3908.151326,
+      "stream": true,
+      "members": 8,
+      "memberIds": [
+        "mockcue-2200",
+        "mockcue-2201",
+        "mockcue-2202",
+        "mockcue-2203",
+        "mockcue-2204",
+        "mockcue-2205",
+        "mockcue-2206",
+        "mockcue-2207"
+      ],
+      "promptBytes": 1553,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.240812999999889
+    },
+    {
+      "at": 3981.256455,
+      "stream": true,
+      "members": 12,
+      "memberIds": [
+        "mockcue-2300",
+        "mockcue-2301",
+        "mockcue-2302",
+        "mockcue-2303",
+        "mockcue-2304",
+        "mockcue-2305",
+        "mockcue-2306",
+        "mockcue-2307",
+        "mockcue-2308",
+        "mockcue-2309",
+        "mockcue-2310",
+        "mockcue-2311"
+      ],
+      "promptBytes": 1703,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.154906999999639
+    },
+    {
+      "at": 4070.829069,
+      "stream": true,
+      "members": 20,
+      "memberIds": [
+        "mockcue-2400",
+        "mockcue-2401",
+        "mockcue-2402",
+        "mockcue-2403",
+        "mockcue-2404",
+        "mockcue-2405",
+        "mockcue-2406",
+        "mockcue-2407",
+        "mockcue-2408",
+        "mockcue-2409",
+        "mockcue-2410",
+        "mockcue-2411",
+        "mockcue-2412",
+        "mockcue-2413",
+        "mockcue-2414",
+        "mockcue-2415",
+        "mockcue-2416",
+        "mockcue-2417",
+        "mockcue-2418",
+        "mockcue-2419"
+      ],
+      "promptBytes": 2007,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.168787000000066
+    },
+    {
+      "at": 4153.625768,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-2500", "mockcue-2501", "mockcue-2502", "mockcue-2503", "mockcue-2504"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.208596000000398
+    },
+    {
+      "at": 4225.210087,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-2600", "mockcue-2601", "mockcue-2602", "mockcue-2603", "mockcue-2604"],
+      "promptBytes": 1109,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 4298.261222,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-2700", "mockcue-2701", "mockcue-2702", "mockcue-2703", "mockcue-2704"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 101.75442399999974
+    },
+    {
+      "at": 4472.408794,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-2800", "mockcue-2801", "mockcue-2802", "mockcue-2803", "mockcue-2804"],
+      "promptBytes": 1442,
+      "status": 429
+    },
+    {
+      "at": 4586.773823,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-2800", "mockcue-2801", "mockcue-2802", "mockcue-2803", "mockcue-2804"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.23996199999965
+    },
+    {
+      "at": 4675.185906,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-2900", "mockcue-2901", "mockcue-2902", "mockcue-2903", "mockcue-2904"],
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.1958880000001955
+    },
+    {
+      "at": 4695.626211,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-3000", "mockcue-3001", "mockcue-3002", "mockcue-3003", "mockcue-3004"],
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.1806750000005195
+    },
+    {
+      "at": 4711.746195,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-3100", "mockcue-3101", "mockcue-3102", "mockcue-3103", "mockcue-3104"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 8.1923110000007
+    },
+    {
+      "at": 4792.822896,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-3200", "mockcue-3201", "mockcue-3202", "mockcue-3203", "mockcue-3204"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 8.764952999999878
+    },
+    {
+      "at": 4877.081634,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-3201"],
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.643374999999651
+    },
+    {
+      "at": 4877.539457,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-3202"],
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.362522000000354
+    },
+    {
+      "at": 4957.048414,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-3203"],
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 7.068229000000429
+    },
+    {
+      "at": 4957.663808,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-3204"],
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 6.648081999999704
+    },
+    {
+      "at": 5032.825816,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-3300", "mockcue-3301", "mockcue-3302", "mockcue-3303", "mockcue-3304"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.14692500000001
+    },
+    {
+      "at": 5105.233435,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-3301"],
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.255243999999948
+    },
+    {
+      "at": 5105.340522,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-3302"],
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.274822999999742
+    },
+    {
+      "at": 5180.687812,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-3303"],
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 4.58848399999988
+    },
+    {
+      "at": 5181.123031,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-3304"],
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.751234000000295
+    },
+    {
+      "at": 5260.487275,
+      "stream": false,
+      "members": 5,
+      "memberIds": ["mockcue-3400", "mockcue-3401", "mockcue-3402", "mockcue-3403", "mockcue-3404"],
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 5335.822838,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-3500", "mockcue-3501", "mockcue-3502", "mockcue-3503", "mockcue-3504"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 8.165761999999631
+    },
+    {
+      "at": 5414.725794,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-3600", "mockcue-3601", "mockcue-3602", "mockcue-3603", "mockcue-3604"],
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.145983999999771
+    },
+    {
+      "at": 5569.311342,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-3700", "mockcue-3701", "mockcue-3702", "mockcue-3703", "mockcue-3704"],
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.157301000000189
+    },
+    {
+      "at": 5720.975337,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-3800", "mockcue-3801", "mockcue-3802", "mockcue-3803", "mockcue-3804"],
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.245539999999892
+    }
+  ],
+  "admissionWaits": [
+    0.6620969999999033, 0.24254800000016985, 0.2055539999996654, 0.1382340000000113,
+    0.16306100000019796, 0.08775999999988926, 0.08495600000014747, 0.3487550000004376,
+    0.11647199999970326, 0.12785799999983283, 0.2969389999998384, 0.07565100000010716,
+    0.06823100000019622, 0.1472169999997277, 0.07996800000000803, 0.05585300000029747,
+    0.060869999999795255, 0.08929200000011406, 0.07154600000012579, 0.23841099999981452,
+    0.12783800000033807, 0.06606700000020282, 0.054760999999871274, 0.12318100000038612,
+    0.07239600000048085, 0.06991199999993114, 0.05441000000064378, 0.06865100000050006,
+    0.190799999999399, 0.05884599999990314, 0.06338299999970332, 0.12290000000029977,
+    0.05052400000022317, 0.07750399999986257, 0.03709400000025198, 69.82538299999942,
+    72.33683500000006, 0.05591199999980745, 0.0576149999997142, 0.034350999999333,
+    70.93937000000005, 75.99986900000022, 0.0651159999997617, 0.0558420000006663,
+    0.07239600000048085, 0.05782500000077562, 0.23847999999998137
+  ],
+  "queueWaits": [
+    0.5057059999999183, 0.24189799999976458, 0.05480099999977028, 0.05553199999985736,
+    0.08148000000028333, 0.04254300000002331, 0.03716500000018641, 0.06473499999992782,
+    0.043153999999958614, 0.05036500000005617, 0.03116600000021208, 0.03337999999985186,
+    0.02149199999985285, 0.08569699999998193, 0.06541600000036851, 0.029895000000124128,
+    0.02149199999985285, 0.03149699999994482, 0.02461700000003475, 0.0263689999997041,
+    0.0266990000000078, 0.03094599999985803, 0.024125999999796477, 0.05193599999984144,
+    0.02676900000005844, 0.05040400000052614, 0.032999000000017986, 0.020900999999867054,
+    0.030595000000175787, 111.03546599999936, 0.021652000000358385, 0.025016999999934342,
+    0.02772099999947386, 0.021732000000156404, 0.12117799999941781, 0.018036999999822,
+    0.04919199999949342, 0.014210999999704654, 0.028621999999813852, 0.04044900000008056,
+    0.09410899999966205, 0.01411999999982072, 0.0070209999994403915, 0.03268800000023475,
+    0.1008879999999408, 0.02310399999987567, 0.024526000000150816, 0.026418000000376196
+  ],
+  "memberAttempts": {
+    "mockcue-100": 1,
+    "mockcue-101": 1,
+    "mockcue-102": 1,
+    "mockcue-103": 1,
+    "mockcue-104": 1,
+    "mockcue-200": 1,
+    "mockcue-201": 1,
+    "mockcue-202": 1,
+    "mockcue-203": 1,
+    "mockcue-204": 1,
+    "mockcue-300": 1,
+    "mockcue-301": 1,
+    "mockcue-302": 1,
+    "mockcue-303": 1,
+    "mockcue-304": 1,
+    "mockcue-400": 1,
+    "mockcue-401": 1,
+    "mockcue-402": 1,
+    "mockcue-403": 1,
+    "mockcue-404": 1,
+    "mockcue-500": 1,
+    "mockcue-501": 1,
+    "mockcue-502": 1,
+    "mockcue-503": 1,
+    "mockcue-504": 1,
+    "mockcue-600": 1,
+    "mockcue-601": 1,
+    "mockcue-602": 1,
+    "mockcue-603": 1,
+    "mockcue-604": 1,
+    "mockcue-700": 1,
+    "mockcue-701": 1,
+    "mockcue-702": 1,
+    "mockcue-703": 1,
+    "mockcue-704": 1,
+    "mockcue-800": 1,
+    "mockcue-801": 1,
+    "mockcue-802": 1,
+    "mockcue-803": 1,
+    "mockcue-804": 1,
+    "mockcue-900": 1,
+    "mockcue-901": 1,
+    "mockcue-902": 1,
+    "mockcue-903": 1,
+    "mockcue-904": 1,
+    "mockcue-1000": 1,
+    "mockcue-1001": 1,
+    "mockcue-1002": 1,
+    "mockcue-1003": 1,
+    "mockcue-1004": 1,
+    "mockcue-1100": 1,
+    "mockcue-1101": 1,
+    "mockcue-1102": 1,
+    "mockcue-1103": 1,
+    "mockcue-1104": 1,
+    "mockcue-1200": 1,
+    "mockcue-1201": 1,
+    "mockcue-1202": 1,
+    "mockcue-1203": 1,
+    "mockcue-1204": 1,
+    "mockcue-1300": 1,
+    "mockcue-1301": 1,
+    "mockcue-1302": 1,
+    "mockcue-1303": 1,
+    "mockcue-1304": 1,
+    "mockcue-1400": 1,
+    "mockcue-1401": 1,
+    "mockcue-1402": 1,
+    "mockcue-1403": 1,
+    "mockcue-1404": 1,
+    "mockcue-1500": 1,
+    "mockcue-1501": 1,
+    "mockcue-1502": 1,
+    "mockcue-1503": 1,
+    "mockcue-1504": 1,
+    "mockcue-1600": 1,
+    "mockcue-1601": 1,
+    "mockcue-1602": 1,
+    "mockcue-1603": 1,
+    "mockcue-1604": 1,
+    "mockcue-1700": 1,
+    "mockcue-1701": 1,
+    "mockcue-1702": 1,
+    "mockcue-1703": 1,
+    "mockcue-1704": 1,
+    "mockcue-1800": 1,
+    "mockcue-1801": 1,
+    "mockcue-1802": 1,
+    "mockcue-1803": 1,
+    "mockcue-1804": 1,
+    "mockcue-1900": 1,
+    "mockcue-1901": 1,
+    "mockcue-1902": 1,
+    "mockcue-1903": 1,
+    "mockcue-1904": 1,
+    "mockcue-2000": 1,
+    "mockcue-2001": 1,
+    "mockcue-2002": 1,
+    "mockcue-2003": 1,
+    "mockcue-2004": 1,
+    "mockcue-2100": 1,
+    "mockcue-2101": 1,
+    "mockcue-2102": 1,
+    "mockcue-2103": 1,
+    "mockcue-2104": 1,
+    "mockcue-2200": 1,
+    "mockcue-2201": 1,
+    "mockcue-2202": 1,
+    "mockcue-2203": 1,
+    "mockcue-2204": 1,
+    "mockcue-2205": 1,
+    "mockcue-2206": 1,
+    "mockcue-2207": 1,
+    "mockcue-2300": 1,
+    "mockcue-2301": 1,
+    "mockcue-2302": 1,
+    "mockcue-2303": 1,
+    "mockcue-2304": 1,
+    "mockcue-2305": 1,
+    "mockcue-2306": 1,
+    "mockcue-2307": 1,
+    "mockcue-2308": 1,
+    "mockcue-2309": 1,
+    "mockcue-2310": 1,
+    "mockcue-2311": 1,
+    "mockcue-2400": 1,
+    "mockcue-2401": 1,
+    "mockcue-2402": 1,
+    "mockcue-2403": 1,
+    "mockcue-2404": 1,
+    "mockcue-2405": 1,
+    "mockcue-2406": 1,
+    "mockcue-2407": 1,
+    "mockcue-2408": 1,
+    "mockcue-2409": 1,
+    "mockcue-2410": 1,
+    "mockcue-2411": 1,
+    "mockcue-2412": 1,
+    "mockcue-2413": 1,
+    "mockcue-2414": 1,
+    "mockcue-2415": 1,
+    "mockcue-2416": 1,
+    "mockcue-2417": 1,
+    "mockcue-2418": 1,
+    "mockcue-2419": 1,
+    "mockcue-2500": 1,
+    "mockcue-2501": 1,
+    "mockcue-2502": 1,
+    "mockcue-2503": 1,
+    "mockcue-2504": 1,
+    "mockcue-2600": 1,
+    "mockcue-2601": 1,
+    "mockcue-2602": 1,
+    "mockcue-2603": 1,
+    "mockcue-2604": 1,
+    "mockcue-2700": 1,
+    "mockcue-2701": 1,
+    "mockcue-2702": 1,
+    "mockcue-2703": 1,
+    "mockcue-2704": 1,
+    "mockcue-2800": 2,
+    "mockcue-2801": 2,
+    "mockcue-2802": 2,
+    "mockcue-2803": 2,
+    "mockcue-2804": 2,
+    "mockcue-2900": 1,
+    "mockcue-2901": 1,
+    "mockcue-2902": 1,
+    "mockcue-2903": 1,
+    "mockcue-2904": 1,
+    "mockcue-3000": 1,
+    "mockcue-3001": 1,
+    "mockcue-3002": 1,
+    "mockcue-3003": 1,
+    "mockcue-3004": 1,
+    "mockcue-3100": 1,
+    "mockcue-3101": 1,
+    "mockcue-3102": 1,
+    "mockcue-3103": 1,
+    "mockcue-3104": 1,
+    "mockcue-3200": 1,
+    "mockcue-3201": 2,
+    "mockcue-3202": 2,
+    "mockcue-3203": 2,
+    "mockcue-3204": 2,
+    "mockcue-3300": 1,
+    "mockcue-3301": 2,
+    "mockcue-3302": 2,
+    "mockcue-3303": 2,
+    "mockcue-3304": 2,
+    "mockcue-3400": 1,
+    "mockcue-3401": 1,
+    "mockcue-3402": 1,
+    "mockcue-3403": 1,
+    "mockcue-3404": 1,
+    "mockcue-3500": 1,
+    "mockcue-3501": 1,
+    "mockcue-3502": 1,
+    "mockcue-3503": 1,
+    "mockcue-3504": 1,
+    "mockcue-3600": 1,
+    "mockcue-3601": 1,
+    "mockcue-3602": 1,
+    "mockcue-3603": 1,
+    "mockcue-3604": 1,
+    "mockcue-3700": 1,
+    "mockcue-3701": 1,
+    "mockcue-3702": 1,
+    "mockcue-3703": 1,
+    "mockcue-3704": 1,
+    "mockcue-3800": 1,
+    "mockcue-3801": 1,
+    "mockcue-3802": 1,
+    "mockcue-3803": 1,
+    "mockcue-3804": 1
+  },
+  "resources": {
+    "active": 0,
+    "queued": 0,
+    "lanes": 0,
+    "timers": 0,
+    "counters": {
+      "starts": 47,
+      "cancellations": 2,
+      "rejected": 0,
+      "admissions": 47,
+      "eligibilityChecks": 100,
+      "maxActive": 2,
+      "maxQueued": 2
+    },
+    "domains": {
+      "1e0e4292-38ec-4204-9e33-b7737af0a75d": {
+        "active": 0,
+        "queued": 0,
+        "tokens": 99,
+        "cooldownUntil": 1793515912636
+      }
+    }
+  },
+  "fallbackRoutes": 0,
+  "leases": 0,
+  "tasks": 0,
+  "portListeners": 0,
+  "scope": "Real local HTTP and AI SDK; simulated IPC ports/storage, synthetic usage, not native MV3 or real model quality/cost"
+}

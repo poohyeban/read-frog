@@ -77,6 +77,38 @@ it("reclaims 500 sessions even when Stop RPCs fail; old leases cannot authorize 
     all.every((p) => p.onMessage.listeners.size === 0 && p.onDisconnect.listeners.size === 0),
   ).toBe(true)
 })
+it("bounds revocation RPCs and retained authority across 500 failed Stop/Start cycles of ONE session", async () => {
+  const { runtime, all } = setup()
+  rpc.send.mockClear().mockImplementation(async (name) => {
+    if (name === "revokeSubtitleLease") throw new Error("RPC lost")
+  })
+  const session = new SubtitleSession()
+  for (let i = 0; i < 500; i++) {
+    session.start()
+    const task = session.begin("playback", `cue-${i}`)
+    const work = await task.prepareWork!("fast", i * 1000, i * 1000 + 900)
+    runtime.register(7, task.sessionId, work)
+    const stopped = session.stop()
+    await expect(stopped).rejects.toThrow("RPC lost")
+    expect(session.taskCount).toBe(0)
+    expect(task.signal.aborted).toBe(true)
+    expect(runtime.leaseCount).toBe(0)
+    expect(() => runtime.register(7, task.sessionId, work)).toThrow("lease")
+  }
+  const revokes = rpc.send.mock.calls.filter(([name]) => name === "revokeSubtitleLease")
+  // Each closed connection already revoked its lease. Failed acknowledgements
+  // must not become an unbounded retry backlog on this long-lived Session.
+  expect.soft(revokes).toHaveLength(500)
+  expect.soft(new Set(revokes.map(([, data]) => data.lease)).size).toBe(500)
+  expect.soft((session as any).revocations?.size ?? 0).toBe(0)
+  await session.stop().catch(() => {})
+  session.dispose()
+  await Promise.resolve()
+  expect(rpc.send.mock.calls.filter(([name]) => name === "revokeSubtitleLease")).toHaveLength(500)
+  expect(
+    all.every((p) => p.onMessage.listeners.size === 0 && p.onDisconnect.listeners.size === 0),
+  ).toBe(true)
+})
 it("keeps a long-paused live session and independent export authorized until their own connection closes", async () => {
   const { runtime, all } = setup()
   vi.useFakeTimers()

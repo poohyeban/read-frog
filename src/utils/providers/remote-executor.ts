@@ -1,6 +1,6 @@
 import type { LLMProviderConfig } from "@/types/config/provider"
 import { generateText, streamText } from "ai"
-import { attachRequestErrorMeta } from "@/utils/request/retry-policy"
+import { attachRequestErrorMeta, getRequestErrorMeta } from "@/utils/request/retry-policy"
 import { getLanguageModelForConfig } from "./model"
 import { runProviderOperation } from "./resource-runtime"
 
@@ -46,9 +46,16 @@ export function consumeRemoteStream<T>(
     provider,
     signal,
     async (abortSignal, permit) => {
+      let started = false
       const result = streamText({
         ...params,
-        model: getLanguageModelForConfig(provider, permit),
+        model: getLanguageModelForConfig(provider, {
+          ...permit,
+          start: () => {
+            permit.start()
+            started = true
+          },
+        }),
         abortSignal,
         maxRetries: 0,
       })
@@ -68,8 +75,14 @@ export function consumeRemoteStream<T>(
       try {
         return await consume(observed(), abortSignal)
       } catch (error) {
-        // Replaying a partially published stream would duplicate visible content.
-        if (emitted && error instanceof Error) attachRequestErrorMeta(error, { isRetryable: false })
+        // No delta does not prove that the server never received the request.
+        // Both yielded SDK errors and iterator rejections obey this boundary.
+        const explicitRejection = [429, 503].includes(getRequestErrorMeta(error).statusCode ?? 0)
+        if (emitted || (started && !explicitRejection)) {
+          const failure =
+            error instanceof Error ? error : new Error("Stream transport failed", { cause: error })
+          throw attachRequestErrorMeta(failure, { isRetryable: false })
+        }
         throw error
       } finally {
         // Also handles a consumer that returns before reading its first chunk.

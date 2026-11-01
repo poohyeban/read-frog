@@ -41,7 +41,6 @@ export class SubtitleSession {
   private disposers = new Set<() => void>()
   private leasePromise?: Promise<string>
   private leaseConnection?: ReturnType<typeof openSubtitleLeaseConnection>
-  private revocations = new Set<Promise<string>>()
   private stopping: Promise<void> = Promise.resolve()
   readonly identity: Readonly<{ videoId: string; trackId: string; revision: number }>
 
@@ -155,19 +154,16 @@ export class SubtitleSession {
     this.leaseConnection = undefined
     this.leasePromise = undefined
     connection?.close()
-    if (lease) this.revocations.add(lease)
-    const revocations = [...this.revocations]
+    // Closing the passive connection already revokes authority, even if the
+    // acknowledgement RPC fails. Repeated Stop/Dispose joins that same outcome;
+    // a new lease gets one new acknowledgement, never a backlog of old leases.
+    if (!lease) return this.stopping
     this.stopping = this.stopping
       .catch(() => {})
       .then(async () => {
-        await Promise.all(
-          revocations.map(async (pending) => {
-            // A rejected open never furnished authority to any request.
-            const id = await pending.catch(() => undefined)
-            if (id) await sendMessage("revokeSubtitleLease", { lease: id })
-            this.revocations.delete(pending)
-          }),
-        )
+        // A rejected open never furnished authority to any request.
+        const id = await lease.catch(() => undefined)
+        if (id) await sendMessage("revokeSubtitleLease", { lease: id })
       })
     // Callers can await confirmation; fire-and-forget destruction must not leak rejections.
     void this.stopping.catch(() => {})

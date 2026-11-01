@@ -37,7 +37,7 @@ import {
   type SubtitleWorkContext,
 } from "@/utils/subtitles/work-policy"
 import { ensureInitializedConfig } from "./config"
-import { publishSubtitleStream } from "./subtitle-stream-updates"
+import { publishSubtitleStream, routeSubtitleStreamFallback } from "./subtitle-stream-updates"
 import { subtitleWorkRuntime } from "./subtitle-work"
 
 type QueuedTranslationProvider = ProviderConfig | SerializableProviderRef
@@ -85,10 +85,8 @@ async function executeQueuedTranslation<TContext>(
 }
 
 export function parseBatchResult(result: string): string[] {
-  return result
-    .trim()
-    .split(BATCH_SEPARATOR_LINE_PATTERN)
-    .map((t) => t.trim())
+  // Split before trimming: leading/trailing newlines can encode empty members.
+  return result.split(BATCH_SEPARATOR_LINE_PATTERN).map((t) => t.trim())
 }
 
 export function shouldUseBatchQueue(provider: QueuedTranslationProvider): boolean {
@@ -317,6 +315,7 @@ function snapshotPromptResolver<TContext>(
 }
 
 export type TranslateBatchData<TContext = unknown> = QueuedTranslationRouting & {
+  streamMemberKey?: string
   executionStrategy?: "stream-v1"
   work?: SubtitleWorkContext
   text: string
@@ -455,7 +454,7 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
           },
           (id, translation) =>
             publishSubtitleStream((liveScopes ?? (() => meta.scopes))(), {
-              hash: dataList[id]!.hash,
+              hash: dataList[id]!.streamMemberKey ?? dataList[id]!.hash,
               translation,
             }),
         )
@@ -489,7 +488,14 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
               batchKey = key
             },
             (_id, translation) =>
-              publishSubtitleStream((liveScopes ?? (() => meta.scopes))(), { hash, translation }),
+              publishSubtitleStream(
+                (liveScopes ?? (() => meta.scopes))(),
+                {
+                  hash,
+                  translation,
+                },
+                !!data.streamMemberKey,
+              ),
           )
           if (results.length !== 1) throw new BatchCountMismatchError(1, results.length, results)
           return { translation: results[0]!, batchKey, batchIndex: 0 }
@@ -513,10 +519,17 @@ async function createTranslationQueues<TContext>(config: TranslationQueueSetupCo
           },
         )
       }
-      return requestQueue.enqueue(thunk, scheduleAt, hash, meta.scopes, {
-        priority: data.priority,
-        attempts: meta.attempts,
-      })
+      const unroute = data.streamMemberKey
+        ? routeSubtitleStreamFallback(meta.scopes, hash, data.streamMemberKey)
+        : undefined
+      try {
+        return await requestQueue.enqueue(thunk, scheduleAt, hash, meta.scopes, {
+          priority: data.priority,
+          attempts: meta.attempts,
+        })
+      } finally {
+        unroute?.()
+      }
     },
     onError: (error, context) => {
       const errorType = context.isFallback ? "Individual request" : "Batch request"

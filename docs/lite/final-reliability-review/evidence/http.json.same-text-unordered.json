@@ -1,0 +1,92 @@
+{
+  "samples": [
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.060187999999470776,
+        "provider": 0.12332100000003265,
+        "glossary": 0.15374600000086502,
+        "lease": 0.252121000000443,
+        "ipc": 73.66034000000036
+      },
+      "mode": "same-text-unordered",
+      "size": 2,
+      "firstVisible": 15.226020000000062,
+      "firstConfirmed": 75.34369400000014,
+      "complete": 75.34369400000014,
+      "httpStarts": 1,
+      "partials": 2,
+      "successful": 2
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.03584300000056828,
+        "provider": 0.06124999999974534,
+        "glossary": 0.14504300000044168,
+        "lease": 0.18365900000026159,
+        "ipc": 73.48051600000053
+      },
+      "mode": "same-text-unordered",
+      "size": 2,
+      "firstVisible": 15.180923999999322,
+      "firstConfirmed": 75.29491299999972,
+      "complete": 75.29491299999972,
+      "httpStarts": 1,
+      "partials": 2,
+      "successful": 2
+    }
+  ],
+  "calls": [
+    {
+      "at": 5918.549532,
+      "stream": true,
+      "members": 2,
+      "memberIds": ["mockcue-1", "mockcue-1"],
+      "promptBytes": 1325,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.18380900000011
+    }
+  ],
+  "admissionWaits": [0.1401960000002873],
+  "queueWaits": [0.060679000000163796],
+  "textOccurrences": {
+    "mockcue-1": 2
+  },
+  "resources": {
+    "active": 0,
+    "queued": 0,
+    "lanes": 0,
+    "timers": 0,
+    "counters": {
+      "starts": 1,
+      "cancellations": 0,
+      "rejected": 0,
+      "admissions": 1,
+      "eligibilityChecks": 2,
+      "maxActive": 1,
+      "maxQueued": 1
+    },
+    "domains": {
+      "55e1683f-23d9-4bd4-9443-4ea6d4d43b92": {
+        "active": 0,
+        "queued": 0,
+        "tokens": 99,
+        "cooldownUntil": 0
+      }
+    }
+  },
+  "fallbackRoutes": 0,
+  "leases": 0,
+  "tasks": 0,
+  "portListeners": 0,
+  "scope": "Real local HTTP and AI SDK; simulated IPC ports/storage, synthetic usage, not native MV3 or real model quality/cost"
+}

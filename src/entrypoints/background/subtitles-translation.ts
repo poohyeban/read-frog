@@ -19,7 +19,10 @@ import {
   subtitleStreamStrategy,
   type SubtitleStreamUpdate,
 } from "@/utils/subtitles/stream-protocol"
-import { createSubtitleTranslationPlan } from "@/utils/subtitles/translation-plan"
+import {
+  createSubtitleBatchRequests,
+  createSubtitleTranslationPlan,
+} from "@/utils/subtitles/translation-plan"
 import {
   SUBTITLE_WORK_LIMITS,
   SubtitleWorkRejected,
@@ -248,9 +251,7 @@ export function setupSubtitlesTranslationHandlers(): void {
         snapshot.promptConfig ??
         (await ensureInitializedConfig())?.videoSubtitles ??
         DEFAULT_CONFIG.videoSubtitles
-      const requests = members.map(
-        (member) => createSubtitleTranslationPlan({ ...snapshot, ...member, promptConfig }).request,
-      )
+      const requests = createSubtitleBatchRequests({ ...snapshot, members, promptConfig })
       if (!shouldUseBatchQueue(snapshot.providerRef)) {
         return {
           results: await Promise.all(
@@ -266,6 +267,7 @@ export function setupSubtitlesTranslationHandlers(): void {
           langConfig: request.langConfig,
           provider: request.providerRef,
           hash: request.hash,
+          streamMemberKey: request.streamMemberKey,
           scheduleAt: Date.now(),
           context: {
             webTitle: request.webTitle,

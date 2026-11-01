@@ -84,7 +84,7 @@ describe("worker lease failure reproduction", () => {
     await session.stop()
     session.dispose()
   })
-  it("retries failed revocation without poisoning every later stop", async () => {
+  it("retains a failed Stop acknowledgement without replay, and allows a new lease to stop", async () => {
     let revokes = 0
     rpc.cancel.mockImplementation(async (type) => {
       if (type === "openSubtitleLease") return "lease"
@@ -93,7 +93,13 @@ describe("worker lease failure reproduction", () => {
     })
     const session = new SubtitleSession()
     await session.begin("playback", "first").prepareWork!("fast", 0, 1000)
-    await expect(session.stop()).rejects.toThrow("worker unavailable")
+    const stopped = session.stop()
+    expect(session.stop()).toBe(stopped)
+    await expect(stopped).rejects.toThrow("worker unavailable")
+    expect(session.stop()).toBe(stopped)
+    expect(revokes).toBe(1)
+    session.start()
+    await session.begin("playback", "next").prepareWork!("fast", 1000, 2000)
     await expect(session.stop()).resolves.toBeUndefined()
     expect(revokes).toBe(2)
     session.dispose()

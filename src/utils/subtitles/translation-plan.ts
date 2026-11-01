@@ -1,4 +1,4 @@
-import type { SubtitleRequestPayload } from "@/types/subtitle-request"
+import type { SubtitleBatchRequestPayload, SubtitleRequestPayload } from "@/types/subtitle-request"
 import { isLLMProviderConfig } from "@/types/config/provider"
 import { Sha256Hex, Sha256Fields } from "@/utils/hash"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
@@ -63,4 +63,27 @@ export function createSubtitleTranslationPlan(
     legacyHash: legacyCompatibility ? Sha256Hex(...identity) : undefined,
     request: { ...data, hash: Sha256Fields(...identity) },
   })
+}
+
+/** Shared stream routing identity: an occurrence in the exact ordered batch.
+ * It survives singleton fallback and is identical for subscribers in other tabs.
+ * Persistent cache keys still describe the actual rendered prompt.
+ */
+export function createSubtitleBatchRequests({
+  members,
+  ...snapshot
+}: SubtitleBatchRequestPayload & {
+  promptConfig: NonNullable<SubtitleRequestPayload["promptConfig"]>
+}): Readonly<SubtitleRequestPayload & { streamMemberKey?: string }>[] {
+  const requests = members.map(
+    (member) => createSubtitleTranslationPlan({ ...snapshot, ...member }).request,
+  )
+  if (snapshot.executionStrategy !== "stream-v1") return requests
+  const batch = Sha256Fields(...requests.map((request) => request.hash))
+  return requests.map((request, index) =>
+    freezeData({
+      ...request,
+      streamMemberKey: Sha256Fields("subtitle-stream-member-v1", batch, String(index)),
+    }),
+  )
 }

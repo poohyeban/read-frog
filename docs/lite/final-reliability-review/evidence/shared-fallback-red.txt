@@ -1,0 +1,33 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts (8 tests | 1 failed | 7 skipped) 926ms
+   × real SDK over local HTTP: shared-fallback 925ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-stream-http.test.ts > real SDK over local HTTP: shared-fallback
+AssertionError: expected [ { at: 1272.406117, …(7) }, …(3) ] to have a length of 3 but got 4
+
+- Expected
++ Received
+
+- 3
++ 4
+
+ ❯ shared-fallback src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:462:44
+    461|         expect(result.every((cue) => cue.translationOutcome?.status !=…
+    462|         expect(mock.cache.size).toBe(0)
+    463|         mode = "429"
+       |    ^
+    464|         const before = calls.length
+    465|         expect(
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:593:3
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  06:45:51
+   Duration  1.63s (tests 68%, transform 16%, setup 8%, import 7%)

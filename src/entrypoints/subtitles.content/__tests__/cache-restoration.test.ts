@@ -255,3 +255,44 @@ vi.mock("@/utils/subtitles/lease-connection", async () => {
     }),
   }
 })
+
+// A deadline releases the playback wait, never the actual outstanding DB read.
+it("recovers after an eight-hour stale DB read settles across Stop/Start, without publishing its result", async () => {
+  const oldRead = deferred<SubtitleCandidateBundle[]>()
+  const recoveredRead = deferred<SubtitleCandidateBundle[]>()
+  const read = vi
+    .fn<() => Promise<SubtitleCandidateBundle[]>>()
+    .mockReturnValueOnce(oldRead.promise)
+    .mockReturnValue(recoveredRead.promise)
+  const { engine, publish, source, video, session } = setup(read, false)
+  await vi.advanceTimersByTimeAsync(500)
+  await engine.stop()
+  engine.start()
+  vi.setSystemTime(Date.now() + 8 * 3600000)
+  video.currentTime = 600
+  video.dispatchEvent(new Event("seeking"))
+  await vi.advanceTimersByTimeAsync(500)
+  expect(read).toHaveBeenCalledTimes(1)
+  oldRead.resolve([
+    {
+      lane: "quality",
+      cues: [{ ...source[0]!, translation: "obsolete" }],
+    } as SubtitleCandidateBundle,
+  ])
+  await vi.advanceTimersByTimeAsync(10)
+  expect(read).toHaveBeenCalledTimes(2)
+  expect(publish).not.toHaveBeenCalled()
+  recoveredRead.resolve([
+    {
+      lane: "quality",
+      cues: [{ ...source[300]!, translation: "recovered" }],
+    } as SubtitleCandidateBundle,
+  ])
+  await vi.advanceTimersByTimeAsync(10)
+  expect(publish).toHaveBeenCalledTimes(1)
+  expect(publish.mock.calls[0]![0][0].translation).toBe("recovered")
+  expect(mock.translate).not.toHaveBeenCalled()
+  await engine.stop()
+  expect(session.taskCount).toBe(0)
+  expect(vi.getTimerCount()).toBe(0)
+})

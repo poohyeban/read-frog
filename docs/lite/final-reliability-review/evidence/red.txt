@@ -1,0 +1,278 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/subtitles/__tests__/lease-connection.test.ts (4 tests | 1 failed | 3 skipped) 1229ms
+   × bounds revocation RPCs and retained authority across 500 failed Stop/Start cycles of ONE session 1228ms
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts (6 tests | 5 failed | 1 skipped) 2087ms
+   × real SDK over local HTTP: same-text-ordered 887ms
+   × real SDK over local HTTP: same-text-unordered 119ms
+   × real SDK over local HTTP: same-text-fallback 179ms
+   × real SDK over local HTTP: zero-delta 586ms
+   × real SDK over local HTTP: partial-cache 314ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-stream-http.test.ts > real SDK over local HTTP: same-text-ordered
+AssertionError: expected [ { index: 1, …(1) }, …(1) ] to deeply equal [ { index: +0, …(1) }, …(1) ]
+
+- Expected
++ Received
+
+@@ -1,8 +1,8 @@
+  [
+    {
+-     "index": 0,
++     "index": 1,
+      "translation": "position-0:mockcue-1",
+    },
+    {
+      "index": 1,
+      "translation": "position-1:mockcue-1",
+
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:409:50
+    408|       const first = await run(true, 5, { offset: 700 }).promise
+    409|       expect(calls).toHaveLength(5)
+    410|       expect(first.map((cue) => cue.translation)).toEqual(Array.from({…
+       |              ^
+    411|       const second = run(true, 5, { offset: 700 })
+    412|       expect(await second.promise).toEqual(first)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-stream-http.test.ts > real SDK over local HTTP: same-text-ordered
+AssertionError: expected [ { index: 1, …(1) }, …(1) ] to deeply equal [ { index: +0, …(1) }, …(1) ]
+
+- Expected
++ Received
+
+@@ -1,8 +1,8 @@
+  [
+    {
+-     "index": 0,
++     "index": 1,
+      "translation": "position-0:mockcue-1",
+    },
+    {
+      "index": 1,
+      "translation": "position-1:mockcue-1",
+
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:410:50
+    408|       const first = await run(true, 5, { offset: 700 }).promise
+    409|       expect(calls).toHaveLength(5)
+    410|       expect(first.map((cue) => cue.translation)).toEqual(Array.from({…
+       |                                                  ^
+    411|       const second = run(true, 5, { offset: 700 })
+    412|       expect(await second.promise).toEqual(first)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-stream-http.test.ts > real SDK over local HTTP: same-text-unordered
+AssertionError: expected [ { index: 1, …(1) }, …(1) ] to deeply equal [ { index: 1, …(1) }, …(1) ]
+
+- Expected
++ Received
+
+@@ -2,9 +2,9 @@
+    {
+      "index": 1,
+      "translation": "position-1:mockcue-1",
+    },
+    {
+-     "index": 0,
++     "index": 1,
+      "translation": "position-0:mockcue-1",
+    },
+  ]
+
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:409:50
+    408|       const first = await run(true, 5, { offset: 700 }).promise
+    409|       expect(calls).toHaveLength(5)
+    410|       expect(first.map((cue) => cue.translation)).toEqual(Array.from({…
+       |              ^
+    411|       const second = run(true, 5, { offset: 700 })
+    412|       expect(await second.promise).toEqual(first)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-stream-http.test.ts > real SDK over local HTTP: same-text-unordered
+AssertionError: expected [ { index: 1, …(1) }, …(1) ] to deeply equal [ { index: 1, …(1) }, …(1) ]
+
+- Expected
++ Received
+
+@@ -2,9 +2,9 @@
+    {
+      "index": 1,
+      "translation": "position-1:mockcue-1",
+    },
+    {
+-     "index": 0,
++     "index": 1,
+      "translation": "position-0:mockcue-1",
+    },
+  ]
+
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:410:50
+    408|       const first = await run(true, 5, { offset: 700 }).promise
+    409|       expect(calls).toHaveLength(5)
+    410|       expect(first.map((cue) => cue.translation)).toEqual(Array.from({…
+       |                                                  ^
+    411|       const second = run(true, 5, { offset: 700 })
+    412|       expect(await second.promise).toEqual(first)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-stream-http.test.ts > real SDK over local HTTP: same-text-fallback
+AssertionError: expected [ { index: 1, …(1) }, …(1) ] to deeply equal [ { index: +0, …(1) }, …(1) ]
+
+- Expected
++ Received
+
+@@ -1,8 +1,8 @@
+  [
+    {
+-     "index": 0,
++     "index": 1,
+      "translation": "position-0:mockcue-1",
+    },
+    {
+      "index": 1,
+      "translation": "fallback:mockcue-1",
+
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:409:50
+    408|       const first = await run(true, 5, { offset: 700 }).promise
+    409|       expect(calls).toHaveLength(5)
+    410|       expect(first.map((cue) => cue.translation)).toEqual(Array.from({…
+       |              ^
+    411|       const second = run(true, 5, { offset: 700 })
+    412|       expect(await second.promise).toEqual(first)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-stream-http.test.ts > real SDK over local HTTP: same-text-fallback
+AssertionError: expected [ { index: 1, …(1) }, …(1) ] to deeply equal [ { index: +0, …(1) }, …(1) ]
+
+- Expected
++ Received
+
+@@ -1,8 +1,8 @@
+  [
+    {
+-     "index": 0,
++     "index": 1,
+      "translation": "position-0:mockcue-1",
+    },
+    {
+      "index": 1,
+      "translation": "fallback:mockcue-1",
+
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:410:50
+    408|       const first = await run(true, 5, { offset: 700 }).promise
+    409|       expect(calls).toHaveLength(5)
+    410|       expect(first.map((cue) => cue.translation)).toEqual(Array.from({…
+       |                                                  ^
+    411|       const second = run(true, 5, { offset: 700 })
+    412|       expect(await second.promise).toEqual(first)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-stream-http.test.ts > real SDK over local HTTP: zero-delta
+AssertionError: expected [ { at: 1884.549735, …(7) }, …(2) ] to have a length of 1 but got 3
+
+- Expected
++ Received
+
+- 1
++ 3
+
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:433:45
+    432|     }
+    433|     const cachedOffset = ++serial * 100
+    434|     await run(true, 5, { offset: cachedOffset }).promise
+       |     ^
+    435|     let cacheBefore = calls.length
+    436|     expect(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-stream-http.test.ts > real SDK over local HTTP: partial-cache
+AssertionError: expected [ { at: 2461.640537, …(7) }, …(5) ] to have a length of 5 but got 6
+
+- Expected
++ Received
+
+- 5
++ 6
+
+ ❯ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts:449:44
+    447|     cacheBefore = calls.length
+    448|     await run(true).promise
+    449|     expect(calls.slice(cacheBefore).every((c) => !c.stream)).toBe(true)
+       |                                            ^
+    450|     mock.config.videoSubtitles.customPromptsConfig = savedPrompts
+    451|     firstDelay = 100
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  src/utils/subtitles/__tests__/lease-connection.test.ts > bounds revocation RPCs and retained authority across 500 failed Stop/Start cycles of ONE session
+AssertionError: expected [ …(125250) ] to have a length of 500 but got 125250
+
+- Expected
++ Received
+
+- 500
++ 125250
+
+ ❯ src/utils/subtitles/__tests__/lease-connection.test.ts:101:45
+    100|   // must not become an unbounded retry backlog on this long-lived Ses…
+    101|   expect.soft(revokes).toHaveLength(500)
+    102|   expect.soft(new Set(revokes.map(([, data]) => data.lease)).size).toB…
+       |    ^
+    103|   expect.soft((session as any).revocations?.size ?? 0).toBe(0)
+    104|   await session.stop().catch(() => {})
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  src/utils/subtitles/__tests__/lease-connection.test.ts > bounds revocation RPCs and retained authority across 500 failed Stop/Start cycles of ONE session
+AssertionError: expected 500 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 500
+
+ ❯ src/utils/subtitles/__tests__/lease-connection.test.ts:103:68
+    102|   expect.soft(new Set(revokes.map(([, data]) => data.lease)).size).toB…
+    103|   expect.soft((session as any).revocations?.size ?? 0).toBe(0)
+    104|   await session.stop().catch(() => {})
+       |     ^
+    105|   session.dispose()
+    106|   await Promise.resolve()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  src/utils/subtitles/__tests__/lease-connection.test.ts > bounds revocation RPCs and retained authority across 500 failed Stop/Start cycles of ONE session
+AssertionError: expected [ …(125750) ] to have a length of 500 but got 125750
+
+- Expected
++ Received
+
+- 500
++ 125750
+
+ ❯ src/utils/subtitles/__tests__/lease-connection.test.ts:107:107
+    106|   await Promise.resolve()
+    107|   expect(rpc.send.mock.calls.filter(([name]) => name === "revokeSubtit…
+    108|   expect(all.every((p) => p.onMessage.listeners.size === 0 && p.onDisc…
+       |        ^
+    109| })
+    110| it("keeps a long-paused live session and independent export authorized…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  6 failed | 4 skipped (10)
+   Start at  06:37:13
+   Duration  2.95s (tests 78%, transform 12%, setup 6%, import 3%)

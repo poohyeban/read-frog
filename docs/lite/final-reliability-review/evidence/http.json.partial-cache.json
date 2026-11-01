@@ -1,0 +1,171 @@
+{
+  "samples": [
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.03858700000000681,
+        "provider": 0.10639600000013161,
+        "glossary": 0.2606630000000223,
+        "lease": 0.36080999999921914,
+        "ipc": 258.503369
+      },
+      "mode": "length-tail",
+      "size": 5,
+      "firstVisible": 35.97346099999959,
+      "firstConfirmed": 260.7511319999994,
+      "complete": 260.7511319999994,
+      "httpStarts": 5,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004636000000573404,
+        "provider": 0.02050000000053842,
+        "glossary": 0.07859499999995023,
+        "lease": 0.12554400000044552,
+        "ipc": 1.3886709999997038
+      },
+      "mode": "length-tail",
+      "size": 5,
+      "firstVisible": 2.1816969999999856,
+      "firstConfirmed": 2.1816969999999856,
+      "complete": 2.1816969999999856,
+      "httpStarts": 0,
+      "partials": 0,
+      "successful": 5
+    }
+  ],
+  "calls": [
+    {
+      "at": 6907.814349,
+      "stream": true,
+      "members": 5,
+      "memberIds": ["mockcue-700", "mockcue-701", "mockcue-702", "mockcue-703", "mockcue-704"],
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.305217999999513
+    },
+    {
+      "at": 6986.952992,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-701"],
+      "promptBytes": 1293,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 9.04928099999961
+    },
+    {
+      "at": 6987.059678,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-702"],
+      "promptBytes": 1293,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 9.258119000000079
+    },
+    {
+      "at": 7068.073657,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-703"],
+      "promptBytes": 1293,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 6.788032999999814
+    },
+    {
+      "at": 7068.461347,
+      "stream": true,
+      "members": 1,
+      "memberIds": ["mockcue-704"],
+      "promptBytes": 1293,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 6.651821999999811
+    }
+  ],
+  "admissionWaits": [
+    0.2820050000000265, 0.11772300000029645, 0.052907000000232074, 78.25937999999951,
+    84.87593599999946
+  ],
+  "queueWaits": [
+    0.21752999999989697, 0.06670800000028976, 1.525221999999303, 0.023183999999673688,
+    0.012768000000505708, 0.029843999999684456, 0.01348000000052707, 0.0059389999996710685,
+    0.005638999999973748, 0.004307000000153494
+  ],
+  "memberAttempts": {
+    "mockcue-700": 1,
+    "mockcue-701": 2,
+    "mockcue-702": 2,
+    "mockcue-703": 2,
+    "mockcue-704": 2
+  },
+  "resources": {
+    "active": 0,
+    "queued": 0,
+    "lanes": 0,
+    "timers": 0,
+    "counters": {
+      "starts": 5,
+      "cancellations": 0,
+      "rejected": 0,
+      "admissions": 5,
+      "eligibilityChecks": 13,
+      "maxActive": 2,
+      "maxQueued": 2
+    },
+    "domains": {
+      "7fb97250-42a3-4912-8d7a-39de7270ca7c": {
+        "active": 0,
+        "queued": 0,
+        "tokens": 98.69999999999999,
+        "cooldownUntil": 0
+      }
+    }
+  },
+  "fallbackRoutes": 0,
+  "leases": 0,
+  "tasks": 0,
+  "portListeners": 0,
+  "scope": "Real local HTTP and AI SDK; simulated IPC ports/storage, synthetic usage, not native MV3 or real model quality/cost"
+}

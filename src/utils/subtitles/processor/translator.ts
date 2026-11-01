@@ -24,7 +24,7 @@ import { runSubtitleRequest } from "../recovery"
 import { SubtitleResultError, subtitleFailure, unwrapSubtitleResult } from "../result"
 import { requestSubtitleStream } from "../stream-client"
 import { subtitleStreamStrategy } from "../stream-protocol"
-import { createSubtitleTranslationPlan } from "../translation-plan"
+import { createSubtitleBatchRequests, createSubtitleTranslationPlan } from "../translation-plan"
 import { assertSubtitleWindow, SUBTITLE_WORK_LIMITS } from "../work-policy"
 
 /**
@@ -349,14 +349,9 @@ export async function translateSubtitles(
       payload.executionStrategy = subtitleStreamStrategy(payload)
       const hashes = payload.executionStrategy
         ? new Map(
-            payload.members.map((member, index) => [
-              createSubtitleTranslationPlan({
-                ...payload,
-                ...member,
-                promptConfig: payload.promptConfig!,
-              }).request.hash,
-              index,
-            ]),
+            createSubtitleBatchRequests({ ...payload, promptConfig: payload.promptConfig! }).map(
+              (request, index) => [request.streamMemberKey ?? request.hash, index],
+            ),
           )
         : undefined
       const wire = await measure("ipc", () =>

@@ -129,26 +129,37 @@ describe("translation queue helpers", () => {
     })
   })
 
-  it("preserves a partially valid subtitle batch under its exact prompt and reuses its successful positions", async () => {
-    const { executeBatchTranslation } = await import("../translation-queues")
-    const data = ["first", "second", "third"].map((text) => ({
-      text,
-      provider: llmProvider,
-      hash: text,
-      scheduleAt: 0,
-      langConfig: DEFAULT_CONFIG.language,
-      subtitlePromptConfig: DEFAULT_CONFIG.videoSubtitles,
-    }))
-    const output = `一\n\n${BATCH_SEPARATOR}\n\n \n\n${BATCH_SEPARATOR}\n\n三`
-    executeTranslateMock.mockResolvedValue(output)
-    const prompt = async () => ({ systemPrompt: "translate", prompt: "batch" })
-    await expect(executeBatchTranslation(data, prompt)).resolves.toEqual(["一", "", "三"])
-    const row = translationCachePutMock.mock.calls[0]![0]
-    expect(row).toMatchObject({ translation: output, subtitleInputs: ["first", "second", "third"] })
-    translationCacheGetMock.mockResolvedValue(row)
-    await expect(executeBatchTranslation(data, prompt)).resolves.toEqual(["一", "", "三"])
-    expect(executeTranslateMock).toHaveBeenCalledTimes(1)
-  })
+  it.each([
+    ["一", "", "三"],
+    ["一", "", ""],
+    ["", "", "三"],
+    ["", "二", ""],
+  ])(
+    "preserves partial batch positions through cache serialization: %j",
+    async (...translations) => {
+      const { executeBatchTranslation } = await import("../translation-queues")
+      const data = ["first", "second", "third"].map((text) => ({
+        text,
+        provider: llmProvider,
+        hash: text,
+        scheduleAt: 0,
+        langConfig: DEFAULT_CONFIG.language,
+        subtitlePromptConfig: DEFAULT_CONFIG.videoSubtitles,
+      }))
+      const output = translations.join(`\n${BATCH_SEPARATOR}\n`)
+      executeTranslateMock.mockResolvedValue(output)
+      const prompt = async () => ({ systemPrompt: "translate", prompt: "batch" })
+      await expect(executeBatchTranslation(data, prompt)).resolves.toEqual(translations)
+      const row = translationCachePutMock.mock.calls[0]![0]
+      expect(row).toMatchObject({
+        translation: output,
+        subtitleInputs: ["first", "second", "third"],
+      })
+      translationCacheGetMock.mockResolvedValue(row)
+      await expect(executeBatchTranslation(data, prompt)).resolves.toEqual(translations)
+      expect(executeTranslateMock).toHaveBeenCalledTimes(1)
+    },
+  )
 
   it("routes only blank subtitle members through singleton recovery in the real queue factory", async () => {
     const { createSubtitlesTranslationQueues } = await import("../translation-queues")
