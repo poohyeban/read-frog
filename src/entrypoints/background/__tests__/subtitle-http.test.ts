@@ -150,6 +150,7 @@ it("runs the real SDK, scheduler, queues and content translator against local HT
     },
   })
   browser.runtime.onConnect.addListener = vi.fn<(...args: any[]) => any>()
+  browser.webNavigation.onCommitted.addListener = vi.fn<(...args: any[]) => any>()
   browser.tabs.onRemoved.addListener = vi.fn<(...args: any[]) => any>()
   const { setupSubtitlesTranslationHandlers } = await import("../subtitles-translation")
   const { subtitleWorkRuntime, SubtitleWorkRuntime } = await import("../subtitle-work")
@@ -268,3 +269,15 @@ it("runs the real SDK, scheduler, queues and content translator against local HT
     await new Promise<void>((resolve) => server.close(() => resolve()))
   }
 }, 20000)
+
+// This suite simulates message RPC; passive port lifecycle is covered by lease-connection and HTTP stream tests.
+vi.mock("@/utils/subtitles/lease-connection", async () => {
+  const { sendMessage } = await import("@/utils/message")
+  return {
+    SUBTITLE_LEASE_PORT: "subtitle-lease-v1",
+    openSubtitleLeaseConnection: (traceId: string) => ({
+      lease: sendMessage("openSubtitleLease", { traceId }),
+      close: () => {},
+    }),
+  }
+})

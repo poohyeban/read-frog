@@ -12,6 +12,8 @@ export type { SubtitleDiagnosticEvent } from "@/utils/subtitles/runtime-diagnost
 interface Lease {
   trace: string
   tab: number
+  frame: number
+  document?: string
 }
 interface RegisteredWork {
   registeredAt: number
@@ -28,10 +30,15 @@ export class SubtitleWorkRuntime extends SubtitleDiagnostics {
     return tab !== undefined && this.leases.get(id)?.tab === tab
   }
 
-  open(tab: number, traceId?: string): string {
+  open(tab: number, traceId?: string, owner?: { frameId?: number; documentId?: string }): string {
     if (this.leases.size >= 256) throw new SubtitleWorkRejected("queue-full")
     const id = `${this.boot}:${getRandomUUID()}`
-    this.leases.set(id, { trace: this.traceIdentity(tab, traceId ?? id), tab })
+    this.leases.set(id, {
+      trace: this.traceIdentity(tab, traceId ?? id),
+      tab,
+      frame: owner?.frameId ?? 0,
+      document: owner?.documentId,
+    })
     return id
   }
   register(tab: number, scope: string, context: SubtitleWorkContext) {
@@ -75,6 +82,18 @@ export class SubtitleWorkRuntime extends SubtitleDiagnostics {
     return [...this.leases].flatMap(([id, lease]) =>
       lease.tab === tab ? this.revoke(tab, id) : [],
     )
+  }
+  closeFrame(tab: number, frame: number, currentDocument?: string): string[] {
+    return [...this.leases].flatMap(([id, lease]) =>
+      lease.tab === tab &&
+      (frame === 0 || lease.frame === frame) &&
+      (!currentDocument || lease.document !== currentDocument)
+        ? this.revoke(tab, id)
+        : [],
+    )
+  }
+  get leaseCount() {
+    return this.leases.size
   }
   private live(scopes: readonly string[] | undefined): RegisteredWork[] {
     return (scopes ?? []).flatMap((scope) => {

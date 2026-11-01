@@ -1191,7 +1191,10 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       // Explicit development experiment; production builds retain complete responses.
       executionStrategy:
         import.meta.env.VITE_EXPERIMENTAL_SUBTITLE_STREAMING === "true" ? "stream-v1" : undefined,
-      onProvisional: (key, cues, lane) => scheduler.setProvisional(key, cues, lane),
+      onProvisional:
+        import.meta.env.VITE_EXPERIMENTAL_SUBTITLE_STREAMING === "true"
+          ? (key, cues, lane) => scheduler.setProvisional(key, cues, lane)
+          : undefined,
       trace,
       candidateCache: {
         read: createSubtitleCandidateReader(identity),

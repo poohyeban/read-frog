@@ -2,11 +2,16 @@ import type { SubtitleLane, SubtitleWorkContext } from "./work-policy"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
 import { sendMessage } from "@/utils/message"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
+import { openSubtitleLeaseConnection } from "./lease-connection"
 
 export type SubtitleTaskKind = "playback" | "segmentation" | "context" | "export"
 export interface SubtitleTaskOptions {
   executionStrategy?: "stream-v1"
   onProvisional?: (index: number, translation: string) => void
+  onPreparationTiming?: (
+    stage: "configuration" | "provider" | "lease" | "glossary" | "ipc",
+    elapsedMs: number,
+  ) => void
   kind?: SubtitleTaskKind
   lane?: SubtitleLane
   sessionId?: string
@@ -35,6 +40,7 @@ export class SubtitleSession {
   private tasks = new Set<SubtitleTask>()
   private disposers = new Set<() => void>()
   private leasePromise?: Promise<string>
+  private leaseConnection?: ReturnType<typeof openSubtitleLeaseConnection>
   private revocations = new Set<Promise<string>>()
   private stopping: Promise<void> = Promise.resolve()
   readonly identity: Readonly<{ videoId: string; trackId: string; revision: number }>
@@ -59,7 +65,15 @@ export class SubtitleSession {
   }
   private acquireLease(): Promise<string> {
     if (!this.leasePromise) {
-      const pending = sendMessage("openSubtitleLease", { traceId: this.id })
+      let connection: ReturnType<typeof openSubtitleLeaseConnection> | undefined
+      connection = openSubtitleLeaseConnection(this.id, () => {
+        if (!connection || this.leaseConnection !== connection) return
+        this.leaseConnection = undefined
+        this.leasePromise = undefined
+        // In-flight calls retain their own failure/attempt outcome. Never replay them here.
+      })
+      const pending = connection.lease
+      this.leaseConnection = connection
       this.leasePromise = pending
       void pending.catch(() => {
         if (this.leasePromise === pending) this.leasePromise = undefined
@@ -95,7 +109,12 @@ export class SubtitleSession {
         const current = await pending
         if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
         // Compare the promise too: concurrent stale replies join the same replacement.
-        if (current === work.lease && this.leasePromise === pending) this.leasePromise = undefined
+        if (current === work.lease && this.leasePromise === pending) {
+          this.leasePromise = undefined
+          const previous = this.leaseConnection
+          this.leaseConnection = undefined
+          previous?.close()
+        }
         const lease = await this.acquireLease()
         if (!task.isCurrent()) throw new TranslationCancelledError(sessionId)
         return { ...work, lease }
@@ -132,7 +151,10 @@ export class SubtitleSession {
     this.epoch++
     this.cancel()
     const lease = this.leasePromise
+    const connection = this.leaseConnection
+    this.leaseConnection = undefined
     this.leasePromise = undefined
+    connection?.close()
     if (lease) this.revocations.add(lease)
     const revocations = [...this.revocations]
     this.stopping = this.stopping

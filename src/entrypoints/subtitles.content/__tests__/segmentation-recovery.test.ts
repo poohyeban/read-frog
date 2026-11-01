@@ -121,3 +121,15 @@ it("recovers the same segmentation chunk after a temporary rejection without rep
   session.dispose()
   expect(vi.getTimerCount()).toBe(0)
 })
+
+// This suite simulates message RPC; passive port lifecycle is covered by lease-connection and HTTP stream tests.
+vi.mock("@/utils/subtitles/lease-connection", async () => {
+  const { sendMessage: rpcSend } = await import("@/utils/message")
+  return {
+    SUBTITLE_LEASE_PORT: "subtitle-lease-v1",
+    openSubtitleLeaseConnection: (traceId: string) => ({
+      lease: rpcSend("openSubtitleLease", { traceId }),
+      close: () => {},
+    }),
+  }
+})

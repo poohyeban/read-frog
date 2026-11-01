@@ -12,6 +12,7 @@ import { getSubtitlesTranslatePromptFromConfig } from "@/utils/prompts/subtitles
 import { canProviderRefGenerateText } from "@/utils/providers/provider-ref"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
 import { SUBTITLE_TRACE_EVENTS } from "@/utils/subtitles/diagnostics"
+import { SUBTITLE_LEASE_PORT } from "@/utils/subtitles/lease-connection"
 import { subtitleFailure } from "@/utils/subtitles/result"
 import {
   SUBTITLE_STREAM_PORT,
@@ -28,6 +29,7 @@ import { getCachedAiSegmentation, runAiSegmentSubtitles } from "./ai-segmentatio
 import { createStreamPortHandler } from "./background-stream"
 import { ensureInitializedConfig } from "./config"
 import { setupSubtitleCandidateHandlers } from "./subtitle-candidates"
+import { attachSubtitleLeaseConnection } from "./subtitle-lease-connection"
 import { subscribeSubtitleStream } from "./subtitle-stream-updates"
 import { subtitleWorkRuntime } from "./subtitle-work"
 import { getOrGenerateTranslationContextSummary } from "./translation-context-summary"
@@ -66,7 +68,7 @@ export function setupSubtitlesTranslationHandlers(): void {
     return sender.tab.id
   }
   onMessage("openSubtitleLease", ({ sender, data }) =>
-    subtitleWorkRuntime.open(tabFor(sender), data.traceId),
+    subtitleWorkRuntime.open(tabFor(sender), data.traceId, sender),
   )
   onMessage("revokeSubtitleLease", async ({ sender, data }) => {
     const scopes = subtitleWorkRuntime.revoke(tabFor(sender), data.lease)
@@ -299,7 +301,17 @@ export function setupSubtitlesTranslationHandlers(): void {
     }
   }
   onMessage("enqueueSubtitlesTranslateBatch", handleBatch)
-  browser.runtime?.onConnect?.addListener((port) => {
+  browser.runtime.onConnect.addListener((port) => {
+    if (port.name === SUBTITLE_LEASE_PORT) {
+      attachSubtitleLeaseConnection(
+        port,
+        (trace) => subtitleWorkRuntime.open(tabFor(port.sender), trace, port.sender),
+        (lease) => {
+          void cancelScopes(subtitleWorkRuntime.revoke(tabFor(port.sender), lease)).catch(() => {})
+        },
+      )
+      return
+    }
     if (port.name !== SUBTITLE_STREAM_PORT) return
     type Response =
       | { member: SubtitleStreamUpdate }
@@ -422,6 +434,23 @@ export function setupSubtitlesTranslationHandlers(): void {
       if (message.data.resultFormat !== "outcome") throw error
       return { outcome: subtitleFailure(error) }
     }
+  })
+  const cancelScopes = async (scopes: string[]) => {
+    scopes.forEach((scope) => cancelledScopes.markScope(scope))
+    const { requestQueue, batchQueue } = await queuesPromise
+    for (const scope of scopes) {
+      batchQueue.cancelByScope(scope)
+      requestQueue.cancelByScope(scope)
+    }
+  }
+  browser.webNavigation.onCommitted.addListener((details) => {
+    void cancelScopes(
+      subtitleWorkRuntime.closeFrame(
+        details.tabId,
+        details.frameId,
+        "documentId" in details ? details.documentId : undefined,
+      ),
+    ).catch(() => {})
   })
   const cancelScope = async (scope: string) => {
     subtitleWorkRuntime.release(scope, true)

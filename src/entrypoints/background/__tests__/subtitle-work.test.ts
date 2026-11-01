@@ -95,3 +95,29 @@ describe("boot-local subtitle execution authority", () => {
     ).toThrow("lease")
   })
 })
+
+it("reclaims 500 lost navigation revocations without expiring the current document or another frame", () => {
+  const runtime = new SubtitleWorkRuntime()
+  const exporting = runtime.open(7, "export", { frameId: 1, documentId: "export-document" })
+  for (let i = 0; i < 500; i++) {
+    const documentId = `document-${i}`
+    const lease = runtime.open(7, `trace-${i}`, { frameId: 2, documentId })
+    runtime.closeFrame(7, 2, documentId)
+    expect(runtime.hasLease(7, lease)).toBe(true)
+    expect(runtime.hasLease(7, exporting)).toBe(true)
+  }
+  expect(runtime.leaseCount).toBe(2)
+  runtime.closeTab(7)
+  expect(runtime.leaseCount).toBe(0)
+})
+
+it("main-document navigation also revokes old child-frame authority", () => {
+  const runtime = new SubtitleWorkRuntime()
+  runtime.open(7, "child", { frameId: 2, documentId: "old-child" })
+  const current = runtime.open(7, "new", { frameId: 0, documentId: "new-root" })
+  const otherTab = runtime.open(8, "export")
+  runtime.closeFrame(7, 0, "new-root")
+  expect(runtime.leaseCount).toBe(2)
+  expect(runtime.hasLease(7, current)).toBe(true)
+  expect(runtime.hasLease(8, otherTab)).toBe(true)
+})

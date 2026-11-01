@@ -1,0 +1,1352 @@
+{
+  "samples": [
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.21423600000002807,
+        "provider": 0.6009559999999965,
+        "glossary": 1.0583399999998164,
+        "lease": 1.748497000000043,
+        "ipc": 136.64591199999995
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 148.7898090000001,
+      "firstConfirmed": 148.7898090000001,
+      "complete": 148.7898090000001,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.008082000000058542,
+        "provider": 0.02641900000003261,
+        "glossary": 0.15887399999996887,
+        "lease": 0.26051300000017363,
+        "ipc": 95.66790700000001
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 36.35685400000011,
+      "firstConfirmed": 97.61272299999996,
+      "complete": 97.61272299999996,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.006699999999909778,
+        "provider": 0.020340000000032887,
+        "glossary": 0.09465999999997621,
+        "lease": 0.15003100000012637,
+        "ipc": 75.68073000000004
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 76.035212,
+      "firstConfirmed": 76.035212,
+      "complete": 76.035212,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.008272000000033586,
+        "provider": 0.02563800000007177,
+        "glossary": 0.09893599999986691,
+        "lease": 0.18451200000004064,
+        "ipc": 80.78965900000003
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 16.83909799999992,
+      "firstConfirmed": 81.789943,
+      "complete": 81.789943,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.005538000000115062,
+        "provider": 0.021892999999863605,
+        "glossary": 0.20385000000010223,
+        "lease": 0.2611050000000432,
+        "ipc": 75.0543819999998
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 75.49979800000006,
+      "firstConfirmed": 75.49979800000006,
+      "complete": 75.49979800000006,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004746999999952095,
+        "provider": 0.01999999999998181,
+        "glossary": 0.07302800000002208,
+        "lease": 0.12184899999988374,
+        "ipc": 74.11104600000021
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 14.525563000000147,
+      "firstConfirmed": 74.8443380000001,
+      "complete": 74.8443380000001,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.0056979999999384745,
+        "provider": 0.02133200000002944,
+        "glossary": 0.08517600000004677,
+        "lease": 0.141247999999905,
+        "ipc": 71.4035960000001
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 71.72386799999981,
+      "firstConfirmed": 71.72386799999981,
+      "complete": 71.72386799999981,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.005298000000038883,
+        "provider": 0.020110000000386208,
+        "glossary": 0.2109810000001744,
+        "lease": 0.3182190000002265,
+        "ipc": 71.60219400000005
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 14.725092000000132,
+      "firstConfirmed": 72.94505200000003,
+      "complete": 72.94505200000003,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.0095339999998032,
+        "provider": 0.08262100000001737,
+        "glossary": 0.12052799999992203,
+        "lease": 0.181847999999718,
+        "ipc": 73.14485699999977
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 73.61372900000015,
+      "firstConfirmed": 73.61372900000015,
+      "complete": 73.61372900000015,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0056579999995847174,
+        "provider": 0.061459999999897263,
+        "glossary": 0.09294699999963996,
+        "lease": 0.2887449999998353,
+        "ipc": 75.39047699999992
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 15.817031000000043,
+      "firstConfirmed": 76.81643799999983,
+      "complete": 76.81643799999983,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.004576999999699183,
+        "provider": 0.02222200000005614,
+        "glossary": 0.07769399999961024,
+        "lease": 0.11565999999993437,
+        "ipc": 70.33831599999985
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 70.6060910000001,
+      "firstConfirmed": 70.6060910000001,
+      "complete": 70.6060910000001,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.003645000000233267,
+        "provider": 0.020970999999917694,
+        "glossary": 0.07842500000015207,
+        "lease": 0.11426900000014939,
+        "ipc": 75.53071899999986
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 14.48243500000035,
+      "firstConfirmed": 76.14993099999992,
+      "complete": 76.14993099999992,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.004296000000067579,
+        "provider": 0.022022999999990134,
+        "glossary": 0.10209100000020044,
+        "lease": 0.17160299999977724,
+        "ipc": 76.50121899999976
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 76.88367299999982,
+      "firstConfirmed": 76.88367299999982,
+      "complete": 76.88367299999982,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0026739999998426356,
+        "provider": 0.013109999999869615,
+        "glossary": 0.10378300000002127,
+        "lease": 0.13686199999983728,
+        "ipc": 76.14053700000022
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 17.289671,
+      "firstConfirmed": 77.09244999999964,
+      "complete": 77.09244999999964,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.0034860000000662694,
+        "provider": 0.01159700000016528,
+        "glossary": 0.07549100000005637,
+        "lease": 0.10414399999990565,
+        "ipc": 73.17463499999985
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 73.41559099999995,
+      "firstConfirmed": 73.41559099999995,
+      "complete": 73.41559099999995,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0027439999998932763,
+        "provider": 0.011718000000200846,
+        "glossary": 0.07400899999993271,
+        "lease": 0.10714800000005198,
+        "ipc": 70.3505540000001
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 9.142455000000155,
+      "firstConfirmed": 70.83959500000037,
+      "complete": 70.83959500000037,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.003505000000131986,
+        "provider": 0.011868000000049506,
+        "glossary": 0.07135500000003958,
+        "lease": 0.1058060000000296,
+        "ipc": 70.94394900000043
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 71.2873440000003,
+      "firstConfirmed": 71.2873440000003,
+      "complete": 71.2873440000003,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004997999999886815,
+        "provider": 0.015292000000044936,
+        "glossary": 0.1018500000000131,
+        "lease": 0.14788799999996627,
+        "ipc": 73.72421699999995
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 13.363045000000056,
+      "firstConfirmed": 74.5931270000001,
+      "complete": 74.5931270000001,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.00359600000001592,
+        "provider": 0.01615399999991496,
+        "glossary": 0.0976940000000468,
+        "lease": 0.145144000000073,
+        "ipc": 74.99310100000002
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 75.30434000000014,
+      "firstConfirmed": 75.30434000000014,
+      "complete": 75.30434000000014,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.002694000000246888,
+        "provider": 0.011117000000012922,
+        "glossary": 0.07902699999976903,
+        "lease": 0.10950200000024779,
+        "ipc": 73.4886690000003
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 13.721432999999706,
+      "firstConfirmed": 74.18605699999989,
+      "complete": 74.18605699999989,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004006000000117638,
+        "provider": 0.012498999999934313,
+        "glossary": 0.08574600000019927,
+        "lease": 0.1411880000000565,
+        "ipc": 88.1196030000001
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 16.022284000000127,
+      "firstConfirmed": 88.97816700000021,
+      "complete": 88.97816700000021,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.00502699999969991,
+        "provider": 0.017866000000140048,
+        "glossary": 0.3184089999999742,
+        "lease": 0.42400499999985186,
+        "ipc": 74.999957
+      },
+      "mode": "normal",
+      "size": 8,
+      "firstVisible": 16.033592000000226,
+      "firstConfirmed": 76.21534800000018,
+      "complete": 76.21534800000018,
+      "httpStarts": 1,
+      "partials": 8,
+      "successful": 8
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.005568000000039319,
+        "provider": 0.015151999999943655,
+        "glossary": 0.07841600000028848,
+        "lease": 0.1208080000001246,
+        "ipc": 70.57209000000012
+      },
+      "mode": "normal",
+      "size": 12,
+      "firstVisible": 9.76335999999992,
+      "firstConfirmed": 71.61720099999957,
+      "complete": 71.61720099999957,
+      "httpStarts": 1,
+      "partials": 12,
+      "successful": 12
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0031749999998282874,
+        "provider": 0.011336000000028434,
+        "glossary": 0.06877100000019709,
+        "lease": 0.11788400000023103,
+        "ipc": 72.3648930000004
+      },
+      "mode": "normal",
+      "size": 20,
+      "firstVisible": 11.204963000000134,
+      "firstConfirmed": 73.7665579999998,
+      "complete": 73.7665579999998,
+      "httpStarts": 1,
+      "partials": 20,
+      "successful": 20
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0032049999999799184,
+        "provider": 0.011075999999775377,
+        "glossary": 0.06470600000011473,
+        "lease": 0.09314800000038304,
+        "ipc": 69.9749899999997
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 9.626036999999997,
+      "firstConfirmed": 70.41300600000022,
+      "complete": 70.41300600000022,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004145999999764172,
+        "provider": 0.011617000000114786,
+        "glossary": 0.06406399999968926,
+        "lease": 0.12591599999996106,
+        "ipc": 0.6406739999997626
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 1.1253879999999299,
+      "firstConfirmed": 1.1253879999999299,
+      "complete": 1.1253879999999299,
+      "httpStarts": 0,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0033349999998790736,
+        "provider": 0.0044769999999516585,
+        "glossary": 0.03438999999980297,
+        "lease": 0.05182699999977558,
+        "ipc": 69.47549299999991
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 69.76742299999978,
+      "firstConfirmed": 69.76742299999978,
+      "complete": 69.76742299999978,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004065999999966152,
+        "provider": 0.011646999999811669,
+        "glossary": 0.06795999999985725,
+        "lease": 0.100097999999889,
+        "ipc": 165.01938100000007
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 105.23038200000019,
+      "firstConfirmed": 165.55985800000008,
+      "complete": 165.55985800000008,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.003674999999930151,
+        "provider": 0.011977999999999156,
+        "glossary": 0.06712900000002264,
+        "lease": 0.09535100000039165,
+        "ipc": 183.84267200000022
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 122.28260699999964,
+      "firstConfirmed": 184.42292599999973,
+      "complete": 184.42292599999973,
+      "httpStarts": 2,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004075999999713531,
+        "provider": 0.0116280000002007,
+        "glossary": 0.0650060000002668,
+        "lease": 0.09264699999994264,
+        "ipc": 19.64645500000006
+      },
+      "mode": "disconnect",
+      "size": 5,
+      "firstVisible": 10.75530099999969,
+      "firstConfirmed": 20.305906999999934,
+      "complete": 20.305906999999934,
+      "httpStarts": 1,
+      "partials": 1,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0030739999997422274,
+        "provider": 0.014141000000108761,
+        "glossary": 0.07493999999996959,
+        "lease": 0.1364320000002408,
+        "ipc": 10.678067000000283
+      },
+      "mode": "disconnect-before-text",
+      "size": 5,
+      "firstVisible": 11.372069999999894,
+      "firstConfirmed": 11.372069999999894,
+      "complete": 11.372069999999894,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.002824000000146043,
+        "provider": 0.00898300000017116,
+        "glossary": 0.08114999999997963,
+        "lease": 0.10267100000010032,
+        "ipc": 70.99673600000006
+      },
+      "mode": "duplicate",
+      "size": 5,
+      "firstVisible": 10.310926999999992,
+      "firstConfirmed": 71.76831300000003,
+      "complete": 71.76831300000003,
+      "httpStarts": 1,
+      "partials": 1,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.003956000000016502,
+        "provider": 0.011727000000064436,
+        "glossary": 0.07817500000010114,
+        "lease": 0.10725800000000163,
+        "ipc": 219.1309799999999
+      },
+      "mode": "length",
+      "size": 5,
+      "firstVisible": 10.946673999999803,
+      "firstConfirmed": 219.68349500000022,
+      "complete": 219.68349500000022,
+      "httpStarts": 5,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.004908000000796164,
+        "provider": 0.012158000000454194,
+        "glossary": 0.06364399999984016,
+        "lease": 0.09250599999995757,
+        "ipc": 219.16797999999926
+      },
+      "mode": "length-tail",
+      "size": 5,
+      "firstVisible": 9.869916999999987,
+      "firstConfirmed": 219.78236500000003,
+      "complete": 219.78236500000003,
+      "httpStarts": 5,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "preparation": {
+        "configuration": 0.002874000000701926,
+        "provider": 0.011867000000165717,
+        "glossary": 0.06673899999987043,
+        "lease": 0.09556099999917933,
+        "ipc": 70.73556100000042
+      },
+      "mode": "generate-length",
+      "size": 5,
+      "firstVisible": 71.06360399999994,
+      "firstConfirmed": 71.06360399999994,
+      "complete": 71.06360399999994,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.788962999999967,
+        "provider": 0.0025840000007519848,
+        "glossary": 0.07957700000042678,
+        "lease": 0.09415900000021793,
+        "ipc": 71.44296399999985
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 15.81587000000036,
+      "firstConfirmed": 72.99081500000011,
+      "complete": 72.99081500000011,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "preparation": {
+        "configuration": 0.0070509999995920225,
+        "provider": 0.037365000000136206,
+        "glossary": 0.13762300000053074,
+        "lease": 0.2408850000001621,
+        "ipc": 69.49750999999924
+      },
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 9.285705999999664,
+      "firstConfirmed": 70.26004399999965,
+      "complete": 70.26004399999965,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    }
+  ],
+  "calls": [
+    {
+      "at": 1517.784607,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 1622.342075,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.292660999999953
+    },
+    {
+      "at": 1706.704971,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 1782.316368,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.2718099999999595
+    },
+    {
+      "at": 1865.302145,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 1937.689681,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.206032999999934
+    },
+    {
+      "at": 2011.998454,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2084.439799,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.165062999999918
+    },
+    {
+      "at": 2157.409669,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2235.313891,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.140926000000036
+    },
+    {
+      "at": 2307.439796,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2382.143957,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.156069000000116
+    },
+    {
+      "at": 2456.481577,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2537.174263,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.417214000000058
+    },
+    {
+      "at": 2608.472444,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2681.155556,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.166013999999905
+    },
+    {
+      "at": 2753.605173,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2826.817776,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.18674400000009
+    },
+    {
+      "at": 2900.290511,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2976.63926,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.263468000000103
+    },
+    {
+      "at": 3049.655403,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.129079999999703
+    },
+    {
+      "at": 3145.320076,
+      "stream": true,
+      "members": 8,
+      "promptBytes": 1553,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.195056999999906
+    },
+    {
+      "at": 3216.021527,
+      "stream": true,
+      "members": 12,
+      "promptBytes": 1703,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.153084999999919
+    },
+    {
+      "at": 3289.667929,
+      "stream": true,
+      "members": 20,
+      "promptBytes": 2007,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.134015999999974
+    },
+    {
+      "at": 3362.05244,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.145844000000125
+    },
+    {
+      "at": 3433.58759,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1109,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 3504.443076,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 99.58893799999987
+    },
+    {
+      "at": 3669.869217,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 429
+    },
+    {
+      "at": 3781.9137,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.170916000000034
+    },
+    {
+      "at": 3854.965065,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.134015999999974
+    },
+    {
+      "at": 3874.232863,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.20562099999961
+    },
+    {
+      "at": 3886.601351,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.123862000000372
+    },
+    {
+      "at": 3959.459199,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.1784630000001926
+    },
+    {
+      "at": 4032.587719,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.731375999999727
+    },
+    {
+      "at": 4033.179451,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.255815999999868
+    },
+    {
+      "at": 4106.539859,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 4.609883999999511
+    },
+    {
+      "at": 4107.038724,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.1527649999998175
+    },
+    {
+      "at": 4178.574477,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.125785000000178
+    },
+    {
+      "at": 4251.103001,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.343985999999859
+    },
+    {
+      "at": 4251.228055,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.329515000000356
+    },
+    {
+      "at": 4324.360054,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 4.689871000000494
+    },
+    {
+      "at": 4325.89114,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.862790000000132
+    },
+    {
+      "at": 4399.022252,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 4470.989508,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.198983000000226
+    },
+    {
+      "at": 4543.456151,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.127607999999782
+    },
+    {
+      "at": 4697.991187,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.1468260000001465
+    },
+    {
+      "at": 4851.099149,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.15963499999998
+    }
+  ],
+  "admissionWaits": [
+    0.8476990000001479, 0.20260800000005474, 0.6923209999999926, 0.14373199999999997,
+    0.13799300000005132, 0.08182099999999082, 0.08546599999999671, 0.08770000000004075,
+    0.1036919999996826, 0.14884900000015477, 0.10661700000036944, 0.05776500000001761,
+    0.08554600000024948, 0.07881699999961711, 0.06109999999989668, 0.054641000000174245,
+    0.13929499999994732, 0.08426400000007561, 0.08266099999991638, 0.0609190000000126,
+    0.05296799999996438, 0.06614700000000084, 0.053087999999661406, 0.05608299999994415,
+    0.04778000000032989, 0.0494619999999486, 0.055781999999908294, 0.08320299999968483,
+    0.11919600000010178, 0.1849130000000514, 0.050283999999919615, 0.044856999999865366,
+    0.06540700000005018, 0.06113000000004831, 0.03615300000001298, 71.65282200000001,
+    73.48457099999996, 0.14109800000005635, 0.0558019999998578, 0.03330999999980122,
+    70.59315200000037, 74.84299999999985, 0.05433999999968364, 0.050935000000208674,
+    0.1132869999992181, 0.058906999999635445, 0.12297100000068895
+  ],
+  "queueWaits": [
+    1.674537999999984, 0.05951700000014171, 0.039277999999967506, 0.057405000000017026,
+    0.03687400000012531, 0.06808000000000902, 0.03888799999981529, 0.036353999999846565,
+    0.038387000000057014, 0.052137000000129774, 0.03207800000018324, 0.025947999999971216,
+    0.030976000000009662, 0.028782000000319385, 0.09571099999993748, 0.020179000000098313,
+    0.026018999999905645, 0.03288800000018455, 0.02920300000005227, 0.027981000000181666,
+    0.02384600000004866, 0.027140000000144937, 0.022884000000431115, 0.04050999999981286,
+    0.019408999999996013, 0.022043000000394386, 0.013360000000375294, 0.02036999999972977,
+    0.02163200000040888, 110.41848700000037, 0.021291000000019267, 0.05763500000011845,
+    0.018978000000061, 0.13774299999977302, 0.14591500000005908, 0.01774599999998827,
+    0.008562999999867316, 0.0057280000000901055, 0.022643000000243774, 0.0386770000004617,
+    0.27381400000012945, 0.014932000000044354, 0.008593000000473694, 0.03018400000019028,
+    0.02190199999949982, 0.022832999999991443, 0.02913300000000163, 0.027630999999928463
+  ],
+  "scope": "Real local HTTP and AI SDK; simulated IPC ports/storage, synthetic usage, not native MV3 or real model quality/cost"
+}

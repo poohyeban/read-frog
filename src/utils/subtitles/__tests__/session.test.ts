@@ -110,3 +110,15 @@ it("does not emit a second control IPC when a cancelled task settles late", () =
   expect(rpc.cancel.mock.calls.map((call) => call[0])).toEqual(["cancelSubtitleRequests"])
   session.dispose()
 })
+
+// This suite simulates message RPC; passive port lifecycle is covered by lease-connection and HTTP stream tests.
+vi.mock("@/utils/subtitles/lease-connection", async () => {
+  const { sendMessage } = await import("@/utils/message")
+  return {
+    SUBTITLE_LEASE_PORT: "subtitle-lease-v1",
+    openSubtitleLeaseConnection: (traceId: string) => ({
+      lease: sendMessage("openSubtitleLease", { traceId }),
+      close: () => {},
+    }),
+  }
+})

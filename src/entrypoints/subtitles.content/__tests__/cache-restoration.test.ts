@@ -243,3 +243,15 @@ it("a partial cache hit never cancels a batch with uncovered members", async () 
     true,
   )
 })
+
+// This suite simulates message RPC; passive port lifecycle is covered by lease-connection and HTTP stream tests.
+vi.mock("@/utils/subtitles/lease-connection", async () => {
+  const { sendMessage } = await import("@/utils/message")
+  return {
+    SUBTITLE_LEASE_PORT: "subtitle-lease-v1",
+    openSubtitleLeaseConnection: (traceId: string) => ({
+      lease: sendMessage("openSubtitleLease", { traceId }),
+      close: () => {},
+    }),
+  }
+})

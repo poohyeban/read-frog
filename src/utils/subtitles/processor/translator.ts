@@ -260,7 +260,17 @@ export async function translateSubtitles(
   task: SubtitleTaskOptions = {},
 ): Promise<SubtitlesFragment[]> {
   assertSubtitleWindow(fragments)
-  const loadedConfig = configOverride ?? (await getLocalConfig())
+  const measure = <T>(
+    stage: Parameters<NonNullable<SubtitleTaskOptions["onPreparationTiming"]>>[0],
+    operation: () => Promise<T> | T,
+  ): Promise<T> => {
+    if (!task.onPreparationTiming) return Promise.resolve(operation())
+    const started = performance.now()
+    return Promise.resolve(operation()).finally(() =>
+      task.onPreparationTiming?.(stage, performance.now() - started),
+    )
+  }
+  const loadedConfig = await measure("configuration", () => configOverride ?? getLocalConfig())
   const config = loadedConfig ? structuredClone(loadedConfig) : null
   videoContext = { ...videoContext }
   task.signal?.throwIfAborted()
@@ -275,7 +285,9 @@ export async function translateSubtitles(
     }))
   }
 
-  const providerRef = await resolveSubtitlesProviderRef(config, "lineTranslation")
+  const providerRef = await measure("provider", () =>
+    resolveSubtitlesProviderRef(config, "lineTranslation"),
+  )
   if (!providerRef) {
     return fragments.map((f) => ({
       ...f,
@@ -290,17 +302,23 @@ export async function translateSubtitles(
   // Lease admission and the glossary snapshot are independent reads. Neither
   // can send a model request; translation still waits for both and checks abort.
   const [work, glossary] = await Promise.all([
-    task.work ??
-      task.prepareWork?.(
-        task.lane ?? (task.kind === "export" ? "export" : "fast"),
-        Math.min(...fragments.map((f) => f.start)),
-        Math.max(...fragments.map((f) => f.end)),
-      ),
+    measure(
+      "lease",
+      () =>
+        task.work ??
+        task.prepareWork?.(
+          task.lane ?? (task.kind === "export" ? "export" : "fast"),
+          Math.min(...fragments.map((f) => f.start)),
+          Math.max(...fragments.map((f) => f.end)),
+        ),
+    ),
     task.work || task.prepareWork
-      ? resolveGlossaryBatch(
-          fragments.map((f) => prepareTranslationText(f.text)),
-          config.glossary.enabled,
-          config.language.targetCode,
+      ? measure("glossary", () =>
+          resolveGlossaryBatch(
+            fragments.map((f) => prepareTranslationText(f.text)),
+            config.glossary.enabled,
+            config.language.targetCode,
+          ),
         )
       : undefined,
   ])
@@ -341,13 +359,15 @@ export async function translateSubtitles(
             ]),
           )
         : undefined
-      const wire = payload.executionStrategy
-        ? await requestSubtitleStream(payload, task.signal, ({ hash, translation }) => {
-            const index = hashes?.get(hash)
-            if (!task.signal?.aborted && index !== undefined)
-              task.onProvisional?.(index, translation)
-          })
-        : await sendMessage("enqueueSubtitlesTranslateBatch", payload)
+      const wire = await measure("ipc", () =>
+        payload.executionStrategy
+          ? requestSubtitleStream(payload, task.signal, ({ hash, translation }) => {
+              const index = hashes?.get(hash)
+              if (!task.signal?.aborted && index !== undefined)
+                task.onProvisional?.(index, translation)
+            })
+          : sendMessage("enqueueSubtitlesTranslateBatch", payload),
+      )
       if ("outcome" in wire) {
         unwrapSubtitleResult(wire)
         throw new Error("Missing batch results")

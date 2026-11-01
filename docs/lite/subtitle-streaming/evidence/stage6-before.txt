@@ -1,0 +1,27 @@
+
+ RUN  v5.0.3 /workspace/read-frog-stream-baseline
+
+ ❯ src/entrypoints/background/__tests__/subtitle-work.test.ts (6 tests | 1 failed) 32ms
+   × reclaims 500 lost navigation revocations without expiring the current document or another frame 9ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/background/__tests__/subtitle-work.test.ts > reclaims 500 lost navigation revocations without expiring the current document or another frame
+ResourceRejected: Request rejected: queue-full
+ ❯ SubtitleWorkRuntime.open src/entrypoints/background/subtitle-work.ts:32:40
+     30|
+     31|   open(tab: number, traceId?: string): string {
+     32|     if (this.leases.size >= 256) throw new SubtitleWorkRejected("queue…
+       |                                        ^
+     33|     const id = `${this.boot}:${getRandomUUID()}`
+     34|     this.leases.set(id, { trace: this.traceIdentity(tab, traceId ?? id…
+ ❯ src/entrypoints/background/__tests__/subtitle-work.test.ts:104:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  03:59:26
+   Duration  583ms (setup 42%, transform 41%, tests 11%, import 4%, worker 2%)
+

@@ -241,12 +241,46 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
     connect(pair.b)
     return pair.a
   }) as any) as typeof browser.runtime.connect
+  browser.webNavigation.onCommitted.addListener = vi.fn<(...args: any[]) => any>()
   browser.tabs.onRemoved.addListener = vi.fn<() => void>()
   const { setupSubtitlesTranslationHandlers } = await import("../subtitles-translation")
   const { subtitleWorkRuntime, SubtitleWorkRuntime } = await import("../subtitle-work")
   const { providerResourceScheduler } = await import("@/utils/providers/resource-runtime")
   const { translateSubtitles } = await import("@/utils/subtitles/processor/translator")
   const { SubtitleSession } = await import("@/utils/subtitles/session")
+  const admissionWaits: number[] = [],
+    queueWaits: number[] = []
+  const originalResourceRun = providerResourceScheduler.run.bind(providerResourceScheduler)
+  vi.spyOn(providerResourceScheduler, "run").mockImplementation(((options: any, execute: any) => {
+    const begin = performance.now()
+    return originalResourceRun(options, (signal, permit) => {
+      admissionWaits.push(performance.now() - begin)
+      return execute(signal, permit)
+    })
+  }) as typeof providerResourceScheduler.run)
+  const { RequestQueue } = await import("@/utils/request/request-queue")
+  const originalEnqueue = RequestQueue.prototype.enqueue
+  vi.spyOn(RequestQueue.prototype, "enqueue").mockImplementation(function (
+    this: InstanceType<typeof RequestQueue>,
+    thunk: any,
+    scheduleAt: number,
+    key?: string,
+    scopes?: string[],
+    options?: any,
+  ) {
+    const begin = performance.now()
+    return originalEnqueue.call(
+      this,
+      (signal, liveScopes) => {
+        queueWaits.push(performance.now() - begin)
+        return thunk(signal, liveScopes)
+      },
+      scheduleAt,
+      key,
+      scopes,
+      options,
+    )
+  } as typeof originalEnqueue)
   setupSubtitlesTranslationHandlers()
   const sessions: InstanceType<typeof SubtitleSession>[] = []
   const context = { videoTitle: "local mock", subtitlesTextContent: "" }
@@ -267,6 +301,7 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
       before = calls.length
     let first: number | undefined
     const partials: any[] = []
+    const preparation: Record<string, number> = {}
     const promise = translateSubtitles(
       Array.from({ length: size }, (_, i) => ({
         start: i * 1000,
@@ -277,6 +312,9 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
       mock.config,
       {
         ...task,
+        onPreparationTiming: (stage, elapsedMs) => {
+          preparation[stage] = elapsedMs
+        },
         executionStrategy: stream ? "stream-v1" : undefined,
         onProvisional: (index, translation) => {
           first ??= performance.now() - start
@@ -289,6 +327,7 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
         const complete = performance.now() - start
         samples.push({
           stream,
+          preparation,
           mode,
           size,
           firstVisible: first ?? complete,
@@ -432,6 +471,8 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
           {
             samples,
             calls,
+            admissionWaits,
+            queueWaits,
             scope:
               "Real local HTTP and AI SDK; simulated IPC ports/storage, synthetic usage, not native MV3 or real model quality/cost",
           },
