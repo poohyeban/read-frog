@@ -1091,4 +1091,23 @@ describe("universalVideoAdapter", () => {
       vi.useRealTimers()
     }
   })
+  it("preserves failure budgets on automatic resume and clears them only for explicit retry", async () => {
+    mocks.getLocalConfig.mockResolvedValue(structuredClone(DEFAULT_CONFIG))
+    const { adapter, subtitlesFetcher } = createAdapter([])
+    const a = adapter as any
+    a.sessionVideoId = ""
+    a.sessionProcessedFragments = [{ text: "same", start: 0, end: 1000 }]
+    subtitlesFetcher.shouldUseSameTrack.mockResolvedValue(true)
+    const clearFailed = vi.fn<() => void>(),
+      clearFailedStarts = vi.fn<() => void>()
+    a.translationCoordinator = { clearFailed, start: vi.fn<() => void>() }
+    a.segmentationPipeline = { clearFailedStarts }
+    await a.startTranslation()
+    await a.startTranslation({ quiet: true })
+    expect(clearFailed).not.toHaveBeenCalled()
+    expect(clearFailedStarts).not.toHaveBeenCalled()
+    await a.startTranslation({ retryFailures: true })
+    expect(clearFailed).toHaveBeenCalledTimes(1)
+    expect(clearFailedStarts).toHaveBeenCalledTimes(1)
+  })
 })

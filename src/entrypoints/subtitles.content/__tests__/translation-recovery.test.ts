@@ -304,3 +304,35 @@ it.each([false, true])(
     expect(vi.getTimerCount()).toBe(0)
   },
 )
+
+it.each(["seek", "hidden", "restart"])(
+  "re-evaluates an unspent recovery after long %s without a new budget",
+  async (event) => {
+    vi.useFakeTimers()
+    vi.mocked(translateSubtitles).mockImplementationOnce(async (cues) =>
+      cues.map((cue) => ({
+        ...cue,
+        translation: "",
+        translationOutcome: { status: "temporary", message: "intake busy", code: "queue-full" },
+      })),
+    )
+    const { coordinator, video } = setup([{ text: "resume after idle", start: 0, end: 10000 }])
+    coordinator.start()
+    await vi.advanceTimersByTimeAsync(0)
+    if (event === "restart") await coordinator.stop()
+    if (event === "seek") {
+      video.currentTime = 300
+      video.dispatchEvent(new Event("seeking"))
+      await vi.advanceTimersByTimeAsync(0)
+    }
+    vi.setSystemTime(Date.now() + 180000)
+    video.currentTime = 0
+    if (event === "restart") coordinator.start()
+    else if (event === "hidden") document.dispatchEvent(new Event("visibilitychange"))
+    else video.dispatchEvent(new Event("seeked"))
+    await vi.advanceTimersByTimeAsync(0)
+    expect(translateSubtitles).toHaveBeenCalledTimes(2)
+    await coordinator.stop()
+    expect(vi.getTimerCount()).toBe(0)
+  },
+)

@@ -75,6 +75,7 @@ type SubtitlesToggleSource = "manual" | "auto" | "shortcut"
 const QUIET_AUTO_START_PLATFORMS: ReadonlySet<SubtitlesPlatform> = new Set(["xcom"])
 
 interface SubtitlesStartOptions {
+  retryFailures?: boolean
   /** Stay silent when the video has no subtitles; see `QUIET_AUTO_START_PLATFORMS`. */
   quiet?: boolean
 }
@@ -755,6 +756,7 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
   private toggleSubtitlesWithSource(enabled: boolean, source: SubtitlesToggleSource) {
     return this.handleToggleSubtitles(enabled, {
       // Only an automatic start goes quiet: a reader who asked still hears why nothing came.
+      retryFailures: source !== "auto",
       quiet: source === "auto" && QUIET_AUTO_START_PLATFORMS.has(this.config.platform),
     })
   }
@@ -955,7 +957,10 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
     if (restart) void this.startTranslation()
   }
 
-  private async startTranslation({ quiet = false }: SubtitlesStartOptions = {}) {
+  private async startTranslation({
+    quiet = false,
+    retryFailures = false,
+  }: SubtitlesStartOptions = {}) {
     const operationId = this.switchOperationId
     this.adOverlappedLoad = subtitlesStore.get(adPlayingAtom)
     // Only the caption load is what an ad can break; a failure after it is the translation's own.
@@ -983,9 +988,11 @@ export class UniversalVideoAdapter implements SubtitlesProvidersAdapter {
       if (useSameTrack && hasCurrentSession) {
         // Translated sessions create a coordinator; passthrough sessions only cache rendered fragments.
         if (this.translationCoordinator) {
-          // Clear failed states to allow retry on resume
-          this.translationCoordinator.clearFailed()
-          this.segmentationPipeline?.clearFailedStarts()
+          // Playback/navigation resumes cannot replenish exhausted attempt budgets.
+          if (retryFailures) {
+            this.translationCoordinator.clearFailed()
+            this.segmentationPipeline?.clearFailedStarts()
+          }
           this.translationCoordinator.start()
         } else {
           this.subtitlesScheduler?.supplementSubtitles(this.sessionProcessedFragments)

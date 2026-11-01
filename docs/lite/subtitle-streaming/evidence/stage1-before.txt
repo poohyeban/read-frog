@@ -1,0 +1,70 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/subtitles/__tests__/failure-lifetime.test.ts (6 tests | 2 failed) 14ms
+   × keeps an unspent safe recovery available after the former two-minute expiry 9ms
+   × honors a long Retry-After without declaring it permanently blocked or replenishing attempts 3ms
+ ❯ src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts (16 tests | 3 failed) 278ms
+   × re-evaluates an unspent recovery after long seek without a new budget 5ms
+   × re-evaluates an unspent recovery after long hidden without a new budget 2ms
+   × re-evaluates an unspent recovery after long restart without a new budget 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts > re-evaluates an unspent recovery after long seek without a new budget
+ FAIL  src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts > re-evaluates an unspent recovery after long hidden without a new budget
+ FAIL  src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts > re-evaluates an unspent recovery after long restart without a new budget
+AssertionError: expected "vi.fn()" to be called 2 times, but got 1 times
+ ❯ src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts:322:30
+    320|   else video.dispatchEvent(new Event("seeked"))
+    321|   await vi.advanceTimersByTimeAsync(0)
+    322|   expect(translateSubtitles).toHaveBeenCalledTimes(2)
+       |                              ^
+    323|   await coordinator.stop()
+    324|   expect(vi.getTimerCount()).toBe(0)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  src/utils/subtitles/__tests__/failure-lifetime.test.ts > keeps an unspent safe recovery available after the former two-minute expiry
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/utils/subtitles/__tests__/failure-lifetime.test.ts:10:43
+      8|   expect(failures.blocked("cue", 999)).toBe(true)
+      9|   expect(failures.blocked("cue", 1000)).toBe(false)
+     10|   expect(failures.blocked("cue", 180000)).toBe(false)
+       |                                           ^
+     11|   failures.record("cue", temporary, 180000)
+     12|   expect(failures.blocked("cue", 181999)).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  src/utils/subtitles/__tests__/failure-lifetime.test.ts > honors a long Retry-After without declaring it permanently blocked or replenishing attempts
+AssertionError: expected Infinity to be 180000 // Object.is equality
+
+- Expected
++ Received
+
+- 180000
++ Infinity
+
+ ❯ src/utils/subtitles/__tests__/failure-lifetime.test.ts:21:34
+     19|   const failures = new SubtitleFailures()
+     20|   failures.record("cue", { ...temporary, retryAfterMs: 180000 })
+     21|   expect(failures.nextRetryAt()).toBe(180000)
+       |                                  ^
+     22|   expect(failures.blocked("cue", 179999)).toBe(true)
+     23|   expect(failures.blocked("cue", 180000)).toBe(false)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  5 failed | 17 passed (22)
+   Start at  03:33:10
+   Duration  3.38s (transform 31%, import 31%, environment 21%, setup 9%, tests 8%)

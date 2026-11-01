@@ -192,11 +192,13 @@ export class TranslationCoordinator {
     this.ready.quality.clear()
     this.readyList = { fast: [], quality: [] }
     this.failed.clear()
+    this.contextFailures.clear()
     this.lastEmittedState = "idle"
   }
   clearFailed() {
     this.failed.clear()
     this.contextFailures.clear()
+    this.scheduleRecovery()
     this.requestTick()
   }
   private scheduleRecovery() {
@@ -208,8 +210,9 @@ export class TranslationCoordinator {
         () => {
           this.recoveryTimer = undefined
           this.requestTick()
+          this.scheduleRecovery()
         },
-        Math.max(1, next - Date.now()),
+        Math.min(2147483647, Math.max(1, next - Date.now())),
       )
   }
   private detach() {
@@ -401,12 +404,14 @@ export class TranslationCoordinator {
           for (const cue of bundle.cues) {
             this.ready[bundle.lane].set(cueIdentity(cue), cue)
             this.translated.add(`${bundle.lane}:${cueIdentity(cue)}`)
+            this.failed.delete(`${bundle.lane}:${cueIdentity(cue)}`)
           }
           restored[bundle.lane].push(...bundle.cues)
         }
         if (restored.quality.length) this.options.segmentationPipeline?.restore(restored.quality)
         for (const lane of ["fast", "quality"] as const)
           if (restored[lane].length) this.options.onTranslated(restored[lane], lane)
+        this.scheduleRecovery()
         this.readyList = {
           fast: [...this.ready.fast.values()],
           quality: [...this.ready.quality.values()],
@@ -477,6 +482,7 @@ export class TranslationCoordinator {
       .then((summary) => {
         if (task.isCurrent()) {
           this.contextFailures.delete(key)
+          this.scheduleRecovery()
           if (summary) this.videoContext = { ...this.videoContext, summary }
         }
       })
@@ -592,6 +598,7 @@ export class TranslationCoordinator {
       if (this.pending.delete(batch))
         for (const cue of cues) this.pendingKeys.delete(`${batch.lane}:${cueIdentity(cue)}`)
       task.complete()
+      this.scheduleRecovery()
       this.requestTick()
     }
   }

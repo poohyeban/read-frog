@@ -115,6 +115,7 @@ export class SegmentationPipeline {
         break
       }
     }
+    this.scheduleRecovery()
   }
   private chunks: SubtitlesFragment[][]
   private chunkTimeline: CueTimeline
@@ -221,6 +222,24 @@ export class SegmentationPipeline {
 
   clearFailedStarts() {
     this.failed.clear()
+    this.scheduleRecovery()
+  }
+
+  private scheduleRecovery() {
+    clearTimeout(this.recoveryTimer)
+    this.recoveryTimer = undefined
+    const next = this.failed.nextRetryAt()
+    if (!this.stopped && Number.isFinite(next))
+      this.recoveryTimer = setTimeout(
+        () => {
+          this.recoveryTimer = undefined
+          if (!this.stopped) {
+            void this.runLoop()
+            this.scheduleRecovery()
+          }
+        },
+        Math.min(2147483647, Math.max(1, next - Date.now())),
+      )
   }
 
   private async runLoop() {
@@ -300,19 +319,10 @@ export class SegmentationPipeline {
     } catch (error) {
       if (this.stopped || generation !== this.generation || !task.isCurrent()) return false
       this.failed.record(key, subtitleFailure(error))
-      clearTimeout(this.recoveryTimer)
-      const next = this.failed.nextRetryAt()
-      if (Number.isFinite(next))
-        this.recoveryTimer = setTimeout(
-          () => {
-            this.recoveryTimer = undefined
-            if (!this.stopped) void this.runLoop()
-          },
-          Math.max(1, next - Date.now()),
-        )
       // Invalid/failed AI results never become Quality Ready; Fast remains independent.
     } finally {
       task.complete()
+      this.scheduleRecovery()
       if (this.task === task) {
         this.task = null
         this.processingChunk = null

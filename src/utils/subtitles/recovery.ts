@@ -32,42 +32,52 @@ export async function runSubtitleRequest<T>(
   }
 }
 
+type FailureOutcome = Exclude<SubtitleOutcome, { status: "success" } | { status: "empty" }>
 interface Failure {
-  outcome: SubtitleOutcome
+  outcome: FailureOutcome
   failures: number
   retryAt: number
-  expiresAt: number
 }
-/** Per source member/window. At most two delayed recoveries in a two-minute lifetime. */
+export type SubtitleFailureState =
+  | "clear"
+  | "waiting"
+  | "ready"
+  | "exhausted"
+  | "manual"
+  | "cancelled"
+
+/** At most two safe intake recoveries per source per session. Elapsed time never resets the budget. */
 export class SubtitleFailures {
   private entries = new Map<string, Failure>()
   record(key: string, outcome: SubtitleOutcome, now = Date.now()) {
     if (outcome.status === "success" || outcome.status === "empty") return this.delete(key)
-    const previous = this.entries.get(key)
-    const failures = (previous?.failures ?? 0) + 1
-    const expiresAt = previous?.expiresAt ?? now + 120_000
-    const delay = Math.max(1000 * 2 ** (failures - 1), outcome.retryAfterMs ?? 0)
+    const failures = (this.entries.get(key)?.failures ?? 0) + 1
+    const delay = Math.max(1000 * 2 ** Math.min(failures - 1, 30), outcome.retryAfterMs ?? 0)
     const retryAt =
-      outcome.status === "temporary" &&
-      !outcome.retryExhausted &&
-      failures <= 2 &&
-      now + delay <= expiresAt
+      outcome.status === "temporary" && !outcome.retryExhausted && failures <= 2
         ? now + delay
         : Infinity
-    this.entries.set(key, { outcome, failures, retryAt, expiresAt })
+    this.entries.set(key, { outcome, failures, retryAt })
   }
   has(key: string) {
     return this.entries.has(key)
   }
-  blocked(key: string, now = Date.now()) {
+  state(key: string, now = Date.now()): SubtitleFailureState {
     const entry = this.entries.get(key)
-    return !!entry && (entry.retryAt > now || entry.expiresAt < now)
+    if (!entry) return "clear"
+    if (entry.outcome.status === "cancelled") return "cancelled"
+    if (entry.outcome.status === "permanent") return "manual"
+    if (!Number.isFinite(entry.retryAt)) return "exhausted"
+    return now < entry.retryAt ? "waiting" : "ready"
+  }
+  blocked(key: string, now = Date.now()) {
+    const state = this.state(key, now)
+    return state !== "clear" && state !== "ready"
   }
   nextRetryAt() {
     let next = Infinity
     for (const entry of this.entries.values())
-      if (entry.retryAt > Date.now() && entry.retryAt <= entry.expiresAt)
-        next = Math.min(next, entry.retryAt)
+      if (entry.retryAt > Date.now()) next = Math.min(next, entry.retryAt)
     return next
   }
   delete(key: string) {
