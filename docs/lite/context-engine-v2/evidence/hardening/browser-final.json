@@ -1,0 +1,208 @@
+{
+  "browser": "154.0.8037.57",
+  "kind": "Real Chromium DOM + local HTTP mock transport; SDK/queues verified separately",
+  "cases": [
+    {
+      "mode": "bilingual",
+      "units": 1,
+      "giant": false,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": false,
+      "http": 1
+    },
+    {
+      "mode": "bilingual",
+      "units": 6,
+      "giant": false,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": true,
+      "http": 6
+    },
+    {
+      "mode": "bilingual",
+      "units": 6,
+      "giant": true,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": false,
+      "http": 6
+    },
+    {
+      "mode": "translationOnly",
+      "units": 1,
+      "giant": false,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": false,
+      "http": 1
+    },
+    {
+      "mode": "translationOnly",
+      "units": 6,
+      "giant": false,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": true,
+      "http": 6
+    },
+    {
+      "mode": "translationOnly",
+      "units": 6,
+      "giant": true,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": false,
+      "http": 6
+    },
+    {
+      "mode": "bilingual",
+      "manualAfterFullPageStop": true,
+      "http": 1
+    },
+    {
+      "mode": "translationOnly",
+      "manualAfterFullPageStop": true,
+      "http": 1
+    }
+  ],
+  "hardening": [
+    {
+      "mode": "bilingual",
+      "sourceEdited": true,
+      "http": 1
+    },
+    {
+      "mode": "translationOnly",
+      "sourceEdited": true,
+      "http": 1
+    },
+    {
+      "iterations": 1000,
+      "projectionDelta": 0,
+      "rebuildDelta": 0,
+      "staleDelta": 0,
+      "summaryRPCs": 0,
+      "after": {
+        "scopes": 0,
+        "snapshots": 0,
+        "activePreparations": 0,
+        "workEntries": 0,
+        "capacity": 128,
+        "resolutions": 1036,
+        "hits": 1001,
+        "rebuilds": 15,
+        "projections": 15,
+        "validations": 1005,
+        "validationNodes": 7004,
+        "styleReads": 11171,
+        "unchangedValidations": 1001,
+        "semanticParses": 1000,
+        "semanticInvalidations": 4,
+        "metadataProjections": 15,
+        "visitedNodes": 157,
+        "stalePreparations": 0,
+        "activeExtractions": 0,
+        "evictions": 0,
+        "resolveMs": 27.799999997019768,
+        "readMs": 3298.4000000730157,
+        "invalidation": {
+          "registrations": 0,
+          "observers": 0,
+          "observedRoots": 0,
+          "batches": 1070,
+          "records": 3022,
+          "invalidations": 1010,
+          "processingMs": 177.79999995231628,
+          "source": 1016,
+          "semantic": 0,
+          "visibility": 2,
+          "unknown": 2004
+        }
+      },
+      "http": 0
+    }
+  ],
+  "lifetime": [
+    {
+      "cycles": 100,
+      "acquired": 1500,
+      "peak": 15,
+      "after": {
+        "scopes": 0,
+        "snapshots": 0,
+        "activePreparations": 0,
+        "workEntries": 0,
+        "capacity": 128,
+        "resolutions": 1500,
+        "hits": 0,
+        "rebuilds": 1500,
+        "projections": 1500,
+        "validations": 0,
+        "validationNodes": 0,
+        "styleReads": 7500,
+        "unchangedValidations": 0,
+        "semanticParses": 0,
+        "semanticInvalidations": 0,
+        "metadataProjections": 0,
+        "visitedNodes": 4500,
+        "stalePreparations": 0,
+        "activeExtractions": 0,
+        "evictions": 0,
+        "resolveMs": 96.20000002533197,
+        "readMs": 2711.2000000029802,
+        "invalidation": {
+          "registrations": 0,
+          "observers": 0,
+          "observedRoots": 0,
+          "batches": 99,
+          "records": 99,
+          "invalidations": 0,
+          "processingMs": 24.599999994039536,
+          "source": 99,
+          "semantic": 0,
+          "visibility": 0,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "cycles": 100,
+      "acquired": 1500,
+      "peak": 15,
+      "after": {
+        "scopes": 0,
+        "snapshots": 0,
+        "activePreparations": 0,
+        "workEntries": 0,
+        "capacity": 128,
+        "resolutions": 1500,
+        "hits": 0,
+        "rebuilds": 1500,
+        "projections": 1500,
+        "validations": 0,
+        "validationNodes": 0,
+        "styleReads": 7500,
+        "unchangedValidations": 0,
+        "semanticParses": 0,
+        "semanticInvalidations": 0,
+        "metadataProjections": 0,
+        "visitedNodes": 4500,
+        "stalePreparations": 0,
+        "activeExtractions": 0,
+        "evictions": 0,
+        "resolveMs": 110.80000005662441,
+        "readMs": 2597.1000000312924,
+        "invalidation": {
+          "registrations": 0,
+          "observers": 0,
+          "observedRoots": 0,
+          "batches": 99,
+          "records": 99,
+          "invalidations": 0,
+          "processingMs": 37.10000002384186,
+          "source": 99,
+          "semantic": 0,
+          "visibility": 0,
+          "unknown": 0
+        }
+      }
+    }
+  ],
+  "totalHTTP": 30
+}

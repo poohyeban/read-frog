@@ -42,3 +42,23 @@ most once before enqueue; Provider budgets belong to the unchanged existing
 AttemptContext. A cancelled consumer's result is ignored even if an uncancellable
 local operation later resolves. This is distinct from claiming that every browser
 or database operation can be physically interrupted.
+
+## Production hardening invariants
+
+17. A mutation notification is a candidate, not proof of new content or a render veto.
+18. Decorative updates preserve the snapshot and do not duplicate live source projection;
+    unknown parser-sensitive classes require bounded actual semantic verification.
+19. Metadata-only prompts do not rebuild for unused body edits; a changed requested
+    metadata field, link, heading, explicit quote or eligible source must be refreshed.
+20. A collection affiliation belongs to the current semantic parent. Last-survivor
+    memory cannot follow a member into an unproven standalone view.
+21. Source eligibility includes ancestor/Shadow host privacy. Normal offscreen,
+    clipped accessible and nonzero-opacity source remains eligible.
+22. No new live DOM strong reference is retained by validation closures: roots and
+    metadata documents are weak; detached serialized validation data is bounded.
+23. Report local projection/rebuild work, mock RPCs and actual HTTP separately.
+
+`context/__tests__/hardening.test.ts` is the per-case regression matrix. The original
+capacity test now proves both candidate coalescing (one pending extraction) and the
+unchanged capacity-two bound under explicit overlapping invalidations. It still
+checks teardown, rather than dropping the old capacity protection.

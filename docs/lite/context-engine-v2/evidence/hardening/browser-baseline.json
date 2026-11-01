@@ -1,0 +1,131 @@
+{
+  "browser": "154.0.8037.57",
+  "kind": "Real Chromium DOM + local HTTP mock transport; SDK/queues verified separately",
+  "cases": [
+    {
+      "mode": "bilingual",
+      "units": 1,
+      "giant": false,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": false,
+      "http": 1
+    },
+    {
+      "mode": "bilingual",
+      "units": 6,
+      "giant": false,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": true,
+      "http": 6
+    },
+    {
+      "mode": "bilingual",
+      "units": 6,
+      "giant": true,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": false,
+      "http": 6
+    },
+    {
+      "mode": "translationOnly",
+      "units": 1,
+      "giant": false,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": false,
+      "http": 1
+    },
+    {
+      "mode": "translationOnly",
+      "units": 6,
+      "giant": false,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": true,
+      "http": 6
+    },
+    {
+      "mode": "translationOnly",
+      "units": 6,
+      "giant": true,
+      "unrelatedRemoval": true,
+      "partialBeforeRemoval": false,
+      "http": 6
+    },
+    {
+      "mode": "bilingual",
+      "manualAfterFullPageStop": true,
+      "http": 1
+    },
+    {
+      "mode": "translationOnly",
+      "manualAfterFullPageStop": true,
+      "http": 1
+    }
+  ],
+  "lifetime": [
+    {
+      "cycles": 100,
+      "acquired": 1500,
+      "peak": 15,
+      "after": {
+        "scopes": 0,
+        "snapshots": 0,
+        "activePreparations": 0,
+        "workEntries": 0,
+        "capacity": 128,
+        "resolutions": 1500,
+        "hits": 0,
+        "rebuilds": 1500,
+        "projections": 1500,
+        "metadataProjections": 0,
+        "visitedNodes": 4500,
+        "stalePreparations": 0,
+        "activeExtractions": 0,
+        "evictions": 0,
+        "resolveMs": 27.69999998062849,
+        "readMs": 746.2000000029802,
+        "invalidation": {
+          "registrations": 0,
+          "observers": 0,
+          "observedRoots": 0,
+          "batches": 99,
+          "records": 99,
+          "invalidations": 0,
+          "processingMs": 8.299999974668026
+        }
+      }
+    },
+    {
+      "cycles": 100,
+      "acquired": 1500,
+      "peak": 15,
+      "after": {
+        "scopes": 0,
+        "snapshots": 0,
+        "activePreparations": 0,
+        "workEntries": 0,
+        "capacity": 128,
+        "resolutions": 1500,
+        "hits": 0,
+        "rebuilds": 1500,
+        "projections": 1500,
+        "metadataProjections": 0,
+        "visitedNodes": 4500,
+        "stalePreparations": 0,
+        "activeExtractions": 0,
+        "evictions": 0,
+        "resolveMs": 23.100000016391277,
+        "readMs": 669.600000038743,
+        "invalidation": {
+          "registrations": 0,
+          "observers": 0,
+          "observedRoots": 0,
+          "batches": 99,
+          "records": 99,
+          "invalidations": 0,
+          "processingMs": 7.599999979138374
+        }
+      }
+    }
+  ],
+  "totalHTTP": 28
+}

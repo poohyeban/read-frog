@@ -19,3 +19,27 @@ physical requests, or scope/observer counts failing to converge. Revert the coor
 V2 implementation, not only the safety guards. No cache/config schema rollback or
 user data deletion is necessary. Existing stable scheduler, queue, subtitle and Hub
 architectures were deliberately retained.
+
+## 7321d6f9 hardening follow-up
+
+- **P1 native acceptance:** managed blocklist still prevents native MV3 loading.
+  Real Chromium DOM/local HTTP pass independently; native worker restarts, IPC,
+  frame injection, real popup/input interactions, bfcache and long multi-tab use
+  remain to be accepted on an authorized browser. No policy was bypassed.
+- **P2 visibility boundary:** the explicit capture-time/observed-mutation policy
+  covers opacity zero, inert, content visibility, class hiding and Shadow ancestry.
+  CSSOM changes, CSS animation progression/media changes without DOM mutations,
+  and arbitrary relational selectors outside acquired dependencies can evade the
+  observer. There is no claim of complete CSS hiding detection. Cached context has
+  the existing five-minute TTL; do not use this engine as a secrets/DLP boundary.
+  Prefer real application privacy attributes and keep sensitive values in excluded
+  controls. Any reproducible leak inside the stated policy is a blocking defect.
+- **P2 conservative class fallback:** class semantic checks retain at most 64 KiB of
+  sanitized detached markup per bounded projection. Oversized or malformed round
+  trips can cause a conservative re-extraction; they cannot allow a stale result
+  solely by guessing that a class is decorative. Parser work is counted separately
+  from live DOM projection. There is no model retry associated with that work.
+- **Measurement limit:** the new fixed-baseline cold comparison has N=20 per corpus,
+  superseding the earlier N=1 concern for this local environment only. It is not a
+  portable latency SLA or a real-provider quality result. Raw CPU, heap, style/DOM
+  counters, percentiles and variance are under `evidence/hardening/`.

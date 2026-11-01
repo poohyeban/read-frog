@@ -2,7 +2,40 @@ import type { ContextScope, ContextSource, ContextScopeType } from "./types"
 import { Sha256Fields } from "@/utils/hash"
 
 const rootIds = new WeakMap<Node, string>()
-const knownCollectionItems = new WeakSet<Element>()
+interface Affiliation {
+  owner: WeakRef<Element>
+  signature: string
+}
+// The key and owner are both weak. A last survivor belongs only to the same
+// semantic container; moving it or changing that container ends the proof.
+const affiliations = new WeakMap<Element, Affiliation>()
+const containerSignatures = new WeakMap<Element, { fields: string[]; signature: string }>()
+function affiliated(element: Element, prove: boolean): boolean {
+  const owner = element.parentElement
+  if (!owner) {
+    affiliations.delete(element)
+    return false
+  }
+  const previous = affiliations.get(element)
+  if (!prove && !previous) return false
+  const fields = [
+    owner.localName,
+    ...["role", "itemtype", "itemid", "id"].map((name) => owner.getAttribute(name) ?? ""),
+  ]
+  const cached = containerSignatures.get(owner)
+  const signature =
+    cached && fields.every((field, index) => field === cached.fields[index])
+      ? cached.signature
+      : Sha256Fields(...fields)
+  if (signature !== cached?.signature) containerSignatures.set(owner, { fields, signature })
+  if (previous?.owner.deref() === owner && previous.signature === signature) return true
+  if (prove) {
+    affiliations.set(element, { owner: new WeakRef(owner), signature })
+    return true
+  }
+  affiliations.delete(element)
+  return false
+}
 const SEMANTIC_ITEM =
   'article, [role="article"], [itemtype*="SocialMediaPosting"], [itemtype*="DiscussionForumPosting"], [itemtype*="Comment"]'
 const FEED = '[role="feed"], [itemtype*="ItemList"]'
@@ -122,19 +155,19 @@ export function resolveContextScope(input: ContextSource = {}): ContextScope {
     ) {
       if (node.matches(SEMANTIC_ITEM)) {
         root = node
-        collection =
-          knownCollectionItems.has(node) ||
-          node.parentElement?.matches(FEED) === true ||
-          repeated(node)
-        if (collection) knownCollectionItems.add(node)
+        collection = affiliated(node, node.parentElement?.matches(FEED) === true || repeated(node))
         type = node.parentElement?.matches(FEED) ? "FeedItem" : "Article"
         confidence = "semantic"
         break
       }
       if (
-        node.parentElement?.matches(FEED) ||
-        (node.matches('[role="listitem"], li') && repeated(node)) ||
-        (repeated(node) && findScopeElement(node, LINK))
+        !node.matches('main, [role="main"], body') &&
+        affiliated(
+          node,
+          node.parentElement?.matches(FEED) === true ||
+            (node.matches('[role="listitem"], li') && repeated(node)) ||
+            (repeated(node) && !!findScopeElement(node, LINK)),
+        )
       ) {
         root = node
         type = "FeedItem"

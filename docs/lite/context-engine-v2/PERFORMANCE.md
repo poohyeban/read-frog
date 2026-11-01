@@ -1,5 +1,63 @@
 # Context Engine V2 performance
 
+## 7321d6f9 production hardening (current comparison)
+
+Fixed baseline and fetched HEAD: `7321d6f9ada3a0335a876b2c076aebe4cdc4b0b5`. Prior 1af30d16 figures below are historical, not this control.
+
+Chromium 154.0.8037.57, Linux x64, Node 24.19.0, same workspace/dependencies. Each version has **20 fresh-page cold samples per corpus (80 total)**, 50 distinct scopes where available, 100 warm reads and 100 resolver calls per page. Performance runs were sequential, without concurrent tests/builds. The same instrumentation counts JS-visible getComputedStyle/getAttribute/textContent/childNodes/cloneNode calls; native browser internal reads are not counted.
+
+| Units | Cold P50 ms before → after | Cold P95 ms before → after | Cold sample variance ms² before → after | CPU median s before → after | Post-release JS heap MiB before → after |
+| ----- | -------------------------- | -------------------------- | --------------------------------------- | --------------------------- | --------------------------------------- |
+| 1     | 84.15 → 87.55              | 100.50 → 95.70             | 102.52 → 65.64                          | 0.11 → 0.12                 | 2.96 → 2.99                             |
+| 100   | 62.70 → 74.95              | 69.80 → 84.10              | 42.01 → 61.69                           | 0.13 → 0.17                 | 2.51 → 2.53                             |
+| 1000  | 96.45 → 106.15             | 124.80 → 131.30            | 272.57 → 128.81                         | 0.27 → 0.31                 | 2.58 → 2.61                             |
+| 50000 | 2536.95 → 2541.20          | 2904.60 → 2951.60          | 37690.51 → 28609.74                     | 5.21 → 5.31                 | 2.73 → 2.75                             |
+
+| Units | Warm P50/P95 ms before → after | Resolve P50/P95 ms before → after | Instrumented style calls median before → after |
+| ----- | ------------------------------ | --------------------------------- | ---------------------------------------------- |
+| 1     | 0.00/0.20 → 0.00/0.20          | 0.00/0.10 → 0.00/0.10             | 26.00 → 33.00                                  |
+| 100   | 0.00/0.10 → 0.00/0.10          | 0.00/0.00 → 0.00/0.10             | 714.00 → 624.00                                |
+| 1000  | 0.00/0.10 → 0.00/0.10          | 0.00/0.10 → 0.00/0.10             | 714.00 → 624.00                                |
+| 50000 | 0.00/0.10 → 0.00/0.10          | 0.00/0.10 → 0.00/0.10             | 714.00 → 624.00                                |
+
+Each attribute row has 1,000 mutations and demanded reads. CPU is for that complete row.
+
+| Scenario  | Read P50/P95 ms before → after | CPU s before → after | Live body projections before → after | Actual snapshot rebuilds before → after | Style calls before → after |
+| --------- | ------------------------------ | -------------------- | ------------------------------------ | --------------------------------------- | -------------------------- |
+| class     | 0.30/0.60 → 0.20/0.50          | 0.47 → 0.41          | 1000 → 0                             | 1000 → 0                                | 13000 → 11000              |
+| style     | 0.40/1.10 → 0.10/0.20          | 0.58 → 0.18          | 1000 → 0                             | 1000 → 0                                | 13000 → 11000              |
+| text      | 0.30/0.90 → 0.40/1.20          | 0.48 → 0.57          | 1000 → 1000                          | 1000 → 1000                             | 13000 → 22000              |
+| unrelated | 0.00/0.10 → 0.00/0.10          | 0.05 → 0.06          | 0 → 0                                | 0 → 0                                   | 0 → 0                      |
+| move      | 0.00/0.10 → 0.10/0.20          | 0.05 → 0.14          | 0 → 0                                | 0 → 0                                   | 0 → 11000                  |
+| recycle   | 0.30/0.70 → 0.40/1.00          | 0.46 → 0.54          | 1000 → 1000                          | 1000 → 1000                             | 13000 → 11000              |
+| privacy   | 0.30/0.70 → 0.30/0.80          | 0.44 → 0.45          | 1000 → 1000                          | 1000 → 1000                             | 13000 → 10500              |
+
+The normal article cold P95 improves, but the 100-unit feed cold P95/CPU and
+true-change/move rows do not all improve. This was investigated before acceptance:
+source changes now perform bounded eligibility/fingerprint validation before fresh
+projection; moves validate current container/privacy rather than blindly reusing;
+class changes use a detached semantic parse. Container signatures are shared weakly
+and reused only after their actual fields compare equal. The intermediate and final
+measurements are both archived; no safety checks were removed to meet a timing goal.
+The remaining overhead is a **conditional performance acceptance item**, especially
+on slow target machines; this is not an across-the-board speedup claim.
+
+All rows have zero observed summary RPCs, translation RPCs and local model HTTP.
+Both versions finish with zero scopes, snapshots, active extractions/preparations,
+work entries and observers after release. Peak acquired scopes are 1 or 50. Counts
+reflect a bounded live test, not an hours-long native-memory soak. Heap retains the
+fixture document, especially the 50,000-element page; it is not total native memory.
+Long Tasks/CPU include fixture construction, layout and mutation work; they do not
+isolate parser execution. Cold mutation-batch latency includes fixture writes;
+attribute `invalidations` samples measure explicit synchronization separately.
+
+Raw per-sample read/resolve/invalidation times, DOM/style counts, hit rates, Long
+Tasks, CPU/heap and resource balances are in
+[evidence/hardening/performance-summary.json](evidence/hardening/performance-summary.json)
+and the baseline/final raw files beside it. P95 uses nearest rank; variance is sample
+variance. Reproduce with `node scripts/context-engine-benchmark.mjs <source-checkout>
+<report.json> --hardening`. The baseline is an isolated 7321d6f9 worktree.
+
 ## Reproduction and sample limits
 
 Baseline `1af30d16e66871ebb3509a76f0df62aaa090c263`; final local V2 sources.

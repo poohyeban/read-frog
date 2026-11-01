@@ -8,9 +8,23 @@ import {
   wasNodeRemovedByExtension,
 } from "../core/translation-state"
 
+export type ContextChangeKind = "source" | "semantic" | "visibility" | "unknown"
+function classify(record: MutationRecord): ContextChangeKind {
+  if (record.type !== "attributes") return "source"
+  if (["hidden", "aria-hidden", "inert", "contenteditable"].includes(record.attributeName!))
+    return "visibility"
+  if (
+    ["role", "itemtype", "itemid", "itemprop", "href", "cite", "rel", "id"].includes(
+      record.attributeName!,
+    )
+  )
+    return "semantic"
+  if (["class", "style"].includes(record.attributeName!)) return "unknown"
+  return "source"
+}
 interface Registration {
   roots: readonly WeakRef<Node>[]
-  changed: () => void
+  changed: (kind: ContextChangeKind) => void
   detached: () => void
 }
 const UTILITY = `.${CONTENT_WRAPPER_CLASS},.${REACT_SHADOW_HOST_CLASS},.${SPINNER_CLASS}`
@@ -33,8 +47,22 @@ export class ContextInvalidationEngine {
   private index = new WeakMap<Node, Set<string>>()
   private observer?: MutationObserver
   private observed = new Set<Document | ShadowRoot>()
-  readonly metrics = { batches: 0, records: 0, invalidations: 0, processingMs: 0 }
-  register(id: string, roots: readonly Node[], changed: () => void, detached: () => void): void {
+  readonly metrics = {
+    batches: 0,
+    records: 0,
+    invalidations: 0,
+    processingMs: 0,
+    source: 0,
+    semantic: 0,
+    visibility: 0,
+    unknown: 0,
+  }
+  register(
+    id: string,
+    roots: readonly Node[],
+    changed: (kind: ContextChangeKind) => void,
+    detached: () => void,
+  ): void {
     this.unregister(id)
     this.entries.set(id, { roots: roots.map((root) => new WeakRef(root)), changed, detached })
     for (const root of roots) {
@@ -81,6 +109,16 @@ export class ContextInvalidationEngine {
         "class",
         "contenteditable",
         "aria-label",
+        "inert",
+        "content",
+        "name",
+        "property",
+        "title",
+        "alt",
+        "lang",
+        "colspan",
+        "rowspan",
+        "itemprop",
       ],
     })
     this.observed.add(root)
@@ -91,13 +129,25 @@ export class ContextInvalidationEngine {
   private process(records: readonly MutationRecord[]): void {
     if (!records.length) return
     const start = performance.now()
-    const affected = new Set<string>()
+    const affected = new Map<string, ContextChangeKind>()
     const removed = new Set<Node>()
     for (const record of records) {
       if (!relevant(record)) continue
       this.metrics.records++
+      const kind = classify(record)
+      this.metrics[kind]++
+      const target = record.target instanceof Element ? record.target : record.target.parentElement
+      // Stylesheet DOM edits can change the eligibility of any acquired scope.
+      // Queue bounded on-demand checks; never extract in this observer.
+      if (
+        target?.closest("style") ||
+        [...record.addedNodes, ...record.removedNodes].some(
+          (node) => node instanceof Element && node.matches("style,link[rel=stylesheet]"),
+        )
+      )
+        for (const id of this.entries.keys()) affected.set(id, "unknown")
       for (let node: Node | null = record.target; node; node = node.parentNode)
-        for (const id of this.index.get(node) ?? []) affected.add(id)
+        for (const id of this.index.get(node) ?? []) affected.set(id, kind)
       // Visibility/privacy inherited from an ancestor changes the projection of
       // acquired descendants. Scan only bounded registrations, never its subtree.
       if (record.type === "attributes")
@@ -113,7 +163,7 @@ export class ContextInvalidationEngine {
               return false
             })
           )
-            affected.add(id)
+            affected.set(id, kind)
       for (const node of record.removedNodes) removed.add(node)
     }
     // Only the bounded set of acquired scopes is checked. Do not walk a removed
@@ -132,17 +182,14 @@ export class ContextInvalidationEngine {
             // newly attached shadow root but do not mark an unchanged post dirty.
             const tree = root.getRootNode()
             if (tree instanceof Document || tree instanceof ShadowRoot) this.observe(tree)
-            if (
-              !root.isConnected ||
-              [...removed].some((node) => node.contains(root) && !node.isConnected)
-            )
-              affected.add(id)
+            if (!root.isConnected || [...removed].some((node) => node.contains(root)))
+              affected.set(id, "semantic")
           }
       }
-    for (const id of affected) {
+    for (const [id, kind] of affected) {
       const entry = this.entries.get(id)
       if (entry) {
-        entry.changed()
+        entry.changed(kind)
         this.metrics.invalidations++
       }
     }

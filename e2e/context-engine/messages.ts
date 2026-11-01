@@ -1,11 +1,12 @@
 const cache = new Map<string, string>()
 const cancelled = new Set<string | undefined>()
-export const metrics = { requests: 0, hits: 0 }
+export const metrics = { requests: 0, hits: 0, summaryRPCs: 0 }
 export function resetMessages() {
   cache.clear()
   cancelled.clear()
   metrics.requests = 0
   metrics.hits = 0
+  metrics.summaryRPCs = 0
 }
 export async function sendMessage(
   name: string,
@@ -18,6 +19,7 @@ export async function sendMessage(
     webSummary?: string
   } = {},
 ) {
+  if (name === "getOrGenerateWebPageSummary") metrics.summaryRPCs++
   if (name === "getGlossarySnapshot") return { revision: 0, scopeKey: "local", entries: [] }
   if (name === "cancelPageTranslationRequests") {
     cancelled.add(data.sessionId)

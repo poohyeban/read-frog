@@ -1,6 +1,69 @@
 # Context Engine V2
 
-## Stage 0: audited baseline
+## Production hardening of 7321d6f9
+
+The latest fetched target HEAD equals `7321d6f9ada3a0335a876b2c076aebe4cdc4b0b5`.
+This round retains V2 and all existing task/render/request owners. The original
+implementation history below uses the earlier 1af30d16 baseline; its numbers are
+not the control for this round. See [HARDENING_REVIEW.md](HARDENING_REVIEW.md).
+
+Mutation records now queue **validation candidates**, classified as source,
+semantic boundary, visibility/privacy or unknown. `class`/`style` stay observed.
+The observer performs no projection, parser work, summary RPC or translation HTTP.
+Only a demanded read or `isCurrent` checks a candidate. Irrelevant changes keep
+both the snapshot object and content identity. No ContextValidity result enters
+RenderValidity, and no Provider attempt budget changes.
+
+Projection and validation share the same bounded original-source walk. Validation
+computes a structural/content/eligible-source fingerprint without cloning live DOM.
+Style eligibility is memoized within each walk. Class names are not guessed from
+naming conventions: a class-only change is checked with the actual existing parser
+against bounded detached source, retaining at most 64 KiB serialized markup per
+projection. Probe markers exist only in this detached validation representation;
+they are removed before parsing and never enter a prompt or persistent identity.
+Parser-sensitive changes reproject on demand. Oversized markup or an ambiguous
+HTML round trip uses conservative extraction; it does not silently accept old data.
+Counters distinguish live `projections`, `metadataProjections`, `validations`,
+`validationNodes`, `styleReads`, `semanticParses`, actual identity `rebuilds` and
+candidate `invalidation.invalidations`. Equal actual model fields retain identity.
+
+Metadata checks track only requested fields and the chosen heading. Eligible
+Article/Document title consumers register head as a potential dependency so that
+removing their local heading can safely fall back to later document-title changes.
+Feed items do not inherit global metadata. Before an asynchronous preparation is
+published, queued records are flushed and candidates verified; detached roots are
+rejected. The final verification and cache publication have no intervening await.
+Source churn retains the existing two-preparation maximum; candidate-only churn
+coalesces into the pending single-flight extraction.
+
+Collection affiliation is a WeakMap from member to a descriptor with a WeakRef to
+its current parent and the parent's tag/role/itemtype/itemid/id signature. Reordering
+or deleting peers retains proof for the last survivor in that same container.
+Changing parent or semantic signature requires fresh explicit/structural proof.
+Unlabelled main/body boundaries cannot become feed items just because they contain
+a bookmark. Runtime parent/root IDs never participate in persistent prompt hashes.
+There is no permanent strong item set, whole-feed scan or new observer per item.
+
+### Context Visibility Policy
+
+At capture/observed-mutation validation, exclude form/editable/embedded sources,
+`hidden`, `aria-hidden=true`, `inert`, computed `display:none`, `visibility:hidden`
+or `collapse`, exact `opacity:0`, and `content-visibility:hidden`. Check the source
+and bounded ancestor chain including open ShadowRoot hosts. Foreign browsing-context
+nodes and extension shadow/UI ancestry cannot grant source access. Preserve original
+translation swap restoration, ordinary SVG text and sanitized nested non-HTML text.
+Never read input values or traverse frame documents/closed shadow trees.
+
+Nonzero opacity, `content-visibility:auto`, offscreen paragraphs and clip/clip-path
+accessible text are retained. This is an explicit eligibility policy, not a claim
+to solve every visual occlusion or every accessibility rule. No geometry-wide scan,
+per-pixel test or periodic full-page style scan is performed. Stylesheet DOM edits
+queue acquired scopes; CSSOM edits, animation progression without a DOM mutation,
+media-query/font-load changes and cross-scope relational selectors are not fully
+tracked. Previously captured immutable prompts are never changed retroactively.
+These limits and native acceptance conditions are in RISK_REGISTER.md.
+
+## Original V2 stage 0: audited baseline
 
 Target `codex/subtitle-engine-v2`; fetched HEAD and baseline are both
 `1af30d16e66871ebb3509a76f0df62aaa090c263` (0 commits / 0 files difference).

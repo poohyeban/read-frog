@@ -258,7 +258,20 @@ it("bounds pending extraction across repeated generations of one scope", async (
       )
       for (let tick = 0; tick < 8; tick++) await Promise.resolve()
     }
+    // Mutation candidates now coalesce while extraction is pending. Explicit
+    // invalidation still exercises the overlapping-generation capacity bound.
+    expect(extract).toHaveBeenCalledTimes(1)
+    for (let index = 0; index < 3; index++) {
+      small.invalidateAll()
+      results.push(
+        small
+          .read({ source: source("a") }, FULL_CONTEXT, owners[0]!.signal)
+          .catch((error) => error),
+      )
+      for (let tick = 0; tick < 8; tick++) await Promise.resolve()
+    }
     expect(extract).toHaveBeenCalledTimes(2)
+    expect(small.inspect().activeExtractions).toBe(2)
   } finally {
     owners.forEach((owner) => owner.abort())
     releases.forEach((resolve) => resolve(initial))

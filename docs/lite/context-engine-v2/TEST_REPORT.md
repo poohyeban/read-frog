@@ -1,5 +1,11 @@
 # Context Engine V2 test report
 
+The current **7321d6f9 production hardening** results and per-test RED/GREEN ledger
+are in [HARDENING_REVIEW.md](HARDENING_REVIEW.md) and `evidence/hardening/`.
+The following original V2 report compares 1af30d16; its earlier 2 → 1 HTTP result
+must not be presented as a request reduction achieved again in this round.
+Current local result: **3069 tests / 337 files passed**; 38 new hardening cases green. SDK HTTP 4 → 4; same Chromium cases 28 → 28, plus two new negative cases (30 total). Conclusion CONDITIONAL for measured feed/per-change overhead and native MV3 acceptance.
+
 ## Scope and execution state
 
 Executed locally on 2026-11-01. Target `codex/subtitle-engine-v2` and fetched HEAD

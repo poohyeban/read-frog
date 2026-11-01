@@ -45,6 +45,7 @@ async function fixture(
   units: number,
   manual: boolean,
   giant = false,
+  variant = "",
 ) {
   await reset(mode)
   document.body.innerHTML =
@@ -55,13 +56,14 @@ async function fixture(
     source.innerHTML = Array.from(
       { length: units },
       (_, index) =>
-        `<p style="height:1500px">Original English source paragraph ${index} describes a separate part of a giant article.</p>`,
+        `<p style="height:1500px">Original English source ${variant ? `${variant} ` : ""}paragraph ${index} describes a separate part of a giant article.</p>`,
     ).join("")
   } else {
     source.style.whiteSpace = "pre-wrap"
     source.textContent = Array.from(
       { length: units },
-      (_, index) => `Original English source paragraph ${index} describes its separate context.`,
+      (_, index) =>
+        `Original English source ${variant ? `${variant} ` : ""}paragraph ${index} describes its separate context.`,
     ).join("\n\n")
   }
   for (const paragraph of source.querySelectorAll("p")) {

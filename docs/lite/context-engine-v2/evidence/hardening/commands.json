@@ -1,0 +1,41 @@
+{
+  "baseline": "7321d6f9ada3a0335a876b2c076aebe4cdc4b0b5",
+  "fetchedHead": "7321d6f9ada3a0335a876b2c076aebe4cdc4b0b5",
+  "baselineDiff": {
+    "commits": 0,
+    "files": 0
+  },
+  "commands": [
+    {
+      "command": "SKIP_FREE_API=true pnpm test",
+      "exitCode": 0,
+      "passed": 3069,
+      "failed": 0,
+      "files": 337
+    },
+    {
+      "command": "pnpm lint",
+      "exitCode": 0,
+      "includes": "Oxlint type-aware and type-check"
+    },
+    {
+      "command": "pnpm exec wxt build -b chrome",
+      "exitCode": 0
+    },
+    {
+      "command": "node e2e/context-engine/run.mjs <report.json>",
+      "exitCode": 0
+    },
+    {
+      "command": "node e2e/mv3-preflight.mjs <report.json>",
+      "exitCode": 2,
+      "reason": "managed extension installation blocklist *"
+    },
+    {
+      "command": "pnpm fmt:check",
+      "exitCode": 0,
+      "matchedFiles": 1482
+    }
+  ],
+  "environment": "pnpm_config_verify_deps_before_run=false; preinstalled pnpm 11.25.0, Node 24.19.0; Chrome 154.0.8037.57"
+}

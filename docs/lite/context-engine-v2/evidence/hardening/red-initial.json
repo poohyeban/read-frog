@@ -1,0 +1,332 @@
+{
+  "numTotalTestSuites": 1,
+  "numPassedTestSuites": 0,
+  "numFailedTestSuites": 1,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 24,
+  "numPassedTests": 10,
+  "numFailedTests": 14,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1793543015877,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation class hover preserves the snapshot without projection",
+          "status": "failed",
+          "title": "P0-1: presentation class hover preserves the snapshot without projection",
+          "duration": 162.7143880000001,
+          "failureMessages": [
+            "AssertionError: expected 2 to be 1 // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:38:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation class bold preserves the snapshot without projection",
+          "status": "failed",
+          "title": "P0-1: presentation class bold preserves the snapshot without projection",
+          "duration": 27.304853000000094,
+          "failureMessages": [
+            "AssertionError: expected 2 to be 1 // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:38:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation class animation-frame-1 preserves the snapshot without projection",
+          "status": "failed",
+          "title": "P0-1: presentation class animation-frame-1 preserves the snapshot without projection",
+          "duration": 23.112773999999945,
+          "failureMessages": [
+            "AssertionError: expected 2 to be 1 // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:38:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: 1000 decorative style changes never cause a projection or stale preparation",
+          "status": "failed",
+          "title": "P0-1: 1000 decorative style changes never cause a projection or stale preparation",
+          "duration": 10125.110881,
+          "failureMessages": [
+            "AssertionError: expected { scopes: 1, snapshots: 1, …(15) } to match object { projections: 1, rebuilds: 1, …(1) }\n(21 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:2050:10)\n    at Proxy.<anonymous> (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:1944:14)\n    at Proxy.methodWrapper (file:///workspace/read-frog/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:1700:25)\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:48:29\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation changes during parsing do not restart preparation",
+          "status": "failed",
+          "title": "P0-1: presentation changes during parsing do not restart preparation",
+          "duration": 32.124987000001056,
+          "failureMessages": [
+            "ContextStaleError: The source context changed while it was being prepared.\n    at /workspace/read-frog/src/utils/host/translate/context/snapshot-manager.ts:171:23\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: real text changes during parsing cannot publish old content",
+          "status": "passed",
+          "title": "P0-1: real text changes during parsing cannot publish old content",
+          "duration": 32.85055900000043,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: a used meta content attribute expires only its actual consumer",
+          "status": "failed",
+          "title": "P0-1: a used meta content attribute expires only its actual consumer",
+          "duration": 39.672671000000264,
+          "failureMessages": [
+            "AssertionError: expected 'Document description' to be 'Changed description' // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:66:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: unused body changes do not rebuild metadata-only context",
+          "status": "failed",
+          "title": "P0-1: unused body changes do not rebuild metadata-only context",
+          "duration": 8.042002000000139,
+          "failureMessages": [
+            "AssertionError: expected 2 to be 1 // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:75:38\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: CSS visibility changes hide and restore source without affecting unrelated scope",
+          "status": "passed",
+          "title": "P0-1: CSS visibility changes hide and restore source without affecting unrelated scope",
+          "duration": 59.73903600000085,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: links, source replacement and heading changes refresh the actual data",
+          "status": "passed",
+          "title": "P0-1: links, source replacement and heading changes refresh the actual data",
+          "duration": 62.26216000000022,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: unrelated 1000 mutations and source reorder preserve the existing snapshot",
+          "status": "passed",
+          "title": "P0-1: unrelated 1000 mutations and source reorder preserve the existing snapshot",
+          "duration": 82.29435100000046,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: collection affinity ends when a feed item becomes a standalone article",
+          "status": "failed",
+          "title": "P0-2: collection affinity ends when a feed item becomes a standalone article",
+          "duration": 24.95721499999854,
+          "failureMessages": [
+            "AssertionError: expected { …(9) } to match object { type: 'Article', …(2) }\n(10 matching properties omitted from actual)\n    at Proxy.<anonymous> (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:2050:10)\n    at Proxy.<anonymous> (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:1944:14)\n    at Proxy.methodWrapper (file:///workspace/read-frog/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:1700:25)\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:106:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: last generic repeated item retains only its current container affiliation",
+          "status": "failed",
+          "title": "P0-2: last generic repeated item retains only its current container affiliation",
+          "duration": 40.90241599999899,
+          "failureMessages": [
+            "AssertionError: expected { …(12) } to be { …(12) } // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:119:24\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: removing an explicit feed role can end affinity without moving the node",
+          "status": "failed",
+          "title": "P0-2: removing an explicit feed role can end affinity without moving the node",
+          "duration": 28.72465700000066,
+          "failureMessages": [
+            "AssertionError: expected true to be false // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:127:65\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: moving between feeds and recycling source updates context but not unrelated items",
+          "status": "passed",
+          "title": "P0-2: moving between feeds and recycling source updates context but not unrelated items",
+          "duration": 61.07286500000009,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor style=\"opacity:0\"",
+          "status": "failed",
+          "title": "P0-3: excludes private source under ancestor style=\"opacity:0\"",
+          "duration": 5.298923000000286,
+          "failureMessages": [
+            "AssertionError: expected 'PRIVATE_SOURCE' not to contain 'PRIVATE_SOURCE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:143:48\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2869:63\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor style=\"content-visibility:hidden\"",
+          "status": "failed",
+          "title": "P0-3: excludes private source under ancestor style=\"content-visibility:hidden\"",
+          "duration": 3.9299019999998563,
+          "failureMessages": [
+            "AssertionError: expected 'PRIVATE_SOURCE' not to contain 'PRIVATE_SOURCE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:143:48\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2869:63\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor inert",
+          "status": "failed",
+          "title": "P0-3: excludes private source under ancestor inert",
+          "duration": 3.221145000001343,
+          "failureMessages": [
+            "AssertionError: expected 'PRIVATE_SOURCE' not to contain 'PRIVATE_SOURCE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:143:48\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2869:63\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor style=\"visibility:collapse\"",
+          "status": "passed",
+          "title": "P0-3: excludes private source under ancestor style=\"visibility:collapse\"",
+          "duration": 1.5768079999998008,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"opacity:0.5\"",
+          "status": "passed",
+          "title": "P0-3: retains readable or accessible source under style=\"opacity:0.5\"",
+          "duration": 2.6200779999999213,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"content-visibility:auto\"",
+          "status": "passed",
+          "title": "P0-3: retains readable or accessible source under style=\"content-visibility:auto\"",
+          "duration": 2.9032360000001063,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"position:absolute;top:10000px\"",
+          "status": "passed",
+          "title": "P0-3: retains readable or accessible source under style=\"position:absolute;top:10000px\"",
+          "duration": 3.428431999998793,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"position:absolute;clip:rect(0,0,0,0)\"",
+          "status": "passed",
+          "title": "P0-3: retains readable or accessible source under style=\"position:absolute;clip:rect(0,0,0,0)\"",
+          "duration": 4.0906099999992875,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: a transparent shadow host cannot leak a nested source",
+          "status": "failed",
+          "title": "P0-3: a transparent shadow host cannot leak a nested source",
+          "duration": 4.361829999999827,
+          "failureMessages": [
+            "AssertionError: expected 'PRIVATE_SHADOW' not to contain 'PRIVATE_SHADOW'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:155:152\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:1628:35\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:26\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3321:20\n    at new Promise (<anonymous>)\n    at runWithCancel (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3316:10)\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3301:20\n    at new Promise (<anonymous>)\n    at runWithTimeout (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3259:10)\n    at file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:3882:64"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793543017162,
+      "endTime": 1793543028004.3618,
+      "status": "failed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts"
+    }
+  ]
+}
