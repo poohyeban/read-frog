@@ -61,6 +61,46 @@ describe("aiTranslate", () => {
     mocks.getProviderOptionsWithOverride.mockReturnValue({})
   })
 
+  it("does not retry a length finish after reasoning consumes the output budget", async () => {
+    mocks.generateText.mockResolvedValue({
+      text: "short",
+      reasoningText: "reason".repeat(400),
+      finishReason: "length",
+      usage: { inputTokens: 100, outputTokens: 128, outputTokenDetails: { reasoningTokens: 124 } },
+    })
+    const error = await aiTranslate("hello", "Chinese", providerConfig, promptResolver, {
+      maxOutputTokens: 128,
+    }).catch((caught) => caught)
+    expect(getRequestErrorMeta(error).isRetryable).toBe(false)
+    expect(mocks.generateText).toHaveBeenCalledTimes(1)
+  })
+  it("never returns unfinished inline reasoning as a translation", async () => {
+    mocks.generateText.mockResolvedValue({
+      text: "<think>unfinished private reasoning",
+      finishReason: "stop",
+      usage: {},
+    })
+    await expect(
+      aiTranslate("hello", "Chinese", providerConfig, promptResolver, { maxOutputTokens: 128 }),
+    ).rejects.toThrow("reasoning")
+  })
+  it.each(["<think>long reasoning</think>final", "final"])(
+    "returns only the final visible channel: %s",
+    async (text) => {
+      mocks.generateText.mockResolvedValue({
+        text,
+        reasoningText: "reasoning".repeat(1000),
+        finishReason: "stop",
+        usage: {},
+      })
+      expect(
+        await aiTranslate("hello", "Chinese", providerConfig, promptResolver, {
+          maxOutputTokens: 128,
+        }),
+      ).toBe("final")
+    },
+  )
+
   it("preserves AI SDK error metadata for retry policy decisions", async () => {
     const rateLimitedError = Object.assign(new Error("Too Many Requests"), {
       statusCode: 429,

@@ -25,6 +25,11 @@ import { extractAISDKErrorMessage } from "@/utils/error/extract-message"
 import { createStreamDiagnostic, reportStreamDiagnostic } from "@/utils/error/stream-diagnostics"
 import { logger } from "@/utils/logger"
 import { buildLocalGenerateTextParams } from "@/utils/providers/generate-params"
+import {
+  ModelOutputValidationError,
+  outputLimitError,
+  visibleModelText,
+} from "@/utils/providers/output-validation"
 import { generateRemoteText, consumeRemoteStream } from "@/utils/providers/remote-executor"
 import { getResourceProvider } from "@/utils/providers/resource-runtime"
 import { ResourceRejected } from "@/utils/request/resource-error"
@@ -563,11 +568,12 @@ export async function generateTextForProviderRef(
     await options.modelGuard?.usage(usage)
     signal?.throwIfAborted()
     if (maxOutputTokens !== undefined && finishReason === "length") {
-      throw new Error("Article summary output budget exhausted")
+      throw outputLimitError("Article summary output budget exhausted")
     }
-    return text.trim()
+    return visibleModelText(text).trim()
   } catch (error) {
-    if (error instanceof ResourceRejected) throw error
+    if (error instanceof ResourceRejected || error instanceof ModelOutputValidationError)
+      throw error
     if (signal?.aborted) throw signal.reason
     if (isAbortLikeError(error)) throw error
     throw attachRequestErrorMeta(

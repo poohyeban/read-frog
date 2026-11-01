@@ -34,6 +34,14 @@ describe("subtitle NDJSON stream protocol", () => {
   ])("rejects invalid protocol without retry permission: %s", (input) => {
     expect(() => new SubtitleStreamParser(3).push(input)).toThrow("Subtitle stream:")
   })
+  it("retains complete indexed members when a length finish truncates the final record", () => {
+    const parser = new SubtitleStreamParser(3)
+    parser.push(row(0) + row(2) + '{"v":1,"id":1,"text":"unfinished')
+    expect(parser.finish(true)).toEqual(["T0", "", "T2"])
+    const invalid = new SubtitleStreamParser(3)
+    invalid.push(row(0) + '{"v":1,"id":0,"text":"duplicate"}')
+    expect(() => invalid.finish(true)).toThrow("duplicate")
+  })
   it("bounds unterminated lines, cumulative responses and incomplete final JSON", () => {
     expect(() => new SubtitleStreamParser(1).push("x".repeat(8193))).toThrow("line limit")
     expect(() => new SubtitleStreamParser(1).push("x".repeat(65537))).toThrow("response limit")

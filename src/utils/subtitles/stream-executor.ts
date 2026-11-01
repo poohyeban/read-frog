@@ -35,6 +35,7 @@ export async function streamSubtitleBatch(
     },
     async (stream, activeSignal) => {
       const parser = new SubtitleStreamParser(count)
+      let truncated = false
       let finished = false,
         total = 0
       for await (const unknownPart of stream) {
@@ -60,6 +61,7 @@ export async function streamSubtitleBatch(
         }
         if (part.type === "finish") {
           finished = true
+          truncated = part.finishReason === "length"
           await guard?.usage(part.totalUsage ?? part.usage)
           if (!["stop", "length"].includes(part.finishReason))
             throw streamProtocolError("unsupported finish reason")
@@ -69,7 +71,7 @@ export async function streamSubtitleBatch(
       if (!finished) throw streamProtocolError("missing finish")
       // Complete explicit-ID records survive a length finish. Empty positions use
       // BatchQueue's existing per-member fallback, inheriting physical attempts.
-      return parser.finish()
+      return parser.finish(truncated)
     },
     signal,
     guard?.onDispatch,

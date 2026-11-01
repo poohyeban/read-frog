@@ -62,7 +62,16 @@ export class SubtitleStreamParser {
     this.members.set(id, text.trim())
     return { id, text: text.trim() }
   }
-  finish(): string[] {
+  finish(truncated = false): string[] {
+    if (truncated && this.buffer) {
+      // A truncated final JSON record has no reliable boundary. Earlier complete,
+      // explicit-ID records remain usable; never guess the unfinished member.
+      try {
+        JSON.parse(this.buffer)
+      } catch {
+        this.buffer = ""
+      }
+    }
     if (this.buffer) {
       this.line(this.buffer)
       this.buffer = ""

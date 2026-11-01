@@ -5,12 +5,15 @@ import type { SubtitleModelGuard } from "@/utils/subtitles/work-policy"
 import { extractAISDKErrorMessage } from "@/utils/error/extract-message"
 import { resolveModelId } from "@/utils/providers/model-id"
 import { getProviderOptionsWithOverride } from "@/utils/providers/options"
+import {
+  ModelOutputValidationError,
+  outputLimitError,
+  visibleModelText,
+} from "@/utils/providers/output-validation"
 import { getTopLevelReasoning } from "@/utils/providers/reasoning"
 import { generateRemoteText } from "@/utils/providers/remote-executor"
 import { ResourceRejected } from "@/utils/request/resource-error"
 import { attachRequestErrorMeta, getRequestErrorMeta } from "@/utils/request/retry-policy"
-
-const THINK_TAG_RE = /<\/think>([\s\S]*)/
 
 export type PromptResolver<TContext = unknown> = (
   targetLang: string,
@@ -74,13 +77,12 @@ export async function aiTranslate<TContext>(
     )
     await options?.modelGuard?.usage(usage)
     if (options?.maxOutputTokens && finishReason === "length")
-      throw new Error("Subtitle translation output limit reached")
+      throw outputLimitError("Subtitle translation output limit reached")
 
-    const [, finalTranslation = translatedText] = translatedText.match(THINK_TAG_RE) || []
-
-    return finalTranslation
+    return visibleModelText(translatedText)
   } catch (error) {
-    if (error instanceof ResourceRejected) throw error
+    if (error instanceof ResourceRejected || error instanceof ModelOutputValidationError)
+      throw error
     const message = extractAISDKErrorMessage(error)
     const meta = getRequestErrorMeta(error)
     if (error instanceof Error) {

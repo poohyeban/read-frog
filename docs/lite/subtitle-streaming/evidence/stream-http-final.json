@@ -1,0 +1,1065 @@
+{
+  "samples": [
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 124.99699499999997,
+      "firstConfirmed": 124.99699499999997,
+      "complete": 124.99699499999997,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 35.06356200000005,
+      "firstConfirmed": 93.02069099999994,
+      "complete": 93.02069099999994,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 72.19270500000016,
+      "firstConfirmed": 72.19270500000016,
+      "complete": 72.19270500000016,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 15.155301999999892,
+      "firstConfirmed": 77.62190599999985,
+      "complete": 77.62190599999985,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 72.69769899999983,
+      "firstConfirmed": 72.69769899999983,
+      "complete": 72.69769899999983,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 13.114432000000079,
+      "firstConfirmed": 73.83337900000015,
+      "complete": 73.83337900000015,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 73.79712599999993,
+      "firstConfirmed": 73.79712599999993,
+      "complete": 73.79712599999993,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 16.687605000000076,
+      "firstConfirmed": 76.94160000000011,
+      "complete": 76.94160000000011,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 71.99348699999973,
+      "firstConfirmed": 71.99348699999973,
+      "complete": 71.99348699999973,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 12.524579999999787,
+      "firstConfirmed": 74.7272909999997,
+      "complete": 74.7272909999997,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 71.21810400000004,
+      "firstConfirmed": 71.21810400000004,
+      "complete": 71.21810400000004,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 13.368245000000115,
+      "firstConfirmed": 75.453168,
+      "complete": 75.453168,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 72.53783000000021,
+      "firstConfirmed": 72.53783000000021,
+      "complete": 72.53783000000021,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 10.895480000000134,
+      "firstConfirmed": 73.19150900000022,
+      "complete": 73.19150900000022,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 72.23460399999976,
+      "firstConfirmed": 72.23460399999976,
+      "complete": 72.23460399999976,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 11.168396999999914,
+      "firstConfirmed": 73.25577000000021,
+      "complete": 73.25577000000021,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 70.00013600000011,
+      "firstConfirmed": 70.00013600000011,
+      "complete": 70.00013600000011,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 12.081807000000026,
+      "firstConfirmed": 76.9628459999999,
+      "complete": 76.9628459999999,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 71.40634600000021,
+      "firstConfirmed": 71.40634600000021,
+      "complete": 71.40634600000021,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 13.905091000000084,
+      "firstConfirmed": 75.21503200000006,
+      "complete": 75.21503200000006,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 16.45014399999991,
+      "firstConfirmed": 90.7264439999999,
+      "complete": 90.7264439999999,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 8,
+      "firstVisible": 15.897077000000081,
+      "firstConfirmed": 76.90912600000001,
+      "complete": 76.90912600000001,
+      "httpStarts": 1,
+      "partials": 8,
+      "successful": 8
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 12,
+      "firstVisible": 11.957732000000306,
+      "firstConfirmed": 74.43350099999998,
+      "complete": 74.43350099999998,
+      "httpStarts": 1,
+      "partials": 12,
+      "successful": 12
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 20,
+      "firstVisible": 13.485077999999703,
+      "firstConfirmed": 76.19197799999984,
+      "complete": 76.19197799999984,
+      "httpStarts": 1,
+      "partials": 20,
+      "successful": 20
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 8.542559999999867,
+      "firstConfirmed": 69.54270299999962,
+      "complete": 69.54270299999962,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 0.9243140000003223,
+      "firstConfirmed": 0.9243140000003223,
+      "complete": 0.9243140000003223,
+      "httpStarts": 0,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 69.4746110000001,
+      "firstConfirmed": 69.4746110000001,
+      "complete": 69.4746110000001,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 106.98635699999977,
+      "firstConfirmed": 167.79978200000005,
+      "complete": 167.79978200000005,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 127.0781079999997,
+      "firstConfirmed": 187.27724499999977,
+      "complete": 187.27724499999977,
+      "httpStarts": 2,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "disconnect",
+      "size": 5,
+      "firstVisible": 10.988760999999613,
+      "firstConfirmed": 20.910027999999784,
+      "complete": 20.910027999999784,
+      "httpStarts": 1,
+      "partials": 1,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "mode": "disconnect-before-text",
+      "size": 5,
+      "firstVisible": 11.789534000000003,
+      "firstConfirmed": 11.789534000000003,
+      "complete": 11.789534000000003,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "mode": "duplicate",
+      "size": 5,
+      "firstVisible": 10.809878000000026,
+      "firstConfirmed": 71.946684,
+      "complete": 71.946684,
+      "httpStarts": 1,
+      "partials": 1,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "mode": "length",
+      "size": 5,
+      "firstVisible": 10.434342999999899,
+      "firstConfirmed": 220.62006500000007,
+      "complete": 220.62006500000007,
+      "httpStarts": 5,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "length-tail",
+      "size": 5,
+      "firstVisible": 9.793296999999257,
+      "firstConfirmed": 214.57215799999994,
+      "complete": 214.57215799999994,
+      "httpStarts": 5,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": false,
+      "mode": "generate-length",
+      "size": 5,
+      "firstVisible": 70.3395389999996,
+      "firstConfirmed": 70.3395389999996,
+      "complete": 70.3395389999996,
+      "httpStarts": 1,
+      "partials": 0,
+      "successful": 0
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 12.307347999999365,
+      "firstConfirmed": 73.39074199999959,
+      "complete": 73.39074199999959,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    },
+    {
+      "stream": true,
+      "mode": "normal",
+      "size": 5,
+      "firstVisible": 10.559638000000632,
+      "firstConfirmed": 73.15651500000058,
+      "complete": 73.15651500000058,
+      "httpStarts": 1,
+      "partials": 5,
+      "successful": 5
+    }
+  ],
+  "calls": [
+    {
+      "at": 1562.188568,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 1662.206659,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.37727800000016
+    },
+    {
+      "at": 1741.004272,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 1816.107234,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.164953999999852
+    },
+    {
+      "at": 1891.416105,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 1964.194273,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.175620999999865
+    },
+    {
+      "at": 2038.870604,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2116.441421,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1437,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.247116000000005
+    },
+    {
+      "at": 2189.415904,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1894,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2262.419814,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.159407000000101
+    },
+    {
+      "at": 2335.907084,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2409.466645,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.14918200000011
+    },
+    {
+      "at": 2484.299868,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2555.971981,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.154804999999669
+    },
+    {
+      "at": 2629.999959,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2701.984568,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.148110000000088
+    },
+    {
+      "at": 2773.402825,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2845.808463,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.214729000000261
+    },
+    {
+      "at": 2921.996324,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 2996.445191,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.2729590000003554
+    },
+    {
+      "at": 3069.755542,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.176582000000053
+    },
+    {
+      "at": 3166.273545,
+      "stream": true,
+      "members": 8,
+      "promptBytes": 1553,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.138405000000148
+    },
+    {
+      "at": 3239.95743,
+      "stream": true,
+      "members": 12,
+      "promptBytes": 1703,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.2248930000000655
+    },
+    {
+      "at": 3316.267822,
+      "stream": true,
+      "members": 20,
+      "promptBytes": 2007,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.168060000000423
+    },
+    {
+      "at": 3388.403441,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.132136000000173
+    },
+    {
+      "at": 3459.402754,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1109,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 3530.79186,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 100.48025300000018
+    },
+    {
+      "at": 3698.705821,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 429
+    },
+    {
+      "at": 3814.535654,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.213836000000356
+    },
+    {
+      "at": 3885.95877,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.151994999999715
+    },
+    {
+      "at": 3906.601574,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.233586000000287
+    },
+    {
+      "at": 3919.117089,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.151896000000306
+    },
+    {
+      "at": 3991.167706,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.167037999999593
+    },
+    {
+      "at": 4064.617382,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.334033999999974
+    },
+    {
+      "at": 4064.822114,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.260675999999876
+    },
+    {
+      "at": 4139.727162,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 4.638136999999915
+    },
+    {
+      "at": 4140.197496,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.53814599999987
+    },
+    {
+      "at": 4211.392467,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.157554000000346
+    },
+    {
+      "at": 4282.50054,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.257260000000315
+    },
+    {
+      "at": 4282.641638,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.2095799999997325
+    },
+    {
+      "at": 4354.652843,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 4.4586920000001555
+    },
+    {
+      "at": 4356.051678,
+      "stream": true,
+      "members": 1,
+      "promptBytes": 1294,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 4.0553970000000845
+    },
+    {
+      "at": 4425.948872,
+      "stream": false,
+      "members": 5,
+      "promptBytes": 1899,
+      "status": 200,
+      "usage": {
+        "input": 100,
+        "output": 20
+      }
+    },
+    {
+      "at": 4498.956089,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.135370999999395
+    },
+    {
+      "at": 4571.693807,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.141029000000344
+    },
+    {
+      "at": 4732.407357,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "firstTokenMs": 5.205144999999902
+    },
+    {
+      "at": 4882.239575,
+      "stream": true,
+      "members": 5,
+      "promptBytes": 1442,
+      "status": 200,
+      "usage": {
+        "prompt_tokens": 100,
+        "completion_tokens": 20,
+        "total_tokens": 120,
+        "completion_tokens_details": {
+          "reasoning_tokens": 10
+        }
+      },
+      "firstTokenMs": 5.1612590000004275
+    }
+  ],
+  "scope": "Real local HTTP and AI SDK; simulated IPC ports/storage, synthetic usage, not native MV3 or real model quality/cost"
+}

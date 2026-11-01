@@ -1,0 +1,51 @@
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/host/translate/api/__tests__/ai.test.ts (8 tests | 2 failed) 38ms
+   ❯ aiTranslate (8)
+     × does not retry a length finish after reasoning consumes the output budget 7ms
+     × never returns unfinished inline reasoning as a translation 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/host/translate/api/__tests__/ai.test.ts > aiTranslate > does not retry a length finish after reasoning consumes the output budget
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ src/utils/host/translate/api/__tests__/ai.test.ts:67:52
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/utils/host/translate/api/__tests__/ai.test.ts > aiTranslate > never returns unfinished inline reasoning as a translation
+AssertionError: promise resolved "'<think>unfinished private reasoning'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"<think>unfinished private reasoning"
+
+ ❯ src/utils/host/translate/api/__tests__/ai.test.ts:72:108
+     70|   it("never returns unfinished inline reasoning as a translation", asy…
+     71|     mocks.generateText.mockResolvedValue({ text: "<think>unfinished pr…
+     72|     await expect(aiTranslate("hello", "Chinese", providerConfig, promp…
+       |                                                                                                            ^
+     73|   })
+     74|   it.each(["<think>long reasoning</think>final", "final"])("returns on…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  03:51:42
+   Duration  488ms (transform 39%, setup 33%, import 16%, tests 10%, worker 2%)
+

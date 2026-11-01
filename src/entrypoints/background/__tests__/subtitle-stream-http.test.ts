@@ -141,7 +141,7 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
           choices: [
             {
               index: 0,
-              finish_reason: "stop",
+              finish_reason: testMode === "generate-length" ? "length" : "stop",
               message: { role: "assistant", content: members.map((m) => `T:${m}`).join("\n%%\n") },
             },
           ],
@@ -167,7 +167,7 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
     }
     for (let id = 0; id < members.length; id++) {
       if (res.destroyed) return
-      if (testMode === "length" && id > 0) break
+      if (["length", "length-tail"].includes(testMode) && id > 0) break
       const line =
         JSON.stringify({ v: 1, id: testMode === "duplicate" ? 0 : id, text: `T:${members[id]}` }) +
         "\n"
@@ -182,7 +182,8 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
         await delay(60)
       }
     }
-    send({}, testMode === "length" ? "length" : "stop", {
+    if (testMode === "length-tail") send({ content: '{"v":1,"id":1,"text":"unfinished' })
+    send({}, ["length", "length-tail"].includes(testMode) ? "length" : "stop", {
       prompt_tokens: 100,
       completion_tokens: 20,
       total_tokens: 120,
@@ -239,7 +240,7 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
     portPairs.push(pair)
     connect(pair.b)
     return pair.a
-  }) as any)
+  }) as any) as typeof browser.runtime.connect
   browser.tabs.onRemoved.addListener = vi.fn<() => void>()
   const { setupSubtitlesTranslationHandlers } = await import("../subtitles-translation")
   const { subtitleWorkRuntime, SubtitleWorkRuntime } = await import("../subtitle-work")
@@ -364,6 +365,17 @@ it("compares real SDK generate/stream, interruption, finite recovery and shared 
     const partial = await run(true).promise
     expect(partial.every((c) => c.translationOutcome?.status === "success")).toBe(true)
     expect(calls.length - before).toBe(5) // one batch + four missing members, each inherits its first start
+    mode = "length-tail"
+    before = calls.length
+    expect((await run(true).promise).every((c) => c.translationOutcome?.status === "success")).toBe(
+      true,
+    )
+    expect(calls.length - before).toBe(5)
+    mode = "generate-length"
+    before = calls.length
+    const lengthResult = await run(false).promise
+    expect(lengthResult.every((c) => c.translationOutcome?.status === "permanent")).toBe(true)
+    expect(calls.length - before).toBe(1)
     mode = "normal"
     before = calls.length
     const sharedOffset = ++serial * 100
