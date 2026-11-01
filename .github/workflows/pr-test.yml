@@ -1,7 +1,10 @@
 name: Read Frog Lite - Test and ZIP
 on:
   push:
-    branches: [codex/read-frog-independent]
+    branches: [main, codex/read-frog-independent]
+    paths-ignore:
+      - "README.md"
+      - "docs/**"
   pull_request:
     branches: [main]
   workflow_dispatch:

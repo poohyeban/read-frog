@@ -1,12 +1,12 @@
 # Read Frog Lite
 
-**Read Frog Lite 0.2.6 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
+**Read Frog Lite 0.2.7 是一个使用用户自有服务的 Chromium Manifest V3 翻译扩展。** 基于 [Read Frog v1.54.1](https://github.com/mengxi-ream/read-frog/tree/aa6d54d1b9fde901fa7dbc00540a196fd28cd388)，保留成熟的翻译实现，移除官方账户、订阅、Hosted AI、云同步和遥测。它是独立修改版，与 Read Frog 官方发行版无关。
 
 普通使用者可以直接下载扩展安装包，**不需要下载源码或在个人电脑编译**。翻译、语音合成和语音转录服务均由用户选择；扩展不提供内置免费额度，也不通过 Read Frog 官方服务器中转请求。
 
-[直接下载 v0.2.6 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.6/read-frog-lite-0.2.6-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
+[直接下载 v0.2.7 扩展 ZIP](https://github.com/poohyeban/read-frog/releases/download/v0.2.7/read-frog-lite-0.2.7-chrome.zip) · [Releases](https://github.com/poohyeban/read-frog/releases) · [验收 CI](https://github.com/poohyeban/read-frog/actions/workflows/pr-test.yml) · [重构报告](docs/restore/REPORT.md) · [人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)
 
-0.2.6 整合网页翻译会话与共享上下文、Popup 启动和交互优化、字幕当前位置调度与完整 SRT 导出，并修复批量缓存身份、导航重试和并发确认边界。详见[本版说明](docs/restore/RELEASE-0.2.6.md)及[真实 MV3 人工验收清单](docs/lite/MV3-MANUAL-ACCEPTANCE.md)。
+0.2.7 整合字幕 Fast / Quality 双通道、统一资源调度、长视频缓存恢复与可靠性修复。修复重复字幕临时译文错位、反复 Stop 后的撤销堆积和零增量断流重放；流式实验仍默认关闭。详见[本版说明](docs/restore/RELEASE-0.2.7.md)及[定向可靠性验收](docs/lite/final-reliability-review/REPORT.md)。
 
 ## 目录
 
@@ -41,14 +41,14 @@
 - 原版 TTS 没有独立的暂停后继续 API，本版保留停止 / 再播放，没有另造暂停恢复机制。
 - 自定义 Action 保留基础字段输出和本地图标；没有恢复许可未确认的专有布局引擎和在线布局生成器。
 
-验证范围：生产代码已通过类型 / Lint、271 个测试文件中的 2626 项单元和协议测试，以及真实 Chromium 的网页双语、仅译文、恢复、悬停译文失效与再次翻译、划词、输入翻译、配置持久化和网络隔离回归。字幕另有真实生产扩展回归，覆盖连续翻译、长字幕跳转、重载恢复和 AI 时间轴校验。浏览器测试调用本地 HTTP 测试端点、使用可控页面，不证明任何真实模型的翻译质量。YouTube / Netflix / X 当前网页、复杂编辑器、真实音频设备和具体模型部署仍需按[人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)检查。
+验证范围：本版发布准备前，本地 328 个测试文件、2976 项单元 / 协议测试，以及类型、静态、格式检查和 MV3 构建通过。正式发布还须通过 GitHub Actions 的生产 ZIP 与原生扩展受控回归，实际运行记录见[版本说明](docs/restore/RELEASE-0.2.7.md)。测试使用本地 HTTP 和可控响应，不证明真实模型翻译质量或全部线上站点兼容性。YouTube / Netflix / X 当前网页、自然 Worker 休眠、真实设备和具体模型仍需按[人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)检查。
 
 ## 安装、升级与备份
 
 ### 首次安装：无需编译
 
 1. 打开本 Fork 的 [Releases](https://github.com/poohyeban/read-frog/releases)，选择所需版本，或使用上方的直接下载链接。
-2. 下载 Assets 中的 **`read-frog-lite-0.2.6-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
+2. 下载 Assets 中的 **`read-frog-lite-0.2.7-chrome.zip`**。不要下载 `Source code` 作为安装包，那是源码。附件 `SHA256SUMS.txt` 用于校验。
 3. 解压扩展 ZIP，将扩展目录保存在固定位置。Release 下载不受 Actions Artifact 的 30 天保留期限制。
 4. Chrome 打开 `chrome://extensions`，Edge 打开 `edge://extensions`，开启开发者模式，选择“加载已解压的扩展程序”。
 5. 选择**直接包含 `manifest.json` 的目录**，确认名称为 Read Frog Lite。打开扩展设置配置服务，再刷新要翻译的网页。
@@ -310,7 +310,7 @@ pnpm licenses list --prod --json | node scripts/generate-notices.mjs
 
 **CI 产物先于 E2E 上传，所以能下载 Artifact 不等于全部测试通过。** Actions 安装包 Artifact 保留 30 天，测试报告 14 天；已上传的 Release 附件不受该保留期影响。0.2.0 Release 使用已通过完整 CI 的生产代码产物，未重新编译。Artifact 名称可能使用 PR 的 merge SHA，可在运行记录核对 head commit。
 
-目前自动触发范围是对 `main` 的 PR，以及 `codex/read-frog-independent` 分支推送；另有 `workflow_dispatch`。新开发分支应开 PR 触发 CI，或手动运行。**直接提交 README 到 main 不会触发这条构建工作流。** 不要假设每次 main push 都自动产出新 ZIP。
+自动触发范围是对 `main` 的 PR，以及 `main` / `codex/read-frog-independent` 的代码推送；另有 `workflow_dispatch`。仅修改 `README.md` 或 `docs/**` 的推送不触发构建，便于归档已验证产物的校验值。新开发分支可开 PR 或手动运行 CI。
 
 需要发布新的开发安装包时：
 
