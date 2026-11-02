@@ -1,0 +1,10 @@
+  ├─ .output/chrome-mv3/LICENSE                                               35.15 kB
+  ├─ .output/chrome-mv3/LOBE-ICONS-LICENSE.txt                                1.32 kB
+  ├─ .output/chrome-mv3/NOTICE.txt                                            475 B
+  └─ .output/chrome-mv3/THIRD-PARTY-NOTICES.txt                               707.25 kB
+Σ Total size: 15.01 MB
+ℹ Zipping extension...
+✔ Zipped extension in 943 ms
+  └─ .output/read-frog-lite-0.2.8-chrome.zip  4.76 MB
+Σ Total size: 4.76 MB
+✔ Finished in 7.516 s

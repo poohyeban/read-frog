@@ -1,0 +1,32 @@
+2026-11-02T00:56:56.9595195Z ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+2026-11-02T00:56:56.9595658Z
+2026-11-02T00:56:56.9599090Z  FAIL  src/utils/host/translate/context/__tests__/snapshot-manager.test.ts > limits a giant scope projection without copying its complete subtree
+2026-11-02T00:56:56.9605735Z Error: Test timed out in 5000ms.
+2026-11-02T00:56:56.9607331Z If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+2026-11-02T00:56:56.9609084Z  ❯ src/utils/host/translate/context/__tests__/snapshot-manager.test.ts:136:1
+2026-11-02T00:56:56.9673904Z     134|   expect(manager.inspect().rebuilds).toBe(1)
+2026-11-02T00:56:56.9674591Z     135| })
+2026-11-02T00:56:56.9675487Z     136| it("limits a giant scope projection without copying its complete subtr…
+2026-11-02T00:56:56.9676381Z        | ^
+2026-11-02T00:56:56.9677107Z     137|   const article = document.querySelector("#a")!
+2026-11-02T00:56:56.9677890Z     138|   article.innerHTML = Array.from(
+2026-11-02T00:56:56.9678301Z
+2026-11-02T00:56:56.9678701Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+2026-11-02T00:56:56.9679060Z
+2026-11-02T00:56:56.9683302Z
+2026-11-02T00:56:56.9694140Z  Test Files  1 failed | 338 passed (339)
+2026-11-02T00:56:56.9711974Z       Tests  1 failed | 3092 passed (3093)
+2026-11-02T00:56:56.9713198Z    Start at  00:54:12
+2026-11-02T00:56:56.9722959Z    Duration  164.24s (environment 32%, import 24%, tests 24%, setup 14%, transform 5%, worker 1%)
+2026-11-02T00:56:56.9745085Z
+2026-11-02T00:56:56.9746170Z     Isolate  339 workers spawned · ~739ms startup each (spawn + environment, per file)
+2026-11-02T00:56:56.9747774Z              at least ~61.90s faster with isolate: false — reuses workers across files instead of one per file
+2026-11-02T00:56:56.9748438Z
+2026-11-02T00:56:56.9778138Z
+2026-11-02T00:56:56.9807334Z ##[error]Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/utils/host/translate/context/__tests__/snapshot-manager.test.ts:136:1
+
+
+2026-11-02T00:56:57.0854860Z [ELIFECYCLE] Test failed. See above for more details.
+2026-11-02T00:56:57.0879261Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,11 @@
+ ✓ src/utils/providers/__tests__/connection-url.test.ts (1 test) 3ms
+
+ Test Files  339 passed (339)
+      Tests  3093 passed (3093)
+   Start at  01:02:01
+   Duration  203.36s (environment 32%, import 24%, tests 22%, setup 15%, transform 6%, worker 1%)
+
+    Isolate  339 workers spawned · ~933ms startup each (spawn + environment, per file)
+             at least ~78.13s faster with isolate: false — reuses workers across files instead of one per file
+
+JSON report written to /tmp/release-0.2.8-final-tests.json

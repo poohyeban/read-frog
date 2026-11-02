@@ -1,0 +1,10 @@
+{
+  "logical_cpus": 2,
+  "workers": 4,
+  "fixture_paragraphs": 50000,
+  "fixtureMs": 4583.720902,
+  "readMs": 2844.5482819999997,
+  "visitedNodes": 2048,
+  "contentCharacters": 0,
+  "measurement": "Separate temporary measurement test; production and original test behavior unchanged during measurement. Temporary test removed afterwards."
+}

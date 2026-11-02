@@ -30,5 +30,21 @@
       "fix": "Use native V2 diagnostic counters while preserving the legacy wrapper and every browser behavior assertion; no production code changes."
     }
   ],
-  "api_policy": "Only local mocks; no paid or external free API."
+  "api_policy": "Only local mocks; no paid or external free API.",
+  "after_first_ci_failure": {
+    "logical_cpus": 2,
+    "workers": 4,
+    "unit_files": 339,
+    "unit_tests_passed": 3093,
+    "unit_seconds": 203.36,
+    "lint_and_types": "passed",
+    "format": "passed",
+    "zip_build_seconds": 7.516,
+    "browser_seconds": 27.5,
+    "browser_samples": 20,
+    "browser_compatibility_scenarios": 9,
+    "production_zip_byte_identical": true,
+    "zip_sha256": "a15311c9122af400e379b5c83d956a17126650acf87ecc0532632afeee0da590",
+    "change": "Only the 50,000-node stress test wall-time allowance (20s) plus an explicit 50,000-child assertion; no production/API budget changes."
+  }
 }

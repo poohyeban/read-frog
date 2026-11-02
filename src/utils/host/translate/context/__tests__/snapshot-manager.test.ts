@@ -134,16 +134,19 @@ it("one cancelled consumer cannot cancel a shared extraction still needed by ano
   expect(manager.inspect().rebuilds).toBe(1)
 })
 it("limits a giant scope projection without copying its complete subtree", async () => {
+  // Creating 50,000 jsdom nodes is part of this stress fixture, not the
+  // bounded projection. Shared CI CPUs can exceed the default 5s wall time.
   const article = document.querySelector("#a")!
   article.innerHTML = Array.from(
     { length: 50_000 },
     (_, i) => `<p>English original unit ${i} in the complete article.</p>`,
   ).join("")
+  expect(article.childElementCount).toBe(50_000)
   const value = await manager.read({ source: article.firstChild }, FULL_CONTEXT)
   expect(value.webContent.length).toBeLessThanOrEqual(2000)
   expect(value.provenance.truncated).toBe(true)
   expect(manager.inspect().visitedNodes).toBeLessThanOrEqual(2048)
-})
+}, 20_000)
 
 it("releases old route registrations and followed shadow roots", async () => {
   const host = document.createElement("div")
