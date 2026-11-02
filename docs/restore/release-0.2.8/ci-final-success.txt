@@ -1,0 +1,19 @@
+Run: https://github.com/poohyeban/read-frog/actions/runs/41372555076
+Commit: 35b8b38a95d86e6702328c508aaf139533997f99
+Conclusion: success
+All steps passed, including lint/types, tests, production ZIP and browser regression.
+Artifact: 13109582179
+Artifact archive SHA256: b555adb0b27a1492353636bb577f8cf8a5914c3de7cde665d84599325cf7ee5b
+Extension ZIP SHA256: a15311c9122af400e379b5c83d956a17126650acf87ecc0532632afeee0da590
+Extension ZIP bytes: 4761109
+Local and CI extension ZIPs are byte-identical; inner/outer CRC, manifest and license files verified.
+Full CI runs for this release: 3 (2 failed, then 1 successful after local reproduction and verification).
+
+2026-11-02T01:30:03.1204345Z  Test Files  339 passed (339)
+2026-11-02T01:30:03.1221337Z       Tests  3095 passed (3095)
+2026-11-02T01:30:03.1231625Z    Duration  147.26s (environment 32%, tests 24%, import 24%, setup 14%, transform 5%, worker 1%)
+2026-11-02T01:30:40.7276259Z   ✓  1 e2e/extension.spec.ts:28:1 › unpacked MV3: translation, DeepSeek actions, diagnostics, images and credential isolation (8.9s)
+2026-11-02T01:30:46.0725534Z   ✓  2 e2e/runtime.spec.mjs:9:1 › injected runtime survives website workers and handles missing or expired contexts (5.3s)
+2026-11-02T01:30:56.4310107Z   ✓  3 e2e/subtitles.spec.mjs:19:1 › subtitles retain timing across batches, AI recuts and extension reloads (10.3s)
+2026-11-02T01:31:37.1534361Z   ✓  4 e2e/translation-performance.spec.mjs:10:1 › translation architecture: reproducible cold/warm browser benchmark (40.6s)
+2026-11-02T01:31:37.2297753Z   4 passed (1.1m)

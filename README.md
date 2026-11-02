@@ -41,7 +41,7 @@
 - 原版 TTS 没有独立的暂停后继续 API，本版保留停止 / 再播放，没有另造暂停恢复机制。
 - 自定义 Action 保留基础字段输出和本地图标；没有恢复许可未确认的专有布局引擎和在线布局生成器。
 
-验证范围：合并后的本地 339 个测试文件、3093 项单元 / 协议测试，以及类型、静态、格式检查、MV3 ZIP 构建和网页浏览器兼容性夹具通过。原生扩展受控回归以本版本的 GitHub Actions 结果为准，见[版本说明](docs/restore/RELEASE-0.2.8.md)。测试使用本地 HTTP 和可控响应，不证明真实模型翻译质量或全部线上站点兼容性。YouTube / Netflix / X 当前网页、自然 Worker 休眠、真实设备和具体模型仍需按[人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)检查。
+验证范围：合并后的本地 339 个测试文件、3095 项单元 / 协议测试，以及类型、静态、格式检查、MV3 ZIP 构建和网页浏览器兼容性夹具通过。最终 [CI](https://github.com/poohyeban/read-frog/actions/runs/41372555076) 的 3095 项测试与 4 项浏览器回归全部通过，安装包与本地构建逐字节一致，见[版本说明](docs/restore/RELEASE-0.2.8.md)。测试使用本地 HTTP 和可控响应，不证明真实模型翻译质量或全部线上站点兼容性。YouTube / Netflix / X 当前网页、自然 Worker 休眠、真实设备和具体模型仍需按[人工验收步骤](docs/restore/MANUAL-ACCEPTANCE.md)检查。
 
 ## 安装、升级与备份
 

@@ -19,19 +19,23 @@
 
 详见 [Context Engine V2 验收](https://github.com/poohyeban/read-frog/blob/main/docs/lite/context-engine-v2/TEST_REPORT.md)、[样式表修复证据](https://github.com/poohyeban/read-frog/blob/main/docs/lite/context-engine-v2/STYLESHEET_HARDENING.md)和[性能对照](https://github.com/poohyeban/read-frog/blob/main/docs/lite/context-engine-v2/PERFORMANCE.md)。普通热缓存读取成本基本保持；部分冷启动 P95 上升，巨型 DOM 仍可能耗时数秒，不承诺所有页面都加速。
 
-本地环境策略禁止加载 unpacked 扩展。原生 MV3 受控回归以本次发布 CI 的实际结果记录；没有使用付费 API。受控页面和模型响应不等同于所有线上网站、Provider、自然 Worker 休眠或长期内存验收。
+本地环境策略禁止加载 unpacked 扩展。原生 MV3 受控回归已在最终发布 CI 通过；没有使用付费 API。受控页面和模型响应不等同于所有线上网站、Provider、自然 Worker 休眠或长期内存验收。
 
-发布前在本地复验合并结果：339 文件 / 3093 项再次通过；CI 使用的网页浏览器夹具也已在本地通过（20 个冷暖样本、9 组兼容性场景）。预检发现旧性能夹具仍寻找 V1 提取函数，现改为读取 V2 原生诊断计数，保留 V1 历史计时路径和全部显示、导航、原文恢复断言；未修改生产代码或删减测试。证据见[本地发布预检](release-0.2.8/local-preflight.json)。
+发布前在本地复验合并结果：339 文件 / 3093 项再次通过；CI 使用的网页浏览器夹具也已在本地通过（20 个冷暖样本、9 组兼容性场景）。预检发现旧性能夹具仍寻找 V1 提取函数，现改为读取 V2 原生诊断计数，保留 V1 历史计时路径和全部显示、导航、原文恢复断言；未修改生产代码或删减测试。证据见[本地发布预检](https://github.com/poohyeban/read-frog/blob/main/docs/restore/release-0.2.8/local-preflight.json)。
 
 同规则 CSSOM 编辑、非 viewport 媒体状态及动画可能无法主动触发快照更新，发送前校验会保守拒绝不安全上下文。已进入现有队列的请求快照保持不变，不因后续 CSS 变化被改写或自动重发。
 
-本次首轮 [CI 41369586737](https://github.com/poohyeban/read-frog/actions/runs/41369586737) 在打包前停止：3092 项通过，唯一失败是 50,000 节点夹具超过默认 5 秒测试时限（5.343 秒），未执行构建或浏览器步骤。本地限为 2 个 CPU / 4 个 worker 后，单独测得构造约 4.58 秒、读取约 2.84 秒，访问节点仍为 2048。仅为这个压力用例设置 20 秒测试时限，并增加夹具确有 50,000 个段落的断言；2000 字符、截断标记和 2048 节点的断言全部保留。没有调整 Provider 请求超时、重试预算或生产代码。详见[失败记录](release-0.2.8/ci-first-failure.txt)与[本地分阶段测量](release-0.2.8/giant-fixture-phases.json)。
+本次首轮 [CI 41369586737](https://github.com/poohyeban/read-frog/actions/runs/41369586737) 在打包前停止：3092 项通过，唯一失败是 50,000 节点夹具超过默认 5 秒测试时限（5.343 秒），未执行构建或浏览器步骤。本地限为 2 个 CPU / 4 个 worker 后，单独测得构造约 4.58 秒、读取约 2.84 秒，访问节点仍为 2048。仅为这个压力用例设置 20 秒测试时限，并增加夹具确有 50,000 个段落的断言；2000 字符、截断标记和 2048 节点的断言全部保留。没有调整 Provider 请求超时、重试预算或生产代码。详见[失败记录](https://github.com/poohyeban/read-frog/blob/main/docs/restore/release-0.2.8/ci-first-failure.txt)与[本地分阶段测量](https://github.com/poohyeban/read-frog/blob/main/docs/restore/release-0.2.8/giant-fixture-phases.json)。
 
 修正后，在本地 2 个 CPU / 4 个 worker 下复跑全部 3093 项测试通过（203.36 秒），类型、静态、格式检查和生产 ZIP 构建通过，网页浏览器预检的 20 个样本 / 9 组兼容性场景再次通过。生产 ZIP 与修正测试前逐字节一致；完成这些检查后才继续推送。
 
 第二轮 [CI 41370893555](https://github.com/poohyeban/read-frog/actions/runs/41370893555) 的 3093 项测试、类型检查和 ZIP 构建通过，浏览器 3 项通过 / 1 项失败。Trace 确认故意返回 HTTP 400 的自定义操作显示的是脱敏通用错误，而旧测试要求完全不显示错误提示。本地用生产执行 Hook、Port 客户端和提示组件复现：词典与句子分析均在旧断言下失败，改为要求一个安全提示后通过；每次只启动一次请求，监听归零。保留原始错误、密钥不泄漏和成功操作无错误提示的检查，并增加精确 HTTP 次数与关闭弹窗检查。未修改生产代码。
 
-修正测试后再次在本地完成 339 文件 / 3095 项（2 CPU、4 worker，200.09 秒）、专项 41 项、类型/静态/格式检查和生产 ZIP 构建（9.300 秒），ZIP 校验和未改变。详见[第二轮失败分析](release-0.2.8/ci-second-failure.txt)、[本地 RED](release-0.2.8/custom-action-alert-red.txt) 和 [GREEN](release-0.2.8/custom-action-alert-green.txt)。失败的 CI 产物不用于发布；发布仍须完整 CI 通过。
+修正测试后再次在本地完成 339 文件 / 3095 项（2 CPU、4 worker，200.09 秒）、专项 41 项、类型/静态/格式检查和生产 ZIP 构建（9.300 秒），ZIP 校验和未改变。详见[第二轮失败分析](https://github.com/poohyeban/read-frog/blob/main/docs/restore/release-0.2.8/ci-second-failure.txt)、[本地 RED](https://github.com/poohyeban/read-frog/blob/main/docs/restore/release-0.2.8/custom-action-alert-red.txt) 和 [GREEN](https://github.com/poohyeban/read-frog/blob/main/docs/restore/release-0.2.8/custom-action-alert-green.txt)。失败的 CI 产物未用于发布。
+
+最终 [CI 41372555076](https://github.com/poohyeban/read-frog/actions/runs/41372555076) 全部通过：339 文件 / 3095 项（147.26 秒）、类型与静态检查、生产 ZIP，以及 4 项浏览器回归（1.1 分钟）。原生 MV3 检查涵盖翻译、自定义操作/DeepSeek/密钥隔离、运行时生命周期、字幕与扩展重新加载；网页性能回归也通过。本次共执行 3 轮完整 CI，前 2 轮失败均先在本地定位和复验，再继续；不是一次成功，失败原因保留在上述记录中。
+
+发布使用成功 CI 的原始 artifact `13109582179`，没有额外重建。已下载验证 ZIP CRC、manifest、许可证文件，并确认与本地构建逐字节一致：4,761,109 字节，SHA-256 `a15311c9122af400e379b5c83d956a17126650acf87ecc0532632afeee0da590`。详见[最终验收记录](https://github.com/poohyeban/read-frog/blob/main/docs/restore/release-0.2.8/ci-final-success.txt)和[构建指标](https://github.com/poohyeban/read-frog/blob/main/docs/restore/metrics-0.2.8.json)。
 
 ## 安装与升级
 
