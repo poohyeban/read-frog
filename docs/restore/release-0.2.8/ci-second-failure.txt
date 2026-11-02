@@ -1,0 +1,13 @@
+Run: https://github.com/poohyeban/read-frog/actions/runs/41370893555
+Commit: 04b7000fcc5c394a082f849a0bddd73178492d48
+Lint/types: passed
+Unit tests: 339 files / 3093 tests passed
+Production ZIP: passed
+Browser specs: 3 passed / 1 failed
+Failure: e2e/extension.spec.ts expected zero alerts after intentionally rejecting an OpenAI-compatible json_schema request with HTTP 400.
+Trace: actual alert title "Custom action failed", description "Custom action request failed". No reflected credential or raw provider response in the alert. Content diagnostic: HTTP 400, response_format_rejected, json_schema.
+Browser report artifact: 13108929998
+Artifact archive SHA256: 1cb3e29f5dfc019a44190fa6bfef55347f8d20715d4b98948abe6b7fded3615e
+Local reproduction: both Dictionary and Sentence Analysis fail the old zero-alert expectation using the production execution hook, port client and alert component. Correct expectation is one sanitized error; explicit closing removes the card. Per-action start count remains one, port message listeners return to zero.
+Correction: update rejected-operation browser assertion to require the safe title/description and forbid reflected credentials. Preserve the raw-error absence check and zero-alert checks for successful operations. Add exact json_schema request counts after each action and verify closing clears the alert. No production code changed.
+Failed run artifact is NOT eligible for release. A successful complete run is still required by release.yml.

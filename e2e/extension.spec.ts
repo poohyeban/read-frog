@@ -323,9 +323,21 @@ test("unpacked MV3: translation, DeepSeek actions, diagnostics, images and crede
         responseFormat: "json_schema",
         reason: "response_format_rejected",
       })
-      await expect(page.getByRole("alert")).toHaveCount(0)
+      // A rejected operation must remain visible as a safe, generic failure.
+      // Raw provider errors may echo credentials and must never reach the UI.
+      const alert = page.getByRole("alert")
+      await expect(alert).toHaveCount(1)
+      await expect(alert).toContainText("Custom action failed")
+      await expect(alert).toContainText("Custom action request failed")
+      await expect(alert).not.toContainText(credential)
       await expect(page.getByText("Unsupported response_format", { exact: false })).toHaveCount(0)
       await page.keyboard.press("Escape")
+      await expect(page.getByRole("alert")).toHaveCount(0)
+      expect(
+        apiRequests.filter(
+          (request) => JSON.parse(request.body).response_format?.type === "json_schema",
+        ),
+      ).toHaveLength(index + 1)
     }
     // Use the real dedicated SDK through the same background/selection flow.
     await worker.evaluate(async () => {

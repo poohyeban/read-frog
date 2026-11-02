@@ -2,4 +2,4 @@ $ oxfmt --check .
 Checking formatting...
 
 All matched files use the correct format.
-Finished in 720ms on 1516 files using 4 threads.
+Finished in 1122ms on 1516 files using 4 threads.

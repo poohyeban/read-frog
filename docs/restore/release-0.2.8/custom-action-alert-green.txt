@@ -1,0 +1,17 @@
+$ vitest run src/components/custom-action/__tests__/use-custom-action-execution.test.ts src/components/ui/selection-popover/__tests__/inline-error.test.ts src/utils/content-script/__tests__/port-streaming.test.ts src/entrypoints/background/__tests__/background-stream.test.ts src/utils/error/__tests__/stream-diagnostics.test.ts src/utils/providers/__tests__/deepseek.test.ts
+
+ RUN  v5.0.3 /workspace/read-frog-release-0.2.8
+
+(node:114926) Warning: AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:114926) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+(node:114926) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+
+ Test Files  6 passed (6)
+      Tests  41 passed (41)
+   Start at  01:21:29
+   Duration  2.64s (transform 38%, import 19%, setup 16%, tests 14%, environment 12%, worker 1%)
+
+  Transform  transforming modules took 2.07s · 38% of tracked time, re-done on every run
+             persist transforms across runs with fsModuleCache: true
+             learn more: https://vitest.dev/guide/improving-performance#caching-between-reruns

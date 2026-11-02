@@ -1,0 +1,38 @@
+$ vitest run src/components/custom-action/__tests__/use-custom-action-execution.test.ts '--testNamePattern=safe stream rejection'
+
+ RUN  v5.0.3 /workspace/read-frog-release-0.2.8
+
+ ❯ src/components/custom-action/__tests__/use-custom-action-execution.test.ts (10 tests | 2 failed | 8 skipped) 157ms
+   ❯ useCustomActionExecution (3)
+     × default-dictionary shows a safe stream rejection without replaying the request 133ms
+     × default-sentence-analysis shows a safe stream rejection without replaying the request 21ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/custom-action/__tests__/use-custom-action-execution.test.ts > useCustomActionExecution > default-dictionary shows a safe stream rejection without replaying the request
+ FAIL  src/components/custom-action/__tests__/use-custom-action-execution.test.ts > useCustomActionExecution > default-sentence-analysis shows a safe stream rejection without replaying the request
+AssertionError: expected [ …(1) ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/components/custom-action/__tests__/use-custom-action-execution.test.ts:233:85
+    232| describe("useCustomActionExecution", () => {
+    233|   it.each(["default-dictionary", "default-sentence-analysis"])(
+    234|     "%s shows a safe stream rejection without replaying the request",
+       |                     ^
+    235|     async (actionId) => {
+    236|       const request = createCustomActionRequest()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 skipped (10)
+   Start at  01:20:42
+   Duration  1.91s (transform 33%, environment 32%, import 19%, tests 9%, setup 6%)
+
+[ELIFECYCLE] Test failed. See above for more details.

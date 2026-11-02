@@ -46,5 +46,23 @@
     "production_zip_byte_identical": true,
     "zip_sha256": "a15311c9122af400e379b5c83d956a17126650acf87ecc0532632afeee0da590",
     "change": "Only the 50,000-node stress test wall-time allowance (20s) plus an explicit 50,000-child assertion; no production/API budget changes."
+  },
+  "after_second_ci_failure": {
+    "unit_files": 339,
+    "unit_tests_passed": 3095,
+    "logical_cpus": 2,
+    "workers": 4,
+    "unit_seconds": 200.09,
+    "lint_and_types": "passed",
+    "format": "passed",
+    "zip_build_seconds": 9.3,
+    "production_zip_byte_identical": true,
+    "zip_sha256": "a15311c9122af400e379b5c83d956a17126650acf87ecc0532632afeee0da590",
+    "targeted_tests": 41,
+    "red_expectation_tests": 2,
+    "green_expectation_tests": 2,
+    "per_action_stream_starts": 1,
+    "remaining_port_message_listeners": 0,
+    "change": "Test-only: require a sanitized alert after intentional HTTP 400; preserve zero-alert expectations for successful operations and add exact rejected HTTP request counts."
   }
 }

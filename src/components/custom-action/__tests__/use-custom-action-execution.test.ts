@@ -1,8 +1,11 @@
+import type { StreamPortResponse } from "@/types/background-stream"
 import type { CachedWebPageContext } from "@/utils/host/translate/webpage-context"
 // @vitest-environment jsdom
 import { act, render, renderHook, screen, waitFor } from "@testing-library/react"
 import { createElement } from "react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { browser } from "#imports"
+import { SelectionToolbarErrorAlert } from "@/components/ui/selection-popover/selection-toolbar-error-alert"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { CUSTOM_ACTION_CONTEXT_CHAR_LIMIT } from "@/utils/custom-action-prompt"
 import { findSelectionToolbarAction, getBuiltInDictionaryAction } from "@/utils/custom-actions"
@@ -227,6 +230,87 @@ describe("buildCustomActionExecutionPlan", () => {
 })
 
 describe("useCustomActionExecution", () => {
+  it.each(["default-dictionary", "default-sentence-analysis"])(
+    "%s shows a safe stream rejection without replaying the request",
+    async (actionId) => {
+      const request = createCustomActionRequest()
+      const action = findSelectionToolbarAction(DEFAULT_CONFIG.selectionToolbar, actionId)
+      if (!action) throw new Error(`Missing built-in action: ${actionId}`)
+      const executionContext = buildCustomActionExecutionPlan(
+        { ...request, action },
+        "Selected sentence",
+        "Paragraph context",
+        null,
+      ).executionContext!
+      const actual = await vi.importActual<
+        typeof import("@/utils/content-script/background-stream-client")
+      >("@/utils/content-script/background-stream-client")
+      streamBackgroundStructuredObjectMock
+        .mockReset()
+        .mockImplementation(actual.streamBackgroundStructuredObject)
+      let starts = 0
+      let listeners = 0
+      const connect = vi.spyOn(browser.runtime, "connect").mockImplementation(() => {
+        let listener: ((event: StreamPortResponse) => void) | undefined
+        return {
+          onMessage: {
+            addListener: (next: typeof listener) => {
+              listener = next
+              listeners++
+            },
+            removeListener: () => {
+              listener = undefined
+              listeners--
+            },
+          },
+          onDisconnect: { addListener() {}, removeListener() {} },
+          disconnect() {},
+          postMessage: (message: { type: string; streamRequestId: string }) => {
+            if (message.type !== "start") return
+            starts++
+            listener?.({
+              type: "error",
+              streamRequestId: message.streamRequestId,
+              error: { message: "Custom action request failed" },
+            })
+          },
+        } as never
+      })
+      function Probe({ open }: { open: boolean }) {
+        const execution = useCustomActionExecution({
+          bodyRef: { current: null },
+          executionContext,
+          open,
+          popoverSessionKey: 50,
+          rerunNonce: 0,
+        })
+        return createElement(SelectionToolbarErrorAlert, { error: execution.error })
+      }
+      const view = render(createElement(Probe, { open: true }))
+      try {
+        await waitFor(() => expect(starts).toBe(1))
+        await waitFor(() =>
+          expect(view.container.textContent).toContain(
+            "options.selectionToolbar.errors.customActionFailedFallback",
+          ),
+        )
+        expect(screen.getAllByRole("alert")).toHaveLength(1)
+        expect(screen.getByRole("alert")).toHaveTextContent(
+          "options.selectionToolbar.errors.customActionFailed",
+        )
+        expect(view.container.innerHTML).not.toContain("Unsupported response_format")
+        expect(view.container.innerHTML).not.toContain("e2e-local-test-key")
+        view.rerender(createElement(Probe, { open: true }))
+        view.rerender(createElement(Probe, { open: false }))
+        expect(starts).toBe(1)
+        expect(listeners).toBe(0)
+      } finally {
+        view.unmount()
+        connect.mockRestore()
+      }
+    },
+  )
+
   it("never asks the model for a selection field, and fills it into every answer", async () => {
     const action = findSelectionToolbarAction(
       DEFAULT_CONFIG.selectionToolbar,
