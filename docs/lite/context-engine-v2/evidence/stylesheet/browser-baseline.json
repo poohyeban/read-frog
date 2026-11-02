@@ -1,0 +1,244 @@
+{
+  "source": "/workspace/read-frog-stylesheet-baseline/src",
+  "browser": "154.0.8037.57",
+  "cases": [
+    {
+      "name": "href delayed load: old read during load, fresh prompt after load",
+      "status": "failed",
+      "error": "A new physical HTTP request contains hidden context after stylesheet load",
+      "modelHTTP": 2
+    },
+    {
+      "name": "rel-out",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=false; expected true; computed=block\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "rel-in",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=true; expected false; computed=none\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "media",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=true; expected false; computed=none\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "disabled-idl",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=false; expected true; computed=block\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "disabled-attribute",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=false; expected true; computed=block\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "style-media",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=true; expected false; computed=none\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "style-text",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "remove",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "7a94027fe6a0f00d7fbf69cffc66945c2a2cbf4af34aaf8858690ef3cf979248"
+    },
+    {
+      "name": "insert",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "delayed @import completion",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=true; expected false; computed=none\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "stylesheet error rechecks current effective style",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=false; expected true; computed=block\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "alternate stylesheet activated by IDL state",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=true; expected false; computed=none\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "cross-origin opaque CSS still filters computed visibility",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1",
+      "opaque": true
+    },
+    {
+      "name": "adopted sheet membership",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=true; expected false; computed=none\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "same-count CSSOM edit fails closed before model dispatch",
+      "status": "failed",
+      "error": "Unsafe dispatch result=unexpected-success, extraHTTP=1",
+      "modelHTTP": 2
+    },
+    {
+      "name": "top-level insertRule and deleteRule are demand-observable",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=true; expected false; computed=none\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "viewport media query change is demand-observable",
+      "status": "failed",
+      "error": "page.evaluate: Error: Context visible=true; expected false; computed=none\n    at eval (eval at evaluate (:370:30), <anonymous>:5:13)\n    at async <anonymous>:396:30",
+      "modelHTTP": 0
+    },
+    {
+      "name": "shadow-local CSS preserves sibling snapshot",
+      "status": "passed",
+      "modelHTTP": 0,
+      "scopes": 2,
+      "snapshots": 2,
+      "activePreparations": 0,
+      "workEntries": 2,
+      "capacity": 128,
+      "resolutions": 42,
+      "hits": 17,
+      "rebuilds": 25,
+      "projections": 25,
+      "validations": 4,
+      "validationNodes": 33,
+      "styleReads": 336,
+      "unchangedValidations": 0,
+      "semanticParses": 0,
+      "semanticInvalidations": 4,
+      "metadataProjections": 23,
+      "visitedNodes": 209,
+      "stalePreparations": 0,
+      "activeExtractions": 0,
+      "evictions": 0,
+      "resolveMs": 5.100000016391277,
+      "readMs": 150.1999999806285,
+      "invalidation": {
+        "registrations": 2,
+        "observers": 1,
+        "observedRoots": 3,
+        "batches": 9,
+        "records": 9,
+        "invalidations": 4,
+        "processingMs": 2.600000001490116,
+        "source": 4,
+        "semantic": 5,
+        "visibility": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "name": "six rendered translations survive global cosmetic stylesheet completion",
+      "status": "passed",
+      "modelHTTP": 6,
+      "rendered": 6,
+      "stylesheetModelHTTP": 0
+    }
+  ],
+  "boundaries": [],
+  "modelHTTP": 10,
+  "cssHTTP": 22,
+  "resources": {
+    "scopes": 0,
+    "snapshots": 0,
+    "activePreparations": 0,
+    "workEntries": 0,
+    "capacity": 128,
+    "resolutions": 49,
+    "hits": 17,
+    "rebuilds": 27,
+    "projections": 27,
+    "validations": 4,
+    "validationNodes": 33,
+    "styleReads": 358,
+    "unchangedValidations": 0,
+    "semanticParses": 0,
+    "semanticInvalidations": 4,
+    "metadataProjections": 25,
+    "visitedNodes": 245,
+    "stalePreparations": 0,
+    "activeExtractions": 0,
+    "evictions": 0,
+    "resolveMs": 5.200000010430813,
+    "readMs": 321.2999999821186,
+    "invalidation": {
+      "registrations": 0,
+      "observers": 0,
+      "observedRoots": 0,
+      "batches": 22,
+      "records": 10,
+      "invalidations": 5,
+      "processingMs": 2.7000000029802322,
+      "source": 5,
+      "semantic": 5,
+      "visibility": 0,
+      "unknown": 0
+    }
+  },
+  "sentContext": [
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": true
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": true
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": true
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": true
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    }
+  ]
+}

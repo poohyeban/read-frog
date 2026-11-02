@@ -36,7 +36,12 @@ export async function sendMessage(
   metrics.requests++
   const result = await fetch("/mock", {
     method: "POST",
-    body: JSON.stringify({ name, text: data.text, summary: data.webSummary }),
+    body: JSON.stringify({
+      name,
+      text: data.text,
+      summary: data.webSummary,
+      context: data.webContent,
+    }),
   }).then((response) => response.text())
   cache.set(key, result)
   return result

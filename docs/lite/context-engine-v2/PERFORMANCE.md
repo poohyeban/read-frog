@@ -1,6 +1,36 @@
 # Context Engine V2 performance
 
-## 7321d6f9 production hardening (current comparison)
+## Stylesheet hardening of 375115fa (current comparison)
+
+Baseline is `375115fae19dc2e072f3fd383025085e32293a89`, not the older 7321/1af30 controls below. Chromium 154, Node 24.19, same dependencies and fixture. Runs were sequential without concurrent tests/builds. Each revision has 20 fresh pages per corpus; cold is the first read on each page. Nearest-rank P95; variance is population variance.
+
+| Units | Cold P50 ms before → after | Cold P95 ms before → after | Variance ms² before → after | CPU median s before → after | Warm P95 ms before → after |
+| ----- | -------------------------- | -------------------------- | --------------------------- | --------------------------- | -------------------------- |
+| 1     | 87.15 → 89.65              | 105.50 → 104.90            | 75.98 → 87.66               | 0.12 → 0.12                 | 0.20 → 0.20                |
+| 100   | 73.10 → 68.30              | 81.10 → 79.90              | 37.58 → 31.20               | 0.16 → 0.17                 | 0.10 → 0.10                |
+| 1000  | 111.10 → 105.30            | 129.20 → 139.90            | 145.70 → 276.95             | 0.31 → 0.29                 | 0.10 → 0.10                |
+| 50000 | 2546.05 → 2524.55          | 2679.90 → 2784.90          | 9795.05 → 25877.70          | 5.31 → 5.28                 | 0.10 → 0.10                |
+
+Cold P95 rises about 8.3% at 1,000 units and 3.9% at 50,000, while cold medians improve there. This is not a universal speedup claim or portable SLA; the giant DOM still costs seconds in browser layout. Normal warm distributions remain within 0.1–0.2 ms P95. Raw Long Tasks, JS heap, DOM/style counts and per-sample distributions are retained.
+
+| Stylesheet case      | Iterations | P50/P95 ms baseline → final | Final validations / projections / rebuilds |
+| -------------------- | ---------- | --------------------------- | ------------------------------------------ |
+| warm-128-sheets      | 1000       | 0.00/0.10 → 0.10/0.20       | 0 / 0 / 0                                  |
+| coalesced-128-scopes | 1          | 0.90/0.90 → 2.10/2.10       | 1 / 0 / 0                                  |
+| cosmetic-style       | 1000       | 0.10/0.30 → 0.10/0.30       | 1000 / 0 / 0                               |
+| overflow-130-sheets  | 1000       | 0.00/0.10 → 0.10/0.20       | 1000 / 0 / 0                               |
+| prompt-small         | 1000       | absent → 0.00/0.10          | 1000 / 0 / 0                               |
+| prompt-bounded       | 1000       | absent → 4.70/5.80          | 1000 / 0 / 0                               |
+
+The coalesced row measures one batch of 1,000 synthetic completion events with 128 acquired scopes, then one demanded read. It is N=1, not a latency distribution. The other rows measure 1,000 iterations; prompt rows call the actual validator directly, without network latency. The 1,100-span bounded source reaches the 2,048 body-node limit plus a two-node heading (2,050 visited nodes per check), P95 5.8 ms. This work is required only at new prompt admission/explicit retry, not ordinary hot context hits. No production browser prototype is patched; instrumentation wrappers exist only in this local benchmark.
+
+With 128 sheets, 1,000 hot reads inspect exactly 128,000 sheet metadata records, zero eligible-source validations and zero live projections. With 130 sheets, inventory still reads 128,000 records but forces 1,000 bounded validations (7 nodes each). It never accepts the unexamined tail as unchanged. Cosmetic style churn preserves all snapshot identities with zero projections/rebuilds. Every stylesheet row has zero summary RPC, translation RPC and model HTTP, and zero resources after release.
+
+The bound is **128 sheets per owned root**, not per whole page: a scope can have its primary root, up to four explicit dependencies, optional head metadata and bounded shadow ancestry (64 steps per dependency). Global candidates scan acquired registrations (capacity 128), never all unacquired page content. Browser-internal style/layout cost is not bounded by these JS walk limits.
+
+Paired raw data, CPU/heap, attribute scenarios and summary are in [evidence/stylesheet/performance-summary.json](evidence/stylesheet/performance-summary.json) and adjacent files. JS heap after release excludes native DOM/process memory and is not an hours-long leak claim.
+
+## 7321d6f9 production hardening (historical comparison)
 
 Fixed baseline and fetched HEAD: `7321d6f9ada3a0335a876b2c076aebe4cdc4b0b5`. Prior 1af30d16 figures below are historical, not this control.
 

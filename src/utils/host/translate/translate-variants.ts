@@ -21,6 +21,7 @@ import {
 import { resolveProviderRefForCapability } from "@/utils/providers/provider-registry"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
 import { getLocalConfig } from "../../config/storage"
+import { inheritPromptContext } from "./context/prompt-guard"
 import { requiresModelSummary } from "./context/summary-policy"
 import { translationActivity } from "./engine-state"
 import { shouldSkipAsTargetLanguage } from "./target-language-skip"
@@ -97,12 +98,12 @@ async function prepareWebPagePromptContext(
     : undefined
 
   if (session?.signal.aborted) throw new TranslationCancelledError(session.id)
-  return {
+  return inheritPromptContext(webPageContext, {
     webTitle: requirements.title ? webPageContext.webTitle : "",
     webDescription: requirements.description ? webPageContext.webDescription : undefined,
     webContent: requirements.content ? webPageContext.webContent : "",
     webSummary: webSummary ?? undefined,
-  }
+  })
 }
 
 async function translateTextUsingPageConfig(
@@ -249,12 +250,12 @@ export async function translateTextForPageTitle(
     extraHashTags: ["pageTitleTranslation"],
     signal: session?.signal ?? signal,
     requestScopeId: signal ? `title-${crypto.randomUUID()}` : undefined,
-    webPageContext: {
+    webPageContext: inheritPromptContext(webPageContext, {
       webTitle: text,
       webDescription: webPageContext?.webDescription,
       webContent: webPageContext?.webContent,
       webSummary: webPageContext?.webSummary,
-    },
+    }),
     sessionId,
   })
 }

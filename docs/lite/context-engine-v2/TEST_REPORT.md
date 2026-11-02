@@ -1,10 +1,30 @@
 # Context Engine V2 test report
 
-The current **7321d6f9 production hardening** results and per-test RED/GREEN ledger
+## Stylesheet hardening of 375115fa (current)
+
+See [STYLESHEET_HARDENING.md](STYLESHEET_HARDENING.md) and `evidence/stylesheet/`.
+The target branch was synchronized to `375115fae19dc2e072f3fd383025085e32293a89`,
+equal to the audit baseline. Initial RED: stylesheet 15 fail / 1 pass; async dispatch
+1 fail / 1 pass; custom retry 1 fail during guard integration. Final added cases:
+24 pass. Full local run: **339 files, 3093 tests pass**, 132.23 s. Type-aware Oxlint
+and Chrome MV3 production build pass; final format check is recorded with commands.
+
+Same final local Chromium stylesheet fixture: baseline **14 fail / 6 pass** →
+**20 pass**, physical model HTTP **10 → 10**, CSS GET **22 → 22**. CSSOM unsafe
+second admission is refused with 0 HTTP; one later explicit fresh operation explains
+the equal total. Real SDK HTTP **4 → 4**, summary 0, resources 0. Existing rendering
+regression also passes with 30 local HTTP. Controlled cosmetic style work causes
+zero rebuilds/projections/HTTP. Paired performance measurements and bounded costs
+are in PERFORMANCE.md. Native MV3 remains blocked by managed extension policy;
+remaining CSSOM observation limitations are explicit, not claimed fully supported.
+
+## Earlier rounds (historical evidence)
+
+The historical **7321d6f9 production hardening** results and per-test RED/GREEN ledger
 are in [HARDENING_REVIEW.md](HARDENING_REVIEW.md) and `evidence/hardening/`.
 The following original V2 report compares 1af30d16; its earlier 2 → 1 HTTP result
 must not be presented as a request reduction achieved again in this round.
-Current local result: **3069 tests / 337 files passed**; 38 new hardening cases green. SDK HTTP 4 → 4; same Chromium cases 28 → 28, plus two new negative cases (30 total). Conclusion CONDITIONAL for measured feed/per-change overhead and native MV3 acceptance.
+Historical local result: **3069 tests / 337 files passed**; 38 new hardening cases green. SDK HTTP 4 → 4; same Chromium cases 28 → 28, plus two new negative cases (30 total). Conclusion CONDITIONAL for measured feed/per-change overhead and native MV3 acceptance.
 
 ## Scope and execution state
 

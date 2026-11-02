@@ -56,6 +56,7 @@ export class ContextSnapshotManager {
     rebuilds: 0,
     projections: 0,
     validations: 0,
+    promptValidations: 0,
     validationNodes: 0,
     styleReads: 0,
     unchangedValidations: 0,
@@ -108,7 +109,10 @@ export class ContextSnapshotManager {
           entry.dirty = true
           entry.generation++
         }
-        if (entry) this.validateEntry(entry)
+        if (entry) {
+          this.invalidation.checkStyleState(id)
+          this.validateEntry(entry)
+        }
         if (entry && !entry.dirty && entry.snapshot) {
           this.touch(entry)
           this.metrics.hits++
@@ -177,6 +181,7 @@ export class ContextSnapshotManager {
               }
               taskSignal.throwIfAborted()
               this.invalidation.flush()
+              this.invalidation.checkStyleState(id)
               if (scope.root && !scope.root.isConnected) throw new TranslationCancelledError()
               if (
                 this.entries.get(id) !== captured ||
@@ -450,10 +455,28 @@ export class ContextSnapshotManager {
       }),
     }
   }
+  capturePromptValidation(snapshot: ContextSnapshot): () => boolean {
+    const entry = [...this.entries.values()].find((value) => value.snapshot === snapshot)
+    const validate = entry?.validate
+    const id = entry?.id
+    // Keep the existing bounded weak-source validator, not the live Entry or DOM.
+    return () => {
+      this.metrics.promptValidations++
+      const valid = validate?.() === true
+      if (!valid && id) {
+        // Other requirement variants of this same scope also need a future
+        // check after an otherwise unobservable style/source change is found.
+        for (const current of this.entries.values())
+          if (current.scopeId === snapshot.scopeIdentity) current.pendingValidation = true
+      }
+      return valid
+    }
+  }
   isCurrent(snapshot: ContextSnapshot): boolean {
     this.invalidation.flush()
     return [...this.entries.values()].some((entry) => {
       if (entry.snapshot !== snapshot) return false
+      this.invalidation.checkStyleState(entry.id)
       this.validateEntry(entry)
       return !entry.dirty
     })

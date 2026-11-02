@@ -1,0 +1,50 @@
+{
+  "baseline": "375115fae19dc2e072f3fd383025085e32293a89",
+  "unchangedArchitectureAndIdentity": [
+    {
+      "path": "wxt.config.ts",
+      "unchanged": true,
+      "sha256": "5611d542c09033f8dd51720d3d50bd8e57c9af6264a77acb0c0f29c5070756ac"
+    },
+    {
+      "path": "src/utils/host/translate/source-document.ts",
+      "unchanged": true,
+      "sha256": "6db12fb6af33c6c088769dc93ff2842781751f07c9a90ca8957022575c275daf"
+    },
+    {
+      "path": "src/utils/host/translate/context-coordinator.ts",
+      "unchanged": true,
+      "sha256": "120b7ce21ed6443d56ea9c49e4853a1b3a9c10ba8674d0359f837991f319d342"
+    },
+    {
+      "path": "src/utils/host/translate/context/render-guard.ts",
+      "unchanged": true,
+      "sha256": "4bfc72ad1e703f9f9eb7a5b82f9fb94532c7f6610ebc0833ff3da75502fab219"
+    },
+    {
+      "path": "src/utils/request/resource-scheduler.ts",
+      "unchanged": true,
+      "sha256": "c6f562c506f5194dc2c7ae4e4cc238f2f53335d91ad2ba8d023b14e60084303f"
+    },
+    {
+      "path": "src/utils/request/request-queue.ts",
+      "unchanged": true,
+      "sha256": "286519ad6a846d3aeafabf6fe3f81898d620c0e5c111508b2b6a88bb5194bc76"
+    },
+    {
+      "path": "src/utils/request/batch-queue.ts",
+      "unchanged": true,
+      "sha256": "6bee1a8ca100d423d06e2297450f92bc0c4c102f2957b23775e7be95f5c943d0"
+    },
+    {
+      "path": "src/utils/request/attempt-context.ts",
+      "unchanged": true,
+      "sha256": "0e78c386b3408d83996b44c1a8059de1d974f9def6d2591e8147947062dafb0c"
+    },
+    {
+      "path": "src/utils/subtitles/session.ts",
+      "unchanged": true,
+      "sha256": "b99a4984432fd8e9b11767ae190b6614866dd30ba95886c3dd73d303bb1ec797"
+    }
+  ]
+}

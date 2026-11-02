@@ -6,6 +6,7 @@ import {
   releaseDocumentIdentity,
   synchronizeDocumentIdentity,
 } from "./context/document-lifetime"
+import { registerPromptContext } from "./context/prompt-guard"
 import { ContextSnapshotManager, ContextStaleError } from "./context/snapshot-manager"
 import { FULL_CONTEXT } from "./context/types"
 export { resolveContextScope } from "./context/scope-resolver"
@@ -67,6 +68,7 @@ export async function getOrCreateWebPageContext(
     signal,
   )
   snapshots.add(context)
+  registerPromptContext(context, manager.capturePromptValidation(context))
   return context
 }
 export function isContextStaleError(error: unknown): error is ContextStaleError {

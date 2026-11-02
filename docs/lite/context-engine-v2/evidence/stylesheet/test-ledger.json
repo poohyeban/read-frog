@@ -1,0 +1,242 @@
+{
+  "addedCases": 24,
+  "passed": 24,
+  "cases": [
+    {
+      "file": "src/components/custom-action/__tests__/use-custom-action-execution.test.ts",
+      "name": "explicit retry refreshes a prepared context rejected by the stylesheet dispatch guard",
+      "before": {
+        "phase": "guard-integration-before-explicit-retry-fix",
+        "status": "failed",
+        "file": "custom-retry-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/components/custom-action/__tests__/use-custom-action-execution.test.ts",
+      "name": "explicit retry retains a still-valid immutable custom context without re-extraction",
+      "before": {
+        "phase": "additional-positive-invariant",
+        "status": "not-run-before-fix"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet-dispatch.test.ts",
+      "name": "stylesheet changes during async glossary preparation cannot dispatch old context",
+      "before": {
+        "phase": "before-dispatch-guard",
+        "status": "failed",
+        "file": "dispatch-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet-dispatch.test.ts",
+      "name": "CSS changes after dispatch cannot revoke an issued result",
+      "before": {
+        "phase": "before-dispatch-guard",
+        "status": "passed",
+        "file": "dispatch-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet-dispatch.test.ts",
+      "name": "derived prompt values retain validation without adding wire or cache fields",
+      "before": {
+        "phase": "additional-positive-invariant",
+        "status": "not-run-before-fix"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet-dispatch.test.ts",
+      "name": "derived prompts follow an identical snapshot refreshed after heading replacement",
+      "before": {
+        "phase": "additional-positive-invariant",
+        "status": "not-run-before-fix"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "stylesheet link href change validates the actual source on next demand",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "stylesheet link rel change validates the actual source on next demand",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "stylesheet link media change validates the actual source on next demand",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "stylesheet link disabled change validates the actual source on next demand",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "stylesheet link type change validates the actual source on next demand",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "rel transition from non-style to case-insensitive alternate stylesheet is observed",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "style media changes invalidate a cached feed scope",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "load after an intervening old-style cache read validates again",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "stylesheet error and inline import load are completion signals, not model work",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "style text and link insert/remove preserve existing observable invalidation",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "passed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "1000 completion events coalesce and cosmetic CSS reuses the snapshot",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "a style completion during asynchronous preparation cannot publish visible old source",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "shadow-local completion affects its acquired subtree, not a sibling shadow tree",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "document stylesheet completion reaches an acquired nested open shadow scope",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "released managers do not retain or react to stylesheet listeners",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json",
+        "interpretation": "Missing new listener capability, not a baseline memory-leak reproduction."
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "effective sheet disabled changes without an attribute cannot leave a hot snapshot valid",
+      "before": {
+        "phase": "baseline-before-production",
+        "status": "failed",
+        "file": "unit-red.json"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "128 acquired scopes share two document listeners and remain lazy after a global event",
+      "before": {
+        "phase": "additional-positive-invariant",
+        "status": "not-run-before-fix"
+      },
+      "after": "passed"
+    },
+    {
+      "file": "src/utils/host/translate/context/__tests__/stylesheet.test.ts",
+      "name": "stylesheet inventory overflow uses bounded demand validation instead of a stale cache hit",
+      "before": {
+        "phase": "additional-positive-invariant",
+        "status": "not-run-before-fix"
+      },
+      "after": "passed"
+    }
+  ]
+}

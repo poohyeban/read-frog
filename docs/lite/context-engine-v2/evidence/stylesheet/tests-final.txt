@@ -1,0 +1,394 @@
+$ vitest run --reporter=default --reporter=json --outputFile=/tmp/stylesheet-full-tests.json
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ✓ src/entrypoints/background/__tests__/subtitle-stream-http.test.ts (9 tests) 6110ms
+   ✓ real SDK over local HTTP: baseline 4867ms
+ ✓ src/entrypoints/background/__tests__/translation-queues.test.ts (42 tests) 7735ms
+   ✓ translation queue helpers (42)
+     ✓ preserves partial batch positions through cache serialization: "一" 1161ms
+     ✓ preserves the previous cache entry when forced translation fails 3321ms
+ ✓ src/utils/host/translate/context/__tests__/http-contract.test.ts (1 test) 8146ms
+   ✓ verifies physical HTTP, scoped prompts, shared cancellation and cache reuse through the real SDK/queues 8145ms
+ ✓ src/utils/host/translate/context/__tests__/snapshot-manager.test.ts (19 tests) 5509ms
+   ✓ bounded index and cache converge after 500 acquire/remove operations 2334ms
+   ✓ limits a giant scope projection without copying its complete subtree 2571ms
+ ✓ src/utils/host/translate/context/__tests__/hardening.test.ts (38 tests) 5250ms
+   ✓ P0-1: 1000 decorative style changes never cause a projection or stale preparation 4292ms
+ ✓ src/utils/providers/__tests__/resource-runtime.test.ts (13 tests) 788ms
+ ✓ src/utils/host/__tests__/translate.integration.test.tsx (158 tests) 3977ms
+   ✓ translate (158)
+     ✓ LaTeXML SVG text boxes (4)
+       ✓ translates 2609.32423 in bilingual mode and restores the SVG nodes 307ms
+ ✓ src/entrypoints/content-runtime/host/translation-control/__tests__/page-translation-mutations.test.ts (70 tests) 1307ms
+ ✓ src/entrypoints/options/components/performance-settings/groups.test.tsx (5 tests) 706ms
+   ✓ renames AB with disabled B, adds C, and restores B's checked membership after enable 342ms
+ ✓ src/entrypoints/subtitles.content/__tests__/summary-navigation.test.tsx (18 tests) 1107ms
+ ✓ src/utils/providers/__tests__/remote-architecture.test.ts (1 test) 916ms
+   ✓ executable remote entrypoint coverage (1)
+     ✓ requires every inference SDK and transport entrypoint to use the shared authority 915ms
+ ✓ src/utils/host/translate/core/__tests__/node-translation-lifecycle.test.ts (21 tests) 1171ms
+ ✓ src/utils/host/translate/__tests__/webpage-context.test.ts (17 tests) 720ms
+ ✓ src/entrypoints/content-runtime/side/components/floating-button/__tests__/index.test.tsx (12 tests) 789ms
+ ✓ src/utils/host/translate/context/__tests__/stylesheet.test.ts (18 tests) 1784ms
+   ✓ released managers do not retain or react to stylesheet listeners 505ms
+   ✓ 128 acquired scopes share two document listeners and remain lazy after a global event 721ms
+ ✓ src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/request-rerun.test.tsx (33 tests) 2180ms
+   ✓ selection toolbar requests (33)
+     ✓ does not rerun translation on passive config refresh, but reruns when request values change 316ms
+ ✓ src/components/form/__tests__/autosave-integration.test.tsx (5 tests) 586ms
+ ✓ src/components/ui/selection-popover/__tests__/selection-popover.test.tsx (25 tests) 1088ms
+ ✓ src/entrypoints/background/__tests__/subtitle-http.test.ts (1 test) 1605ms
+   ✓ runs the real SDK, scheduler, queues and content translator against local HTTP only 1605ms
+ ✓ src/utils/host/dom/__tests__/traversal.test.ts (48 tests) 453ms
+ ✓ src/utils/host/translate/core/__tests__/translation-only-restore.test.ts (20 tests) 449ms
+ ✓ src/components/ui/base-ui/__tests__/toast.test.tsx (9 tests) 491ms
+ ✓ src/utils/config/__tests__/init.test.ts (17 tests) 426ms
+ ✓ src/entrypoints/options/pages/custom-actions/action-config-form/__tests__/output-schema-autosave.test.tsx (1 test) 476ms
+   ✓ output schema autosave (1)
+     ✓ deletes a field normally when no Notebase is connected 473ms
+ ✓ src/entrypoints/content-runtime/host/translation-control/__tests__/page-translation-rewrite-carry.test.ts (2 tests) 489ms
+   ✓ identical rewrite of a translated subtree (real pipeline) (2)
+     ✓ keeps the translations and sends no new request when the site rewrites identical HTML 311ms
+ ✓ src/utils/host/translate/__tests__/pipeline-contract.test.ts (3 tests) 610ms
+   ✓ runs context → immutable plan → real queues → provider → bilingual commit and restores source 305ms
+ ✓ src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/selection-toolbar.test.tsx (46 tests) 713ms
+ ✓ src/utils/host/dom/__tests__/include-scope.test.ts (11 tests) 372ms
+ ✓ src/utils/site-rules/__tests__/built-in.test.ts (39 tests) 427ms
+ ✓ src/utils/host/translate/context/__tests__/legacy-contract.test.ts (14 tests) 664ms
+ ✓ src/entrypoints/options/pages/translation/translation-control/site-rules/__tests__/built-in-rules.test.tsx (3 tests) 523ms
+ ✓ src/entrypoints/options/components/performance-settings/index.test.tsx (2 tests) 555ms
+   ✓ advanced configuration UI (2)
+     ✓ starts collapsed and opening, closing and reading never persist default overrides 429ms
+ ✓ src/utils/host/dom/__tests__/traversal-chunked.test.ts (4 tests) 605ms
+   ✓ walkAndLabelElementChunked parity (4)
+     ✓ labels identically to the synchronous walk even when yielding at every element 494ms
+ ✓ src/utils/subtitles/__tests__/cue-timeline.test.ts (7 tests) 580ms
+   ✓ CueTimeline (5)
+     ✓ agrees with a linear oracle on 50,000 cues and deterministic random positions 567ms
+ ✓ src/utils/host/translate/dom/__tests__/inline-atoms.test.ts (30 tests) 698ms
+   ✓ extractInlineAtomText (14)
+     ✓ is byte-identical to the legacy extraction for a paragraph without atoms 327ms
+ ✓ src/entrypoints/subtitles.content/__tests__/translated-subtitles-downloader.test.ts (20 tests) 452ms
+ ✓ src/entrypoints/subtitles.content/__tests__/universal-adapter-summary.test.ts (6 tests) 481ms
+ ✓ src/entrypoints/subtitles.content/__tests__/universal-adapter.test.ts (47 tests) 389ms
+ ✓ src/utils/host/translate/context/__tests__/scope-resolver.test.ts (6 tests) 320ms
+ ✓ src/utils/host/translate/core/__tests__/translation-modes-wrapper-tamper.test.ts (11 tests) 337ms
+ ✓ src/entrypoints/background/__tests__/iframe-injection.test.ts (31 tests) 278ms
+ ✓ src/entrypoints/content-runtime/host/translation-control/__tests__/node-translation-trigger.test.ts (26 tests) 353ms
+ ✓ src/entrypoints/options/pages/video-subtitles/__tests__/video-subtitles-sections.test.tsx (5 tests) 382ms
+ ✓ src/components/ui/selection-popover/__tests__/page-selection.test.tsx (2 tests) 396ms
+   ✓ selectionPopover and the page selection (2)
+     ✓ keeps the page selection when the popover closes 322ms
+ ✓ src/entrypoints/subtitles.content/__tests__/cache-restoration.test.ts (10 tests) 344ms
+ ✓ src/utils/host/translate/dom/__tests__/paragraph-segmentation.test.ts (43 tests) 378ms
+ ✓ src/entrypoints/subtitles.content/__tests__/translation-coordinator.test.ts (8 tests) 324ms
+ ✓ src/utils/host/translate/__tests__/wikipedia-small-paragraph.test.ts (16 tests) 304ms
+ ✓ src/utils/host/dom/__tests__/filter.test.ts (40 tests) 295ms
+ ✓ src/entrypoints/options/pages/api-providers/providers-config/provider-config-form/__tests__/translate-model-selector.test.tsx (3 tests) 267ms
+ ✓ src/entrypoints/options/pages/translation/translation-control/site-rules/__tests__/user-rules-editor.test.tsx (4 tests) 316ms
+ ✓ src/components/translation/error/__tests__/shadow-portal.test.tsx (3 tests) 285ms
+ ✓ src/utils/host/translate/__tests__/config-commit-contract.test.ts (2 tests) 297ms
+ ✓ src/utils/host/__tests__/node-translate.test.tsx (5 tests) 335ms
+ ✓ src/entrypoints/options/pages/translation/__tests__/translation-sections.test.tsx (7 tests) 292ms
+ ✓ src/utils/host/translate/__tests__/feature-context-lifetime.test.ts (4 tests) 305ms
+ ✓ src/entrypoints/options/pages/custom-actions/components/__tests__/action-card-list.test.tsx (2 tests) 221ms
+ ✓ src/entrypoints/subtitles.content/__tests__/segmentation-window-quality.test.ts (4 tests) 243ms
+ ✓ src/entrypoints/content-runtime/host/translation-control/__tests__/page-translation-document-root-scan.test.ts (5 tests) 295ms
+ ✓ src/components/prompt-configurator/__tests__/import-prompts.test.tsx (2 tests) 266ms
+ ✓ src/entrypoints/subtitles.content/__tests__/dual-lane.test.ts (16 tests) 294ms
+ ✓ src/utils/host/dom/__tests__/giant-split-stranded-text.test.ts (11 tests) 249ms
+ ✓ src/entrypoints/translation-hub/components/__tests__/translation-card.test.tsx (6 tests) 244ms
+ ✓ src/entrypoints/options/pages/api-providers/providers-config/provider-config-form/components/__tests__/provider-options-recommendation-trigger.test.tsx (4 tests) 285ms
+ ✓ src/utils/host/dom/__tests__/latexml-text-box.test.ts (11 tests) 318ms
+ ✓ src/utils/providers/__tests__/model.test.ts (2 tests) 222ms
+ ✓ src/components/ui/base-ui/__tests__/switch.test.tsx (9 tests) 245ms
+ ✓ src/entrypoints/subtitles.content/__tests__/translation-recovery.test.ts (16 tests) 251ms
+ ✓ src/utils/host/translate/context/__tests__/render-guard.test.ts (4 tests) 243ms
+ ✓ src/entrypoints/options/pages/input-translation/__tests__/trigger-section.test.tsx (3 tests) 196ms
+ ✓ src/entrypoints/options/pages/api-providers/providers-config/provider-config-form/__tests__/provider-options-field.test.tsx (6 tests) 200ms
+ ✓ src/entrypoints/options/pages/selection-toolbar/__tests__/selection-toolbar-sections.test.tsx (2 tests) 214ms
+ ✓ src/components/custom-action/__tests__/use-custom-action-execution.test.ts (8 tests) 269ms
+ ✓ src/components/llm-providers/__tests__/provider-selector.test.tsx (3 tests) 203ms
+ ✓ src/utils/host/translate/context/__tests__/stylesheet-dispatch.test.ts (4 tests) 286ms
+ ✓ src/entrypoints/content-runtime/selection/input-translation/__tests__/use-input-translation.test.tsx (9 tests) 301ms
+ ✓ src/utils/host/dom/__tests__/custom-dont-walk.test.ts (10 tests) 192ms
+ ✓ src/entrypoints/subtitles.content/__tests__/subtitles-toggle-navigation.test.tsx (1 test) 196ms
+ ✓ src/entrypoints/content-runtime/host/translation-control/__tests__/node-translation.test.ts (3 tests) 217ms
+ ✓ src/entrypoints/translation-hub/components/__tests__/text-input.test.tsx (3 tests) 224ms
+ ✓ src/entrypoints/background/__tests__/subtitle-request-contract.test.ts (25 tests) 177ms
+ ✓ src/entrypoints/background/__tests__/page-translation-command.test.ts (4 tests) 212ms
+ ✓ src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/speak-button.test.tsx (6 tests) 236ms
+ ✓ src/entrypoints/input-injector.content/__tests__/lexical.test.ts (4 tests) 145ms
+ ✓ src/components/prompt-configurator/__tests__/configure-built-in-prompt.test.tsx (2 tests) 182ms
+ ✓ src/utils/subtitles/__tests__/lease-connection.test.ts (4 tests) 226ms
+ ✓ src/utils/subtitles/processor/__tests__/translator.test.ts (11 tests) 225ms
+ ✓ src/utils/host/dom/__tests__/custom-tag-sets.test.ts (5 tests) 204ms
+ ✓ src/entrypoints/content-runtime/selection/__tests__/utils.test.ts (23 tests) 178ms
+ ✓ src/utils/host/dom/__tests__/discord.test.ts (1 test) 184ms
+ ✓ src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/__tests__/download-translated-subtitles.test.tsx (4 tests) 243ms
+Not implemented: navigation to another Document
+ ✓ src/entrypoints/options/navigation/__tests__/drill-in.test.tsx (3 tests) 358ms
+ ✓ src/utils/host/translate/__tests__/filter-small-paragraph.test.ts (10 tests) 197ms
+ ✓ src/utils/host/translate/dom/__tests__/virtual-paragraph-lifecycle.test.ts (26 tests) 396ms
+ ✓ src/entrypoints/content-runtime/selection/selection-toolbar/translate-button/__tests__/index.test.tsx (1 test) 246ms
+ ✓ src/entrypoints/subtitles.content/ui/subtitles-sidebar/sections/transcript/__tests__/transcript.test.tsx (9 tests) 164ms
+(node:98144) Warning: AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:98144) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+(node:98144) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+ ✓ src/utils/providers/__tests__/deepseek.test.ts (2 tests) 153ms
+ ✓ src/entrypoints/options/command-palette/__tests__/settings-search-navigation.test.tsx (4 tests) 406ms
+   ✓ settings search navigation (4)
+     ✓ navigates with section query when target route differs 338ms
+ ✓ src/utils/host/translate/ui/__tests__/spinner.test.ts (7 tests) 338ms
+ ✓ src/components/ui/selection-popover/__tests__/selection-source-content.test.tsx (2 tests) 106ms
+ ✓ src/utils/__tests__/shadow-root.test.ts (11 tests) 447ms
+ ✓ src/utils/providers/audio/__tests__/openai-audio.test.ts (14 tests) 216ms
+ ✓ src/entrypoints/options/components/performance-settings/fields.test.tsx (4 tests) 248ms
+ ✓ src/components/ui/base-ui/__tests__/sidebar.test.tsx (2 tests) 294ms
+ ✓ src/utils/host/dom/__tests__/find.test.ts (6 tests) 200ms
+ ✓ src/entrypoints/options/pages/shortcuts/__tests__/shortcut-config-item.test.tsx (3 tests) 103ms
+ ✓ src/entrypoints/options/pages/api-providers/providers-config/provider-config-form/__tests__/provider-headers-field.test.tsx (6 tests) 393ms
+ ✓ src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/text-wrapping.test.tsx (2 tests) 283ms
+ ✓ src/utils/host/translate/__tests__/target-language-skip.test.ts (8 tests) 266ms
+ ✓ src/hooks/__tests__/use-text-to-speech-supersede.test.tsx (3 tests) 167ms
+ ✓ src/utils/__tests__/select-all.test.ts (7 tests) 185ms
+ ✓ src/components/ui/base-ui/__tests__/field.test.tsx (1 test) 218ms
+ ✓ src/entrypoints/options/pages/api-providers/providers-config/__tests__/providers-config.test.tsx (1 test) 185ms
+ ✓ src/utils/host/__tests__/translate-text.test.tsx (17 tests) 93ms
+ ✓ src/entrypoints/options/pages/api-providers/providers-config/provider-config-form/components/advanced-options-section.test.tsx (1 test) 161ms
+ ✓ src/utils/host/translate/core/__tests__/translation-modes-pending.test.ts (2 tests) 154ms
+ ✓ src/utils/providers/__tests__/network-isolation.test.ts (6 tests) 88ms
+ ✓ src/utils/host/translate/__tests__/webpage-summary.test.ts (2 tests) 154ms
+ ✓ src/entrypoints/options/pages/api-providers/providers-config/provider-config-form/__tests__/provider-url-field.test.tsx (1 test) 172ms
+ ✓ src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/use-selection-shortcuts.test.tsx (3 tests) 151ms
+ ✓ src/entrypoints/background/__tests__/background-stream.test.ts (14 tests) 115ms
+ ✓ src/entrypoints/content-runtime/host/translation-control/__tests__/node-translation-preview.test.ts (9 tests) 140ms
+ ✓ src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/modal-dialog-host.test.ts (16 tests) 70ms
+ ✓ src/entrypoints/subtitles.content/__tests__/quality-restoration.test.ts (3 tests) 115ms
+ ✓ src/utils/host/translate/core/__tests__/translation-walker-liveness.test.ts (3 tests) 115ms
+ ✓ src/entrypoints/content-runtime/selection/selection-toolbar/custom-action-button/__tests__/custom-action-trigger.test.tsx (1 test) 143ms
+ ✓ src/components/__tests__/shortcut-key-recorder.test.tsx (6 tests) 72ms
+ ✓ src/entrypoints/content-runtime/host/translation-control/__tests__/page-translation-title.test.ts (10 tests) 118ms
+ ✓ src/components/ui/selection-popover/__tests__/use-prevent-scroll-through.test.tsx (4 tests) 98ms
+ ✓ src/entrypoints/subtitles.content/__tests__/init-youtube-subtitles.test.ts (6 tests) 102ms
+ ✓ src/entrypoints/subtitles.content/ui/__tests__/subtitles-view.test.tsx (2 tests) 100ms
+ ✓ src/utils/host/translate/dom/__tests__/translation-html-attributes.test.ts (16 tests) 91ms
+ ✓ src/entrypoints/background/__tests__/db-cleanup.test.ts (23 tests) 41ms
+ ✓ src/utils/request/__tests__/resource-scheduler.test.ts (10 tests) 25ms
+ ✓ src/entrypoints/background/__tests__/browser-action-icon.test.ts (6 tests) 68ms
+ ✓ src/utils/content-runtime/__tests__/page-guards.test.ts (6 tests) 37ms
+ ✓ src/utils/error/__tests__/stream-diagnostics.test.ts (6 tests) 64ms
+ ✓ src/components/ui/selection-popover/__tests__/selection-toolbar-title-content.test.tsx (1 test) 35ms
+ ✓ .github/scripts/contributor-trust/run.test.js (2 tests) 71ms
+ ✓ src/entrypoints/subtitles.content/platforms/youtube/__tests__/caption-track-listener.test.ts (7 tests) 73ms
+ ✓ src/entrypoints/subtitles.content/__tests__/playback-priority.test.ts (12 tests) 96ms
+ ✓ src/utils/site-rules/__tests__/effective.test.ts (5 tests) 88ms
+ ✓ src/utils/request/__tests__/priority-queue.test.ts (27 tests) 29ms
+ ✓ src/utils/subtitles/__tests__/worker-recovery.test.ts (6 tests) 33ms
+ ✓ src/entrypoints/background/__tests__/video-summary.test.ts (5 tests) 31ms
+ ✓ src/entrypoints/subtitles.content/__tests__/segmentation-pipeline.test.ts (9 tests) 74ms
+ ✓ src/utils/host/translate/ui/__tests__/style-injector.test.ts (8 tests) 74ms
+ ✓ src/utils/host/dom/__tests__/custom-force-block.test.ts (10 tests) 128ms
+ ✓ src/utils/config/__tests__/local-persistence.test.ts (3 tests) 75ms
+ ✓ src/entrypoints/netflix-interceptor.content/__tests__/player.test.ts (9 tests) 40ms
+ ✓ src/entrypoints/subtitles.content/__tests__/segmentation-recovery.test.ts (4 tests) 73ms
+ ✓ src/utils/providers/__tests__/lite-provider.test.ts (2 tests) 22ms
+ ✓ src/entrypoints/subtitles.content/learning/__tests__/subtitle-word-tokens.test.tsx (5 tests) 88ms
+ ✓ src/utils/host/translate/core/__tests__/translation-carry.test.ts (7 tests) 53ms
+ ✓ src/entrypoints/subtitles.content/__tests__/universal-adapter-destroy.test.ts (2 tests) 38ms
+ ✓ src/utils/host/translate/__tests__/translation-text-swap.test.ts (13 tests) 52ms
+ ✓ src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/positioning.test.ts (21 tests) 22ms
+ ✓ src/entrypoints/subtitles.content/__tests__/netflix-track-poll.test.ts (3 tests) 66ms
+ ✓ src/entrypoints/translation-hub/__tests__/preferences.test.ts (3 tests) 62ms
+ ✓ src/entrypoints/subtitles.content/ui/__tests__/subtitle-lines.test.tsx (7 tests) 65ms
+ ✓ src/entrypoints/subtitles.content/learning/__tests__/word-lookup-card.test.tsx (5 tests) 76ms
+ ✓ src/utils/__tests__/scheduler.test.ts (6 tests) 29ms
+ ✓ src/entrypoints/background/__tests__/translation-signal.test.ts (36 tests) 54ms
+ ✓ src/entrypoints/subtitles.content/__tests__/startup-invalidation.test.ts (4 tests) 61ms
+ ✓ src/entrypoints/translation-hub/components/__tests__/language-control-panel.test.tsx (3 tests) 40ms
+ ✓ src/utils/subtitles/__tests__/youtube-fetcher.test.ts (24 tests) 68ms
+ ✓ src/utils/site-rules/__tests__/resolve.test.ts (31 tests) 32ms
+ ✓ src/utils/request/__tests__/batch-queue.test.ts (20 tests) 42ms
+ ✓ src/entrypoints/content-runtime/host/__tests__/runtime.test.ts (6 tests) 63ms
+ ✓ src/utils/subtitles/processor/__tests__/translator-task-requirements.test.ts (3 tests) 41ms
+ ✓ src/entrypoints/subtitles.content/platforms/youtube/__tests__/shorts-active-reel-watcher.test.ts (2 tests) 29ms
+ ✓ src/utils/request/__tests__/request-queue.test.ts (21 tests) 46ms
+ ✓ src/utils/host/translate/api/__tests__/ai.test.ts (9 tests) 43ms
+ ✓ src/entrypoints/background/__tests__/ai-segmentation.test.ts (8 tests) 50ms
+ ✓ src/entrypoints/subtitles.content/renderer/__tests__/mount-shorts-translate-button.test.ts (2 tests) 25ms
+ ✓ src/entrypoints/content-runtime/host/translation-control/__tests__/page-translation-observer-root.test.ts (1 test) 58ms
+ ✓ src/utils/subtitles/fetchers/text-track/__tests__/text-track-fetcher.test.ts (10 tests) 20ms
+ ✓ src/entrypoints/subtitles.content/learning/__tests__/use-top-layer-portal-container.test.tsx (2 tests) 52ms
+ ✓ src/utils/i18n/__tests__/locale-boundary.test.tsx (3 tests) 47ms
+ ✓ src/utils/config/__tests__/audio-providers.test.ts (6 tests) 38ms
+ ✓ src/entrypoints/background/__tests__/subtitle-work.test.ts (7 tests) 57ms
+ ✓ src/utils/request/__tests__/resource-identity.test.ts (7 tests) 24ms
+ ✓ src/entrypoints/background/__tests__/translation-context-summary.test.ts (12 tests) 60ms
+ ✓ src/utils/host/translate/ui/__tests__/node-site-rule-css.test.ts (4 tests) 40ms
+ ✓ src/entrypoints/interceptor.content/__tests__/inject-player-api.test.ts (4 tests) 27ms
+ ✓ src/entrypoints/subtitles.content/learning/__tests__/use-hold-playback.test.tsx (5 tests) 40ms
+ ✓ src/entrypoints/subtitles.content/ui/__tests__/use-vertical-drag.test.tsx (1 test) 45ms
+ ✓ src/utils/config/__tests__/restored-features.test.ts (1 test) 23ms
+ ✓ src/utils/config/__tests__/performance-writer.test.ts (12 tests) 31ms
+ ✓ src/utils/content/__tests__/page-language.test.ts (9 tests) 52ms
+ ✓ src/utils/glossary/__tests__/repository.test.ts (18 tests) 30ms
+ ✓ src/utils/host/translate/ui/__tests__/translation-utils.test.ts (13 tests) 38ms
+ ✓ src/utils/host/translate/__tests__/render-contract.test.ts (3 tests) 38ms
+ ✓ src/utils/glossary/__tests__/matcher.test.ts (21 tests) 42ms
+ ✓ src/utils/atoms/__tests__/config-sync.test.ts (6 tests) 34ms
+ ✓ src/utils/glossary/__tests__/active-matcher.test.ts (7 tests) 28ms
+ ✓ src/utils/host/translate/__tests__/architecture.test.ts (3 tests) 22ms
+ ✓ src/entrypoints/subtitles.content/ui/__tests__/use-controls-visible.test.tsx (4 tests) 25ms
+ ✓ src/types/config/__tests__/config-provider-enabled.test.ts (2 tests) 25ms
+ ✓ src/utils/__tests__/url-pattern.test.ts (53 tests) 28ms
+ ✓ src/entrypoints/background/__tests__/tts-playback.test.ts (5 tests) 39ms
+ ✓ src/entrypoints/subtitles.content/ui/subtitles-settings-panel/components/__tests__/use-subtitles-panel-dismiss.test.tsx (3 tests) 46ms
+ ✓ src/utils/request/__tests__/retry-policy.test.ts (14 tests) 38ms
+ ✓ src/utils/subtitles/__tests__/work-policy.test.ts (6 tests) 30ms
+ ✓ src/utils/__tests__/iframe-selection-trigger.test.ts (6 tests) 33ms
+ ✓ src/utils/request/__tests__/queue-cancellation.test.ts (17 tests) 36ms
+ ✓ .github/scripts/contributor-trust/github-api.test.js (7 tests) 32ms
+ ✓ src/entrypoints/background/__tests__/llm-generate-text.test.ts (2 tests) 16ms
+ ✓ src/utils/host/translate/__tests__/source-document.test.ts (2 tests) 38ms
+ ✓ src/utils/subtitles/fetchers/netflix/__tests__/netflix-fetcher.test.ts (14 tests) 36ms
+ ✓ src/utils/request/__tests__/request-priority.test.ts (3 tests) 30ms
+ ✓ src/hooks/__tests__/use-pattern-list.test.ts (8 tests) 34ms
+ ✓ src/entrypoints/options/command-palette/__tests__/section-scroll.test.ts (6 tests) 36ms
+ ✓ src/utils/content-script/__tests__/port-streaming.test.ts (6 tests) 18ms
+ ✓ src/entrypoints/popup/atoms/__tests__/page-command-contract.test.ts (9 tests) 21ms
+ ✓ src/entrypoints/popup/atoms/__tests__/session.test.ts (9 tests) 23ms
+ ✓ src/utils/error/__tests__/extract-message.test.ts (1 test) 25ms
+ ✓ src/utils/glossary/__tests__/matcher-edge-cases.test.ts (48 tests) 17ms
+ ✓ src/utils/host/translate/context/__tests__/title-contract.test.ts (2 tests) 28ms
+ ✓ src/utils/subtitles/__tests__/segment-words.test.ts (4 tests) 15ms
+ ✓ src/utils/__tests__/crypto-polyfill.test.ts (8 tests) 21ms
+ ✓ src/utils/subtitles/fetchers/netflix/__tests__/ttml.test.ts (7 tests) 30ms
+ ✓ src/components/form/__tests__/autosave-controller.test.ts (14 tests) 25ms
+ ✓ src/entrypoints/subtitles.content/platforms/youtube/__tests__/controls-height.test.ts (3 tests) 18ms
+ ✓ src/entrypoints/content-runtime/host/__tests__/listen.test.ts (4 tests) 25ms
+ ✓ src/utils/subtitles/__tests__/youtube-parsers.test.ts (55 tests) 32ms
+ ✓ src/utils/constants/__tests__/model.test.ts (15 tests) 15ms
+ ✓ src/utils/host/translate/__tests__/prepared-plan.test.ts (4 tests) 23ms
+ ✓ src/utils/host/translate/__tests__/in-memory-translation-cache.test.ts (9 tests) 25ms
+ ✓ src/entrypoints/options/pages/translation/translation-control/site-rules/__tests__/validate-user-rules.test.ts (17 tests) 24ms
+ ✓ src/entrypoints/subtitles.content/learning/__tests__/atoms.test.ts (2 tests) 17ms
+ ✓ src/utils/glossary/__tests__/csv.test.ts (44 tests) 18ms
+ ✓ src/utils/subtitles/__tests__/stream-protocol.test.ts (12 tests) 12ms
+ ✓ src/utils/subtitles/__tests__/session.test.ts (5 tests) 15ms
+ ✓ src/entrypoints/subtitles.content/__tests__/subtitles-scheduler.test.ts (10 tests) 17ms
+ ✓ src/utils/constants/__tests__/providers.test.ts (4 tests) 15ms
+ ✓ src/utils/subtitles/__tests__/translation-plan.test.ts (4 tests) 9ms
+ ✓ src/utils/subtitles/processor/__tests__/ai-segmentation.test.ts (1 test) 23ms
+ ✓ src/entrypoints/background/__tests__/context-menu.test.ts (7 tests) 18ms
+ ✓ src/utils/prompts/__tests__/translate.test.ts (27 tests) 12ms
+ ✓ src/utils/atoms/__tests__/theme.test.ts (2 tests) 10ms
+ ✓ src/utils/request/__tests__/resource-registry.test.ts (4 tests) 13ms
+ ✓ src/utils/host/translate/context/__tests__/summary-cost.test.ts (3 tests) 15ms
+ ✓ src/components/ui/selection-popover/__tests__/inline-error.test.ts (3 tests) 10ms
+ ✓ src/utils/atoms/__tests__/provider.test.ts (4 tests) 12ms
+ ✓ src/utils/iconify/__tests__/action-icons.test.tsx (3 tests) 14ms
+ ✓ .github/scripts/contributor-trust/plan-actions.test.js (12 tests) 15ms
+ ✓ src/entrypoints/options/pages/api-providers/feature-providers/__tests__/system-prompt-preview.test.ts (7 tests) 18ms
+ ✓ src/utils/tts-playback/__tests__/dom-audio-controller.test.ts (4 tests) 9ms
+ ✓ src/utils/config/__tests__/performance-migration.test.ts (4 tests) 13ms
+ ✓ src/utils/host/translate/__tests__/local-scheduler.test.ts (5 tests) 10ms
+ ✓ src/entrypoints/background/__tests__/subtitle-candidates.test.ts (6 tests) 9ms
+ ✓ src/utils/host/translate/__tests__/context-coordinator.test.ts (4 tests) 9ms
+ ✓ src/utils/host/translate/__tests__/engine-state.test.ts (2 tests) 7ms
+ ✓ src/utils/subtitles/__tests__/transcript.test.ts (15 tests) 9ms
+ ✓ src/utils/subtitles/__tests__/noise-filter.test.ts (13 tests) 10ms
+ ✓ src/utils/i18n/__tests__/runtime-loading.test.ts (3 tests) 12ms
+ ✓ src/entrypoints/subtitles.content/platforms/youtube/__tests__/live-content.test.ts (3 tests) 12ms
+ ✓ src/utils/subtitles/__tests__/video-summary.test.ts (11 tests) 13ms
+ ✓ src/utils/tts-playback/__tests__/chunk.test.ts (5 tests) 10ms
+ ✓ src/utils/__tests__/custom-actions.test.ts (2 tests) 8ms
+ ✓ src/entrypoints/subtitles.content/platforms/youtube/__tests__/ad-playing.test.ts (1 test) 3ms
+ ✓ src/utils/host/translate/__tests__/text-preparation.test.ts (12 tests) 6ms
+ ✓ src/utils/subtitles/fetchers/__tests__/post-message-request.test.ts (2 tests) 11ms
+ ✓ src/utils/request/__tests__/cancellation.test.ts (7 tests) 7ms
+ ✓ src/utils/__tests__/site-control.test.ts (12 tests) 8ms
+ ✓ src/utils/__tests__/navigation.test.ts (8 tests) 6ms
+ ✓ src/utils/subtitles/__tests__/video-summary-request.test.ts (4 tests) 11ms
+ ✓ src/utils/host/translate/__tests__/inline-atom-tokens.test.ts (27 tests) 17ms
+ ✓ src/utils/host/translate/core/__tests__/mutation-source-budget.test.ts (1 test) 11ms
+ ✓ src/utils/subtitles/__tests__/track-identity.test.ts (6 tests) 8ms
+ ✓ src/utils/request/__tests__/attempt-context.test.ts (6 tests) 13ms
+ ✓ src/entrypoints/background/__tests__/subtitle-stream-updates.test.ts (1 test) 7ms
+ ✓ src/entrypoints/background/__tests__/page-translation-state.test.ts (11 tests) 7ms
+ ✓ src/utils/__tests__/shortcut.test.ts (6 tests) 9ms
+ ✓ src/utils/atoms/__tests__/detected-code.test.ts (2 tests) 9ms
+ ✓ src/utils/host/translate/__tests__/html-attribute-markers.test.ts (12 tests) 11ms
+ ✓ src/utils/__tests__/react-root.test.ts (3 tests) 10ms
+ ✓ src/utils/subtitles/__tests__/config-identity.test.ts (2 tests) 7ms
+ ✓ src/entrypoints/options/pages/api-providers/providers-config/__tests__/utils.test.ts (1 test) 7ms
+ ✓ src/utils/subtitles/__tests__/failure-lifetime.test.ts (6 tests) 6ms
+ ✓ src/utils/subtitles/__tests__/display-rules.test.ts (14 tests) 6ms
+ ✓ src/utils/request/__tests__/batch-separator-parsing.test.ts (19 tests) 7ms
+ ✓ src/utils/content/__tests__/languages.test.ts (2 tests) 15ms
+ ✓ src/utils/providers/__tests__/model-id.test.ts (3 tests) 3ms
+ ✓ .github/scripts/contributor-trust/score-author.test.js (7 tests) 11ms
+ ✓ src/entrypoints/background/__tests__/iframe-injection-utils.test.ts (13 tests) 7ms
+ ✓ src/types/config/__tests__/translate-prompts.test.ts (4 tests) 7ms
+ ✓ src/utils/glossary/__tests__/scope.test.ts (10 tests) 13ms
+ ✓ src/utils/subtitles/__tests__/candidate-reader.test.ts (4 tests) 13ms
+ ✓ src/utils/glossary/__tests__/prompt.test.ts (9 tests) 4ms
+ ✓ src/utils/content/__tests__/language.test.ts (2 tests) 5ms
+ ✓ src/entrypoints/content-runtime/host/translation-control/__tests__/bind-translation-shortcut.test.ts (3 tests) 7ms
+ ✓ src/utils/__tests__/custom-action-prompt.test.ts (10 tests) 7ms
+ ✓ src/utils/glossary/__tests__/features.test.ts (3 tests) 6ms
+ ✓ src/types/config/__tests__/translate-preload.test.ts (2 tests) 5ms
+ ✓ src/utils/content/__tests__/document-title.test.ts (4 tests) 6ms
+ ✓ src/utils/subtitles/__tests__/youtube-pot-token.test.ts (5 tests) 6ms
+ ✓ src/utils/host/translate/__tests__/session-resources.test.ts (2 tests) 12ms
+ ✓ src/utils/subtitles/processor/__tests__/segmentation-alignment.test.ts (12 tests) 5ms
+ ✓ src/utils/host/translate/__tests__/translation-plan.test.ts (2 tests) 8ms
+ ✓ src/entrypoints/subtitles.content/__tests__/display-subtitle-atom.test.ts (5 tests) 8ms
+ ✓ src/utils/subtitles/__tests__/srt.test.ts (2 tests) 6ms
+ ✓ src/utils/subtitles/__tests__/xcom-video-id.test.ts (8 tests) 8ms
+ ✓ src/utils/__tests__/hash.test.ts (5 tests) 6ms
+ ✓ src/utils/subtitles/fetchers/text-track/__tests__/cues.test.ts (5 tests) 5ms
+ ✓ src/utils/__tests__/url.test.ts (6 tests) 5ms
+ ✓ src/utils/__tests__/message.test.ts (1 test) 6ms
+ ✓ .github/scripts/contributor-trust/comment-template.test.js (1 test) 6ms
+ ✓ src/utils/host/translate/__tests__/auto-translation.test.ts (6 tests) 10ms
+ ✓ src/utils/styles/__tests__/utils.test.ts (6 tests) 7ms
+ ✓ src/utils/subtitles/__tests__/track-publication.test.ts (2 tests) 7ms
+ ✓ src/utils/subtitles/__tests__/url-boundary.test.ts (3 tests) 4ms
+ ✓ src/utils/host/translate/__tests__/skip-language.test.ts (5 tests) 5ms
+ ✓ src/utils/config/__tests__/languages.test.ts (4 tests) 7ms
+ ✓ src/utils/providers/__tests__/models-url.test.ts (3 tests) 4ms
+ ✓ src/utils/glossary/__tests__/target-language.test.ts (8 tests) 7ms
+ ✓ src/utils/content-runtime/__tests__/parts.test.ts (3 tests) 5ms
+ ✓ src/utils/subtitles/__tests__/lookahead.test.ts (4 tests) 6ms
+ ✓ src/entrypoints/interceptor.content/__tests__/resolve-default-caption-track-index.test.ts (5 tests) 7ms
+ ✓ src/utils/error/__tests__/extension-context.test.ts (6 tests) 4ms
+ ✓ src/components/prompt-configurator/__tests__/built-in-prompts.test.ts (1 test) 9ms
+ ✓ src/utils/prompts/__tests__/subtitles-segmentation.test.ts (7 tests) 5ms
+ ✓ src/components/ui/base-ui/__tests__/popup-animation-classes.test.ts (2 tests) 6ms
+ ✓ src/utils/atoms/__tests__/storage-adapter.test.ts (2 tests) 5ms
+ ✓ src/utils/atoms/__tests__/config.test.ts (1 test) 4ms
+ ✓ src/components/__tests__/language-combobox-options.test.ts (1 test) 4ms
+ ✓ src/utils/__tests__/language-labels.test.ts (1 test) 4ms
+ ✓ .github/scripts/contributor-trust/managed-comment.test.js (1 test) 4ms
+ ✓ src/utils/config/__tests__/credential-export.test.ts (2 tests) 4ms
+ ✓ src/utils/host/translate/context/__tests__/prompt-data.test.ts (3 tests) 7ms
+ ✓ src/utils/providers/__tests__/connection-url.test.ts (1 test) 2ms
+ ✓ src/utils/providers/__tests__/headers.test.ts (3 tests) 3ms
+ ✓ src/utils/content/__tests__/language-direction.test.ts (3 tests) 5ms
+ ✓ src/utils/constants/__tests__/prompt.test.ts (1 test) 7ms
+ ✓ .github/scripts/contributor-trust/bot-author.test.js (5 tests) 5ms
+ ✓ src/entrypoints/options/navigation/__tests__/scroll-restoration.test.ts (5 tests) 5ms
+ ✓ src/utils/constants/__tests__/config.test.ts (1 test) 4ms
+ ✓ src/entrypoints/subtitles.content/__tests__/subtitles-sidebar-atoms.test.ts (2 tests) 5ms
+
+ Test Files  339 passed (339)
+      Tests  3093 passed (3093)
+   Start at  16:46:20
+   Duration  132.23s (environment 30%, tests 25%, import 23%, setup 15%, transform 7%, worker 1%)
+
+    Isolate  339 workers spawned · ~431ms startup each (spawn + environment, per file)
+             at least ~48.30s faster with isolate: false — reuses workers across files instead of one per file
+
+JSON report written to /tmp/stylesheet-full-tests.json

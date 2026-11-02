@@ -1,0 +1,114 @@
+{
+  "unrelatedRemoval": {
+    "http": 1,
+    "firstTranslationMs": 387.2689360000004
+  },
+  "cache": {
+    "http": 0,
+    "hits": 1
+  },
+  "sharedCancellation": {
+    "http": 1,
+    "consumers": 2
+  },
+  "safe429": {
+    "http": 2
+  },
+  "resources": {
+    "active": 0,
+    "queued": 0,
+    "lanes": 0,
+    "timers": 0,
+    "counters": {
+      "starts": 4,
+      "cancellations": 0,
+      "rejected": 0,
+      "admissions": 4,
+      "eligibilityChecks": 8,
+      "maxActive": 1,
+      "maxQueued": 1
+    },
+    "domains": {
+      "ce791dde-000b-4696-9999-7f6e7a318f62": {
+        "active": 0,
+        "queued": 0,
+        "tokens": 19,
+        "cooldownUntil": 1793551585273
+      }
+    }
+  },
+  "context": {
+    "scopes": 0,
+    "snapshots": 0,
+    "activePreparations": 0,
+    "workEntries": 0,
+    "capacity": 128,
+    "resolutions": 5,
+    "hits": 4,
+    "rebuilds": 1,
+    "projections": 1,
+    "validations": 5,
+    "promptValidations": 5,
+    "validationNodes": 36,
+    "styleReads": 66,
+    "unchangedValidations": 0,
+    "semanticParses": 0,
+    "semanticInvalidations": 0,
+    "metadataProjections": 1,
+    "visitedNodes": 8,
+    "stalePreparations": 0,
+    "activeExtractions": 0,
+    "evictions": 0,
+    "resolveMs": 4.551848999999493,
+    "readMs": 79.14786200000071,
+    "invalidation": {
+      "registrations": 0,
+      "observers": 0,
+      "observedRoots": 0,
+      "styleListeners": 0,
+      "styleStates": 0,
+      "pendingStyleRoots": 0,
+      "batches": 4,
+      "records": 1,
+      "invalidations": 0,
+      "processingMs": 1.6315389999999752,
+      "source": 1,
+      "semantic": 0,
+      "visibility": 0,
+      "unknown": 0,
+      "global-style": 0,
+      "styleCompletions": 0,
+      "styleStateChecks": 5,
+      "styleSheetReads": 6,
+      "styleOverflows": 0
+    }
+  },
+  "requests": [
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_A"],
+      "status": 200,
+      "at": 1793551584941
+    },
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_SHARED"],
+      "status": 200,
+      "at": 1793551585105
+    },
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_RETRY"],
+      "status": 429,
+      "at": 1793551585260
+    },
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_RETRY"],
+      "status": 200,
+      "at": 1793551590391
+    }
+  ],
+  "summaryRPCs": 0,
+  "totalHTTP": 4
+}

@@ -1,6 +1,45 @@
 # Context Engine V2
 
-## Production hardening of 7321d6f9
+## Stylesheet hardening of 375115fa (current)
+
+The fetched target `codex/subtitle-engine-v2` equals audit baseline
+`375115fae19dc2e072f3fd383025085e32293a89`; zero intervening commits/files.
+See [STYLESHEET_HARDENING.md](STYLESHEET_HARDENING.md) for this round's evidence.
+Earlier comparisons below are historical.
+
+`global-style` is a candidate event in the existing invalidation engine. Link
+href/rel/media/disabled/type/title and style element mutations, plus shared
+capture-phase load/error listeners, mark only acquired registrations in an affected
+Document/ShadowRoot. Nested open-shadow ancestors are included; sibling shadow
+styles do not invalidate each other. Events coalesce by root and registration.
+They never extract content, call Defuddle/models or revoke rendered translations.
+
+The manager verifies candidates on demand and before publishing an asynchronous
+preparation. A bounded inventory of at most 128 ordinary/adopted sheets per owned
+root compares weak sheet identity, disabled state, media and top-level rule count;
+Document viewport dimensions/device scale also participate. Excess sheets force
+bounded source validation. Cross-origin rule access is caught without reading CSS
+text. There is no periodic polling, global CSSOM prototype patch or DOM-wide scan.
+Equal effective content keeps the same frozen snapshot and persistent identity.
+
+A weak, nonserialized prompt-validation capability follows acquired contexts through
+page/input/title, selection, summary and custom-action prompt construction. After
+async preparation and immediately before admitting a new request to the existing
+transport, it checks the existing bounded original-source/visibility proof even if
+no observable CSS event occurred. Failure raises `CONTEXT_STALE` before enqueue
+and marks that scope's requirement variants for future demand. It neither rewrites
+issued prompts nor retries models. Identical immutable snapshot objects can refresh
+their weak source proof after equal-content DOM replacement; derived prompts share
+that proof without changing data. A custom-action explicit retry can refresh rejected
+context locally; CSS itself never starts an operation.
+
+Listeners and style inventories belong to the existing acquired registrations.
+Last unregister, clear and document retirement remove them. The 128-entry capacity,
+TaskOwner, RenderCommitGuard, Coordinator, Scheduler and attempt budgets remain.
+Unobservable CSSOM/environment transitions and the IPC admission boundary are
+specified in [RISK_REGISTER.md](RISK_REGISTER.md), not claimed fully observable.
+
+## Production hardening of 7321d6f9 (historical)
 
 The latest fetched target HEAD equals `7321d6f9ada3a0335a876b2c076aebe4cdc4b0b5`.
 This round retains V2 and all existing task/render/request owners. The original

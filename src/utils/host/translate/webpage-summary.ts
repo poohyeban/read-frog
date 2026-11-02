@@ -6,6 +6,7 @@ import { Sha256Hex } from "@/utils/hash"
 import { sendMessage } from "@/utils/message"
 import { getProviderCacheIdentity } from "@/utils/providers/provider-ref"
 import { ContextCoordinator } from "./context-coordinator"
+import { assertPromptContextCurrent } from "./context/prompt-guard"
 import { requireSummaryAdmission } from "./context/summary-policy"
 import { getDocumentContextSignal } from "./webpage-context"
 
@@ -62,6 +63,7 @@ export async function getOrGenerateWebPageSummary(
       signal.addEventListener("abort", cancel, { once: true })
       try {
         signal.throwIfAborted()
+        assertPromptContextCurrent(webPageContext)
         return await sendMessage("getOrGenerateWebPageSummary", {
           webTitle,
           webContent,

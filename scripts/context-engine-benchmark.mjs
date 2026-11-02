@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs"
 import { readFile, mkdir, writeFile } from "node:fs/promises"
 import { createServer } from "node:http"
 import { resolve, dirname } from "node:path"
@@ -8,6 +9,8 @@ import { build } from "vite"
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const sourceRoot = resolve(process.argv[2] || repository)
 const destination = resolve(process.argv[3] || "/tmp/context-v2-benchmark.json")
+const stylesheet = process.argv.includes("--stylesheet")
+const promptGuard = resolve(sourceRoot, "src/utils/host/translate/context/prompt-guard.ts")
 const hardening = process.argv.includes("--hardening")
 const repetitions = hardening ? 20 : 1
 const output = `/tmp/context-v2-benchmark-build-${process.pid}`
@@ -39,9 +42,16 @@ await build({
         if (id !== "\0context-benchmark") return undefined
         return `import { installAttributeBenchmark } from ${JSON.stringify(resolve(repository, "e2e/context-engine/attribute-benchmark.js"))};
       import * as context from '@/utils/host/translate/webpage-context';
+      ${
+        stylesheet
+          ? `import { installStylesheetBenchmark } from ${JSON.stringify(resolve(repository, "e2e/context-engine/stylesheet-benchmark.js"))};
+      ${existsSync(promptGuard) ? `import { isPromptContextCurrent as promptCurrent } from ${JSON.stringify(promptGuard)};` : "const promptCurrent = undefined;"}`
+          : ""
+      }
       window.contextAPI = context;
       import { metrics as messages } from ${JSON.stringify(`${harness}/messages.js`)};
       installAttributeBenchmark(context, messages);
+      ${stylesheet ? "installStylesheetBenchmark(context, messages, promptCurrent);" : ""}
       window.messageMetrics = messages;
       window.costs = { longTasks: [] };
       new PerformanceObserver(list => { window.costs.longTasks.push(...list.getEntries().map(e => e.duration)) }).observe({type:'longtask', buffered:true});
@@ -130,13 +140,14 @@ const result = {
   environment: { platform: process.platform, arch: process.arch, node: process.version },
   samples: [],
   attributeSamples: [],
+  stylesheetSamples: [],
   coldSamplesPerCorpus: repetitions,
   modelHTTP: 0,
   notes:
     "Real Chromium DOM/context extraction; no model requests. Fifty distinct scopes and 100 warm reads per corpus; 10 batches of 100 reorder/insertion/deletion operations.",
 }
 try {
-  for (const count of [1, 100, 1000, 50000])
+  for (const count of stylesheet ? [] : [1, 100, 1000, 50000])
     for (let repetition = 0; repetition < repetitions; repetition++) {
       const page = await browser.newPage()
       const cdp = await page.context().newCDPSession(page)
@@ -166,7 +177,36 @@ try {
       await writeFile(destination, JSON.stringify(result, null, 2) + "\n")
       process.stdout.write(`Measured ${count} units (${repetition + 1}/${repetitions})\n`)
     }
-  if (hardening) {
+  if (stylesheet) {
+    for (const scenario of [
+      "warm-128-sheets",
+      "coalesced-128-scopes",
+      "cosmetic-style",
+      "overflow-130-sheets",
+      "prompt-small",
+      "prompt-bounded",
+    ]) {
+      const page = await browser.newPage()
+      const cdp = await page.context().newCDPSession(page)
+      await cdp.send("Performance.enable")
+      await page.goto(`http://127.0.0.1:${server.address().port}`)
+      await page.waitForFunction(() => window.stylesheetBench)
+      const initial = await cdp.send("Performance.getMetrics")
+      const sample = await page.evaluate((kind) => window.stylesheetBench(kind), scenario)
+      await cdp.send("HeapProfiler.collectGarbage")
+      const final = await cdp.send("Performance.getMetrics")
+      const metric = (data, name) => data.metrics.find((m) => m.name === name)?.value ?? 0
+      sample.cpuTaskSeconds = metric(final, "TaskDuration") - metric(initial, "TaskDuration")
+      sample.heapAfterRelease = metric(final, "JSHeapUsedSize")
+      sample.modelHTTP = modelHTTP
+      result.stylesheetSamples.push(sample)
+      result.modelHTTP = modelHTTP
+      await writeFile(destination, JSON.stringify(result, null, 2) + "\n")
+      await page.close()
+      process.stdout.write(`Measured stylesheet: ${scenario}\n`)
+    }
+  }
+  if (hardening && !stylesheet) {
     const page = await browser.newPage()
     const cdp = await page.context().newCDPSession(page)
     await cdp.send("Performance.enable")

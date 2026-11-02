@@ -62,3 +62,25 @@ or database operation can be physically interrupted.
 capacity test now proves both candidate coalescing (one pending extraction) and the
 unchanged capacity-two bound under explicit overlapping invalidations. It still
 checks teardown, rather than dropping the old capacity protection.
+
+## Stylesheet hardening invariants
+
+24. Global CSS signals affect only acquired, potentially influenced registrations;
+    they are validation candidates, never render cleanup or model triggers.
+25. Href mutation and stylesheet completion are distinct signals. A read during
+    loading cannot permanently bless old effective visibility after completion.
+26. Demand-time sheet inventory is bounded to 128 sheets per owned root. Overflow
+    validates bounded eligible source; ordinary hot hits do not clone the live DOM.
+27. Before new prompt admission, bounded privacy verification covers otherwise
+    unobservable CSS changes. Stale context is refused without automatic HTTP replay.
+28. Issued prompt data is immutable. Context freshness is never added to the
+    post-response render gate. Existing source/owner/config/route guards still apply.
+29. Weak prompt capabilities never serialize or affect persistent cache identities;
+    effective prompt fields remain the cache basis.
+30. Load/error listeners are shared per owned root, deduplicated and released with
+    the last registration. No global CSSOM patches or permanent polling are installed.
+
+Evidence: `stylesheet.test.ts`, `stylesheet-dispatch.test.ts`, custom-action explicit
+retry tests, local Chromium stylesheet matrix and paired benchmarks under
+`evidence/stylesheet/`. See STYLESHEET_HARDENING.md for actual RED/GREEN distinctions,
+physical HTTP counts and native MV3 limits.

@@ -1,0 +1,113 @@
+{
+  "numTotalTestSuites": 4,
+  "numPassedTestSuites": 3,
+  "numFailedTestSuites": 1,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 7,
+  "numPassedTests": 0,
+  "numFailedTests": 1,
+  "numPendingTests": 6,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1793550942166,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useCustomActionWebPageContext"],
+          "fullName": "useCustomActionWebPageContext ignores stale pending results after the popover closes and reopens",
+          "status": "skipped",
+          "title": "ignores stale pending results after the popover closes and reopens",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["useCustomActionWebPageContext"],
+          "fullName": "useCustomActionWebPageContext returns to loading for a new popover session even when the previous session already resolved",
+          "status": "skipped",
+          "title": "returns to loading for a new popover session even when the previous session already resolved",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["buildCustomActionExecutionPlan"],
+          "fullName": "buildCustomActionExecutionPlan truncates paragraph context tokens and trusts the canonical webpage content",
+          "status": "skipped",
+          "title": "truncates paragraph context tokens and trusts the canonical webpage content",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["buildCustomActionExecutionPlan"],
+          "fullName": "buildCustomActionExecutionPlan falls back to the live location when the webpage context is unavailable",
+          "status": "skipped",
+          "title": "falls back to the live location when the webpage context is unavailable",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["useCustomActionExecution"],
+          "fullName": "useCustomActionExecution never asks the model for a selection field, and fills it into every answer",
+          "status": "skipped",
+          "title": "never asks the model for a selection field, and fills it into every answer",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "invalidates a pending custom action when its provider transport changes without changing id",
+          "status": "skipped",
+          "title": "invalidates a pending custom action when its provider transport changes without changing id",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "explicit retry refreshes a prepared context rejected by the stylesheet dispatch guard",
+          "status": "failed",
+          "title": "explicit retry refreshes a prepared context rejected by the stylesheet dispatch guard",
+          "duration": 1082.238,
+          "failureMessages": [
+            "AssertionError: expected { …(3) } to be { …(3) } // Object.is equality\n\nIgnored nodes: comments, script, style\n\u001b[36m<html>\u001b[39m\n  \u001b[36m<head />\u001b[39m\n  \u001b[36m<body>\u001b[39m\n    \u001b[36m<div />\u001b[39m\n  \u001b[36m</body>\u001b[39m\n\u001b[36m</html>\u001b[39m\n    at /workspace/read-frog/src/components/custom-action/__tests__/use-custom-action-execution.test.ts:347:46\n    at runWithExpensiveErrorDiagnosticsDisabled (/workspace/read-frog/node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/config.js:47:12)\n    at checkCallback (/workspace/read-frog/node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:124:77)\n    at Timeout.checkRealTimersCallback (/workspace/read-frog/node_modules/.pnpm/@testing-library+dom@10.4.1/node_modules/@testing-library/dom/dist/wait-for.js:118:16)\n    at listOnTimeout (node:internal/timers:635:17)\n    at process.processTimers (node:internal/timers:571:7)"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793550943758,
+      "endTime": 1793550944840.238,
+      "status": "failed",
+      "message": "",
+      "name": "/workspace/read-frog/src/components/custom-action/__tests__/use-custom-action-execution.test.ts"
+    }
+  ]
+}

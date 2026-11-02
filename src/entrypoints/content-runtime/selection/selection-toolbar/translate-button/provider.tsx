@@ -33,6 +33,10 @@ import { buildFeatureProviderPatch } from "@/utils/constants/feature-providers"
 import { streamBackgroundText } from "@/utils/content-script/background-stream-client"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { resolveGlossaryTermsFromCache } from "@/utils/glossary/active-matcher"
+import {
+  assertPromptContextCurrent,
+  inheritPromptContext,
+} from "@/utils/host/translate/context/prompt-guard"
 import { contextSourceForSelection } from "@/utils/host/translate/context/selection-source"
 import { requiresModelSummary } from "@/utils/host/translate/context/summary-policy"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
@@ -90,12 +94,12 @@ async function getSelectionWebPagePromptContext(
         )
       : null
   signal.throwIfAborted()
-  return {
+  return inheritPromptContext(context, {
     webTitle: requirements.title ? context.webTitle : "",
     webDescription: requirements.description ? context.webDescription : undefined,
     webContent: requirements.content ? context.webContent : "",
     webSummary: webSummary ?? undefined,
-  }
+  })
 }
 
 async function translateWithTextStream({
@@ -169,6 +173,7 @@ async function translateWithTextStream({
     },
   )
 
+  assertPromptContextCurrent(webPageContext)
   const translatedText = await streamBackgroundText(
     {
       providerKind: "local",

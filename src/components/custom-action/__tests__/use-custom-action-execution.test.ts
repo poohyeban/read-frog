@@ -330,3 +330,43 @@ it("invalidates a pending custom action when its provider transport changes with
   unmount()
   expect(captured[1]!.aborted).toBe(true)
 })
+
+it("explicit retry refreshes a prepared context rejected by the stylesheet dispatch guard", async () => {
+  const { registerPromptContext } = await import("@/utils/host/translate/context/prompt-guard")
+  let safe = true
+  const oldContext = { url: location.href, webTitle: "Title", webContent: "Now hidden source" }
+  const freshContext = { ...oldContext, webContent: "Visible source only" }
+  registerPromptContext(oldContext, () => safe)
+  getOrCreateWebPageContextMock
+    .mockReset()
+    .mockResolvedValueOnce(oldContext)
+    .mockResolvedValueOnce(freshContext)
+  const { result, rerender, unmount } = renderHook(
+    ({ nonce }) => useCustomActionWebPageContext(true, 0, {}, undefined, nonce),
+    { initialProps: { nonce: 0 } },
+  )
+  await waitFor(() => expect(result.current).toBe(oldContext))
+  safe = false
+  rerender({ nonce: 0 })
+  expect(getOrCreateWebPageContextMock).toHaveBeenCalledTimes(1)
+  rerender({ nonce: 1 })
+  await waitFor(() => expect(result.current).toBe(freshContext))
+  expect(getOrCreateWebPageContextMock).toHaveBeenCalledTimes(2)
+  unmount()
+})
+
+it("explicit retry retains a still-valid immutable custom context without re-extraction", async () => {
+  const { registerPromptContext } = await import("@/utils/host/translate/context/prompt-guard")
+  const context = { url: location.href, webTitle: "Title", webContent: "Safe source" }
+  registerPromptContext(context, () => true)
+  getOrCreateWebPageContextMock.mockReset().mockResolvedValue(context)
+  const { result, rerender, unmount } = renderHook(
+    ({ nonce }) => useCustomActionWebPageContext(true, 0, {}, undefined, nonce),
+    { initialProps: { nonce: 0 } },
+  )
+  await waitFor(() => expect(result.current).toBe(context))
+  rerender({ nonce: 1 })
+  await waitFor(() => expect(result.current).toBe(context))
+  expect(getOrCreateWebPageContextMock).toHaveBeenCalledTimes(1)
+  unmount()
+})

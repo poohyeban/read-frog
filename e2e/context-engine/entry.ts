@@ -12,6 +12,7 @@ import { translateNodes } from "@/utils/host/translate/core/translation-modes"
 import { translateWalkedElement } from "@/utils/host/translate/core/translation-walker"
 import { removeAllTranslatedWrapperNodes } from "@/utils/host/translate/dom/translation-cleanup"
 import { removeOrShowNodeTranslation } from "@/utils/host/translate/node-manipulation"
+import { translateTextForPage } from "@/utils/host/translate/translate-variants"
 import {
   beginPageTranslationSession,
   endPageTranslationSession,
@@ -90,6 +91,8 @@ Object.assign(window, {
     metrics,
     reset,
     fixture,
+    translate: (text: string, source: Node) =>
+      translateTextForPage(text, "plain", { source, config }),
     manual: async (source: HTMLElement) =>
       removeOrShowNodeTranslation(source, (await getLocalConfig())!),
     cleanup: () => {

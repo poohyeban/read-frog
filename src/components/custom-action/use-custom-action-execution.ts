@@ -13,6 +13,11 @@ import type { CachedWebPageContext } from "@/utils/host/translate/webpage-contex
 import type { LangCodeISO6393 } from "@/utils/languages"
 import type { ContextRequirements } from "@/utils/prompts/translation-template"
 import type { CustomActionProviderRef } from "@/utils/providers/provider-registry"
+import {
+  assertPromptContextCurrent,
+  inheritPromptContext,
+  isPromptContextCurrent,
+} from "@/utils/host/translate/context/prompt-guard"
 
 export interface SelectionToolbarCustomActionRequestSlice {
   language: Config["language"]
@@ -193,7 +198,7 @@ export function buildCustomActionExecutionPlan(
 
   return {
     error: null,
-    executionContext: {
+    executionContext: inheritPromptContext(webPageContext, {
       action,
       provider,
       targetCode: customActionRequest.language.targetCode,
@@ -205,7 +210,7 @@ export function buildCustomActionExecutionPlan(
         webUrl: webPageContext?.url ?? window.location.href,
         webContent: webPageContext?.webContent || "",
       },
-    },
+    }),
   }
 }
 
@@ -233,13 +238,18 @@ export function useCustomActionWebPageContext(
   const key = `${popoverSessionKey}:${source.source ? scopeRootIdentity(source.source) : "independent"}:${hashContextFields(sourceText ?? "")}:${+requirements.title}${+requirements.description}${+requirements.content}${+requirements.summary}`
   useEffect(() => {
     if (!open) return undefined
-    // Regenerating an action reuses its immutable prompt snapshot. A failed
-    // preparation may be explicitly retried without replaying a model request.
-    if (
-      previous.current?.key === key &&
-      (!(previous.current.value instanceof Error) || previous.current.retryNonce === retryNonce)
-    )
-      return undefined
+    // CSS never starts a new operation. An explicit retry may refresh an unsafe
+    // prepared context locally, while unchanged prompts keep their identity.
+    const cached = previous.current
+    if (cached?.key === key) {
+      if (cached.retryNonce === retryNonce) return undefined
+      if (!(cached.value instanceof Error) && isPromptContextCurrent(cached.value)) {
+        const next = { ...cached, retryNonce }
+        previous.current = next
+        setResolved(next)
+        return undefined
+      }
+    }
     const owner = createTranslationTaskOwner("custom-context")
     const preparation =
       title || description || content || summary
@@ -275,7 +285,7 @@ export function useCustomActionWebPageContext(
     content,
     summary,
   ])
-  if (!open || resolved?.key !== key) return undefined
+  if (!open || resolved?.key !== key || resolved.retryNonce !== retryNonce) return undefined
   return resolved.value
 }
 
@@ -311,7 +321,7 @@ function buildCustomActionExecutionRequest({
   )
   const temperature = provider.config.temperature
 
-  return {
+  return inheritPromptContext(executionContext, {
     key: stringifyExecutionRequestKey({
       actionId: action.id,
 
@@ -344,7 +354,7 @@ function buildCustomActionExecutionRequest({
       reasoning,
       temperature,
     },
-  }
+  })
 }
 
 export function useCustomActionExecution({
@@ -419,6 +429,7 @@ export function useCustomActionExecution({
       })
 
       try {
+        assertPromptContextCurrent(request)
         const finalResult = await streamBackgroundStructuredObject(
           {
             ...request.payload,

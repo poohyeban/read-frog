@@ -8,6 +8,7 @@ import { getLocalConfig } from "@/utils/config/storage"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { detectLanguage } from "@/utils/content/language"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
+import { assertPromptContextCurrent } from "./context/prompt-guard"
 import { executeTranslationPlan } from "./translation-executor"
 import { createTranslationPlan, type TranslationOrigin } from "./translation-plan"
 export { normalizePromptContextValue } from "./translation-plan"
@@ -136,6 +137,9 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     glossaryEnabled,
     langConfig.targetCode,
   )
+  if (options.signal?.aborted || options.isCurrent?.() === false)
+    throw new TranslationCancelledError(sessionId)
+  assertPromptContextCurrent(options.webPageContext)
   const plan = createTranslationPlan({
     origin: options.origin ?? (sessionId ? "page" : "independent"),
     mode: options.mode ?? "independent",

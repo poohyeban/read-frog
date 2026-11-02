@@ -1,0 +1,1054 @@
+{
+  "baseline": "375115fae19dc2e072f3fd383025085e32293a89",
+  "method": "Same current harness; baseline and final run sequentially without concurrent tests/builds. Percentiles nearest rank, median uses midpoint. Direct prompt validator baseline is absent, not a useful zero-cost comparison.",
+  "corpora": {
+    "1": {
+      "baseline": {
+        "coldFirstReadMs": {
+          "n": 20,
+          "p50": 87.14999999850988,
+          "p95": 105.5,
+          "variance": 75.98449999968707,
+          "max": 110.39999999850988
+        },
+        "warmMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.20000000298023224,
+          "variance": 0.029706159999161368,
+          "max": 4.0999999940395355
+        },
+        "resolveMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.0025872975051907457,
+          "max": 0.7999999970197678
+        },
+        "cpuMedianSeconds": 0.12014449999999999,
+        "heapMedianMiB": 2.990570068359375,
+        "stylesMedian": 33.0,
+        "rebuilds": [2],
+        "modelHTTP": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "coldFirstReadMs": {
+          "n": 20,
+          "p50": 89.64999999850988,
+          "p95": 104.90000000596046,
+          "variance": 87.66047500287517,
+          "max": 105.39999999850988
+        },
+        "warmMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.20000000298023224,
+          "variance": 0.015901777486574134,
+          "max": 1.6000000014901161
+        },
+        "resolveMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.01311415999834478,
+          "max": 3.899999998509884
+        },
+        "cpuMedianSeconds": 0.12487899999999999,
+        "heapMedianMiB": 3.0263633728027344,
+        "stylesMedian": 33.0,
+        "rebuilds": [2],
+        "modelHTTP": 0,
+        "zeroResourceBalances": true
+      }
+    },
+    "100": {
+      "baseline": {
+        "coldFirstReadMs": {
+          "n": 20,
+          "p50": 73.10000000149012,
+          "p95": 81.09999999403954,
+          "variance": 37.57889999001324,
+          "max": 83.5
+        },
+        "warmMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.023745677502434556,
+          "max": 5
+        },
+        "resolveMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.0023906775032943497,
+          "max": 1.6000000014901161
+        },
+        "cpuMedianSeconds": 0.15902,
+        "heapMedianMiB": 2.531810760498047,
+        "stylesMedian": 624.0,
+        "rebuilds": [51],
+        "modelHTTP": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "coldFirstReadMs": {
+          "n": 20,
+          "p50": 68.30000000074506,
+          "p95": 79.89999999850988,
+          "variance": 31.20060000475645,
+          "max": 81.10000000149012
+        },
+        "warmMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.020435497542103158,
+          "max": 2.5
+        },
+        "resolveMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.0013459975019527236,
+          "max": 0.7000000029802322
+        },
+        "cpuMedianSeconds": 0.165076,
+        "heapMedianMiB": 2.5710983276367188,
+        "stylesMedian": 624.0,
+        "rebuilds": [51],
+        "modelHTTP": 0,
+        "zeroResourceBalances": true
+      }
+    },
+    "1000": {
+      "baseline": {
+        "coldFirstReadMs": {
+          "n": 20,
+          "p50": 111.10000000149012,
+          "p95": 129.20000000298023,
+          "variance": 145.6956000181973,
+          "max": 130.60000000149012
+        },
+        "warmMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.0032379975032472636,
+          "max": 1.1000000014901161
+        },
+        "resolveMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.007533110006983728,
+          "max": 3
+        },
+        "cpuMedianSeconds": 0.31153000000000003,
+        "heapMedianMiB": 2.610565185546875,
+        "stylesMedian": 624.0,
+        "rebuilds": [51],
+        "modelHTTP": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "coldFirstReadMs": {
+          "n": 20,
+          "p50": 105.29999999701977,
+          "p95": 139.89999999850988,
+          "variance": 276.95200000311434,
+          "max": 149.40000000596046
+        },
+        "warmMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.007619977497445273,
+          "max": 2.399999998509884
+        },
+        "resolveMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.003260759991129638,
+          "max": 1.8999999985098839
+        },
+        "cpuMedianSeconds": 0.294862,
+        "heapMedianMiB": 2.647695541381836,
+        "stylesMedian": 624.0,
+        "rebuilds": [51],
+        "modelHTTP": 0,
+        "zeroResourceBalances": true
+      }
+    },
+    "50000": {
+      "baseline": {
+        "coldFirstReadMs": {
+          "n": 20,
+          "p50": 2546.050000000745,
+          "p95": 2679.89999999851,
+          "variance": 9795.045899836845,
+          "max": 2721.5
+        },
+        "warmMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.013548777487882824,
+          "max": 1.7000000029802322
+        },
+        "resolveMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.000831109997937978,
+          "max": 0.29999999701976776
+        },
+        "cpuMedianSeconds": 5.311405000000001,
+        "heapMedianMiB": 2.752107620239258,
+        "stylesMedian": 624.0,
+        "rebuilds": [51],
+        "modelHTTP": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "coldFirstReadMs": {
+          "n": 20,
+          "p50": 2524.550000000745,
+          "p95": 2784.89999999851,
+          "variance": 25877.699099903704,
+          "max": 2925.89999999851
+        },
+        "warmMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.012583110001433048,
+          "max": 1.2999999970197678
+        },
+        "resolveMs": {
+          "n": 2000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.0018035100025297708,
+          "max": 1.2000000029802322
+        },
+        "cpuMedianSeconds": 5.2802785,
+        "heapMedianMiB": 2.7923431396484375,
+        "stylesMedian": 624.0,
+        "rebuilds": [51],
+        "modelHTTP": 0,
+        "zeroResourceBalances": true
+      }
+    }
+  },
+  "attributes": {
+    "class": {
+      "baseline": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.29999999701976776,
+          "p95": 0.6000000014901161,
+          "variance": 0.052646390033139895,
+          "max": 2.899999998509884
+        },
+        "cpuSeconds": 0.458211,
+        "metrics": {
+          "projections": 0,
+          "metadataProjections": 0,
+          "rebuilds": 0,
+          "hits": 1000,
+          "visitedNodes": 0,
+          "validations": 1000,
+          "validationNodes": 7000
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 66000,
+          "text": 14000,
+          "children": 27000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      },
+      "final": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.29999999701976776,
+          "p95": 0.6000000014901161,
+          "variance": 0.06798271010808589,
+          "max": 3.399999998509884
+        },
+        "cpuSeconds": 0.46686700000000003,
+        "metrics": {
+          "projections": 0,
+          "metadataProjections": 0,
+          "rebuilds": 0,
+          "hits": 1000,
+          "visitedNodes": 0,
+          "validations": 1000,
+          "validationNodes": 7000
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 66000,
+          "text": 14000,
+          "children": 27000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      }
+    },
+    "style": {
+      "baseline": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.10000000149011612,
+          "p95": 0.20000000298023224,
+          "variance": 0.009068790042655775,
+          "max": 1.3000000044703484
+        },
+        "cpuSeconds": 0.181954,
+        "metrics": {
+          "projections": 0,
+          "metadataProjections": 0,
+          "rebuilds": 0,
+          "hits": 1000,
+          "visitedNodes": 0,
+          "validations": 1000,
+          "validationNodes": 7000
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 51000,
+          "text": 3000,
+          "children": 19000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      },
+      "final": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.10000000149011612,
+          "p95": 0.30000000447034836,
+          "variance": 0.01790400001332165,
+          "max": 2.100000001490116
+        },
+        "cpuSeconds": 0.21946900000000003,
+        "metrics": {
+          "projections": 0,
+          "metadataProjections": 0,
+          "rebuilds": 0,
+          "hits": 1000,
+          "visitedNodes": 0,
+          "validations": 1000,
+          "validationNodes": 7000
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 51000,
+          "text": 3000,
+          "children": 19000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      }
+    },
+    "text": {
+      "baseline": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.3999999985098839,
+          "p95": 1.1999999955296516,
+          "variance": 0.19433456006547453,
+          "max": 7.800000004470348
+        },
+        "cpuSeconds": 0.5677559999999999,
+        "metrics": {
+          "projections": 1000,
+          "metadataProjections": 1000,
+          "rebuilds": 1000,
+          "hits": 0,
+          "visitedNodes": 7000,
+          "validations": 1000,
+          "validationNodes": 7000
+        },
+        "sourceReads": {
+          "style": 22000,
+          "attributes": 99000,
+          "text": 18000,
+          "children": 46000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      },
+      "final": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.5,
+          "p95": 1.3999999985098839,
+          "variance": 0.2785366400611198,
+          "max": 8.700000002980232
+        },
+        "cpuSeconds": 0.6821359999999999,
+        "metrics": {
+          "projections": 1000,
+          "metadataProjections": 1000,
+          "rebuilds": 1000,
+          "hits": 0,
+          "visitedNodes": 7000,
+          "validations": 1000,
+          "validationNodes": 7000
+        },
+        "sourceReads": {
+          "style": 22000,
+          "attributes": 99000,
+          "text": 18000,
+          "children": 46000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      }
+    },
+    "unrelated": {
+      "baseline": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.0018697500098049653,
+          "max": 0.5
+        },
+        "cpuSeconds": 0.053503999999999996,
+        "metrics": {
+          "projections": 0,
+          "metadataProjections": 0,
+          "rebuilds": 0,
+          "hits": 1000,
+          "visitedNodes": 0,
+          "validations": 0,
+          "validationNodes": 0
+        },
+        "sourceReads": {
+          "style": 0,
+          "attributes": 10000,
+          "text": 0,
+          "children": 0,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      },
+      "final": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.0025989999970346704,
+          "max": 0.7999999970197678
+        },
+        "cpuSeconds": 0.06836700000000007,
+        "metrics": {
+          "projections": 0,
+          "metadataProjections": 0,
+          "rebuilds": 0,
+          "hits": 1000,
+          "visitedNodes": 0,
+          "validations": 0,
+          "validationNodes": 0
+        },
+        "sourceReads": {
+          "style": 0,
+          "attributes": 10000,
+          "text": 0,
+          "children": 0,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      }
+    },
+    "move": {
+      "baseline": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.10000000149011612,
+          "p95": 0.20000000298023224,
+          "variance": 0.008510310032665142,
+          "max": 1.2000000029802322
+        },
+        "cpuSeconds": 0.14245200000000002,
+        "metrics": {
+          "projections": 0,
+          "metadataProjections": 0,
+          "rebuilds": 0,
+          "hits": 1000,
+          "visitedNodes": 0,
+          "validations": 1000,
+          "validationNodes": 7000
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 51000,
+          "text": 3000,
+          "children": 19000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      },
+      "final": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.10000000149011612,
+          "p95": 0.20000000298023224,
+          "variance": 0.010943750025480993,
+          "max": 1.2000000029802322
+        },
+        "cpuSeconds": 0.15586800000000012,
+        "metrics": {
+          "projections": 0,
+          "metadataProjections": 0,
+          "rebuilds": 0,
+          "hits": 1000,
+          "visitedNodes": 0,
+          "validations": 1000,
+          "validationNodes": 7000
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 51000,
+          "text": 3000,
+          "children": 19000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      }
+    },
+    "recycle": {
+      "baseline": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.4000000059604645,
+          "p95": 1.2000000029802322,
+          "variance": 0.17078591009887698,
+          "max": 5
+        },
+        "cpuSeconds": 0.612916,
+        "metrics": {
+          "projections": 1000,
+          "metadataProjections": 1000,
+          "rebuilds": 1000,
+          "hits": 0,
+          "visitedNodes": 7000,
+          "validations": 0,
+          "validationNodes": 0
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 58000,
+          "text": 15000,
+          "children": 27000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      },
+      "final": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.3999999985098839,
+          "p95": 1,
+          "variance": 0.16856031017713488,
+          "max": 6.399999998509884
+        },
+        "cpuSeconds": 0.5486489999999999,
+        "metrics": {
+          "projections": 1000,
+          "metadataProjections": 1000,
+          "rebuilds": 1000,
+          "hits": 0,
+          "visitedNodes": 7000,
+          "validations": 0,
+          "validationNodes": 0
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 58000,
+          "text": 15000,
+          "children": 27000,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      }
+    },
+    "privacy": {
+      "baseline": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.30000000447034836,
+          "p95": 0.8999999985098839,
+          "variance": 0.16500815993080378,
+          "max": 7.0999999940395355
+        },
+        "cpuSeconds": 0.4587810000000001,
+        "metrics": {
+          "projections": 1000,
+          "metadataProjections": 1000,
+          "rebuilds": 1000,
+          "hits": 0,
+          "visitedNodes": 3500,
+          "validations": 1000,
+          "validationNodes": 1000
+        },
+        "sourceReads": {
+          "style": 10500,
+          "attributes": 43500,
+          "text": 8500,
+          "children": 16500,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      },
+      "final": {
+        "readMs": {
+          "n": 1000,
+          "p50": 0.3999999985098839,
+          "p95": 0.8999999985098839,
+          "variance": 0.12827376000592947,
+          "max": 6.5
+        },
+        "cpuSeconds": 0.5035419999999999,
+        "metrics": {
+          "projections": 1000,
+          "metadataProjections": 1000,
+          "rebuilds": 1000,
+          "hits": 0,
+          "visitedNodes": 3500,
+          "validations": 1000,
+          "validationNodes": 1000
+        },
+        "sourceReads": {
+          "style": 10500,
+          "attributes": 43500,
+          "text": 8500,
+          "children": 16500,
+          "clones": 0
+        },
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "modelHTTP": 0
+      }
+    }
+  },
+  "stylesheets": {
+    "warm-128-sheets": {
+      "baseline": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.007672389984895887,
+          "max": 1.6000000014901161
+        },
+        "guardAvailable": false,
+        "metrics": {
+          "validations": 0,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 0,
+          "promptValidations": 0,
+          "sheetReads": 0
+        },
+        "sourceReads": {
+          "style": 0,
+          "attributes": 5000,
+          "text": 0,
+          "children": 0,
+          "clones": 0
+        },
+        "cpuSeconds": 0.09645699999999999,
+        "heapMiB": 2.355335235595703,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 0.09999999403953552,
+          "p95": 0.20000000298023224,
+          "variance": 0.008936000024020677,
+          "max": 1.7000000029802322
+        },
+        "guardAvailable": true,
+        "metrics": {
+          "validations": 0,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 0,
+          "promptValidations": 0,
+          "sheetReads": 128000
+        },
+        "sourceReads": {
+          "style": 0,
+          "attributes": 5000,
+          "text": 0,
+          "children": 0,
+          "clones": 0
+        },
+        "cpuSeconds": 0.14840799999999998,
+        "heapMiB": 2.4215469360351562,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      }
+    },
+    "coalesced-128-scopes": {
+      "baseline": {
+        "durationMs": {
+          "n": 1,
+          "p50": 0.9000000059604645,
+          "p95": 0.9000000059604645,
+          "variance": 0.0,
+          "max": 0.9000000059604645
+        },
+        "guardAvailable": false,
+        "metrics": {
+          "validations": 0,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 0,
+          "promptValidations": 0,
+          "sheetReads": 0
+        },
+        "sourceReads": {
+          "style": 0,
+          "attributes": 5,
+          "text": 0,
+          "children": 0,
+          "clones": 0
+        },
+        "cpuSeconds": 0.166859,
+        "heapMiB": 2.5067672729492188,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "durationMs": {
+          "n": 1,
+          "p50": 2.0999999940395355,
+          "p95": 2.0999999940395355,
+          "variance": 0.0,
+          "max": 2.0999999940395355
+        },
+        "guardAvailable": true,
+        "metrics": {
+          "validations": 1,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 7,
+          "promptValidations": 0,
+          "sheetReads": 1
+        },
+        "sourceReads": {
+          "style": 11,
+          "attributes": 46,
+          "text": 3,
+          "children": 19,
+          "clones": 0
+        },
+        "cpuSeconds": 0.14743,
+        "heapMiB": 2.6244163513183594,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      }
+    },
+    "cosmetic-style": {
+      "baseline": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 0.10000000149011612,
+          "p95": 0.30000000447034836,
+          "variance": 0.3235443099115783,
+          "max": 14.199999995529652
+        },
+        "guardAvailable": false,
+        "metrics": {
+          "validations": 1000,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 7000,
+          "promptValidations": 0,
+          "sheetReads": 0
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 46000,
+          "text": 3000,
+          "children": 19000,
+          "clones": 0
+        },
+        "cpuSeconds": 0.257979,
+        "heapMiB": 2.4584503173828125,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 0.10000000149011612,
+          "p95": 0.30000000447034836,
+          "variance": 0.020309750041760513,
+          "max": 2.2000000029802322
+        },
+        "guardAvailable": true,
+        "metrics": {
+          "validations": 1000,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 7000,
+          "promptValidations": 0,
+          "sheetReads": 1000
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 46000,
+          "text": 3000,
+          "children": 19000,
+          "clones": 0
+        },
+        "cpuSeconds": 0.22747499999999998,
+        "heapMiB": 2.5222625732421875,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      }
+    },
+    "overflow-130-sheets": {
+      "baseline": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.02124656002322674,
+          "max": 3.600000001490116
+        },
+        "guardAvailable": false,
+        "metrics": {
+          "validations": 0,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 0,
+          "promptValidations": 0,
+          "sheetReads": 0
+        },
+        "sourceReads": {
+          "style": 0,
+          "attributes": 5000,
+          "text": 0,
+          "children": 0,
+          "clones": 0
+        },
+        "cpuSeconds": 0.09636600000000001,
+        "heapMiB": 2.355121612548828,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 0.10000000149011612,
+          "p95": 0.20000000298023224,
+          "variance": 0.011243910020173498,
+          "max": 1.6000000014901161
+        },
+        "guardAvailable": true,
+        "metrics": {
+          "validations": 1000,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 7000,
+          "promptValidations": 0,
+          "sheetReads": 128000
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 46000,
+          "text": 3000,
+          "children": 19000,
+          "clones": 0
+        },
+        "cpuSeconds": 0.169199,
+        "heapMiB": 2.497699737548828,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      }
+    },
+    "prompt-small": {
+      "baseline": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 0.0,
+          "p95": 0,
+          "variance": 2.991000089138747e-5,
+          "max": 0.10000000149011612
+        },
+        "guardAvailable": false,
+        "metrics": {
+          "validations": 0,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 0,
+          "promptValidations": 0,
+          "sheetReads": 0
+        },
+        "sourceReads": {
+          "style": 0,
+          "attributes": 0,
+          "text": 0,
+          "children": 0,
+          "clones": 0
+        },
+        "cpuSeconds": 0.062448000000000004,
+        "heapMiB": 2.238811492919922,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 0.0,
+          "p95": 0.10000000149011612,
+          "variance": 0.012533910036718254,
+          "max": 1.8000000044703484
+        },
+        "guardAvailable": true,
+        "metrics": {
+          "validations": 1000,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 7000,
+          "promptValidations": 1000,
+          "sheetReads": 0
+        },
+        "sourceReads": {
+          "style": 11000,
+          "attributes": 41000,
+          "text": 3000,
+          "children": 19000,
+          "clones": 0
+        },
+        "cpuSeconds": 0.12725,
+        "heapMiB": 2.351573944091797,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      }
+    },
+    "prompt-bounded": {
+      "baseline": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 0.0,
+          "p95": 0,
+          "variance": 4.9750000000000044e-5,
+          "max": 0.10000000149011612
+        },
+        "guardAvailable": false,
+        "metrics": {
+          "validations": 0,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 0,
+          "promptValidations": 0,
+          "sheetReads": 0
+        },
+        "sourceReads": {
+          "style": 0,
+          "attributes": 0,
+          "text": 0,
+          "children": 0,
+          "clones": 0
+        },
+        "cpuSeconds": 0.132183,
+        "heapMiB": 2.3892555236816406,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      },
+      "final": {
+        "durationMs": {
+          "n": 1000,
+          "p50": 4.700000002980232,
+          "p95": 5.799999997019768,
+          "variance": 0.4925380400940305,
+          "max": 13.200000002980232
+        },
+        "guardAvailable": true,
+        "metrics": {
+          "validations": 1000,
+          "rebuilds": 0,
+          "projections": 0,
+          "validationNodes": 2050000,
+          "promptValidations": 1000,
+          "sheetReads": 0
+        },
+        "sourceReads": {
+          "style": 1110000,
+          "attributes": 9932000,
+          "text": 947000,
+          "children": 6148000,
+          "clones": 0
+        },
+        "cpuSeconds": 5.0197709999999995,
+        "heapMiB": 2.5448875427246094,
+        "modelHTTP": 0,
+        "summaryRPC": 0,
+        "translationRPC": 0,
+        "zeroResourceBalances": true
+      }
+    }
+  }
+}
