@@ -1,0 +1,311 @@
+{
+  "source": "/workspace/read-frog/src",
+  "browser": "154.0.8037.57",
+  "cases": [
+    {
+      "name": "href delayed load: old read during load, fresh prompt after load",
+      "status": "passed",
+      "modelHTTP": 2,
+      "summaryRPCs": 0,
+      "resources": {
+        "scopes": 1,
+        "snapshots": 2,
+        "activePreparations": 0,
+        "workEntries": 4,
+        "capacity": 128,
+        "resolutions": 5,
+        "hits": 1,
+        "rebuilds": 4,
+        "projections": 4,
+        "validations": 5,
+        "promptValidations": 2,
+        "validationNodes": 42,
+        "styleReads": 108,
+        "unchangedValidations": 1,
+        "semanticParses": 0,
+        "semanticInvalidations": 2,
+        "metadataProjections": 4,
+        "visitedNodes": 34,
+        "stalePreparations": 0,
+        "activeExtractions": 0,
+        "evictions": 0,
+        "resolveMs": 3.200000010430813,
+        "readMs": 113.59999999403954,
+        "invalidation": {
+          "registrations": 2,
+          "observers": 1,
+          "observedRoots": 1,
+          "styleListeners": 2,
+          "styleStates": 1,
+          "pendingStyleRoots": 0,
+          "batches": 1,
+          "records": 1,
+          "invalidations": 6,
+          "processingMs": 0.30000000447034836,
+          "source": 0,
+          "semantic": 1,
+          "visibility": 0,
+          "unknown": 0,
+          "global-style": 6,
+          "styleCompletions": 1,
+          "styleStateChecks": 7,
+          "styleSheetReads": 8,
+          "styleOverflows": 0
+        }
+      }
+    },
+    {
+      "name": "rel-out",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "7a94027fe6a0f00d7fbf69cffc66945c2a2cbf4af34aaf8858690ef3cf979248"
+    },
+    {
+      "name": "rel-in",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "media",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "disabled-idl",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "7a94027fe6a0f00d7fbf69cffc66945c2a2cbf4af34aaf8858690ef3cf979248"
+    },
+    {
+      "name": "disabled-attribute",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "7a94027fe6a0f00d7fbf69cffc66945c2a2cbf4af34aaf8858690ef3cf979248"
+    },
+    {
+      "name": "style-media",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "style-text",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "remove",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "7a94027fe6a0f00d7fbf69cffc66945c2a2cbf4af34aaf8858690ef3cf979248"
+    },
+    {
+      "name": "insert",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "delayed @import completion",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "stylesheet error rechecks current effective style",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "7a94027fe6a0f00d7fbf69cffc66945c2a2cbf4af34aaf8858690ef3cf979248",
+      "effectiveVisibleAfterError": true
+    },
+    {
+      "name": "alternate stylesheet activated by IDL state",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "cross-origin opaque CSS still filters computed visibility",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1",
+      "opaque": true
+    },
+    {
+      "name": "adopted sheet membership",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "089cb2ec63f9613aa587a2a9fa02186d2d15c3a1d3f46e84e55b450fc2ee3bf1"
+    },
+    {
+      "name": "same-count CSSOM edit fails closed before model dispatch",
+      "status": "passed",
+      "modelHTTP": 2,
+      "refusedHTTP": 0,
+      "explicitFreshHTTP": 1,
+      "note": "No automatic retry. The next explicit operation receives fresh context."
+    },
+    {
+      "name": "top-level insertRule and deleteRule are demand-observable",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "7a94027fe6a0f00d7fbf69cffc66945c2a2cbf4af34aaf8858690ef3cf979248"
+    },
+    {
+      "name": "viewport media query change is demand-observable",
+      "status": "passed",
+      "modelHTTP": 0,
+      "identity": "7a94027fe6a0f00d7fbf69cffc66945c2a2cbf4af34aaf8858690ef3cf979248"
+    },
+    {
+      "name": "shadow-local CSS preserves sibling snapshot",
+      "status": "passed",
+      "modelHTTP": 0,
+      "scopes": 2,
+      "snapshots": 2,
+      "activePreparations": 0,
+      "workEntries": 3,
+      "capacity": 128,
+      "resolutions": 46,
+      "hits": 3,
+      "rebuilds": 42,
+      "projections": 43,
+      "validations": 28,
+      "promptValidations": 5,
+      "validationNodes": 230,
+      "styleReads": 828,
+      "unchangedValidations": 1,
+      "semanticParses": 0,
+      "semanticInvalidations": 22,
+      "metadataProjections": 40,
+      "visitedNodes": 355,
+      "stalePreparations": 0,
+      "activeExtractions": 0,
+      "evictions": 0,
+      "resolveMs": 6.4000000059604645,
+      "readMs": 289.5000000074506,
+      "invalidation": {
+        "registrations": 2,
+        "observers": 1,
+        "observedRoots": 3,
+        "styleListeners": 6,
+        "styleStates": 3,
+        "pendingStyleRoots": 0,
+        "batches": 14,
+        "records": 15,
+        "invalidations": 45,
+        "processingMs": 1.8999999985098839,
+        "source": 10,
+        "semantic": 5,
+        "visibility": 0,
+        "unknown": 0,
+        "global-style": 45,
+        "styleCompletions": 10,
+        "styleStateChecks": 73,
+        "styleSheetReads": 72,
+        "styleOverflows": 0
+      }
+    },
+    {
+      "name": "six rendered translations survive global cosmetic stylesheet completion",
+      "status": "passed",
+      "modelHTTP": 6,
+      "rendered": 6,
+      "stylesheetModelHTTP": 0
+    }
+  ],
+  "boundaries": [],
+  "modelHTTP": 10,
+  "cssHTTP": 22,
+  "resources": {
+    "scopes": 0,
+    "snapshots": 0,
+    "activePreparations": 0,
+    "workEntries": 0,
+    "capacity": 128,
+    "resolutions": 53,
+    "hits": 3,
+    "rebuilds": 44,
+    "projections": 45,
+    "validations": 35,
+    "promptValidations": 11,
+    "validationNodes": 356,
+    "styleReads": 927,
+    "unchangedValidations": 1,
+    "semanticParses": 0,
+    "semanticInvalidations": 22,
+    "metadataProjections": 42,
+    "visitedNodes": 391,
+    "stalePreparations": 0,
+    "activeExtractions": 0,
+    "evictions": 0,
+    "resolveMs": 6.800000004470348,
+    "readMs": 449.10000002384186,
+    "invalidation": {
+      "registrations": 0,
+      "observers": 0,
+      "observedRoots": 0,
+      "styleListeners": 0,
+      "styleStates": 0,
+      "pendingStyleRoots": 0,
+      "batches": 27,
+      "records": 16,
+      "invalidations": 49,
+      "processingMs": 2.2999999970197678,
+      "source": 11,
+      "semantic": 5,
+      "visibility": 0,
+      "unknown": 0,
+      "global-style": 49,
+      "styleCompletions": 11,
+      "styleStateChecks": 80,
+      "styleSheetReads": 81,
+      "styleOverflows": 0
+    }
+  },
+  "sentContext": [
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": true
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": true
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    },
+    {
+      "name": "enqueueTranslateRequest",
+      "containsPrivateContext": false
+    }
+  ]
+}

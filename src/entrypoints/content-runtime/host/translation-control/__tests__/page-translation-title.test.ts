@@ -68,7 +68,6 @@ vi.mock("@/utils/host/translate/node-manipulation", () => ({
 
 vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/utils/host/translate/translate-variants")>()),
-  primePageTranslationContext: () => {},
   translateTextForPageTitle: mockTranslateTextForPageTitle,
 }))
 
@@ -152,7 +151,7 @@ describe("pageTranslationManager title handling", () => {
     manager.stop()
   })
 
-  it("primes webpage context on start for AI-aware llm translation", async () => {
+  it("does not prepare unused global metadata before an AI-aware translation unit requests it", async () => {
     mockGetLocalConfig.mockResolvedValue({
       ...DEFAULT_CONFIG,
       pageTranslation: {
@@ -167,7 +166,7 @@ describe("pageTranslationManager title handling", () => {
     await manager.start()
     await flushDomUpdates()
 
-    expect(mockGetOrCreateWebPageContext).toHaveBeenCalledTimes(1)
+    expect(mockGetOrCreateWebPageContext).not.toHaveBeenCalled()
 
     manager.stop()
   })

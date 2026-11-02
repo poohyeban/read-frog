@@ -1,0 +1,577 @@
+[
+  {
+    "test": "verifies physical HTTP, scoped prompts, shared cancellation and cache reuse through the real SDK/queues",
+    "file": "http-contract.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "keeps article contexts separate on the same URL",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "recognizes generic repeated feed items without article tags or domain rules",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "uses a proven explicit quote dependency without borrowing the adjacent post",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "refreshes a recycled post node's context after its own text changes",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "keeps moved but semantically unchanged content reusable",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "excludes inputs, scripts and hidden content from context",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "extracts only within the source shadow root",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "does not let context expiry revoke an unchanged render source",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "keeps six bilingual translations during unrelated scope removal",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "keeps six translationOnly translations during unrelated scope removal",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "still rejects replaced source nodes",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "keeps an independent manual bilingual request after page Stop",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "keeps an independent manual translationOnly request after page Stop",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "rejects an equal-text replacement of the original text node during a request",
+    "file": "legacy-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "never recursively evaluates tokens contained in source or page data",
+    "file": "prompt-data.test.ts",
+    "before": {
+      "phase": "before one-pass context-data assembly",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "marks page data as untrusted without allowing it to close the data block",
+    "file": "prompt-data.test.ts",
+    "before": {
+      "phase": "before one-pass context-data assembly",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "does not expand page variables written inside a custom action's selected text",
+    "file": "prompt-data.test.ts",
+    "before": {
+      "phase": "before one-pass context-data assembly",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "reports separate owner, route, config, source and render generation reasons",
+    "file": "render-guard.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "route owners survive real anchors but expire on query/hash navigation and pagehide",
+    "file": "render-guard.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "context-stale affects future reads, never an issued prompt or unchanged unit",
+    "file": "render-guard.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "checking an ended document lease does not resurrect route listeners",
+    "file": "render-guard.test.ts",
+    "before": {
+      "phase": "V2 development before lease and schema-token fixes",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "uses article roots, generic feeds, sections and conservative local fallbacks",
+    "file": "scope-resolver.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "does not manufacture a thread from adjacent posts",
+    "file": "scope-resolver.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "keeps ShadowRoot boundaries and rejects a foreign-frame source",
+    "file": "scope-resolver.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "resolves only an explicit same-document quotation, never external or arbitrary links",
+    "file": "scope-resolver.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "property: random reorder, insertion and removal cannot cross independent item boundaries",
+    "file": "scope-resolver.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "bounds probes even when every child is an opaque semantic item",
+    "file": "scope-resolver.test.ts",
+    "before": {
+      "phase": "V2 development before bounded opaque probes and shadow privacy",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "freezes scoped snapshots and rebuilds only the affected scope",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "deletes only detached scopes and leaves a retained snapshot immutable",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "moves preserve scope identity and virtualized text replacement changes the fingerprint",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "tracks explicit reference dependencies without linking unrelated posts",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "does no projection for metadata-only or unused context",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "ignores inserted translations and excludes private controls and hidden source",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "bounded index and cache converge after 500 acquire/remove operations",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "one cancelled consumer cannot cancel a shared extraction still needed by another",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "limits a giant scope projection without copying its complete subtree",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "releases old route registrations and followed shadow roots",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "never extracts a hidden ancestor or SVG script, including a local fallback",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "metadata is an explicit dependency only of scopes which use it",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "rebinds explicit dependencies when a recycled reply changes its reference",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "phase": "V2 development: index-before",
+      "status": "failed",
+      "evidence": "index-before.log"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "does not resurrect a coordinator result after a detached source entry was removed",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "phase": "V2 development: index-before",
+      "status": "failed",
+      "evidence": "index-before.log"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "retries preparation once before any model request, and bounds continued source churn",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "invalidates an acquired scope when an ancestor becomes hidden",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "phase": "V2 development: metadata-before",
+      "status": "failed",
+      "evidence": "metadata-before.log"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "does not read translated or hidden text into a scoped title",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "phase": "V2 development: metadata-before",
+      "status": "failed",
+      "evidence": "metadata-before.log"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "bounds pending extraction across repeated generations of one scope",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "phase": "V2 development before overlapping extraction bound",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "excludes sources under a hidden shadow host",
+    "file": "snapshot-manager.test.ts",
+    "before": {
+      "phase": "V2 development before bounded opaque probes and shadow privacy",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "uses complete short source context for 100 feed items with zero summary RPCs",
+    "file": "summary-cost.test.ts",
+    "before": {
+      "status": "new architecture invariant; no legacy execution claim"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "retains explicit model-summary capability and shares equal requests",
+    "file": "summary-cost.test.ts",
+    "before": {
+      "phase": "V2 phase 3 before cost admission",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "bounds automatic long-feed summary fanout and requires explicit admission for another source",
+    "file": "summary-cost.test.ts",
+    "before": {
+      "phase": "V2 phase 3 before cost admission",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "commits the title after unrelated post removal with one request",
+    "file": "title-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "rejects a changed source title before its observer gets a turn",
+    "file": "title-contract.test.ts",
+    "before": {
+      "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+      "status": "failed"
+    },
+    "after": "passed"
+  },
+  {
+    "test": "does not start translation after its source changes while the one summary request is pending",
+    "file": "feature-context-lifetime.test.ts",
+    "before": {
+      "phase": "V2 development: preflight-before",
+      "status": "failed",
+      "evidence": "preflight-before.log"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "invalidates a pending custom action when its provider transport changes without changing id",
+    "file": "use-custom-action-execution.test.ts",
+    "before": {
+      "phase": "V2 development: custom-provider-before",
+      "status": "failed",
+      "evidence": "custom-provider-before.log"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "input operation ownership does not commit after its hook is unmounted while the input remains connected",
+    "file": "use-input-translation.test.tsx",
+    "before": {
+      "phase": "unchanged baseline",
+      "status": "failed"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "replaceSelectionToolbarCustomActionPromptTokens replaces selection and paragraphs tokens",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "new contract"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "replaceSelectionToolbarCustomActionPromptTokens replaces targetLanguage, webTitle, webUrl, and webContent tokens",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "new contract"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "replaceSelectionToolbarCustomActionPromptTokens leaves unrelated text unchanged",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "new contract"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "buildSelectionToolbarCustomActionSystemPrompt appends structured output contract with resolved fields and defaults",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "new contract"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "buildSelectionToolbarCustomActionSystemPrompt includes description in contract when provided",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "new contract"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "buildSelectionToolbarCustomActionSystemPrompt resolves tokens in field description but keeps key names unchanged",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "new contract"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "buildSelectionToolbarCustomActionSystemPrompt preserves multiline field description in yaml block",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "new contract"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "buildSelectionToolbarCustomActionSystemPrompt returns contract when prompt content is empty",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "new contract"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "truncateContextTextForCustomAction keeps only the leading characters for custom action context tokens",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "new contract"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "includes context variables used only by structured output descriptions",
+    "file": "custom-action-prompt.test.ts",
+    "before": {
+      "phase": "V2 development",
+      "status": "failed"
+    },
+    "after": "passed in final full suite"
+  },
+  {
+    "test": "does not prepare unused global metadata before an AI-aware translation unit requests it",
+    "before": {
+      "status": "failed",
+      "phase": "V2 before removal of old global metadata priming"
+    },
+    "after": "passed; 129 page-control tests"
+  }
+]

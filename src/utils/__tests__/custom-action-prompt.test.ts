@@ -4,6 +4,7 @@ import {
   replaceSelectionToolbarCustomActionPromptTokens,
   truncateContextTextForCustomAction,
 } from "../custom-action-prompt"
+import { contextData } from "../prompts/context-data"
 
 describe("replaceSelectionToolbarCustomActionPromptTokens", () => {
   const baseTokens = {
@@ -31,7 +32,7 @@ describe("replaceSelectionToolbarCustomActionPromptTokens", () => {
     )
 
     expect(result).toBe(
-      "Target language: English, Page: Test Page, Url: https://example.com/article?id=1, Content: Test page content",
+      `Target language: English, Page: ${contextData("webTitle", "Test Page")}, Url: ${contextData("webUrl", "https://example.com/article?id=1")}, Content: ${contextData("webContent", "Test page content")}`,
     )
   })
 
@@ -138,4 +139,22 @@ describe("truncateContextTextForCustomAction", () => {
   it("keeps only the leading characters for custom action context tokens", () => {
     expect(truncateContextTextForCustomAction("abcdefghij", 4)).toBe("abcd")
   })
+})
+
+it("includes context variables used only by structured output descriptions", async () => {
+  const { getCustomActionContextRequirements } = await import("../custom-action-prompt")
+  expect(
+    getCustomActionContextRequirements({
+      systemPrompt: "Explain",
+      prompt: "{{selection}}",
+      outputSchema: [
+        {
+          id: "context-answer",
+          name: "answer",
+          type: "string",
+          description: "Relate {{webContent}} to {{webTitle}}",
+        },
+      ],
+    }),
+  ).toMatchObject({ title: true, content: true, description: false, summary: false })
 })

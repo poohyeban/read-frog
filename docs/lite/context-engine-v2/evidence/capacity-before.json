@@ -1,0 +1,13 @@
+{
+  "phase": "V2 development before overlapping extraction bound",
+  "passed": 0,
+  "failed": 1,
+  "cases": [
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "bounds pending extraction across repeated generations of one scope",
+      "status": "failed",
+      "failure": "AssertionError: expected \"extract\" to be called 2 times, but got 5 times"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "phase": "V2 demand-driven startup before",
+  "passed": 0,
+  "failed": 1,
+  "cases": [
+    {
+      "name": "pageTranslationManager title handling does not prepare unused global metadata before an AI-aware translation unit requests it",
+      "status": "failed"
+    }
+  ]
+}

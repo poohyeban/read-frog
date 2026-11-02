@@ -1,0 +1,34 @@
+{
+  "feature_head": "5ab2388b11dcac4f7bf9f5c2a2893ee5070ccb96",
+  "main_before_merge": "56df18ee15640002b5052ecc993def8d02a8917c",
+  "production_source_lockfile_and_manifest_config_match_feature": true,
+  "local_unit_files": 339,
+  "local_unit_tests": 3093,
+  "local_unit_seconds": 110.38,
+  "lint_and_types": "passed",
+  "format": "passed",
+  "zip": {
+    "version": "0.2.8",
+    "zip_bytes": 4761109,
+    "zip_sha256": "a15311c9122af400e379b5c83d956a17126650acf87ecc0532632afeee0da590",
+    "build_bytes": 15006149
+  },
+  "browser_preflight": {
+    "passed": true,
+    "seconds": 29.2,
+    "cold_warm_samples": 20,
+    "compatibility_scenarios": 9,
+    "native_extension": false
+  },
+  "issues_caught_before_any_actions": [
+    {
+      "issue": "Local origin tracking ref was stale because the configured fetch refspec tracks main only.",
+      "evidence": "Preliminary candidate had 337 files / 3069 tests; explicit fetch and merge of actual remote SHA restored both stylesheet suites and all 3093 tests."
+    },
+    {
+      "issue": "Legacy browser timing instrumentation expected the removed V1 extractWebpageContent function.",
+      "fix": "Use native V2 diagnostic counters while preserving the legacy wrapper and every browser behavior assertion; no production code changes."
+    }
+  ],
+  "api_policy": "Only local mocks; no paid or external free API."
+}

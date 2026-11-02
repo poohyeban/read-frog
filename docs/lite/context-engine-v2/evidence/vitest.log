@@ -1,0 +1,17 @@
+$ vitest run
+
+ RUN  v5.0.3 /workspace/read-frog
+
+Not implemented: navigation to another Document
+(node:61859) Warning: AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:61859) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+(node:61859) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+
+ Test Files  336 passed (336)
+      Tests  3031 passed (3031)
+   Start at  13:21:16
+   Duration  133.32s (environment 30%, tests 27%, import 22%, setup 14%, transform 7%, worker 1%)
+
+    Isolate  336 workers spawned · ~435ms startup each (spawn + environment, per file)
+             at least ~48.31s faster with isolate: false — reuses workers across files instead of one per file

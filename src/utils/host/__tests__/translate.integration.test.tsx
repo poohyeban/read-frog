@@ -40,14 +40,14 @@ vi.mock("@/utils/host/translate/translate-variants", () => ({
   translateTextForPage: vi.fn<(...args: any[]) => any>(() => Promise.resolve(MOCK_TRANSLATION)),
 }))
 
-const DEFAULT_PAGE_TRANSLATION_OPTIONS = {
+const DEFAULT_PAGE_TRANSLATION_OPTIONS = expect.objectContaining({
   preserveLineBreaks: false,
   forceRetranslation: false,
-}
-const PRESERVE_LINE_BREAKS_TRANSLATION_OPTIONS = {
+})
+const PRESERVE_LINE_BREAKS_TRANSLATION_OPTIONS = expect.objectContaining({
   preserveLineBreaks: true,
   forceRetranslation: false,
-}
+})
 
 const BILINGUAL_CONFIG: Config = {
   ...DEFAULT_CONFIG,

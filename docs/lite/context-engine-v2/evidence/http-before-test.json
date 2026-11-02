@@ -1,0 +1,12 @@
+{
+  "phase": "baseline paired local HTTP reproduction",
+  "passed": 0,
+  "failed": 1,
+  "cases": [
+    {
+      "name": "verifies physical HTTP, scoped prompts, shared cancellation and cache reuse through the real SDK/queues",
+      "status": "failed",
+      "failure": "AssertionError: expected false to be true // Object.is equality"
+    }
+  ]
+}

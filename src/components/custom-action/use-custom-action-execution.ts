@@ -8,9 +8,16 @@ import type {
 import type { Config } from "@/types/config/config"
 import type { AISDKReasoning } from "@/types/config/provider"
 import type { SelectionToolbarCustomAction } from "@/types/config/selection-toolbar"
+import type { ContextSource } from "@/utils/host/translate/context/types"
 import type { CachedWebPageContext } from "@/utils/host/translate/webpage-context"
 import type { LangCodeISO6393 } from "@/utils/languages"
+import type { ContextRequirements } from "@/utils/prompts/translation-template"
 import type { CustomActionProviderRef } from "@/utils/providers/provider-registry"
+import {
+  assertPromptContextCurrent,
+  inheritPromptContext,
+  isPromptContextCurrent,
+} from "@/utils/host/translate/context/prompt-guard"
 
 export interface SelectionToolbarCustomActionRequestSlice {
   language: Config["language"]
@@ -35,11 +42,18 @@ import {
   buildSelectionToolbarCustomActionSystemPrompt,
   replaceSelectionToolbarCustomActionPromptTokens,
 } from "@/utils/custom-action-prompt"
-import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
+import { Sha256Fields as hashContextFields } from "@/utils/hash"
+import { scopeRootIdentity } from "@/utils/host/translate/context/scope-resolver"
+import { createTranslationTaskOwner } from "@/utils/host/translate/context/task-owner"
+import {
+  getDocumentContextSignal,
+  getOrCreateWebPageContext,
+} from "@/utils/host/translate/webpage-context"
 import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { resolveModelId } from "@/utils/providers/model-id"
 import { getProviderOptionsWithOverride } from "@/utils/providers/options"
 import { getTopLevelReasoning } from "@/utils/providers/reasoning"
+import { providerTransportRevision } from "@/utils/providers/resource-material"
 
 export interface CustomActionExecutionContext {
   action: SelectionToolbarCustomAction
@@ -63,7 +77,9 @@ interface CustomActionExecutionPlan {
 
 interface ResolvedWebPageContext {
   popoverSessionKey: number
-  value: CachedWebPageContext | null
+  key: string
+  retryNonce: number
+  value: CachedWebPageContext | Error | null
 }
 
 interface CustomActionExecutionRequest {
@@ -134,7 +150,7 @@ export function buildCustomActionExecutionPlan(
   customActionRequest: SelectionToolbarCustomActionRequestSlice,
   cleanSelection: string,
   contextText: string,
-  webPageContext?: CachedWebPageContext | null,
+  webPageContext?: CachedWebPageContext | Error | null,
 ): CustomActionExecutionPlan {
   const action = customActionRequest.action
 
@@ -167,6 +183,12 @@ export function buildCustomActionExecutionPlan(
     }
   }
 
+  if (webPageContext instanceof Error)
+    return {
+      error: createSelectionToolbarRuntimeError("customAction", webPageContext),
+      executionContext: null,
+    }
+
   if (webPageContext === undefined) {
     return {
       error: null,
@@ -176,7 +198,7 @@ export function buildCustomActionExecutionPlan(
 
   return {
     error: null,
-    executionContext: {
+    executionContext: inheritPromptContext(webPageContext, {
       action,
       provider,
       targetCode: customActionRequest.language.targetCode,
@@ -188,49 +210,83 @@ export function buildCustomActionExecutionPlan(
         webUrl: webPageContext?.url ?? window.location.href,
         webContent: webPageContext?.webContent || "",
       },
-    },
+    }),
   }
 }
 
-export function useCustomActionWebPageContext(open: boolean, popoverSessionKey: number) {
-  const [resolvedWebPageContext, setResolvedWebPageContext] =
-    useState<ResolvedWebPageContext | null>(null)
-
+export function useCustomActionWebPageContext(
+  open: boolean,
+  popoverSessionKey: number,
+  source: ContextSource = {},
+  requirements: ContextRequirements = {
+    title: true,
+    description: false,
+    content: true,
+    summary: false,
+  },
+  retryNonce = 0,
+) {
+  const [resolved, setResolved] = useState<ResolvedWebPageContext | null>(null)
+  const previous = useRef(resolved)
+  const {
+    source: sourceNode,
+    text: sourceText,
+    kind: sourceKind,
+    document: sourceDocument,
+  } = source
+  const { title, description, content, summary } = requirements
+  const key = `${popoverSessionKey}:${source.source ? scopeRootIdentity(source.source) : "independent"}:${hashContextFields(sourceText ?? "")}:${+requirements.title}${+requirements.description}${+requirements.content}${+requirements.summary}`
   useEffect(() => {
-    if (!open) {
-      return undefined
+    if (!open) return undefined
+    // CSS never starts a new operation. An explicit retry may refresh an unsafe
+    // prepared context locally, while unchanged prompts keep their identity.
+    const cached = previous.current
+    if (cached?.key === key) {
+      if (cached.retryNonce === retryNonce) return undefined
+      if (!(cached.value instanceof Error) && isPromptContextCurrent(cached.value)) {
+        const next = { ...cached, retryNonce }
+        previous.current = next
+        setResolved(next)
+        return undefined
+      }
     }
-
-    let isCancelled = false
-
-    void getOrCreateWebPageContext()
-      .then((nextContext) => {
-        if (!isCancelled) {
-          setResolvedWebPageContext({
-            popoverSessionKey,
-            value: nextContext,
+    const owner = createTranslationTaskOwner("custom-context")
+    const preparation =
+      title || description || content || summary
+        ? getOrCreateWebPageContext(content, owner.signal, {
+            source: sourceNode,
+            text: sourceText,
+            kind: sourceKind,
+            document: sourceDocument,
+            requirements: { title, description, content, summary },
           })
-        }
-      })
-      .catch(() => {
-        if (!isCancelled) {
-          setResolvedWebPageContext({
-            popoverSessionKey,
-            value: null,
-          })
-        }
-      })
-
-    return () => {
-      isCancelled = true
+        : Promise.resolve({ url: window.location.href, webTitle: "", webContent: "" })
+    const finish = (value: ResolvedWebPageContext["value"]) => {
+      if (!owner.isCurrent()) return
+      const next = { key, popoverSessionKey, retryNonce, value }
+      previous.current = next
+      setResolved(next)
     }
-  }, [open, popoverSessionKey])
-
-  if (!open || resolvedWebPageContext?.popoverSessionKey !== popoverSessionKey) {
-    return undefined
-  }
-
-  return resolvedWebPageContext.value
+    void preparation
+      .then(finish)
+      .catch((error: unknown) => finish(error instanceof Error ? error : new Error(String(error))))
+    return owner.dispose
+  }, [
+    open,
+    key,
+    popoverSessionKey,
+    retryNonce,
+    sourceNode,
+    sourceText,
+    sourceKind,
+    sourceDocument,
+    title,
+    description,
+    content,
+    summary,
+  ])
+  if (!open || resolved?.key !== key || resolved.retryNonce !== retryNonce) return undefined
+  return resolved.value
 }
 
 function buildCustomActionExecutionRequest({
@@ -265,7 +321,7 @@ function buildCustomActionExecutionRequest({
   )
   const temperature = provider.config.temperature
 
-  return {
+  return inheritPromptContext(executionContext, {
     key: stringifyExecutionRequestKey({
       actionId: action.id,
 
@@ -281,6 +337,7 @@ function buildCustomActionExecutionRequest({
       promptTokens,
       provider: providerKey,
       providerId: provider.id,
+      providerTransport: hashContextFields(providerTransportRevision(provider.config)),
       providerOptions,
       reasoning,
       rerunNonce,
@@ -297,7 +354,7 @@ function buildCustomActionExecutionRequest({
       reasoning,
       temperature,
     },
-  }
+  })
 }
 
 export function useCustomActionExecution({
@@ -360,6 +417,7 @@ export function useCustomActionExecution({
 
     let isCancelled = false
     const abortController = new AbortController()
+    const signal = AbortSignal.any([abortController.signal, getDocumentContextSignal()])
 
     const run = async () => {
       setIsRunning(true)
@@ -371,14 +429,15 @@ export function useCustomActionExecution({
       })
 
       try {
+        assertPromptContextCurrent(request)
         const finalResult = await streamBackgroundStructuredObject(
           {
             ...request.payload,
           },
           {
-            signal: abortController.signal,
+            signal,
             onChunk: (partial: BackgroundStructuredObjectStreamSnapshot) => {
-              if (isCancelled) {
+              if (isCancelled || signal.aborted) {
                 return
               }
 
@@ -389,7 +448,7 @@ export function useCustomActionExecution({
           },
         )
 
-        if (isCancelled) {
+        if (isCancelled || signal.aborted) {
           return
         }
 
@@ -400,7 +459,7 @@ export function useCustomActionExecution({
           return
         }
 
-        if (isCancelled) {
+        if (isCancelled || signal.aborted) {
           return
         }
 

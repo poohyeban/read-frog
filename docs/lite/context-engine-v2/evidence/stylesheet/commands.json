@@ -1,0 +1,130 @@
+{
+  "date": "2026-11-01",
+  "branch": "codex/subtitle-engine-v2",
+  "baseline": "375115fae19dc2e072f3fd383025085e32293a89",
+  "fetchedHead": "375115fae19dc2e072f3fd383025085e32293a89",
+  "baselineDelta": {
+    "commits": 0,
+    "files": 0
+  },
+  "environment": {
+    "node": "24.19.0",
+    "pnpm": "11.25.0",
+    "chromium": "154.0.8037.57",
+    "env": {
+      "pnpm_config_verify_deps_before_run": "false",
+      "SKIP_FREE_API": "true"
+    },
+    "network": "Only local HTTP fixtures for tests; remote access only initial branch sync. No paid/free external API."
+  },
+  "commands": [
+    {
+      "command": "git fetch origin codex/subtitle-engine-v2",
+      "purpose": "Initial read-only branch synchronization; baseline equals target."
+    },
+    {
+      "command": "pnpm exec vitest run src/utils/host/translate/context/__tests__/stylesheet.test.ts --reporter=json --outputFile=/tmp/stylesheet-red.json",
+      "exit": 1,
+      "phase": "RED before production change",
+      "passed": 1,
+      "failed": 15
+    },
+    {
+      "command": "pnpm exec vitest run src/utils/host/translate/context/__tests__/stylesheet-dispatch.test.ts --reporter=json --outputFile=/tmp/stylesheet-dispatch-red.json",
+      "exit": 1,
+      "phase": "RED before dispatch guard",
+      "passed": 1,
+      "failed": 1
+    },
+    {
+      "command": "pnpm exec vitest run src/components/custom-action/__tests__/use-custom-action-execution.test.ts -t \"explicit retry refreshes\" --reporter=json --outputFile=/tmp/stylesheet-custom-retry-red.json",
+      "exit": 1,
+      "phase": "RED on guarded intermediate implementation",
+      "passed": 0,
+      "failed": 1
+    },
+    {
+      "command": "pnpm exec vitest run src/utils/host/translate/context/__tests__ src/components/custom-action/__tests__/use-custom-action-execution.test.ts src/utils/host/translate/__tests__/feature-context-lifetime.test.ts src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/request-rerun.test.tsx --reporter=json --outputFile=/tmp/stylesheet-targeted-final.json",
+      "exit": 0,
+      "passed": 155,
+      "note": "Before two final positive controls; full final run below includes all 24 added cases."
+    },
+    {
+      "command": "SKIP_FREE_API=true pnpm test --reporter=default --reporter=json --outputFile=/tmp/stylesheet-full-tests.json",
+      "exit": 0,
+      "files": 339,
+      "tests": 3093,
+      "seconds": 132.23
+    },
+    {
+      "command": "pnpm lint",
+      "exit": 0,
+      "includes": "Oxlint --type-aware --type-check"
+    },
+    {
+      "command": "pnpm fmt:check",
+      "evidence": "format-check.txt",
+      "exit": 0
+    },
+    {
+      "command": "pnpm exec wxt build -b chrome",
+      "exit": 0,
+      "seconds": 11.3,
+      "megabytes": 15.01
+    },
+    {
+      "command": "node e2e/context-engine/stylesheet.mjs /tmp/stylesheet-browser-control.json /workspace/read-frog-stylesheet-baseline",
+      "exit": 1,
+      "passed": 6,
+      "failed": 14,
+      "modelHTTP": 10,
+      "cssHTTP": 22
+    },
+    {
+      "command": "node e2e/context-engine/stylesheet.mjs /tmp/stylesheet-browser-final.json",
+      "exit": 0,
+      "passed": 20,
+      "failed": 0,
+      "modelHTTP": 10,
+      "cssHTTP": 22
+    },
+    {
+      "command": "node e2e/context-engine/run.mjs /tmp/stylesheet-browser-regression.json",
+      "exit": 0,
+      "modelHTTP": 30
+    },
+    {
+      "command": "pnpm exec vitest run src/utils/host/translate/context/__tests__/http-contract.test.ts --reporter=json --outputFile=/tmp/stylesheet-http-baseline-tests.json",
+      "cwd": "/workspace/read-frog-stylesheet-baseline",
+      "exit": 0,
+      "modelHTTP": 4,
+      "note": "Production baseline untouched; only test output path changed to avoid overwriting final SDK evidence."
+    },
+    {
+      "command": "node scripts/context-engine-benchmark.mjs /workspace/read-frog-stylesheet-baseline /tmp/stylesheet-perf-baseline.json --hardening",
+      "exit": 0,
+      "coldPages": 80
+    },
+    {
+      "command": "node scripts/context-engine-benchmark.mjs /workspace/read-frog /tmp/stylesheet-perf-final.json --hardening",
+      "exit": 0,
+      "coldPages": 80
+    },
+    {
+      "command": "node scripts/context-engine-benchmark.mjs /workspace/read-frog-stylesheet-baseline /tmp/stylesheet-cost-baseline.json --stylesheet",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/context-engine-benchmark.mjs /workspace/read-frog /tmp/stylesheet-cost-final.json --stylesheet",
+      "exit": 0
+    },
+    {
+      "command": "node e2e/mv3-preflight.mjs /tmp/stylesheet-native-mv3.json",
+      "exit": 2,
+      "reason": "Managed ExtensionInstallBlocklist [*]; no native extension load attempted, no policy bypass."
+    }
+  ],
+  "forbiddenActionsPerformed": [],
+  "claimBoundary": "Local correctness and mock transport evidence only. Native MV3 and exhaustive CSSOM observation not certified.",
+  "commandNotation": "Commands are normalized reproducible invocations; environment overrides above applied to pnpm. Raw outputs preserve actual results."
+}

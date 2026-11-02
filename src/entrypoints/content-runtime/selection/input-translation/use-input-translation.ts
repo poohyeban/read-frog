@@ -4,7 +4,10 @@ import { toastManager } from "@/components/ui/base-ui/toast"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { INPUT_REPLACE_REQUEST_TYPE } from "@/utils/constants/input-injector"
 import { getDeepActiveElement } from "@/utils/dom/active-element"
+import { SummaryConsentRequiredError } from "@/utils/host/translate/context/summary-policy"
+import { createTranslationTaskOwner } from "@/utils/host/translate/context/task-owner"
 import { translateTextForInput } from "@/utils/host/translate/translate-variants"
+import { isTranslationCancelledError } from "@/utils/request/cancellation"
 
 const SPACE_KEY = " "
 const TRIGGER_COUNT = 3
@@ -125,6 +128,7 @@ export function useInputTranslation() {
 
   const spaceTimestampsRef = useRef<number[]>([])
   const isTranslatingRef = useRef(false)
+  const ownerRef = useRef<ReturnType<typeof createTranslationTaskOwner> | null>(null)
 
   const handleTranslation = useCallback(
     async (element: HTMLInputElement | HTMLTextAreaElement | HTMLElement) => {
@@ -183,11 +187,23 @@ export function useInputTranslation() {
 
       // Store original text to detect if user edited during translation
       const originalText = text
+      const owner = createTranslationTaskOwner("input", element.ownerDocument)
+      ownerRef.current = owner
 
       try {
         // Capability-resolved so Built-in AI is not reported as unknown.
 
-        const translatedText = await translateTextForInput(text, fromLang, toLang)
+        const translatedText = await translateTextForInput(text, fromLang, toLang, undefined, {
+          source: element,
+          text,
+          owner,
+          isSourceCurrent: () =>
+            element.isConnected &&
+            (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement
+              ? element.value
+              : element.innerText || ""
+            ).trim() === originalText,
+        })
 
         // Check if element content changed during translation (user input)
         let currentText: string
@@ -200,19 +216,45 @@ export function useInputTranslation() {
         }
 
         // Only apply translation if content hasn't changed during async operation
-        if (element.isConnected && currentText.trim() === originalText && translatedText) {
+        if (
+          owner.isCurrent() &&
+          element.isConnected &&
+          currentText.trim() === originalText &&
+          translatedText
+        ) {
           setTextWithUndo(element, translatedText)
         }
-      } catch {
+      } catch (error) {
+        if (owner.signal.aborted || isTranslationCancelledError(error)) return
         // defect: without this the spinner just appears and disappears and
         // the feature reads as broken.
 
         toastManager.add({
           type: "error",
-          title: "Input translation failed. Check the configured provider.",
+          title:
+            error instanceof SummaryConsentRequiredError
+              ? error.message
+              : "Input translation failed. Check the configured provider.",
+          actionProps:
+            error instanceof SummaryConsentRequiredError
+              ? {
+                  children: error.actionLabel,
+                  onClick: () => {
+                    error.authorize()
+                    toastManager.add({
+                      type: "info",
+                      title:
+                        "Summary allowed. Use the input translation shortcut again to continue.",
+                      id: "input-translation-error",
+                    })
+                  },
+                }
+              : undefined,
           id: "input-translation-error",
         })
       } finally {
+        owner.dispose()
+        if (ownerRef.current === owner) ownerRef.current = null
         hideSpinner()
         isTranslatingRef.current = false
       }
@@ -278,6 +320,7 @@ export function useInputTranslation() {
     document.addEventListener("keydown", handleKeyDown, true)
     return () => {
       document.removeEventListener("keydown", handleKeyDown, true)
+      ownerRef.current?.dispose()
     }
   }, [inputTranslationConfig.enabled, inputTranslationConfig.timeThreshold, handleTranslation])
 }

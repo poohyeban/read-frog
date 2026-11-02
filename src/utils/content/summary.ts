@@ -9,7 +9,7 @@ import { cleanText } from "./utils"
 const MAX_TITLE_LENGTH = 200
 
 // Includes the prompt, Defuddle/Markdown preparation and output validation rules.
-export const ARTICLE_SUMMARY_RULE_VERSION = "article-context-v2"
+export const ARTICLE_SUMMARY_RULE_VERSION = "article-context-v3"
 export const ARTICLE_SUMMARY_MAX_OUTPUT_TOKENS = 2048
 export const ARTICLE_SUMMARY_MAX_CHARACTERS = 6000
 

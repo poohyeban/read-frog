@@ -9,6 +9,7 @@ import {
   PRECISION_REWRITE_TRANSLATE_PROMPT_ID,
 } from "@/utils/constants/prompt"
 import { HTML_ATTRIBUTE_MARKER } from "@/utils/host/translate/html-attribute-markers"
+import { contextData, CONTEXT_DATA_RULE } from "../context-data"
 import { getTranslatePromptFromConfig } from "../translate"
 
 vi.mock("@/utils/config/storage", () => ({
@@ -54,10 +55,10 @@ describe("translate prompt tokens", () => {
     })
 
     expect(result.systemPrompt).toBe(
-      "Target English | Title Article Title | Description Article Description | Content Article Content | Summary Article Summary",
+      `Target English | Title ${contextData("webTitle", "Article Title")} | Description ${contextData("webDescription", "Article Description")} | Content ${contextData("webContent", "Article Content")} | Summary ${contextData("webSummary", "Article Summary")}\n\n${CONTEXT_DATA_RULE}`,
     )
     expect(result.prompt).toBe(
-      "Translate Hola for English with Article Title / Article Description / Article Content / Article Summary",
+      `Translate Hola for English with ${contextData("webTitle", "Article Title")} / ${contextData("webDescription", "Article Description")} / ${contextData("webContent", "Article Content")} / ${contextData("webSummary", "Article Summary")}`,
     )
   })
 

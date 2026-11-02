@@ -173,6 +173,7 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
           const before = await page.evaluate(() => ({
             ...window.harness.metrics,
             ...window.__sourceMetrics,
+            context: window.harness.contextDiagnostics(),
           }))
           await page.evaluate(() => {
             Object.assign(window.__perf, {
@@ -199,6 +200,7 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
           const localCounters = await page.evaluate(() => ({
             ...window.harness.metrics,
             ...window.__sourceMetrics,
+            context: window.harness.contextDiagnostics(),
           }))
           const metrics = (await cdp.send("Performance.getMetrics")).metrics
           await page.evaluate(() => {
@@ -238,6 +240,24 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
             summaryCalls: localCounters.summaries - before.summaries,
             translationCalls: localCounters.translations - before.translations,
             persistentCacheHits: localCounters.cacheHits - before.cacheHits,
+            contextInstrumentation: localCounters.context
+              ? "v2-native-counters"
+              : "legacy-timing-wrapper",
+            // V2 readMs includes demand validation/cache lookup. It is not the
+            // legacy per-extraction Defuddle timing and is labelled separately.
+            contextDelta:
+              localCounters.context &&
+              Object.fromEntries(
+                [
+                  "readMs",
+                  "projections",
+                  "metadataProjections",
+                  "rebuilds",
+                  "validations",
+                  "promptValidations",
+                  "validationNodes",
+                ].map((key) => [key, localCounters.context[key] - before.context[key]]),
+              ),
             sampledPeakHeapUsed,
             interaction,
             heapUsed: metrics.find((m) => m.name === "JSHeapUsedSize")?.value,
@@ -245,6 +265,8 @@ test("translation architecture: reproducible cold/warm browser benchmark", async
             errors,
           })
           expect(errors).toEqual([])
+          if (smart && localCounters.context)
+            expect(localCounters.context.projections).toBeGreaterThan(0)
           expect(stats.first).toBeGreaterThan(0)
           await page.evaluate(() => scrollTo(0, 0))
           await page.waitForTimeout(50)

@@ -1,0 +1,51 @@
+{
+  "numTotalTestSuites": 1,
+  "numPassedTestSuites": 1,
+  "numFailedTestSuites": 0,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 1,
+  "numPassedTests": 1,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1793551600619,
+  "success": true,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "verifies physical HTTP, scoped prompts, shared cancellation and cache reuse through the real SDK/queues",
+          "status": "passed",
+          "title": "verifies physical HTTP, scoped prompts, shared cancellation and cache reuse through the real SDK/queues",
+          "duration": 8946.922365999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551602256,
+      "endTime": 1793551611202.9224,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog-stylesheet-baseline/src/utils/host/translate/context/__tests__/http-contract.test.ts"
+    }
+  ]
+}

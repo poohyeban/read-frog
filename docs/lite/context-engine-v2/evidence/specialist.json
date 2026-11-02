@@ -1,0 +1,319 @@
+{
+  "phase": "final V2 context-specific regression",
+  "passed": 52,
+  "failed": 0,
+  "cases": [
+    {
+      "file": "http-contract.test.ts",
+      "name": "verifies physical HTTP, scoped prompts, shared cancellation and cache reuse through the real SDK/queues",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps article contexts separate on the same URL",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "recognizes generic repeated feed items without article tags or domain rules",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "uses a proven explicit quote dependency without borrowing the adjacent post",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "refreshes a recycled post node's context after its own text changes",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps moved but semantically unchanged content reusable",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "excludes inputs, scripts and hidden content from context",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "extracts only within the source shadow root",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "does not let context expiry revoke an unchanged render source",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps six bilingual translations during unrelated scope removal",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps six translationOnly translations during unrelated scope removal",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "still rejects replaced source nodes",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps an independent manual bilingual request after page Stop",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps an independent manual translationOnly request after page Stop",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "rejects an equal-text replacement of the original text node during a request",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "prompt-data.test.ts",
+      "name": "never recursively evaluates tokens contained in source or page data",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "prompt-data.test.ts",
+      "name": "marks page data as untrusted without allowing it to close the data block",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "prompt-data.test.ts",
+      "name": "does not expand page variables written inside a custom action's selected text",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "reports separate owner, route, config, source and render generation reasons",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "route owners survive real anchors but expire on query/hash navigation and pagehide",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "context-stale affects future reads, never an issued prompt or unchanged unit",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "checking an ended document lease does not resurrect route listeners",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "scope-resolver.test.ts",
+      "name": "uses article roots, generic feeds, sections and conservative local fallbacks",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "scope-resolver.test.ts",
+      "name": "does not manufacture a thread from adjacent posts",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "scope-resolver.test.ts",
+      "name": "keeps ShadowRoot boundaries and rejects a foreign-frame source",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "scope-resolver.test.ts",
+      "name": "resolves only an explicit same-document quotation, never external or arbitrary links",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "scope-resolver.test.ts",
+      "name": "property: random reorder, insertion and removal cannot cross independent item boundaries",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "scope-resolver.test.ts",
+      "name": "bounds probes even when every child is an opaque semantic item",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "freezes scoped snapshots and rebuilds only the affected scope",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "deletes only detached scopes and leaves a retained snapshot immutable",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "moves preserve scope identity and virtualized text replacement changes the fingerprint",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "tracks explicit reference dependencies without linking unrelated posts",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "does no projection for metadata-only or unused context",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "ignores inserted translations and excludes private controls and hidden source",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "bounded index and cache converge after 500 acquire/remove operations",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "one cancelled consumer cannot cancel a shared extraction still needed by another",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "limits a giant scope projection without copying its complete subtree",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "releases old route registrations and followed shadow roots",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "never extracts a hidden ancestor or SVG script, including a local fallback",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "metadata is an explicit dependency only of scopes which use it",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "rebinds explicit dependencies when a recycled reply changes its reference",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "does not resurrect a coordinator result after a detached source entry was removed",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "retries preparation once before any model request, and bounds continued source churn",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "invalidates an acquired scope when an ancestor becomes hidden",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "does not read translated or hidden text into a scoped title",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "bounds pending extraction across repeated generations of one scope",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "snapshot-manager.test.ts",
+      "name": "excludes sources under a hidden shadow host",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "summary-cost.test.ts",
+      "name": "uses complete short source context for 100 feed items with zero summary RPCs",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "summary-cost.test.ts",
+      "name": "retains explicit model-summary capability and shares equal requests",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "summary-cost.test.ts",
+      "name": "bounds automatic long-feed summary fanout and requires explicit admission for another source",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "title-contract.test.ts",
+      "name": "commits the title after unrelated post removal with one request",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "title-contract.test.ts",
+      "name": "rejects a changed source title before its observer gets a turn",
+      "status": "passed",
+      "failure": null
+    }
+  ]
+}

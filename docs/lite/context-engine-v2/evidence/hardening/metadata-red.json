@@ -1,0 +1,413 @@
+{
+  "numTotalTestSuites": 1,
+  "numPassedTestSuites": 0,
+  "numFailedTestSuites": 1,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 37,
+  "numPassedTests": 0,
+  "numFailedTests": 1,
+  "numPendingTests": 36,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1793544445405,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation class hover preserves the snapshot without projection",
+          "status": "skipped",
+          "title": "P0-1: presentation class hover preserves the snapshot without projection",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation class bold preserves the snapshot without projection",
+          "status": "skipped",
+          "title": "P0-1: presentation class bold preserves the snapshot without projection",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation class animation-frame-1 preserves the snapshot without projection",
+          "status": "skipped",
+          "title": "P0-1: presentation class animation-frame-1 preserves the snapshot without projection",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: 1000 decorative style changes never cause a projection or stale preparation",
+          "status": "skipped",
+          "title": "P0-1: 1000 decorative style changes never cause a projection or stale preparation",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation changes during parsing do not restart preparation",
+          "status": "skipped",
+          "title": "P0-1: presentation changes during parsing do not restart preparation",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: real text changes during parsing cannot publish old content",
+          "status": "skipped",
+          "title": "P0-1: real text changes during parsing cannot publish old content",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: a used meta content attribute expires only its actual consumer",
+          "status": "skipped",
+          "title": "P0-1: a used meta content attribute expires only its actual consumer",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: unused body changes do not rebuild metadata-only context",
+          "status": "skipped",
+          "title": "P0-1: unused body changes do not rebuild metadata-only context",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: CSS visibility changes hide and restore source without affecting unrelated scope",
+          "status": "skipped",
+          "title": "P0-1: CSS visibility changes hide and restore source without affecting unrelated scope",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: links, source replacement and heading changes refresh the actual data",
+          "status": "skipped",
+          "title": "P0-1: links, source replacement and heading changes refresh the actual data",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: unrelated 1000 mutations and source reorder preserve the existing snapshot",
+          "status": "skipped",
+          "title": "P0-1: unrelated 1000 mutations and source reorder preserve the existing snapshot",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: collection affinity ends when a feed item becomes a standalone article",
+          "status": "skipped",
+          "title": "P0-2: collection affinity ends when a feed item becomes a standalone article",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: last generic repeated item retains only its current container affiliation",
+          "status": "skipped",
+          "title": "P0-2: last generic repeated item retains only its current container affiliation",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: removing an explicit feed role can end affinity without moving the node",
+          "status": "skipped",
+          "title": "P0-2: removing an explicit feed role can end affinity without moving the node",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: moving between feeds and recycling source updates context but not unrelated items",
+          "status": "skipped",
+          "title": "P0-2: moving between feeds and recycling source updates context but not unrelated items",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor style=\"opacity:0\"",
+          "status": "skipped",
+          "title": "P0-3: excludes private source under ancestor style=\"opacity:0\"",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor style=\"content-visibility:hidden\"",
+          "status": "skipped",
+          "title": "P0-3: excludes private source under ancestor style=\"content-visibility:hidden\"",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor inert",
+          "status": "skipped",
+          "title": "P0-3: excludes private source under ancestor inert",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor style=\"visibility:collapse\"",
+          "status": "skipped",
+          "title": "P0-3: excludes private source under ancestor style=\"visibility:collapse\"",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"opacity:0.5\"",
+          "status": "skipped",
+          "title": "P0-3: retains readable or accessible source under style=\"opacity:0.5\"",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"content-visibility:auto\"",
+          "status": "skipped",
+          "title": "P0-3: retains readable or accessible source under style=\"content-visibility:auto\"",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"position:absolute;top:10000px\"",
+          "status": "skipped",
+          "title": "P0-3: retains readable or accessible source under style=\"position:absolute;top:10000px\"",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"position:absolute;clip:rect(0,0,0,0)\"",
+          "status": "skipped",
+          "title": "P0-3: retains readable or accessible source under style=\"position:absolute;clip:rect(0,0,0,0)\"",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: a transparent shadow host cannot leak a nested source",
+          "status": "skipped",
+          "title": "P0-3: a transparent shadow host cannot leak a nested source",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: 100 generic feed items survive deterministic reorder and deletion to one",
+          "status": "skipped",
+          "title": "P0-2: 100 generic feed items survive deterministic reorder and deletion to one",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: replacing a semantic feed container retains only proven current ownership",
+          "status": "skipped",
+          "title": "P0-2: replacing a semantic feed container retains only proven current ownership",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: normal standalone paragraphs do not imply a collection",
+          "status": "skipped",
+          "title": "P0-2: normal standalone paragraphs do not imply a collection",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: only explicitly referencing scopes follow a changed external quote",
+          "status": "skipped",
+          "title": "P0-1: only explicitly referencing scopes follow a changed external quote",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: local shadow edits and visibility refresh only the acquired shadow scope",
+          "status": "skipped",
+          "title": "P0-1: local shadow edits and visibility refresh only the acquired shadow scope",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: asynchronous read interleaved with root replacement cannot cache detached content",
+          "status": "skipped",
+          "title": "P0-1: asynchronous read interleaved with root replacement cannot cache detached content",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: foreign-frame sources, controls and editable values are excluded; SVG and offscreen text remain",
+          "status": "skipped",
+          "title": "P0-3: foreign-frame sources, controls and editable values are excluded; SVG and offscreen text remain",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: direct opacity:0 hides only the private subtree and restoration is visible",
+          "status": "skipped",
+          "title": "P0-3: direct opacity:0 hides only the private subtree and restoration is visible",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: direct content-visibility:hidden hides only the private subtree and restoration is visible",
+          "status": "skipped",
+          "title": "P0-3: direct content-visibility:hidden hides only the private subtree and restoration is visible",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: direct visibility:collapse hides only the private subtree and restoration is visible",
+          "status": "skipped",
+          "title": "P0-3: direct visibility:collapse hides only the private subtree and restoration is visible",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: inert removal restores eligible source",
+          "status": "skipped",
+          "title": "P0-3: inert removal restores eligible source",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: parser-sensitive class changes cannot be treated as presentation",
+          "status": "skipped",
+          "title": "P0-1: parser-sensitive class changes cannot be treated as presentation",
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: removing a local heading registers the newly used document title",
+          "status": "failed",
+          "title": "P0-1: removing a local heading registers the newly used document title",
+          "duration": 145.66859699999986,
+          "failureMessages": [
+            "AssertionError: expected 'Document title' to be 'New document title' // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts:353:78\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793544447108,
+      "endTime": 1793544447253.6687,
+      "status": "failed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts"
+    }
+  ]
+}

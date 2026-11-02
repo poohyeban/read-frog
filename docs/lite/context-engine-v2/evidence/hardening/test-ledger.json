@@ -1,0 +1,306 @@
+[
+  {
+    "test": "P0-1: presentation class hover preserves the snapshot without projection",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 2 to be 1 // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: presentation class bold preserves the snapshot without projection",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 2 to be 1 // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: presentation class animation-frame-1 preserves the snapshot without projection",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 2 to be 1 // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: 1000 decorative style changes never cause a projection or stale preparation",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected { scopes: 1, snapshots: 1, …(15) } to match object { projections: 1, rebuilds: 1, …(1) }",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: presentation changes during parsing do not restart preparation",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "ContextStaleError: The source context changed while it was being prepared.",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: real text changes during parsing cannot publish old content",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: a used meta content attribute expires only its actual consumer",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'Document description' to be 'Changed description' // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: unused body changes do not rebuild metadata-only context",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 2 to be 1 // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: CSS visibility changes hide and restore source without affecting unrelated scope",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: links, source replacement and heading changes refresh the actual data",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: unrelated 1000 mutations and source reorder preserve the existing snapshot",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-2: collection affinity ends when a feed item becomes a standalone article",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected { …(9) } to match object { type: 'Article', …(2) }",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-2: last generic repeated item retains only its current container affiliation",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected { …(12) } to be { …(12) } // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-2: removing an explicit feed role can end affinity without moving the node",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected true to be false // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-2: moving between feeds and recycling source updates context but not unrelated items",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: excludes private source under ancestor style=\"opacity:0\"",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'PRIVATE_SOURCE' not to contain 'PRIVATE_SOURCE'",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: excludes private source under ancestor style=\"content-visibility:hidden\"",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'PRIVATE_SOURCE' not to contain 'PRIVATE_SOURCE'",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: excludes private source under ancestor inert",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'PRIVATE_SOURCE' not to contain 'PRIVATE_SOURCE'",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: excludes private source under ancestor style=\"visibility:collapse\"",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: retains readable or accessible source under style=\"opacity:0.5\"",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: retains readable or accessible source under style=\"content-visibility:auto\"",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: retains readable or accessible source under style=\"position:absolute;top:10000px\"",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: retains readable or accessible source under style=\"position:absolute;clip:rect(0,0,0,0)\"",
+    "initialBeforeProductionChanges": "passed",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: a transparent shadow host cannot leak a nested source",
+    "initialBeforeProductionChanges": "failed",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'PRIVATE_SHADOW' not to contain 'PRIVATE_SHADOW'",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-2: 100 generic feed items survive deterministic reorder and deletion to one",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected { …(12) } to be { …(12) } // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-2: replacing a semantic feed container retains only proven current ownership",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected true to be false // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-2: normal standalone paragraphs do not imply a collection",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: only explicitly referencing scopes follow a changed external quote",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: local shadow edits and visibility refresh only the acquired shadow scope",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'Shadow titleShadow updated' not to contain 'Shadow updated'",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: asynchronous read interleaved with root replacement cannot cache detached content",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: foreign-frame sources, controls and editable values are excluded; SVG and offscreen text remain",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'PRIVATE_FRAME' to be '' // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: direct opacity:0 hides only the private subtree and restoration is visible",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'PRIVATE_CHILDPUBLIC_SIBLING' to be 'PUBLIC_SIBLING' // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: direct content-visibility:hidden hides only the private subtree and restoration is visible",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'PRIVATE_CHILDPUBLIC_SIBLING' to be 'PUBLIC_SIBLING' // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: direct visibility:collapse hides only the private subtree and restoration is visible",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "TypeError: actual value must be number or bigint, received \"undefined\"",
+    "final": "passed",
+    "note": "Baseline privacy behavior already passed; only the newly introduced styleReads metric is absent."
+  },
+  {
+    "test": "P0-3: inert removal restores eligible source",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'A headingA sourceSource link/first' not to contain 'A source'",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: parser-sensitive class changes cannot be treated as presentation",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "passed",
+    "baselineFailure": "",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-1: removing a local heading registers the newly used document title",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'Document title' to be 'New document title' // Object.is equality",
+    "final": "passed",
+    "note": ""
+  },
+  {
+    "test": "P0-3: an extension-owned shadow host cannot supply source context",
+    "initialBeforeProductionChanges": "added in expanded matrix",
+    "expanded7321d6f9": "failed",
+    "baselineFailure": "AssertionError: expected 'EXTENSION_PRIVATE_UI' to be '' // Object.is equality",
+    "final": "passed",
+    "note": ""
+  }
+]

@@ -1,0 +1,246 @@
+{
+  "numTotalTestSuites": 1,
+  "numPassedTestSuites": 0,
+  "numFailedTestSuites": 1,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 16,
+  "numPassedTests": 1,
+  "numFailedTests": 15,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1793548812863,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link href change validates the actual source on next demand",
+          "status": "failed",
+          "title": "stylesheet link href change validates the actual source on next demand",
+          "duration": 163.81422900000007,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:42:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link rel change validates the actual source on next demand",
+          "status": "failed",
+          "title": "stylesheet link rel change validates the actual source on next demand",
+          "duration": 27.331179999999904,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:42:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link media change validates the actual source on next demand",
+          "status": "failed",
+          "title": "stylesheet link media change validates the actual source on next demand",
+          "duration": 20.217402999999877,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:42:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link disabled change validates the actual source on next demand",
+          "status": "failed",
+          "title": "stylesheet link disabled change validates the actual source on next demand",
+          "duration": 18.63064899999995,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:42:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link type change validates the actual source on next demand",
+          "status": "failed",
+          "title": "stylesheet link type change validates the actual source on next demand",
+          "duration": 18.22242600000004,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:42:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rel transition from non-style to case-insensitive alternate stylesheet is observed",
+          "status": "failed",
+          "title": "rel transition from non-style to case-insensitive alternate stylesheet is observed",
+          "duration": 10.436215000000175,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:51:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "style media changes invalidate a cached feed scope",
+          "status": "failed",
+          "title": "style media changes invalidate a cached feed scope",
+          "duration": 9.025401000000102,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:56:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "load after an intervening old-style cache read validates again",
+          "status": "failed",
+          "title": "load after an intervening old-style cache read validates again",
+          "duration": 11.830005000000028,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:66:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet error and inline import load are completion signals, not model work",
+          "status": "failed",
+          "title": "stylesheet error and inline import load are completion signals, not model work",
+          "duration": 9.858320999999933,
+          "failureMessages": [
+            "AssertionError: expected '' to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:74:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "style text and link insert/remove preserve existing observable invalidation",
+          "status": "passed",
+          "title": "style text and link insert/remove preserve existing observable invalidation",
+          "duration": 34.98069499999997,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "1000 completion events coalesce and cosmetic CSS reuses the snapshot",
+          "status": "failed",
+          "title": "1000 completion events coalesce and cosmetic CSS reuses the snapshot",
+          "duration": 24.520729999999958,
+          "failureMessages": [
+            "AssertionError: expected +0 to be 1 // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:95:65\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "a style completion during asynchronous preparation cannot publish visible old source",
+          "status": "failed",
+          "title": "a style completion during asynchronous preparation cannot publish visible old source",
+          "duration": 10.686414000000013,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:101:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "shadow-local completion affects its acquired subtree, not a sibling shadow tree",
+          "status": "failed",
+          "title": "shadow-local completion affects its acquired subtree, not a sibling shadow tree",
+          "duration": 27.977014000000054,
+          "failureMessages": [
+            "AssertionError: expected +0 to be 1 // Object.is equality\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:114:65\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "document stylesheet completion reaches an acquired nested open shadow scope",
+          "status": "failed",
+          "title": "document stylesheet completion reaches an acquired nested open shadow scope",
+          "duration": 16.9384,
+          "failureMessages": [
+            "AssertionError: expected 'PRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:125:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "released managers do not retain or react to stylesheet listeners",
+          "status": "failed",
+          "title": "released managers do not retain or react to stylesheet listeners",
+          "duration": 505.3476450000003,
+          "failureMessages": [
+            "AssertionError: expected [] to have a length of 200 but got +0\n    at Proxy.<anonymous> (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:2147:20)\n    at Proxy.<anonymous> (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:1944:14)\n    at Proxy.methodWrapper (file:///workspace/read-frog/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:1700:25)\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:135:21\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "effective sheet disabled changes without an attribute cannot leave a hot snapshot valid",
+          "status": "failed",
+          "title": "effective sheet disabled changes without an attribute cannot leave a hot snapshot valid",
+          "duration": 11.450073999999859,
+          "failureMessages": [
+            "AssertionError: expected 'A titlePRIVATE_AFTER_HIDE' not to contain 'PRIVATE_AFTER_HIDE'\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts:149:41\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793548814309,
+      "endTime": 1793548815230.4502,
+      "status": "failed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts"
+    }
+  ]
+}

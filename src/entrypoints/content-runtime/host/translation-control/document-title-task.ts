@@ -1,10 +1,10 @@
 import {
   clearAppliedDocumentTitleTranslation,
+  getSourceDocumentTitle,
   setAppliedDocumentTitleTranslation,
 } from "@/utils/content/document-title"
 import { captureCommitGate } from "@/utils/host/translate/commit-gate"
 import { translateTextForPageTitle } from "@/utils/host/translate/translate-variants"
-import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
 import { logger } from "@/utils/logger"
 import { isTranslationCancelledError } from "@/utils/request/cancellation"
 
@@ -27,18 +27,6 @@ export class DocumentTitleTask {
 
   private shouldManageDocumentTitle(): boolean {
     return window === window.top
-  }
-
-  async prime(shouldPrimeWebPageContext: boolean): Promise<void> {
-    if (!this.shouldManageDocumentTitle() || !shouldPrimeWebPageContext) {
-      return
-    }
-
-    try {
-      await getOrCreateWebPageContext(false)
-    } catch {
-      logger.warn("Failed to prime webpage context before translating document title:")
-    }
   }
 
   start(): void {
@@ -126,7 +114,9 @@ export class DocumentTitleTask {
     this.request?.abort()
     const request = new AbortController()
     this.request = request
-    const gate = captureCommitGate(() => this.isActive())
+    const gate = captureCommitGate(
+      () => this.isActive() && getSourceDocumentTitle() === sourceTitle && !request.signal.aborted,
+    )
     const requestVersion = ++this.titleRequestVersion
 
     try {

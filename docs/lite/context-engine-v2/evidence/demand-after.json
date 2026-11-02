@@ -1,0 +1,523 @@
+{
+  "phase": "V2 demand-driven startup after",
+  "passed": 129,
+  "failed": 0,
+  "cases": [
+    {
+      "name": "bindTranslationShortcutKey registers the page shortcut with the TanStack manager options",
+      "status": "passed"
+    },
+    {
+      "name": "bindTranslationShortcutKey toggles page translation through the registered callback",
+      "status": "passed"
+    },
+    {
+      "name": "bindTranslationShortcutKey skips registration when the shortcut is empty",
+      "status": "passed"
+    },
+    {
+      "name": "getOutlineBox rings the block a few pixels outside its edges",
+      "status": "passed"
+    },
+    {
+      "name": "getOutlineBox keeps the ring on screen around a block that touches the viewport's edges",
+      "status": "passed"
+    },
+    {
+      "name": "getOutlineBox lets the edges of a block that runs past the viewport run past it too",
+      "status": "passed"
+    },
+    {
+      "name": "createNodeTranslationPreview rings the block at the point on the next frame, in a closed root under <html>",
+      "status": "passed"
+    },
+    {
+      "name": "createNodeTranslationPreview glides to the next block, and stays on a block that scrolls once the glide is done",
+      "status": "passed"
+    },
+    {
+      "name": "createNodeTranslationPreview grows to a block around the ringed one only once the pointer stays there",
+      "status": "passed"
+    },
+    {
+      "name": "createNodeTranslationPreview hands back the block it framed when hidden",
+      "status": "passed"
+    },
+    {
+      "name": "createNodeTranslationPreview does not draw a ring where no block is found",
+      "status": "passed"
+    },
+    {
+      "name": "createNodeTranslationPreview hides the ring, stops following scrolls, and leaves the page on destroy",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners triggers backtick node translation at the latest mouse position",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners triggers node translation at the latest mouseover position",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners falls back to the hovered element center when no mouse position was recorded",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners triggers click-and-hold node translation after the hold delay",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners does not start a long press after a click that outlasted the config read",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners rings the block while the hotkey is held and translates it once on release",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners moves the ring with the pointer and translates where it last was",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners translates the block the ring framed, even when the pointer has moved on",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners translates at the pointer when the framed block left the page",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners translates nothing where no block is under the pointer",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners translates a tap on release without showing the ring",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners cancels a held hotkey when another key creates a combo",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners cancels the hotkey before the hold delay when another key creates a combo",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners cancels a held hotkey on a click, as Ctrl+click opens a link",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners drops a held hotkey when the window loses focus",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners translates the first tap after another key was pressed and released",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners does not translate when the hotkey joins a key that is still held",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners cancels the hotkey when a selection shortcut takes a key the hotkey never sees",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners does not trigger while the caller says the event should be ignored",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners translates the hovered paragraph when the custom shortcut is let go, and keeps the keys from the page",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners rings the block while the custom shortcut is held and translates it once when any of its keys comes up",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners cancels a held custom shortcut when another key joins it",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners leaves other keys alone while the custom shortcut is chosen",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners does not listen for the custom shortcut while another hotkey is chosen",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners lets the custom shortcut through to a field, also one inside a shadow root",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggerListeners does not start click-and-hold translation from document surface targets",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggers requests current iframe injection after a successful top-frame node translation",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggers does not request iframe injection when node translation finds no translatable node",
+      "status": "passed"
+    },
+    {
+      "name": "registerNodeTranslationTriggers requests current iframe injection only once for repeated successful node translations",
+      "status": "passed"
+    },
+    {
+      "name": "initial scan rooted at documentElement (real traversal) observes body paragraphs individually on an ordinary page",
+      "status": "passed"
+    },
+    {
+      "name": "initial scan rooted at documentElement (real traversal) never collapses the document into one unit when an unstyled reader root sits beside body",
+      "status": "passed"
+    },
+    {
+      "name": "initial scan rooted at documentElement (real traversal) observes reader paragraphs individually when the reader root is block-level (real SimpRead)",
+      "status": "passed"
+    },
+    {
+      "name": "initial scan rooted at documentElement (real traversal) still observes new content when a translated wrapper already exists in the page",
+      "status": "passed"
+    },
+    {
+      "name": "initial scan rooted at documentElement (real traversal) translates a bare inline element injected beside body via its own paragraph label",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes pre-existing reader content mounted beside the body",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk gates display: contents units on the box their content is laid out in",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes a unit in a closed menu directly instead of gating it on the menu item",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk still gates a display: contents unit in a closed menu on a box",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk still translates a display: contents unit after a box inside it is re-walked as a unit of its own",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk translates the display: contents unit the site rebuilt, not the one it removed",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk gates a plain-text display: contents unit at the top of a shadow root on its host",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk does not gate display: contents units on a scrolling list whose content is too tall",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk takes every pending unit laid out in a shared box, nested ones included",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk stops gating a unit on its old box once it gains a box of its own and is re-walked",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk counts a scrolling list inside a box-less unit when deciding whether to split it",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk stops watching the gates of a pending unit that is removed whole",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk does not gate display: contents units on a row that scrolls far sideways",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk splits a tall display: contents unit by the extent of its boxes",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes and translates hidden accordion content after it becomes visible",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes and translates aria-hidden content after a site-rule block becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk keeps style/class based re-walk behavior for existing hidden panels",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk only rechecks branches with cached blockers after an ancestor attribute changes",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk retranslates an existing logical source after its text expands in place",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk runs another refresh when the source changes during a pending retranslation",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk does not let a deferred refresh from an old session touch the restarted session",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk ignores the extension's own wrapper and error-host insertions (#1831)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk ignores temporary wrappers around unchanged text inside a translated source (#2185)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk does not promote a node added into a STALE bilingual source to its own unit (#2185)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk still walks additions that are not inside any registered source",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk does not match translationOnly anchors, so their additions keep being walked",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk ignores decorators inside current virtual paragraph groups but retranslates text changes",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk handles childList after sibling CSS reveals a depth-1 shadow tree",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk handles characterData after sibling CSS reveals a depth-1 shadow tree",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk handles childList after sibling CSS reveals a depth-2 shadow tree",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk handles characterData after sibling CSS reveals a depth-2 shadow tree",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk handles childList after sibling CSS reveals a depth-3 shadow tree",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk handles characterData after sibling CSS reveals a depth-3 shadow tree",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk retains blocked stale sources until reveal",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk retains blocked stale sources until detach",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk retains blocked stale sources until stop",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk walks nested shadow content once under a current source (#2185)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk walks nested shadow content once under a new source (#2185)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk walks nested shadow content once under a unblocked source (#2185)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked host (class) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked ancestor (class) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked host (hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked ancestor (hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked host (aria-hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked ancestor (aria-hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked nested host (class) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked nested host (hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked nested host (aria-hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked nested shadow host (class) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked nested shadow host (hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked nested shadow host (aria-hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked nested dynamic shadow host (class) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked nested dynamic shadow host (hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked nested dynamic shadow host (aria-hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked ancestor selector (class) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk observes later shadow mutations after a blocked ancestor selector (aria-hidden) becomes walkable",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk retranslates exactly once when the site re-renders a node containing our wrapper (#1831)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk still retranslates once when the site removes our wrapper (#1831)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk retranslates when the site rewrites text inside our wrapper (#1918)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk retranslates when the site replaces our translated node inside the wrapper (#1918)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk ignores in-wrapper mutations that leave the wrapper text unchanged (#1918)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk caps tamper-driven retranslation passes behind the budget (#1918)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk caps retranslation passes and defers perpetual churn behind a debounced retry (#1831)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk unmounts the error-UI React root when the site removes an ancestor of our wrapper (#1831)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk does not accumulate mutation observers when a shadow-root element is re-added (#1831)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk splits a pure-container giant into its descendant paragraphs (#1881)",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk refuses to split a giant that owns prose beside block children",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk still splits a giant that owns prose but has no block child",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk still splits a giant whose split already yields many units",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation re-walk never refuses to split <body>",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager mutation observer root keeps observing after a router replaces the body node (Turbo Drive)",
+      "status": "passed"
+    },
+    {
+      "name": "identical rewrite of a translated subtree (real pipeline) keeps the translations and sends no new request when the site rewrites identical HTML",
+      "status": "passed"
+    },
+    {
+      "name": "identical rewrite of a translated subtree (real pipeline) still retranslates when the rewrite changes the text",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling does not prime webpage context on start for non-llm translation",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling does not prepare unused global metadata before an AI-aware translation unit requests it",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling translates the tab title on start and restores the latest source title on stop",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling keeps the page's own title readable for prompts while the tab shows the translation",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling leaves the tab title alone when title translation is switched off",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling switches title translation off and on without touching the translated page",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling drops a title result that lands after the switch went off and on again",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling honors a switch flipped while start is still awaiting",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling does not retrigger title translation for its own managed title updates",
+      "status": "passed"
+    },
+    {
+      "name": "pageTranslationManager title handling ignores stale translation results when the source title changes mid-request",
+      "status": "passed"
+    }
+  ]
+}

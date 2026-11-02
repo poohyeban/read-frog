@@ -31,7 +31,10 @@ export async function buildHarness(sourceRoot, output) {
         },
         transform(code, id) {
           if (!id.endsWith("/utils/host/translate/webpage-context.ts")) return undefined
-          // Same diagnostic wrapper on both source revisions, outside production.
+          // V2 exposes native scoped counters. The legacy timing wrapper below
+          // remains for historical comparisons and must never rewrite V2 internals.
+          if (code.includes("new ContextSnapshotManager(")) return undefined
+          // Same diagnostic wrapper on legacy source revisions, outside production.
           if (!code.includes("async function extractWebpageContent(signal: AbortSignal)"))
             throw new Error("Extraction instrumentation no longer matches")
           code = code.replace(
@@ -62,6 +65,7 @@ export async function buildHarness(sourceRoot, output) {
           import { PageTranslationManager } from '@/entrypoints/content-runtime/host/translation-control/page-translation'
           import { removeOrShowNodeTranslation } from '@/utils/host/translate/node-manipulation'
           import { getLocalConfig } from '@/utils/config/storage'
+          import * as context from '@/utils/host/translate/webpage-context'
           import { DEFAULT_CONFIG, CONFIG_STORAGE_KEY } from '@/utils/constants/config'
           import { storage } from '${harness}/runtime.js'
           import { metrics } from '${harness}/messages.js'
@@ -74,7 +78,7 @@ export async function buildHarness(sourceRoot, output) {
           config.pageTranslation.enableAIContentAware = new URLSearchParams(location.search).get('smart') === 'true'
           await storage.setItem('local:' + CONFIG_STORAGE_KEY, config)
           const manager = new PageTranslationManager()
-          window.harness = { manager, metrics, config, translateNode: async (element) => removeOrShowNodeTranslation(element, await getLocalConfig()), async update() { await storage.setItem('local:' + CONFIG_STORAGE_KEY, config) } }
+          window.harness = { manager, metrics, config, contextDiagnostics: () => Reflect.get(context, "getContextDiagnostics")?.(), translateNode: async (element) => removeOrShowNodeTranslation(element, await getLocalConfig()), async update() { await storage.setItem('local:' + CONFIG_STORAGE_KEY, config) } }
         `
         },
       },

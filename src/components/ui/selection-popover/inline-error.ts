@@ -2,12 +2,19 @@ import type { ErrorAction } from "@/utils/error-action"
 import { StreamPortError } from "@/utils/content-script/port-streaming"
 import { isExtensionContextInvalidatedError } from "@/utils/error/extension-context"
 import { extractAISDKErrorMessage } from "@/utils/error/extract-message"
+import {
+  ContextStaleError,
+  ContextCapacityError,
+} from "@/utils/host/translate/context/snapshot-manager"
+import { SummaryConsentRequiredError } from "@/utils/host/translate/context/summary-policy"
 import { i18n } from "@/utils/i18n"
+import { isTranslationCancelledError } from "@/utils/request/cancellation"
 
 export interface SelectionToolbarInlineError {
   title: string
   description: string
   action?: ErrorAction
+  consent?: SummaryConsentRequiredError
 }
 
 type SelectionToolbarErrorKind = "translate" | "customAction"
@@ -20,7 +27,10 @@ type SelectionToolbarPrecheckErrorCode =
 const UNEXPECTED_ERROR_MESSAGE = "Unexpected error occurred"
 
 export function isAbortError(error: unknown) {
-  return error instanceof DOMException && error.name === "AbortError"
+  return (
+    (error instanceof DOMException && error.name === "AbortError") ||
+    isTranslationCancelledError(error)
+  )
 }
 
 function getErrorTitle(kind: SelectionToolbarErrorKind) {
@@ -46,6 +56,12 @@ function toErrorDescription(kind: SelectionToolbarErrorKind, error: unknown) {
     return i18n.t("translation.extensionContextInvalidated")
   }
 
+  if (
+    error instanceof SummaryConsentRequiredError ||
+    error instanceof ContextStaleError ||
+    error instanceof ContextCapacityError
+  )
+    return error.message
   const message = extractAISDKErrorMessage(error)
   if (!message || message === UNEXPECTED_ERROR_MESSAGE) {
     return getErrorFallbackDescription(kind)
@@ -72,5 +88,6 @@ export function createSelectionToolbarRuntimeError(
     title: getErrorTitle(kind),
     description: toErrorDescription(kind, error),
     action: error instanceof StreamPortError ? error.action : undefined,
+    consent: error instanceof SummaryConsentRequiredError ? error : undefined,
   }
 }

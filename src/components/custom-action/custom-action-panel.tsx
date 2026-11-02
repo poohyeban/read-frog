@@ -7,6 +7,7 @@ import { SelectionToolbarFooterContent } from "@/components/ui/selection-popover
 import { SelectionToolbarTitleContent } from "@/components/ui/selection-popover/selection-toolbar-title-content"
 import { configFieldsAtomMap, writeConfigAtom } from "@/utils/atoms/config"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
+import { getCustomActionContextRequirements } from "@/utils/custom-action-prompt"
 import { findSelectionToolbarAction, patchSelectionToolbarAction } from "@/utils/custom-actions"
 import {
   getSelectableProvidersForCapability,
@@ -54,7 +55,14 @@ export function CustomActionPanel() {
     [providersConfig],
   )
 
-  const webPageContext = useCustomActionWebPageContext(open, request?.sessionKey ?? 0)
+  const contextRequirements = useMemo(() => getCustomActionContextRequirements(action), [action])
+  const webPageContext = useCustomActionWebPageContext(
+    open,
+    request?.sessionKey ?? 0,
+    request?.contextSource ?? { kind: "independent", text: request?.contextText || cleanSelection },
+    contextRequirements,
+    request?.rerunNonce ?? 0,
+  )
   const { executionContext, error: precheckError } = useMemo(
     () =>
       buildCustomActionExecutionPlan(
@@ -91,7 +99,10 @@ export function CustomActionPanel() {
   const error = execution.error ?? precheckError
   const isRunning = webPageContext === undefined || (executionContext ? execution.isRunning : false)
   const status = isRunning ? "streaming" : error ? "error" : "done"
-  const titleText = (webPageContext?.webTitle ?? getSourceDocumentTitle()) || null
+  const titleText =
+    (!(webPageContext instanceof Error) && webPageContext?.webTitle) ||
+    getSourceDocumentTitle() ||
+    null
 
   // selection, however the selection's card was opened.
 
@@ -116,8 +127,7 @@ export function CustomActionPanel() {
           value={result}
           thinking={executionContext ? execution.thinking : null}
         />
-        {/* Runtime failures are diagnosed in DevTools; configuration still needs user action. */}
-        <SelectionToolbarErrorAlert error={precheckError} />
+        <SelectionToolbarErrorAlert error={error} />
       </SelectionPopover.Body>
 
       <CustomActionFooterContent

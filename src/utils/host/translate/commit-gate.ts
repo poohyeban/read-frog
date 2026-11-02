@@ -1,46 +1,43 @@
+import type { TranslationTaskOwner } from "./context/task-owner"
+import type { InvalidityReason, Validity } from "./context/types"
 import type { Config } from "@/types/config/config"
 import { captureTranslationConfigValidity } from "@/utils/config/snapshot-revision"
 import { TranslationCancelledError } from "@/utils/request/cancellation"
+import { createRenderCommitGuard } from "./context/render-guard"
 import { translationActivity } from "./engine-state"
 import { getPageTranslationSession } from "./translation-session"
-import {
-  getWebPageContentRevision,
-  isInPageAnchorChange,
-  synchronizeWebPageContext,
-} from "./webpage-context"
 
 export interface CommitGate {
   readonly signal?: AbortSignal
+  readonly owner?: TranslationTaskOwner | null
+  reject: (reason: InvalidityReason) => false
+  validate: () => Validity
   isCurrent: () => boolean
   beginCommit: () => { complete: () => void; discard: () => void; fail: (error: unknown) => void }
 }
 
-/** Capture once, before asynchronous preparation. Source-region checks remain
- * owned by the render mode, which knows its original nodes and restore records. */
+/** Source snapshots, DOM ownership and render generations remain owned by the
+ * render mode. Explicit independent owners never inherit the page session. */
 export function captureCommitGate(
   sourceCurrent: () => boolean = () => true,
   config?: Config,
+  owner: TranslationTaskOwner | null = getPageTranslationSession() ?? null,
 ): CommitGate {
-  synchronizeWebPageContext()
-  const configCurrent = captureTranslationConfigValidity(config)
-  const session = getPageTranslationSession()
-  const revision = getWebPageContentRevision()
-  const url = location.href
+  const guard = createRenderCommitGuard({
+    owner,
+    configCurrent: captureTranslationConfigValidity(config),
+    sourceCurrent,
+  })
   return {
-    signal: session?.signal,
+    ...guard,
+    owner,
     beginCommit: () => {
-      const finish = translationActivity.track("render", session?.id)
+      const finish = translationActivity.track("render", owner?.id)
       return {
         complete: () => finish(),
-        discard: () => finish(new TranslationCancelledError(session?.id)),
+        discard: () => finish(new TranslationCancelledError(owner?.id)),
         fail: finish,
       }
     },
-    isCurrent: () =>
-      configCurrent() &&
-      (!session || session.isCurrent()) &&
-      getWebPageContentRevision() === revision &&
-      (location.href === url || isInPageAnchorChange(url, location.href)) &&
-      sourceCurrent(),
   }
 }

@@ -1,0 +1,13 @@
+{
+  "phase": "unmodified baseline production: unmount behavior only",
+  "passed": 0,
+  "failed": 1,
+  "cases": [
+    {
+      "file": "use-input-translation.test.tsx",
+      "name": "input operation ownership does not commit after its hook is unmounted while the input remains connected",
+      "status": "failed",
+      "failure": "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 2 times"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "unrelatedRemoval": {
+    "http": 1,
+    "firstTranslationMs": 499.52937799999927
+  },
+  "cache": {
+    "http": 0,
+    "hits": 1
+  },
+  "sharedCancellation": {
+    "http": 1,
+    "consumers": 2
+  },
+  "safe429": {
+    "http": 2
+  },
+  "resources": {
+    "active": 0,
+    "queued": 0,
+    "lanes": 0,
+    "timers": 0,
+    "counters": {
+      "starts": 4,
+      "cancellations": 0,
+      "rejected": 0,
+      "admissions": 4,
+      "eligibilityChecks": 8,
+      "maxActive": 1,
+      "maxQueued": 1
+    },
+    "domains": {
+      "a620afa7-2bd4-4d72-b22e-286bd56dfd95": {
+        "active": 0,
+        "queued": 0,
+        "tokens": 19,
+        "cooldownUntil": 1793551606148
+      }
+    }
+  },
+  "context": {
+    "scopes": 0,
+    "snapshots": 0,
+    "activePreparations": 0,
+    "workEntries": 0,
+    "capacity": 128,
+    "resolutions": 5,
+    "hits": 4,
+    "rebuilds": 1,
+    "projections": 1,
+    "validations": 0,
+    "validationNodes": 0,
+    "styleReads": 11,
+    "unchangedValidations": 0,
+    "semanticParses": 0,
+    "semanticInvalidations": 0,
+    "metadataProjections": 1,
+    "visitedNodes": 8,
+    "stalePreparations": 0,
+    "activeExtractions": 0,
+    "evictions": 0,
+    "resolveMs": 4.771764000000985,
+    "readMs": 112.9422940000004,
+    "invalidation": {
+      "registrations": 0,
+      "observers": 0,
+      "observedRoots": 0,
+      "batches": 4,
+      "records": 1,
+      "invalidations": 0,
+      "processingMs": 4.525439999999435,
+      "source": 1,
+      "semantic": 0,
+      "visibility": 0,
+      "unknown": 0
+    }
+  },
+  "requests": [
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_A"],
+      "status": 200,
+      "at": 1793551605779
+    },
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_SHARED"],
+      "status": 200,
+      "at": 1793551605955
+    },
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_RETRY"],
+      "status": 429,
+      "at": 1793551606133
+    },
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_RETRY"],
+      "status": 200,
+      "at": 1793551611181
+    }
+  ],
+  "summaryRPCs": 0,
+  "totalHTTP": 4
+}

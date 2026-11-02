@@ -1,0 +1,55 @@
+$ vitest run src/utils/host/translate/context/__tests__/snapshot-manager.test.ts -t 'rebinds explicit|resurrect'
+
+ RUN  v5.0.3 /workspace/read-frog
+
+ ❯ src/utils/host/translate/context/__tests__/snapshot-manager.test.ts (14 tests | 2 failed | 12 skipped) 199ms
+   × rebinds explicit dependencies when a recycled reply changes its reference 174ms
+   × does not resurrect a coordinator result after a detached source entry was removed 22ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/utils/host/translate/context/__tests__/snapshot-manager.test.ts > rebinds explicit dependencies when a recycled reply changes its reference
+AssertionError: expected 'Reply contextReply source\n\nExplicit…' to contain 'B_UPDATED_AFTER_REBIND'
+
+- Expected
++ Received
+
+- B_UPDATED_AFTER_REBIND
++ Reply contextReply source
++
++ Explicitly referenced source:
++ B titleB_SOURCE
+
+ ❯ src/utils/host/translate/context/__tests__/snapshot-manager.test.ts:182:40
+    180|   expect((await read("c")).webContent).toContain("B_SOURCE")
+    181|   source("b").textContent = "B_UPDATED_AFTER_REBIND"
+    182|   expect((await read("c")).webContent).toContain("B_UPDATED_AFTER_REBI…
+       |                                        ^
+    183|   const stable = await read("c")
+    184|   source("a").textContent = "NO_LONGER_REFERENCED"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/utils/host/translate/context/__tests__/snapshot-manager.test.ts > does not resurrect a coordinator result after a detached source entry was removed
+AssertionError: expected 'A titleA_SOURCE' to contain 'A_CHANGED_WHILE_EVICTED'
+
+Expected: "A_CHANGED_WHILE_EVICTED"
+Received: "A titleA_SOURCE"
+
+ ❯ src/utils/host/translate/context/__tests__/snapshot-manager.test.ts:197:28
+    195|   document.querySelector("main")!.append(article)
+    196|   const value = await small.read({ source: node }, FULL_CONTEXT)
+    197|   expect(value.webContent).toContain("A_CHANGED_WHILE_EVICTED")
+       |                            ^
+    198|   small.clear()
+    199| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 12 skipped (14)
+   Start at  12:40:08
+   Duration  1.41s (environment 49%, transform 23%, tests 16%, setup 9%, import 3%, worker 1%)
+
+[ELIFECYCLE] Test failed. See above for more details.

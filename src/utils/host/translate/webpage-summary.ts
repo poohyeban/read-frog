@@ -6,8 +6,9 @@ import { Sha256Hex } from "@/utils/hash"
 import { sendMessage } from "@/utils/message"
 import { getProviderCacheIdentity } from "@/utils/providers/provider-ref"
 import { ContextCoordinator } from "./context-coordinator"
-import { getPageTranslationSession } from "./translation-session"
-import { getDocumentContextSignal, getWebPageContextSignal } from "./webpage-context"
+import { assertPromptContextCurrent } from "./context/prompt-guard"
+import { requireSummaryAdmission } from "./context/summary-policy"
+import { getDocumentContextSignal } from "./webpage-context"
 
 const summaries = new ContextCoordinator<string | null>(16)
 export function releaseWebPageSummaries(): void {
@@ -18,13 +19,25 @@ export async function getOrGenerateWebPageSummary(
   webPageContext: CachedWebPageContext | null,
   providerRef: PromptableProviderRef,
   enableAIContentAware: boolean,
-  session: Pick<PageSession, "id" | "signal"> | null = getPageTranslationSession() ?? null,
+  session: Pick<PageSession, "id" | "signal"> | null = null,
+  options: { requireModel?: boolean } = {},
 ): Promise<string | null> {
   if (!enableAIContentAware || !webPageContext) {
     return null
   }
 
-  const { webTitle, webContent } = webPageContext
+  // A complete short source is a deterministic context representation; never
+  // fan out a summary model over each feed item just to shorten a few lines.
+  if (
+    !options.requireModel &&
+    webPageContext.scopeType &&
+    webPageContext.scopeType !== "Document" &&
+    !webPageContext.provenance?.truncated
+  )
+    return webPageContext.webContent || null
+  const { webContent } = webPageContext
+  const webTitle =
+    webPageContext.webTitle || (webPageContext.scopeType ? "Local source context" : "")
   if (!webTitle.trim() || !webContent.trim()) {
     return null
   }
@@ -35,11 +48,10 @@ export async function getOrGenerateWebPageSummary(
     webContent,
     getProviderCacheIdentity(providerRef),
   )
-  const signals = [
-    getDocumentContextSignal(),
-    session?.signal,
-    getWebPageContextSignal(webPageContext),
-  ].filter((signal): signal is AbortSignal => !!signal)
+  if (webPageContext.scopeType) requireSummaryAdmission(key)
+  const signals = [getDocumentContextSignal(), session?.signal].filter(
+    (signal): signal is AbortSignal => !!signal,
+  )
   const summary = await summaries.get(
     key,
     async (signal) => {
@@ -51,6 +63,7 @@ export async function getOrGenerateWebPageSummary(
       signal.addEventListener("abort", cancel, { once: true })
       try {
         signal.throwIfAborted()
+        assertPromptContextCurrent(webPageContext)
         return await sendMessage("getOrGenerateWebPageSummary", {
           webTitle,
           webContent,

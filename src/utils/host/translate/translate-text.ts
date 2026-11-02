@@ -8,6 +8,7 @@ import { getLocalConfig } from "@/utils/config/storage"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { detectLanguage } from "@/utils/content/language"
 import { resolveGlossaryTerms } from "@/utils/glossary/active-matcher"
+import { assertPromptContextCurrent } from "./context/prompt-guard"
 import { executeTranslationPlan } from "./translation-executor"
 import { createTranslationPlan, type TranslationOrigin } from "./translation-plan"
 export { normalizePromptContextValue } from "./translation-plan"
@@ -56,6 +57,7 @@ export interface TranslateTextOptions {
   configRevision?: number
   documentRevision?: number
   signal?: AbortSignal
+  isCurrent?: () => boolean
   text: string
   langConfig: {
     sourceCode: LangCodeISO6393 | "auto"
@@ -135,6 +137,9 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     glossaryEnabled,
     langConfig.targetCode,
   )
+  if (options.signal?.aborted || options.isCurrent?.() === false)
+    throw new TranslationCancelledError(sessionId)
+  assertPromptContextCurrent(options.webPageContext)
   const plan = createTranslationPlan({
     origin: options.origin ?? (sessionId ? "page" : "independent"),
     mode: options.mode ?? "independent",
@@ -164,6 +169,7 @@ export async function translateTextCore(options: TranslateTextOptions): Promise<
     activitySessionId: sessionId,
     isCurrent: () =>
       isLocationCurrent() &&
+      options.isCurrent?.() !== false &&
       (sessionId === undefined || getPageTranslationSessionId() === sessionId),
   })
   return result.text

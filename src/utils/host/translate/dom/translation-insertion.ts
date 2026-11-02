@@ -1,3 +1,4 @@
+import type { TranslationTaskOwner } from "../context/task-owner"
 import type { Config } from "@/types/config/config"
 import type { TranslationNodeStyleConfig } from "@/types/config/translate"
 import type { TransNode } from "@/types/dom"
@@ -16,6 +17,7 @@ import { decorateTranslationNode } from "../ui/decorate-translation"
 import { isForceInlineTranslation, isShortInlineTranslationText } from "../ui/translation-utils"
 
 interface TranslationInsertionContext {
+  owner?: TranslationTaskOwner | null
   layoutSource: TransNode
   /** Nodes whose source text is represented by this wrapper. */
   styleSources?: readonly TransNode[]
@@ -142,7 +144,7 @@ export async function insertTranslatedNodeIntoWrapper(
   config: Config,
   forceBlock = false,
 ): Promise<void> {
-  const gate = captureCommitGate(context.isCurrent, config)
+  const gate = captureCommitGate(context.isCurrent, config, context.owner ?? null)
   const commit = gate.beginCommit()
   try {
     const inserted = await pageLocalScheduler.schedule(

@@ -27,7 +27,8 @@ it("rejects route, document and source-region changes even before a cached resul
   expect(gate.isCurrent()).toBe(true)
   source.textContent = "Edited text"
   expect(gate.isCurrent()).toBe(false)
-  const documentGate = captureCommitGate()
+  const documentSource = document.querySelector("main")!.firstChild!
+  const documentGate = captureCommitGate(() => documentSource.isConnected)
   document.querySelector("main")!.replaceChildren(document.createElement("article"))
   await Promise.resolve()
   expect(documentGate.isCurrent()).toBe(false)

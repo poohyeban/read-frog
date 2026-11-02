@@ -52,7 +52,6 @@ vi.mock("@/utils/host/translate/node-manipulation", () => ({
 
 vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/utils/host/translate/translate-variants")>()),
-  primePageTranslationContext: () => {},
   translateTextForPageTitle: vi.fn<(...args: any[]) => any>().mockResolvedValue(null),
 }))
 

@@ -1,0 +1,91 @@
+{
+  "phase": "V2 development before lease and schema-token fixes",
+  "passed": 12,
+  "failed": 2,
+  "cases": [
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "replaceSelectionToolbarCustomActionPromptTokens replaces selection and paragraphs tokens",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "replaceSelectionToolbarCustomActionPromptTokens replaces targetLanguage, webTitle, webUrl, and webContent tokens",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "replaceSelectionToolbarCustomActionPromptTokens leaves unrelated text unchanged",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt appends structured output contract with resolved fields and defaults",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt includes description in contract when provided",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt resolves tokens in field description but keeps key names unchanged",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt preserves multiline field description in yaml block",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "buildSelectionToolbarCustomActionSystemPrompt returns contract when prompt content is empty",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "truncateContextTextForCustomAction keeps only the leading characters for custom action context tokens",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "custom-action-prompt.test.ts",
+      "name": "includes context variables used only by structured output descriptions",
+      "status": "failed",
+      "failure": "AssertionError: expected { title: false, …(3) } to match object { title: true, content: true, …(2) }"
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "reports separate owner, route, config, source and render generation reasons",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "route owners survive real anchors but expire on query/hash navigation and pagehide",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "context-stale affects future reads, never an issued prompt or unchanged unit",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "render-guard.test.ts",
+      "name": "checking an ended document lease does not resurrect route listeners",
+      "status": "failed",
+      "failure": "AssertionError: expected \"Mock\" to not be called at all, but actually been called 4 times"
+    }
+  ]
+}

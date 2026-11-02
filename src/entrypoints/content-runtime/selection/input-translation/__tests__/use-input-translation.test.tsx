@@ -101,7 +101,16 @@ describe("input translation across editors", () => {
       space(element)
       space(element)
     })
-    expect(translate).toHaveBeenCalledWith("你好", "cmn", "eng")
+    expect(translate).toHaveBeenCalledWith(
+      "你好",
+      "cmn",
+      "eng",
+      undefined,
+      expect.objectContaining({
+        source: expect.any(HTMLElement),
+        owner: expect.objectContaining({ id: expect.stringMatching(/^input-/) }),
+      }),
+    )
   })
 
   it("swaps languages when cycling the input direction", async () => {
@@ -114,7 +123,16 @@ describe("input translation across editors", () => {
       space(element)
     })
 
-    expect(translate).toHaveBeenCalledWith("你好", "eng", "cmn")
+    expect(translate).toHaveBeenCalledWith(
+      "你好",
+      "eng",
+      "cmn",
+      undefined,
+      expect.objectContaining({
+        source: expect.any(HTMLElement),
+        owner: expect.objectContaining({ id: expect.stringMatching(/^input-/) }),
+      }),
+    )
   })
 
   it.each([1, 2])("translates a focused textarea inside %i shadow roots", async (depth) => {
@@ -125,7 +143,16 @@ describe("input translation across editors", () => {
       space(element)
       space(element)
     })
-    expect(translate).toHaveBeenCalledWith("你好", "cmn", "eng")
+    expect(translate).toHaveBeenCalledWith(
+      "你好",
+      "cmn",
+      "eng",
+      undefined,
+      expect.objectContaining({
+        source: expect.any(HTMLElement),
+        owner: expect.objectContaining({ id: expect.stringMatching(/^input-/) }),
+      }),
+    )
   })
 
   it("preserves rich-text paragraph breaks when requesting translation", async () => {
@@ -136,7 +163,16 @@ describe("input translation across editors", () => {
       space(element)
       space(element)
     })
-    expect(translate).toHaveBeenCalledWith("你好\n\n谢谢分享", "cmn", "eng")
+    expect(translate).toHaveBeenCalledWith(
+      "你好\n\n谢谢分享",
+      "cmn",
+      "eng",
+      undefined,
+      expect.objectContaining({
+        source: expect.any(HTMLElement),
+        owner: expect.objectContaining({ id: expect.stringMatching(/^input-/) }),
+      }),
+    )
   })
 
   it("targets the original reply when focus changes during translation", async () => {
@@ -196,5 +232,47 @@ describe("input translation across editors", () => {
     await act(async () => pending.resolve("First reply"))
     expect(post).not.toHaveBeenCalled()
     expect(document.activeElement).toBe(second)
+  })
+})
+
+describe("input operation ownership", () => {
+  afterEach(() => {
+    cleanup()
+    document.body.replaceChildren()
+    vi.restoreAllMocks()
+  })
+  it("does not commit after its hook is unmounted while the input remains connected", async () => {
+    Object.defineProperty(document, "execCommand", {
+      configurable: true,
+      value: vi.fn<() => boolean>(() => true),
+    })
+    Object.defineProperty(HTMLElement.prototype, "animate", {
+      configurable: true,
+      value: vi.fn<() => void>(),
+    })
+    config.enableCycle = false
+    const element = textarea()
+    let respond!: (text: string) => void
+    translate.mockReset().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          respond = resolve
+        }),
+    )
+    const hook = renderHook(() => useInputTranslation())
+    await act(async () => {
+      space(element)
+      space(element)
+      space(element)
+    })
+    expect(translate).toHaveBeenCalledTimes(1)
+    const commands = vi.mocked(document.execCommand.bind(document))
+    const originalCommand = Object.getOwnPropertyDescriptor(document, "execCommand")!
+      .value as typeof commands
+    const before = originalCommand.mock.calls.length
+    hook.unmount()
+    await act(async () => respond("Stale input translation"))
+    expect(element.isConnected).toBe(true)
+    expect(originalCommand).toHaveBeenCalledTimes(before)
   })
 })

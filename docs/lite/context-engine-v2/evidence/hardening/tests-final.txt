@@ -1,0 +1,7 @@
+$ vitest run --reporter=json --outputFile=/tmp/context-hardening-final-tests.json
+Not implemented: navigation to another Document
+(node:84090) Warning: AI SDK Warning System: To turn off warning logging, set the AI_SDK_LOG_WARNINGS global to false.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84090) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+(node:84090) Warning: AI SDK Warning (deepseek.chat / deepseek-flash): The feature "responseFormat JSON schema" is used in a compatibility mode. JSON response schema is injected into the system message.
+JSON report written to /tmp/context-hardening-final-tests.json

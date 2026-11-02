@@ -1,0 +1,62 @@
+{
+  "baseline": "1af30d16",
+  "phase": "after scoped engine, before ownership and unit integration",
+  "tests": [
+    {
+      "name": "keeps article contexts separate on the same URL",
+      "status": "passed"
+    },
+    {
+      "name": "recognizes generic repeated feed items without article tags or domain rules",
+      "status": "passed"
+    },
+    {
+      "name": "uses a proven explicit quote dependency without borrowing the adjacent post",
+      "status": "passed"
+    },
+    {
+      "name": "refreshes a recycled post node's context after its own text changes",
+      "status": "passed"
+    },
+    {
+      "name": "keeps moved but semantically unchanged content reusable",
+      "status": "passed"
+    },
+    {
+      "name": "excludes inputs, scripts and hidden content from context",
+      "status": "passed"
+    },
+    {
+      "name": "extracts only within the source shadow root",
+      "status": "passed"
+    },
+    {
+      "name": "does not let context expiry revoke an unchanged render source",
+      "status": "passed"
+    },
+    {
+      "name": "keeps six bilingual translations during unrelated scope removal",
+      "status": "passed"
+    },
+    {
+      "name": "keeps six translationOnly translations during unrelated scope removal",
+      "status": "passed"
+    },
+    {
+      "name": "still rejects replaced source nodes",
+      "status": "passed"
+    },
+    {
+      "name": "keeps an independent manual bilingual request after page Stop",
+      "status": "failed"
+    },
+    {
+      "name": "keeps an independent manual translationOnly request after page Stop",
+      "status": "failed"
+    },
+    {
+      "name": "rejects an equal-text replacement of the original text node during a request",
+      "status": "failed"
+    }
+  ]
+}

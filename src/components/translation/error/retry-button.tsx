@@ -1,3 +1,4 @@
+import type { SummaryConsentRequiredError } from "@/utils/host/translate/context/summary-policy"
 import { IconReload } from "@tabler/icons-react"
 import { useAtomValue } from "jotai"
 import { use } from "react"
@@ -11,7 +12,13 @@ import {
 } from "@/utils/host/translate/node-manipulation"
 import { ShadowWrapperContext } from "@/utils/react-shadow-host/create-shadow-host"
 
-export function RetryButton({ nodes }: { nodes: ChildNode[] }) {
+export function RetryButton({
+  nodes,
+  consent,
+}: {
+  nodes: ChildNode[]
+  consent?: SummaryConsentRequiredError
+}) {
   const shadowWrapper = use(ShadowWrapperContext)
   const config = useAtomValue(configAtom)
   const translationMode = config.pageTranslation.mode
@@ -19,6 +26,7 @@ export function RetryButton({ nodes }: { nodes: ChildNode[] }) {
   const handleRetry = async () => {
     const root = nodes.find((node) => node.isConnected)?.parentElement
     if (!root) return
+    consent?.authorize()
     const walkId = getRandomUUID()
     const lifecycle = beginNodeTranslation(root, walkId)
     try {
@@ -34,11 +42,23 @@ export function RetryButton({ nodes }: { nodes: ChildNode[] }) {
 
   return (
     <Tooltip>
-      <TooltipTrigger render={<button type="button" onClick={handleRetry} />}>
-        <IconReload className="size-4 text-link hover:opacity-80" />
+      <TooltipTrigger
+        render={
+          <button
+            type="button"
+            aria-label={consent?.actionLabel ?? "Retry translation"}
+            onClick={handleRetry}
+          />
+        }
+      >
+        {consent ? (
+          <span className="text-sm text-link">{consent.actionLabel}</span>
+        ) : (
+          <IconReload className="size-4 text-link hover:opacity-80" />
+        )}
       </TooltipTrigger>
       <TooltipContent container={shadowWrapper} side="bottom" className="notranslate">
-        Retry translation
+        {consent?.actionLabel ?? "Retry translation"}
       </TooltipContent>
     </Tooltip>
   )

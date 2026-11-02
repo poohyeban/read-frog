@@ -4,6 +4,7 @@ import type { SelectionPopoverActions } from "@/components/ui/selection-popover"
 import type { SelectionToolbarInlineError } from "@/components/ui/selection-popover/inline-error"
 import type { BackgroundTextStreamSnapshot, ThinkingSnapshot } from "@/types/background-stream"
 import type { LLMProviderConfig } from "@/types/config/provider"
+import type { ContextSource } from "@/utils/host/translate/context/types"
 import type { PromptableProviderRef } from "@/utils/providers/provider-ref"
 import { useAtomValue, useSetAtom } from "jotai"
 import {
@@ -32,12 +33,21 @@ import { buildFeatureProviderPatch } from "@/utils/constants/feature-providers"
 import { streamBackgroundText } from "@/utils/content-script/background-stream-client"
 import { getSourceDocumentTitle } from "@/utils/content/document-title"
 import { resolveGlossaryTermsFromCache } from "@/utils/glossary/active-matcher"
+import {
+  assertPromptContextCurrent,
+  inheritPromptContext,
+} from "@/utils/host/translate/context/prompt-guard"
+import { contextSourceForSelection } from "@/utils/host/translate/context/selection-source"
+import { requiresModelSummary } from "@/utils/host/translate/context/summary-policy"
 import { prepareTranslationText } from "@/utils/host/translate/text-preparation"
-import { getOrCreateWebPageContext } from "@/utils/host/translate/webpage-context"
+import {
+  getDocumentContextSignal,
+  getOrCreateWebPageContext,
+} from "@/utils/host/translate/webpage-context"
 import { getOrGenerateWebPageSummary } from "@/utils/host/translate/webpage-summary"
 import { LANG_CODE_TO_EN_NAME } from "@/utils/languages"
 import { onMessage } from "@/utils/message"
-import { getTranslatePromptFromConfig } from "@/utils/prompts/translate"
+import { getContextRequirements, getTranslatePromptFromConfig } from "@/utils/prompts/translate"
 import { resolveModelId } from "@/utils/providers/model-id"
 import { getProviderOptionsWithOverride } from "@/utils/providers/options"
 import { getSelectableProvidersForCapability } from "@/utils/providers/provider-registry"
@@ -60,22 +70,36 @@ interface SelectionTranslatePendingOpenRequest {
 
 async function getSelectionWebPagePromptContext(
   summaryProviderRef: PromptableProviderRef | null,
-  enableAIContentAware: boolean,
+  request: SelectionToolbarTranslateRequestSlice,
+  source: ContextSource,
+  signal: AbortSignal,
 ) {
-  const webPageContext = await getOrCreateWebPageContext()
-  if (!webPageContext) {
-    return undefined
-  }
-
-  const webSummary = summaryProviderRef
-    ? await getOrGenerateWebPageSummary(webPageContext, summaryProviderRef, enableAIContentAware)
-    : null
-  return {
-    webTitle: webPageContext.webTitle,
-    webDescription: webPageContext.webDescription,
-    webContent: webPageContext.webContent,
+  const requirements = getContextRequirements(request)
+  requirements.summary &&= request.enableAIContentAware
+  if (!Object.values(requirements).some(Boolean)) return undefined
+  const context = await getOrCreateWebPageContext(
+    requirements.content || requirements.summary,
+    signal,
+    { ...source, requirements },
+  )
+  if (!context) return undefined
+  const webSummary =
+    summaryProviderRef && requirements.summary
+      ? await getOrGenerateWebPageSummary(
+          context,
+          summaryProviderRef,
+          true,
+          { id: "selection", signal },
+          { requireModel: requiresModelSummary(request) },
+        )
+      : null
+  signal.throwIfAborted()
+  return inheritPromptContext(context, {
+    webTitle: requirements.title ? context.webTitle : "",
+    webDescription: requirements.description ? context.webDescription : undefined,
+    webContent: requirements.content ? context.webContent : "",
     webSummary: webSummary ?? undefined,
-  }
+  })
 }
 
 async function translateWithTextStream({
@@ -83,6 +107,7 @@ async function translateWithTextStream({
   providerId,
   providerConfig,
   translateRequest,
+  source,
   onChunk,
   registerAbortController,
 }: {
@@ -90,6 +115,7 @@ async function translateWithTextStream({
   providerId: string
   providerConfig: LLMProviderConfig
   translateRequest: SelectionToolbarTranslateRequestSlice
+  source: ContextSource
   onChunk: (data: BackgroundTextStreamSnapshot) => void
   registerAbortController: (abortController: AbortController) => void
 }) {
@@ -105,16 +131,19 @@ async function translateWithTextStream({
   const temperature = providerConfig.temperature
   const abortController = new AbortController()
   registerAbortController(abortController)
+  const signal = AbortSignal.any([abortController.signal, getDocumentContextSignal()])
 
   const throwIfAborted = () => {
-    if (abortController.signal.aborted) {
+    if (signal.aborted) {
       throw new DOMException("aborted", "AbortError")
     }
   }
 
   const webPageContext = await getSelectionWebPagePromptContext(
     { kind: "local", config: providerConfig },
-    translateRequest.enableAIContentAware,
+    translateRequest,
+    source,
+    signal,
   )
   throwIfAborted()
 
@@ -144,6 +173,7 @@ async function translateWithTextStream({
     },
   )
 
+  assertPromptContextCurrent(webPageContext)
   const translatedText = await streamBackgroundText(
     {
       providerKind: "local",
@@ -155,11 +185,14 @@ async function translateWithTextStream({
       temperature,
     },
     {
-      signal: abortController.signal,
-      onChunk,
+      signal,
+      onChunk: (data) => {
+        if (!signal.aborted) onChunk(data)
+      },
     },
   )
 
+  throwIfAborted()
   return translatedText
 }
 
@@ -341,6 +374,10 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
           providerId: providerConfig.id,
           providerConfig,
           translateRequest,
+          source: contextSourceForSelection(
+            activeSession?.selectionSnapshot,
+            activeSession?.contextSnapshot.text,
+          ),
           onChunk: (data) => {
             if (runIdRef.current === runId) {
               setTranslatedText(data.output)
@@ -374,7 +411,7 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
         }
       }
     },
-    [resetTranslationState, selectionText, translateRequest],
+    [activeSession, resetTranslationState, selectionText, translateRequest],
   )
 
   const startTranslation = useEffectEvent((runId: number) => {
@@ -588,7 +625,11 @@ export function SelectionTranslationProvider({ children }: { children: ReactNode
               isTranslating={isTranslating}
               thinking={thinking}
             />
-            <SelectionToolbarErrorAlert error={error} className="-mt-3" />
+            <SelectionToolbarErrorAlert
+              error={error}
+              className="-mt-3"
+              onRetry={handleRegenerate}
+            />
           </SelectionPopover.Body>
 
           <TranslateFooterContent

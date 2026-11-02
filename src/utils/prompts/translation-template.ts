@@ -17,13 +17,12 @@ import {
   DEFAULT_SENTINEL_TRANSLATE_PROMPT,
   DEFAULT_TRANSLATE_PROMPT_ID,
   getTokenCellText,
-  INPUT,
-  TARGET_LANGUAGE,
   WEB_CONTENT,
   WEB_DESCRIPTION,
   WEB_SUMMARY,
   WEB_TITLE,
 } from "../constants/prompt"
+import { contextData, CONTEXT_DATA_RULE } from "./context-data"
 
 const HTML_ATTRIBUTE_MARKER_SYSTEM_PROMPT = `## Protected HTML Marker Rules
 These mandatory rules override any conflicting instructions above:
@@ -150,15 +149,28 @@ ${INLINE_ATOM_TOKEN_SYSTEM_PROMPT}`
     "No summary available",
   )
 
-  // Replace tokens in both prompts
+  const contextValues = {
+    webTitle: title,
+    webDescription: description,
+    webContent: contentText,
+    webSummary: summary,
+  }
+  const replacements: Record<string, string> = { targetLanguage: targetLang, input }
+  let hasContextData = false
+  for (const [name, value] of Object.entries(contextValues)) {
+    const raw = options?.context?.[name as keyof WebPagePromptContext]
+    const used = systemPrompt.includes(`{{${name}}}`) || prompt.includes(`{{${name}}}`)
+    replacements[name] = raw?.trim() ? contextData(name, value) : value
+    if (used && raw?.trim()) hasContextData = true
+  }
+  if (hasContextData) systemPrompt += `\n\n${CONTEXT_DATA_RULE}`
+  // One pass: literal token strings in source/context must never become a
+  // second template evaluation or borrow the value of a different field.
   const replaceTokens = (text: string) =>
-    text
-      .replaceAll(getTokenCellText(TARGET_LANGUAGE), targetLang)
-      .replaceAll(getTokenCellText(INPUT), input)
-      .replaceAll(getTokenCellText(WEB_TITLE), title)
-      .replaceAll(getTokenCellText(WEB_DESCRIPTION), description)
-      .replaceAll(getTokenCellText(WEB_CONTENT), contentText)
-      .replaceAll(getTokenCellText(WEB_SUMMARY), summary)
+    text.replace(
+      /\{\{(targetLanguage|input|webTitle|webDescription|webContent|webSummary)\}\}/g,
+      (_, name: string) => replacements[name]!,
+    )
 
   // The glossary block is appended AFTER token replacement, and that ordering is
   // load-bearing: a term is arbitrary user text that may contain a `{{input}}`-

@@ -1,0 +1,103 @@
+{
+  "phase": "unmodified baseline production: 1af30d16; 16 behavior tests",
+  "passed": 1,
+  "failed": 15,
+  "cases": [
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps article contexts separate on the same URL",
+      "status": "failed",
+      "failure": "AssertionError: expected 'A headingLOCAL_A_SOURCEB headingUNREL…' not to contain 'UNRELATED_B_SOURCE'"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "recognizes generic repeated feed items without article tags or domain rules",
+      "status": "failed",
+      "failure": "AssertionError: expected 'FirstLOCAL_A_SOURCESecondUNRELATED_B_…' not to contain 'UNRELATED_B_SOURCE'"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "uses a proven explicit quote dependency without borrowing the adjacent post",
+      "status": "failed",
+      "failure": "AssertionError: expected 'A headingLOCAL_A_SOURCEB headingUNREL…' not to contain 'UNRELATED_B_SOURCE'"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "refreshes a recycled post node's context after its own text changes",
+      "status": "failed",
+      "failure": "AssertionError: expected 'A headingLOCAL_A_SOURCEB headingUNREL…' to contain 'RECYCLED_NEW_POST'"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps moved but semantically unchanged content reusable",
+      "status": "failed",
+      "failure": "AssertionError: expected 'B headingUNRELATED_B_SOURCEA headingL…' to be 'A headingLOCAL_A_SOURCEB headingUNREL…' // Object.is equality"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "excludes inputs, scripts and hidden content from context",
+      "status": "failed",
+      "failure": "AssertionError: expected 'A headingLOCAL_A_SOURCEPRIVATE_INPUTP…' not to match /PRIVATE_/"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "extracts only within the source shadow root",
+      "status": "failed",
+      "failure": "AssertionError: expected 'A headingLOCAL_A_SOURCEB headingUNREL…' to contain 'SHADOW_SOURCE'"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "does not let context expiry revoke an unchanged render source",
+      "status": "failed",
+      "failure": "AssertionError: expected false to be true // Object.is equality"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps six bilingual translations during unrelated scope removal",
+      "status": "failed",
+      "failure": "AssertionError: Target cannot be null or undefined."
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps six translationOnly translations during unrelated scope removal",
+      "status": "failed",
+      "failure": "AssertionError: Target cannot be null or undefined."
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "still rejects replaced source nodes",
+      "status": "passed",
+      "failure": null
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps an independent manual bilingual request after page Stop",
+      "status": "failed",
+      "failure": "AssertionError: expected 'LOCAL_A_SOURCE' to contain '独立操作译文'"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "keeps an independent manual translationOnly request after page Stop",
+      "status": "failed",
+      "failure": "AssertionError: expected 'LOCAL_A_SOURCE' to contain '独立操作译文'"
+    },
+    {
+      "file": "legacy-contract.test.ts",
+      "name": "rejects an equal-text replacement of the original text node during a request",
+      "status": "failed",
+      "failure": "AssertionError: expected 'LOCAL_A_SOURCE  过期译文' not to contain '过期译文'"
+    },
+    {
+      "file": "title-contract.test.ts",
+      "name": "commits the title after unrelated post removal with one request",
+      "status": "failed",
+      "failure": "AssertionError: expected 'Original title' to be '正确标题' // Object.is equality"
+    },
+    {
+      "file": "title-contract.test.ts",
+      "name": "rejects a changed source title before its observer gets a turn",
+      "status": "failed",
+      "failure": "AssertionError: expected '过期标题' to be 'A genuinely new title' // Object.is equality"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "rendered": true,
+  "http": 1,
+  "summaryRPCs": 0,
+  "requests": [
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_A"],
+      "status": 200,
+      "at": 1793538658134
+    }
+  ],
+  "elapsedMs": 366.3533299999999,
+  "resources": {
+    "active": 0,
+    "queued": 0,
+    "lanes": 0,
+    "timers": 0,
+    "counters": {
+      "starts": 1,
+      "cancellations": 0,
+      "rejected": 0,
+      "admissions": 1,
+      "eligibilityChecks": 2,
+      "maxActive": 1,
+      "maxQueued": 1
+    },
+    "domains": {
+      "22972e8e-5b3e-48b7-894e-3ad5de281a3a": {
+        "active": 0,
+        "queued": 0,
+        "tokens": 19,
+        "cooldownUntil": 0
+      }
+    }
+  }
+}

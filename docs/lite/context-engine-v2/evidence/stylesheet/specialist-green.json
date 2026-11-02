@@ -1,0 +1,1862 @@
+{
+  "numTotalTestSuites": 19,
+  "numPassedTestSuites": 19,
+  "numFailedTestSuites": 0,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 155,
+  "numPassedTests": 155,
+  "numFailedTests": 0,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1793551002008,
+  "success": true,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["useCustomActionWebPageContext"],
+          "fullName": "useCustomActionWebPageContext ignores stale pending results after the popover closes and reopens",
+          "status": "passed",
+          "title": "ignores stale pending results after the popover closes and reopens",
+          "duration": 37.40759300000013,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["useCustomActionWebPageContext"],
+          "fullName": "useCustomActionWebPageContext returns to loading for a new popover session even when the previous session already resolved",
+          "status": "passed",
+          "title": "returns to loading for a new popover session even when the previous session already resolved",
+          "duration": 9.301738000000114,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["buildCustomActionExecutionPlan"],
+          "fullName": "buildCustomActionExecutionPlan truncates paragraph context tokens and trusts the canonical webpage content",
+          "status": "passed",
+          "title": "truncates paragraph context tokens and trusts the canonical webpage content",
+          "duration": 1.2619920000001912,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["buildCustomActionExecutionPlan"],
+          "fullName": "buildCustomActionExecutionPlan falls back to the live location when the webpage context is unavailable",
+          "status": "passed",
+          "title": "falls back to the live location when the webpage context is unavailable",
+          "duration": 0.5988529999999628,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["useCustomActionExecution"],
+          "fullName": "useCustomActionExecution never asks the model for a selection field, and fills it into every answer",
+          "status": "passed",
+          "title": "never asks the model for a selection field, and fills it into every answer",
+          "duration": 66.99975300000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "invalidates a pending custom action when its provider transport changes without changing id",
+          "status": "passed",
+          "title": "invalidates a pending custom action when its provider transport changes without changing id",
+          "duration": 8.526080000000093,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "explicit retry refreshes a prepared context rejected by the stylesheet dispatch guard",
+          "status": "passed",
+          "title": "explicit retry refreshes a prepared context rejected by the stylesheet dispatch guard",
+          "duration": 108.03027499999985,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551003892,
+      "endTime": 1793551004125.0303,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/components/custom-action/__tests__/use-custom-action-execution.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["cross-feature context ownership"],
+          "fullName": "cross-feature context ownership keeps independent input running while page-only summary preparation is cancelled",
+          "status": "passed",
+          "title": "keeps independent input running while page-only summary preparation is cancelled",
+          "duration": 116.91808300000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["cross-feature context ownership"],
+          "fullName": "cross-feature context ownership cancels the underlying scoped message only after the last subscriber exits",
+          "status": "passed",
+          "title": "cancels the underlying scoped message only after the last subscriber exits",
+          "duration": 55.09372899999994,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "cancels a title request without draining the page's body scope",
+          "status": "passed",
+          "title": "cancels a title request without draining the page's body scope",
+          "duration": 53.691381999999976,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not start translation after its source changes while the one summary request is pending",
+          "status": "passed",
+          "title": "does not start translation after its source changes while the one summary request is pending",
+          "duration": 64.58582100000012,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551014040,
+      "endTime": 1793551014331.586,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/__tests__/feature-context-lifetime.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests does not rerun translation on passive config refresh, but reruns when request values change",
+          "status": "passed",
+          "title": "does not rerun translation on passive config refresh, but reruns when request values change",
+          "duration": 265.18668100000014,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests renders the translation tooltip as non-interactive and closes it on hover leave",
+          "status": "passed",
+          "title": "renders the translation tooltip as non-interactive and closes it on hover leave",
+          "duration": 93.61481499999991,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests opts out of focus restoration when closing the translation popover",
+          "status": "passed",
+          "title": "opts out of focus restoration when closing the translation popover",
+          "duration": 45.94501600000012,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests reruns streaming translation from the footer and ignores stale results from older runs",
+          "status": "passed",
+          "title": "reruns streaming translation from the footer and ignores stale results from older runs",
+          "duration": 152.3227649999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests keeps the original page selection session when selecting text inside the translation popover",
+          "status": "passed",
+          "title": "keeps the original page selection session when selecting text inside the translation popover",
+          "duration": 114.44628999999986,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests aborts llm translations when the popover closes without surfacing an error",
+          "status": "passed",
+          "title": "aborts llm translations when the popover closes without surfacing an error",
+          "duration": 97.51692000000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests does not start llm streaming after the popover closes while webpage context is still loading",
+          "status": "passed",
+          "title": "does not start llm streaming after the popover closes while webpage context is still loading",
+          "duration": 29.968191999999817,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests renders translate errors inline and clears them after a successful rerun",
+          "status": "passed",
+          "title": "renders translate errors inline and clears them after a successful rerun",
+          "duration": 54.5157250000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests replaces the raw stale-context error with a reload hint",
+          "status": "passed",
+          "title": "replaces the raw stale-context error with a reload hint",
+          "duration": 27.268840000000182,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests shows a precheck alert when the translate provider is unavailable",
+          "status": "passed",
+          "title": "shows a precheck alert when the translate provider is unavailable",
+          "duration": 33.02760399999988,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests shows translations identical to the original text",
+          "status": "passed",
+          "title": "shows translations identical to the original text",
+          "duration": 23.339124000000083,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests reuses the same captured session for cross-node context-menu translation",
+          "status": "passed",
+          "title": "reuses the same captured session for cross-node context-menu translation",
+          "duration": 20.04616599999963,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests shows a toast when the context menu request cannot recover a selection snapshot",
+          "status": "passed",
+          "title": "shows a toast when the context menu request cannot recover a selection snapshot",
+          "duration": 4.940586999999596,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests opens selection translation from the shortcut when the toolbar UI is disabled",
+          "status": "passed",
+          "title": "opens selection translation from the shortcut when the toolbar UI is disabled",
+          "duration": 27.453377000000273,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests ignores the selection translation shortcut when no selection is available",
+          "status": "passed",
+          "title": "ignores the selection translation shortcut when no selection is available",
+          "duration": 4.901569999999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests leaves the selection translation key to the page while Translate is turned off",
+          "status": "passed",
+          "title": "leaves the selection translation key to the page while Translate is turned off",
+          "duration": 11.247706999999991,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests binds no key for an empty or invalid selection translation shortcut",
+          "status": "passed",
+          "title": "binds no key for an empty or invalid selection translation shortcut",
+          "duration": 8.517303999999967,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests positions shortcut selection translation near the selected range",
+          "status": "passed",
+          "title": "positions shortcut selection translation near the selected range",
+          "duration": 16.269128999999793,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests falls back to the viewport center when shortcut range anchoring fails",
+          "status": "passed",
+          "title": "falls back to the viewport center when shortcut range anchoring fails",
+          "duration": 17.416111,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests reuses a pinned translation popover in place when translating a new selection from the toolbar",
+          "status": "passed",
+          "title": "reuses a pinned translation popover in place when translating a new selection from the toolbar",
+          "duration": 181.61007500000005,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests reuses a pinned translation popover in place from the context menu without moving it",
+          "status": "passed",
+          "title": "reuses a pinned translation popover in place from the context menu without moving it",
+          "duration": 50.68318399999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests reuses a pinned translation popover in place from the shortcut",
+          "status": "passed",
+          "title": "reuses a pinned translation popover in place from the shortcut",
+          "duration": 51.54992200000015,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests reruns the translation when a pinned popover is retriggered with the same selection",
+          "status": "passed",
+          "title": "reruns the translation when a pinned popover is retriggered with the same selection",
+          "duration": 42.21891300000016,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests claims a key it runs ahead of the page's own handlers",
+          "status": "passed",
+          "title": "claims a key it runs ahead of the page's own handlers",
+          "duration": 43.3778070000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests acts on the selection the key is pressed on, made or changed with the keyboard",
+          "status": "passed",
+          "title": "acts on the selection the key is pressed on, made or changed with the keyboard",
+          "duration": 66.80453399999988,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests leaves a custom action's key to the page when nothing is selected",
+          "status": "passed",
+          "title": "leaves a custom action's key to the page when nothing is selected",
+          "duration": 10.61342599999989,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests does not expose the removed custom action editor",
+          "status": "passed",
+          "title": "does not expose the removed custom action editor",
+          "duration": 74.98898800000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests renders the custom action tooltip as non-interactive and closes it on hover leave",
+          "status": "passed",
+          "title": "renders the custom action tooltip as non-interactive and closes it on hover leave",
+          "duration": 46.80195800000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests does not rerun custom action requests on passive config refresh, but reruns when request values change",
+          "status": "passed",
+          "title": "does not rerun custom action requests on passive config refresh, but reruns when request values change",
+          "duration": 64.72704999999951,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests keeps a pending custom action request alive across a passive config refresh",
+          "status": "passed",
+          "title": "keeps a pending custom action request alive across a passive config refresh",
+          "duration": 59.13827599999968,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests reruns custom action requests from the footer and aborts the previous run",
+          "status": "passed",
+          "title": "reruns custom action requests from the footer and aborts the previous run",
+          "duration": 80.43755500000043,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests switches a custom action provider from the footer without aborting the replacement request",
+          "status": "passed",
+          "title": "switches a custom action provider from the footer without aborting the replacement request",
+          "duration": 95.20108700000037,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": ["selection toolbar requests"],
+          "fullName": "selection toolbar requests shows runtime errors in the action panel and still allows a successful rerun",
+          "status": "passed",
+          "title": "shows runtime errors in the action panel and still allows a successful rerun",
+          "duration": 88.56138800000008,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551011678,
+      "endTime": 1793551013683.5613,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/entrypoints/content-runtime/selection/selection-toolbar/__tests__/request-rerun.test.tsx"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation class hover preserves the snapshot without projection",
+          "status": "passed",
+          "title": "P0-1: presentation class hover preserves the snapshot without projection",
+          "duration": 178.49522200000013,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation class bold preserves the snapshot without projection",
+          "status": "passed",
+          "title": "P0-1: presentation class bold preserves the snapshot without projection",
+          "duration": 62.853803999999855,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation class animation-frame-1 preserves the snapshot without projection",
+          "status": "passed",
+          "title": "P0-1: presentation class animation-frame-1 preserves the snapshot without projection",
+          "duration": 39.83421199999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: 1000 decorative style changes never cause a projection or stale preparation",
+          "status": "passed",
+          "title": "P0-1: 1000 decorative style changes never cause a projection or stale preparation",
+          "duration": 4055.9703799999997,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: presentation changes during parsing do not restart preparation",
+          "status": "passed",
+          "title": "P0-1: presentation changes during parsing do not restart preparation",
+          "duration": 24.522799999999734,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: real text changes during parsing cannot publish old content",
+          "status": "passed",
+          "title": "P0-1: real text changes during parsing cannot publish old content",
+          "duration": 26.430006999999932,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: a used meta content attribute expires only its actual consumer",
+          "status": "passed",
+          "title": "P0-1: a used meta content attribute expires only its actual consumer",
+          "duration": 38.943028000000595,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: unused body changes do not rebuild metadata-only context",
+          "status": "passed",
+          "title": "P0-1: unused body changes do not rebuild metadata-only context",
+          "duration": 5.721489000000474,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: CSS visibility changes hide and restore source without affecting unrelated scope",
+          "status": "passed",
+          "title": "P0-1: CSS visibility changes hide and restore source without affecting unrelated scope",
+          "duration": 36.57407400000011,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: links, source replacement and heading changes refresh the actual data",
+          "status": "passed",
+          "title": "P0-1: links, source replacement and heading changes refresh the actual data",
+          "duration": 35.58377299999938,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: unrelated 1000 mutations and source reorder preserve the existing snapshot",
+          "status": "passed",
+          "title": "P0-1: unrelated 1000 mutations and source reorder preserve the existing snapshot",
+          "duration": 99.4644330000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: collection affinity ends when a feed item becomes a standalone article",
+          "status": "passed",
+          "title": "P0-2: collection affinity ends when a feed item becomes a standalone article",
+          "duration": 28.423232000000098,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: last generic repeated item retains only its current container affiliation",
+          "status": "passed",
+          "title": "P0-2: last generic repeated item retains only its current container affiliation",
+          "duration": 17.00019499999962,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: removing an explicit feed role can end affinity without moving the node",
+          "status": "passed",
+          "title": "P0-2: removing an explicit feed role can end affinity without moving the node",
+          "duration": 18.93357399999968,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: moving between feeds and recycling source updates context but not unrelated items",
+          "status": "passed",
+          "title": "P0-2: moving between feeds and recycling source updates context but not unrelated items",
+          "duration": 31.94378499999948,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor style=\"opacity:0\"",
+          "status": "passed",
+          "title": "P0-3: excludes private source under ancestor style=\"opacity:0\"",
+          "duration": 5.470408000000134,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor style=\"content-visibility:hidden\"",
+          "status": "passed",
+          "title": "P0-3: excludes private source under ancestor style=\"content-visibility:hidden\"",
+          "duration": 3.898149999999987,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor inert",
+          "status": "passed",
+          "title": "P0-3: excludes private source under ancestor inert",
+          "duration": 3.6198599999997896,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: excludes private source under ancestor style=\"visibility:collapse\"",
+          "status": "passed",
+          "title": "P0-3: excludes private source under ancestor style=\"visibility:collapse\"",
+          "duration": 2.8217819999999847,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"opacity:0.5\"",
+          "status": "passed",
+          "title": "P0-3: retains readable or accessible source under style=\"opacity:0.5\"",
+          "duration": 4.420799999999872,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"content-visibility:auto\"",
+          "status": "passed",
+          "title": "P0-3: retains readable or accessible source under style=\"content-visibility:auto\"",
+          "duration": 4.186034000000291,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"position:absolute;top:10000px\"",
+          "status": "passed",
+          "title": "P0-3: retains readable or accessible source under style=\"position:absolute;top:10000px\"",
+          "duration": 4.346090000000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: retains readable or accessible source under style=\"position:absolute;clip:rect(0,0,0,0)\"",
+          "status": "passed",
+          "title": "P0-3: retains readable or accessible source under style=\"position:absolute;clip:rect(0,0,0,0)\"",
+          "duration": 3.3059170000005906,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: a transparent shadow host cannot leak a nested source",
+          "status": "passed",
+          "title": "P0-3: a transparent shadow host cannot leak a nested source",
+          "duration": 3.259917999999743,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: 100 generic feed items survive deterministic reorder and deletion to one",
+          "status": "passed",
+          "title": "P0-2: 100 generic feed items survive deterministic reorder and deletion to one",
+          "duration": 36.20826500000021,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: replacing a semantic feed container retains only proven current ownership",
+          "status": "passed",
+          "title": "P0-2: replacing a semantic feed container retains only proven current ownership",
+          "duration": 16.024674000000232,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-2: normal standalone paragraphs do not imply a collection",
+          "status": "passed",
+          "title": "P0-2: normal standalone paragraphs do not imply a collection",
+          "duration": 11.611707000000024,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: only explicitly referencing scopes follow a changed external quote",
+          "status": "passed",
+          "title": "P0-1: only explicitly referencing scopes follow a changed external quote",
+          "duration": 36.87835300000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: local shadow edits and visibility refresh only the acquired shadow scope",
+          "status": "passed",
+          "title": "P0-1: local shadow edits and visibility refresh only the acquired shadow scope",
+          "duration": 34.47226300000057,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: asynchronous read interleaved with root replacement cannot cache detached content",
+          "status": "passed",
+          "title": "P0-1: asynchronous read interleaved with root replacement cannot cache detached content",
+          "duration": 16.473707999999533,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: foreign-frame sources, controls and editable values are excluded; SVG and offscreen text remain",
+          "status": "passed",
+          "title": "P0-3: foreign-frame sources, controls and editable values are excluded; SVG and offscreen text remain",
+          "duration": 21.749988999999914,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: direct opacity:0 hides only the private subtree and restoration is visible",
+          "status": "passed",
+          "title": "P0-3: direct opacity:0 hides only the private subtree and restoration is visible",
+          "duration": 9.881994999999733,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: direct content-visibility:hidden hides only the private subtree and restoration is visible",
+          "status": "passed",
+          "title": "P0-3: direct content-visibility:hidden hides only the private subtree and restoration is visible",
+          "duration": 9.047604999999749,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: direct visibility:collapse hides only the private subtree and restoration is visible",
+          "status": "passed",
+          "title": "P0-3: direct visibility:collapse hides only the private subtree and restoration is visible",
+          "duration": 8.616989999999532,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: inert removal restores eligible source",
+          "status": "passed",
+          "title": "P0-3: inert removal restores eligible source",
+          "duration": 19.39600700000028,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: parser-sensitive class changes cannot be treated as presentation",
+          "status": "passed",
+          "title": "P0-1: parser-sensitive class changes cannot be treated as presentation",
+          "duration": 28.773059000000103,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-1: removing a local heading registers the newly used document title",
+          "status": "passed",
+          "title": "P0-1: removing a local heading registers the newly used document title",
+          "duration": 6.632432000000335,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "P0-3: an extension-owned shadow host cannot supply source context",
+          "status": "passed",
+          "title": "P0-3: an extension-owned shadow host cannot supply source context",
+          "duration": 4.988668000000871,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551005155,
+      "endTime": 1793551010152.9888,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/hardening.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "verifies physical HTTP, scoped prompts, shared cancellation and cache reuse through the real SDK/queues",
+          "status": "passed",
+          "title": "verifies physical HTTP, scoped prompts, shared cancellation and cache reuse through the real SDK/queues",
+          "duration": 8429.328583,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551003640,
+      "endTime": 1793551012069.3286,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/http-contract.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "keeps article contexts separate on the same URL",
+          "status": "passed",
+          "title": "keeps article contexts separate on the same URL",
+          "duration": 149.74719500000015,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "recognizes generic repeated feed items without article tags or domain rules",
+          "status": "passed",
+          "title": "recognizes generic repeated feed items without article tags or domain rules",
+          "duration": 21.411049000000048,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "uses a proven explicit quote dependency without borrowing the adjacent post",
+          "status": "passed",
+          "title": "uses a proven explicit quote dependency without borrowing the adjacent post",
+          "duration": 23.108847999999853,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "refreshes a recycled post node's context after its own text changes",
+          "status": "passed",
+          "title": "refreshes a recycled post node's context after its own text changes",
+          "duration": 27.591290000000072,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "keeps moved but semantically unchanged content reusable",
+          "status": "passed",
+          "title": "keeps moved but semantically unchanged content reusable",
+          "duration": 20.18256599999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "excludes inputs, scripts and hidden content from context",
+          "status": "passed",
+          "title": "excludes inputs, scripts and hidden content from context",
+          "duration": 16.468366999999944,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "extracts only within the source shadow root",
+          "status": "passed",
+          "title": "extracts only within the source shadow root",
+          "duration": 12.438669000000118,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not let context expiry revoke an unchanged render source",
+          "status": "passed",
+          "title": "does not let context expiry revoke an unchanged render source",
+          "duration": 2.1245629999998528,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "keeps six bilingual translations during unrelated scope removal",
+          "status": "passed",
+          "title": "keeps six bilingual translations during unrelated scope removal",
+          "duration": 114.95646399999987,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "keeps six translationOnly translations during unrelated scope removal",
+          "status": "passed",
+          "title": "keeps six translationOnly translations during unrelated scope removal",
+          "duration": 65.028685,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "still rejects replaced source nodes",
+          "status": "passed",
+          "title": "still rejects replaced source nodes",
+          "duration": 2.4957509999999274,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "keeps an independent manual bilingual request after page Stop",
+          "status": "passed",
+          "title": "keeps an independent manual bilingual request after page Stop",
+          "duration": 67.85633600000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "keeps an independent manual translationOnly request after page Stop",
+          "status": "passed",
+          "title": "keeps an independent manual translationOnly request after page Stop",
+          "duration": 55.024737999999616,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects an equal-text replacement of the original text node during a request",
+          "status": "passed",
+          "title": "rejects an equal-text replacement of the original text node during a request",
+          "duration": 59.895888000000014,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551013677,
+      "endTime": 1793551014314.896,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/legacy-contract.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "never recursively evaluates tokens contained in source or page data",
+          "status": "passed",
+          "title": "never recursively evaluates tokens contained in source or page data",
+          "duration": 2.212133999999992,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "marks page data as untrusted without allowing it to close the data block",
+          "status": "passed",
+          "title": "marks page data as untrusted without allowing it to close the data block",
+          "duration": 0.3247989999999845,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not expand page variables written inside a custom action's selected text",
+          "status": "passed",
+          "title": "does not expand page variables written inside a custom action's selected text",
+          "duration": 0.3003929999999855,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551016105,
+      "endTime": 1793551016107.3247,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/prompt-data.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "reports separate owner, route, config, source and render generation reasons",
+          "status": "passed",
+          "title": "reports separate owner, route, config, source and render generation reasons",
+          "duration": 10.650661000000014,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "route owners survive real anchors but expire on query/hash navigation and pagehide",
+          "status": "passed",
+          "title": "route owners survive real anchors but expire on query/hash navigation and pagehide",
+          "duration": 7.082898,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "context-stale affects future reads, never an issued prompt or unchanged unit",
+          "status": "passed",
+          "title": "context-stale affects future reads, never an issued prompt or unchanged unit",
+          "duration": 218.757702,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "checking an ended document lease does not resurrect route listeners",
+          "status": "passed",
+          "title": "checking an ended document lease does not resurrect route listeners",
+          "duration": 3.397952000000032,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551015187,
+      "endTime": 1793551015427.398,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/render-guard.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "uses article roots, generic feeds, sections and conservative local fallbacks",
+          "status": "passed",
+          "title": "uses article roots, generic feeds, sections and conservative local fallbacks",
+          "duration": 21.609636000000023,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not manufacture a thread from adjacent posts",
+          "status": "passed",
+          "title": "does not manufacture a thread from adjacent posts",
+          "duration": 6.732101000000057,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "keeps ShadowRoot boundaries and rejects a foreign-frame source",
+          "status": "passed",
+          "title": "keeps ShadowRoot boundaries and rejects a foreign-frame source",
+          "duration": 5.463159000000019,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "resolves only an explicit same-document quotation, never external or arbitrary links",
+          "status": "passed",
+          "title": "resolves only an explicit same-document quotation, never external or arbitrary links",
+          "duration": 2.3537019999999984,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "property: random reorder, insertion and removal cannot cross independent item boundaries",
+          "status": "passed",
+          "title": "property: random reorder, insertion and removal cannot cross independent item boundaries",
+          "duration": 315.66576399999997,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "bounds probes even when every child is an opaque semantic item",
+          "status": "passed",
+          "title": "bounds probes even when every child is an opaque semantic item",
+          "duration": 37.736536000000115,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551015151,
+      "endTime": 1793551015541.7366,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/scope-resolver.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "freezes scoped snapshots and rebuilds only the affected scope",
+          "status": "passed",
+          "title": "freezes scoped snapshots and rebuilds only the affected scope",
+          "duration": 196.9261080000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "deletes only detached scopes and leaves a retained snapshot immutable",
+          "status": "passed",
+          "title": "deletes only detached scopes and leaves a retained snapshot immutable",
+          "duration": 22.648915000000216,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "moves preserve scope identity and virtualized text replacement changes the fingerprint",
+          "status": "passed",
+          "title": "moves preserve scope identity and virtualized text replacement changes the fingerprint",
+          "duration": 29.009712000000036,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "tracks explicit reference dependencies without linking unrelated posts",
+          "status": "passed",
+          "title": "tracks explicit reference dependencies without linking unrelated posts",
+          "duration": 45.719291999999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does no projection for metadata-only or unused context",
+          "status": "passed",
+          "title": "does no projection for metadata-only or unused context",
+          "duration": 5.126310000000103,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "ignores inserted translations and excludes private controls and hidden source",
+          "status": "passed",
+          "title": "ignores inserted translations and excludes private controls and hidden source",
+          "duration": 21.227698000000146,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "bounded index and cache converge after 500 acquire/remove operations",
+          "status": "passed",
+          "title": "bounded index and cache converge after 500 acquire/remove operations",
+          "duration": 2342.2883920000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "one cancelled consumer cannot cancel a shared extraction still needed by another",
+          "status": "passed",
+          "title": "one cancelled consumer cannot cancel a shared extraction still needed by another",
+          "duration": 10.636637999999948,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "limits a giant scope projection without copying its complete subtree",
+          "status": "passed",
+          "title": "limits a giant scope projection without copying its complete subtree",
+          "duration": 2513.2539720000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "releases old route registrations and followed shadow roots",
+          "status": "passed",
+          "title": "releases old route registrations and followed shadow roots",
+          "duration": 118.3736630000003,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "never extracts a hidden ancestor or SVG script, including a local fallback",
+          "status": "passed",
+          "title": "never extracts a hidden ancestor or SVG script, including a local fallback",
+          "duration": 13.184497000000192,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "metadata is an explicit dependency only of scopes which use it",
+          "status": "passed",
+          "title": "metadata is an explicit dependency only of scopes which use it",
+          "duration": 9.10584100000051,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rebinds explicit dependencies when a recycled reply changes its reference",
+          "status": "passed",
+          "title": "rebinds explicit dependencies when a recycled reply changes its reference",
+          "duration": 31.01252100000056,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not resurrect a coordinator result after a detached source entry was removed",
+          "status": "passed",
+          "title": "does not resurrect a coordinator result after a detached source entry was removed",
+          "duration": 11.603874999999789,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "retries preparation once before any model request, and bounds continued source churn",
+          "status": "passed",
+          "title": "retries preparation once before any model request, and bounds continued source churn",
+          "duration": 24.2479629999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "invalidates an acquired scope when an ancestor becomes hidden",
+          "status": "passed",
+          "title": "invalidates an acquired scope when an ancestor becomes hidden",
+          "duration": 10.506607000000258,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "does not read translated or hidden text into a scoped title",
+          "status": "passed",
+          "title": "does not read translated or hidden text into a scoped title",
+          "duration": 6.809233999999378,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "bounds pending extraction across repeated generations of one scope",
+          "status": "passed",
+          "title": "bounds pending extraction across repeated generations of one scope",
+          "duration": 12.162528000000748,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "excludes sources under a hidden shadow host",
+          "status": "passed",
+          "title": "excludes sources under a hidden shadow host",
+          "duration": 5.3890879999999015,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551003562,
+      "endTime": 1793551008991.3892,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/snapshot-manager.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet changes during async glossary preparation cannot dispatch old context",
+          "status": "passed",
+          "title": "stylesheet changes during async glossary preparation cannot dispatch old context",
+          "duration": 147.60983099999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "CSS changes after dispatch cannot revoke an issued result",
+          "status": "passed",
+          "title": "CSS changes after dispatch cannot revoke an issued result",
+          "duration": 65.79995299999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "derived prompt values retain validation without adding wire or cache fields",
+          "status": "passed",
+          "title": "derived prompt values retain validation without adding wire or cache fields",
+          "duration": 18.89355999999998,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551014793,
+      "endTime": 1793551015025.8936,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet-dispatch.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link href change validates the actual source on next demand",
+          "status": "passed",
+          "title": "stylesheet link href change validates the actual source on next demand",
+          "duration": 173.03458799999999,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link rel change validates the actual source on next demand",
+          "status": "passed",
+          "title": "stylesheet link rel change validates the actual source on next demand",
+          "duration": 36.13716999999997,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link media change validates the actual source on next demand",
+          "status": "passed",
+          "title": "stylesheet link media change validates the actual source on next demand",
+          "duration": 23.68065700000011,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link disabled change validates the actual source on next demand",
+          "status": "passed",
+          "title": "stylesheet link disabled change validates the actual source on next demand",
+          "duration": 23.595081000000164,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet link type change validates the actual source on next demand",
+          "status": "passed",
+          "title": "stylesheet link type change validates the actual source on next demand",
+          "duration": 29.64394799999991,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rel transition from non-style to case-insensitive alternate stylesheet is observed",
+          "status": "passed",
+          "title": "rel transition from non-style to case-insensitive alternate stylesheet is observed",
+          "duration": 19.918777999999975,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "style media changes invalidate a cached feed scope",
+          "status": "passed",
+          "title": "style media changes invalidate a cached feed scope",
+          "duration": 18.100367000000006,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "load after an intervening old-style cache read validates again",
+          "status": "passed",
+          "title": "load after an intervening old-style cache read validates again",
+          "duration": 20.23832900000002,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet error and inline import load are completion signals, not model work",
+          "status": "passed",
+          "title": "stylesheet error and inline import load are completion signals, not model work",
+          "duration": 18.816332999999986,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "style text and link insert/remove preserve existing observable invalidation",
+          "status": "passed",
+          "title": "style text and link insert/remove preserve existing observable invalidation",
+          "duration": 36.1714750000001,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "1000 completion events coalesce and cosmetic CSS reuses the snapshot",
+          "status": "passed",
+          "title": "1000 completion events coalesce and cosmetic CSS reuses the snapshot",
+          "duration": 36.238068999999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "a style completion during asynchronous preparation cannot publish visible old source",
+          "status": "passed",
+          "title": "a style completion during asynchronous preparation cannot publish visible old source",
+          "duration": 14.027520000000095,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "shadow-local completion affects its acquired subtree, not a sibling shadow tree",
+          "status": "passed",
+          "title": "shadow-local completion affects its acquired subtree, not a sibling shadow tree",
+          "duration": 22.847037,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "document stylesheet completion reaches an acquired nested open shadow scope",
+          "status": "passed",
+          "title": "document stylesheet completion reaches an acquired nested open shadow scope",
+          "duration": 18.489440999999943,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "released managers do not retain or react to stylesheet listeners",
+          "status": "passed",
+          "title": "released managers do not retain or react to stylesheet listeners",
+          "duration": 510.51362900000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "effective sheet disabled changes without an attribute cannot leave a hot snapshot valid",
+          "status": "passed",
+          "title": "effective sheet disabled changes without an attribute cannot leave a hot snapshot valid",
+          "duration": 15.779344000000037,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "128 acquired scopes share two document listeners and remain lazy after a global event",
+          "status": "passed",
+          "title": "128 acquired scopes share two document listeners and remain lazy after a global event",
+          "duration": 760.640934,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet inventory overflow uses bounded demand validation instead of a stale cache hit",
+          "status": "passed",
+          "title": "stylesheet inventory overflow uses bounded demand validation instead of a stale cache hit",
+          "duration": 61.55510100000038,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551011051,
+      "endTime": 1793551012890.5552,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "uses complete short source context for 100 feed items with zero summary RPCs",
+          "status": "passed",
+          "title": "uses complete short source context for 100 feed items with zero summary RPCs",
+          "duration": 3.7494799999999486,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "retains explicit model-summary capability and shares equal requests",
+          "status": "passed",
+          "title": "retains explicit model-summary capability and shares equal requests",
+          "duration": 5.275461999999948,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "bounds automatic long-feed summary fanout and requires explicit admission for another source",
+          "status": "passed",
+          "title": "bounds automatic long-feed summary fanout and requires explicit admission for another source",
+          "duration": 4.985394000000042,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551016358,
+      "endTime": 1793551016371.9854,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/summary-cost.test.ts"
+    },
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "commits the title after unrelated post removal with one request",
+          "status": "passed",
+          "title": "commits the title after unrelated post removal with one request",
+          "duration": 18.70342500000004,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "rejects a changed source title before its observer gets a turn",
+          "status": "passed",
+          "title": "rejects a changed source title before its observer gets a turn",
+          "duration": 3.247479999999996,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793551015957,
+      "endTime": 1793551015979.2476,
+      "status": "passed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/title-contract.test.ts"
+    }
+  ]
+}

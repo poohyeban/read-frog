@@ -1,0 +1,64 @@
+{
+  "numTotalTestSuites": 1,
+  "numPassedTestSuites": 0,
+  "numFailedTestSuites": 1,
+  "numPendingTestSuites": 0,
+  "numTotalTests": 2,
+  "numPassedTests": 1,
+  "numFailedTests": 1,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "snapshot": {
+    "added": 0,
+    "failure": false,
+    "filesAdded": 0,
+    "filesRemoved": 0,
+    "filesRemovedList": [],
+    "filesUnmatched": 0,
+    "filesUpdated": 0,
+    "matched": 0,
+    "total": 0,
+    "unchecked": 0,
+    "uncheckedKeysByFile": [],
+    "unmatched": 0,
+    "updated": 0,
+    "didUpdate": false
+  },
+  "startTime": 1793549696768,
+  "success": false,
+  "testResults": [
+    {
+      "assertionResults": [
+        {
+          "ancestorTitles": [],
+          "fullName": "stylesheet changes during async glossary preparation cannot dispatch old context",
+          "status": "failed",
+          "title": "stylesheet changes during async glossary preparation cannot dispatch old context",
+          "duration": 145.74674499999992,
+          "failureMessages": [
+            "AssertionError: expected 'Translated' to match object { code: 'CONTEXT_STALE' }\n    at Proxy.<anonymous> (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:2050:10)\n    at Proxy.<anonymous> (file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/index.C4tKZ0yW.js:1944:14)\n    at Proxy.methodWrapper (file:///workspace/read-frog/node_modules/.pnpm/chai@6.2.2/node_modules/chai/index.js:1700:25)\n    at /workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet-dispatch.test.ts:34:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///workspace/read-frog/node_modules/.pnpm/vitest@5.0.3_@opentelemetry+api@1.9.1_@types+node@26.1.1_@vitest+coverage-istanbul@5.0._ae5598d6d89bdbbce55cb5898b73ee6a/node_modules/vitest/dist/chunks/run.BTlFXlnv.js:2783:20"
+          ],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        },
+        {
+          "ancestorTitles": [],
+          "fullName": "CSS changes after dispatch cannot revoke an issued result",
+          "status": "passed",
+          "title": "CSS changes after dispatch cannot revoke an issued result",
+          "duration": 74.34777899999995,
+          "failureMessages": [],
+          "meta": {},
+          "tags": [],
+          "benchmarks": []
+        }
+      ],
+      "startTime": 1793549698743,
+      "endTime": 1793549698963.348,
+      "status": "failed",
+      "message": "",
+      "name": "/workspace/read-frog/src/utils/host/translate/context/__tests__/stylesheet-dispatch.test.ts"
+    }
+  ]
+}

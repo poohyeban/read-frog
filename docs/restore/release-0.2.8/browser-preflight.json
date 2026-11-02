@@ -1,0 +1,857 @@
+{
+  "browser": "154.0.8037.57",
+  "source": "upgrade",
+  "provider": "local mock, 80ms",
+  "samples": [
+    {
+      "smart": false,
+      "trial": 0,
+      "cache": "cold",
+      "firstVisibleMs": 160.20000000298023,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 77.29999999701977,
+        "translationReadyAt": 157.5
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 100,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1744,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 43.3999999910593,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 12622868,
+      "interaction": {
+        "keyToFrameMs": 10.099999994039536,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 12590952,
+      "heapAfterStop": 8200016,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 0,
+      "cache": "warm",
+      "firstVisibleMs": 59.3999999910593,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 66.60000000000014,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1446,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 3.2000000327825546,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 11541240,
+      "interaction": {
+        "keyToFrameMs": 10.799999997019768,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 9897744,
+      "heapAfterStop": 8433956,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 1,
+      "cache": "cold",
+      "firstVisibleMs": 199,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 106.70000000298023,
+        "translationReadyAt": 195.59999999403954
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 133.3,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1744,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 49.59999993443489,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 12695344,
+      "interaction": {
+        "keyToFrameMs": 11.599999994039536,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 12670540,
+      "heapAfterStop": 8183324,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 1,
+      "cache": "warm",
+      "firstVisibleMs": 46.20000000298023,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 50,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1461,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 3.0999999940395355,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 11474920,
+      "interaction": {
+        "keyToFrameMs": 13,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 9924672,
+      "heapAfterStop": 8419460,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 2,
+      "cache": "cold",
+      "firstVisibleMs": 159.59999999403954,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 75.5,
+        "translationReadyAt": 157
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.29999999999998,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1744,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 53.29999998211861,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 12386704,
+      "interaction": {
+        "keyToFrameMs": 12.699999988079071,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 12361828,
+      "heapAfterStop": 8158224,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 2,
+      "cache": "warm",
+      "firstVisibleMs": 42,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 66.60000000000002,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1461,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 3.7999999672174454,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 11537340,
+      "interaction": {
+        "keyToFrameMs": 13,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 9847552,
+      "heapAfterStop": 8415908,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 3,
+      "cache": "cold",
+      "firstVisibleMs": 180.1000000089407,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 93.40000000596046,
+        "translationReadyAt": 178.29999999701977
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 99.89999999999998,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1744,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 51.30000002682209,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 12833844,
+      "interaction": {
+        "keyToFrameMs": 13.400000005960464,
+        "scrollFrameGapMs": 16.800000000000068,
+        "scrollY": 630
+      },
+      "heapUsed": 12808920,
+      "heapAfterStop": 8184192,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 3,
+      "cache": "warm",
+      "firstVisibleMs": 46.6000000089407,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 33.40000000000009,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1461,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 3.19999997317791,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 11546896,
+      "interaction": {
+        "keyToFrameMs": 14.900000005960464,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 9898268,
+      "heapAfterStop": 8420376,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 4,
+      "cache": "cold",
+      "firstVisibleMs": 163,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 81.19999998807907,
+        "translationReadyAt": 161.29999999701977
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.4,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1744,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 44.60000003874302,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 14128704,
+      "interaction": {
+        "keyToFrameMs": 1.8999999910593033,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 12379420,
+      "heapAfterStop": 8194980,
+      "errors": []
+    },
+    {
+      "smart": false,
+      "trial": 4,
+      "cache": "warm",
+      "firstVisibleMs": 46.70000000298023,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 49.90000000000009,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1461,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 2.6000000089406967,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 0
+      },
+      "sampledPeakHeapUsed": 11486500,
+      "interaction": {
+        "keyToFrameMs": 2.7000000029802322,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 9883768,
+      "heapAfterStop": 8436676,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 0,
+      "cache": "cold",
+      "firstVisibleMs": 257.40000000596046,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 174.79999999701977,
+        "translationReadyAt": 255.20000000298023
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 100,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1919,
+        "extractions": 24
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 1930.8999999761581,
+        "projections": 24,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 15447460,
+      "interaction": {
+        "keyToFrameMs": 9.699999988079071,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 13762612,
+      "heapAfterStop": 9270896,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 0,
+      "cache": "warm",
+      "firstVisibleMs": 39.6000000089407,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 50,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1490,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 2.5000000298023224,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 12896456,
+      "interaction": {
+        "keyToFrameMs": 7.200000002980232,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 11018776,
+      "heapAfterStop": 9497044,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 1,
+      "cache": "cold",
+      "firstVisibleMs": 251,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 167.5,
+        "translationReadyAt": 247.90000000596046
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.30000000000001,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1919,
+        "extractions": 24
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 1768.4000000208616,
+        "projections": 24,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 15512856,
+      "interaction": {
+        "keyToFrameMs": 6.200000002980232,
+        "scrollFrameGapMs": 16.800000000000068,
+        "scrollY": 630
+      },
+      "heapUsed": 13750640,
+      "heapAfterStop": 9260720,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 1,
+      "cache": "warm",
+      "firstVisibleMs": 41,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 50,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1500,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 2.2999999821186066,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 12556088,
+      "interaction": {
+        "keyToFrameMs": 14.600000008940697,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 10971796,
+      "heapAfterStop": 9483592,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 2,
+      "cache": "cold",
+      "firstVisibleMs": 245.70000000298023,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 163.70000000298023,
+        "translationReadyAt": 244
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 83.30000000000001,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1919,
+        "extractions": 24
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 1747.0999999642372,
+        "projections": 24,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 15538136,
+      "interaction": {
+        "keyToFrameMs": 12.599999994039536,
+        "scrollFrameGapMs": 16.700000000000045,
+        "scrollY": 630
+      },
+      "heapUsed": 13825808,
+      "heapAfterStop": 9261044,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 2,
+      "cache": "warm",
+      "firstVisibleMs": 44,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 50,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1490,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 2.600000023841858,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 11868292,
+      "interaction": {
+        "keyToFrameMs": 5,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 11852452,
+      "heapAfterStop": 9482492,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 3,
+      "cache": "cold",
+      "firstVisibleMs": 301.6000000089407,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 219.20000000298023,
+        "translationReadyAt": 299.40000000596046
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 116.70000000000002,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1913,
+        "extractions": 24
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 2013.1000000089407,
+        "projections": 24,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 16732580,
+      "interaction": {
+        "keyToFrameMs": 3.300000011920929,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 16713464,
+      "heapAfterStop": 9258376,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 3,
+      "cache": "warm",
+      "firstVisibleMs": 44.3999999910593,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 33.30000000000018,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1490,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 2.099999949336052,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 11945140,
+      "interaction": {
+        "keyToFrameMs": 2.5,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 11929300,
+      "heapAfterStop": 9484028,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 4,
+      "cache": "cold",
+      "firstVisibleMs": 284.29999999701977,
+      "phaseCosts": [],
+      "firstResultChain": {
+        "translationRequestedAt": 201.90000000596046,
+        "translationReadyAt": 282.1000000089407
+      },
+      "longTasks": [],
+      "maxFrameGapMs": 116.6,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1931,
+        "extractions": 24
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 24,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 2201.5999999940395,
+        "projections": 24,
+        "metadataProjections": 0,
+        "rebuilds": 24,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 15504664,
+      "interaction": {
+        "keyToFrameMs": 1.9000000059604645,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 13732396,
+      "heapAfterStop": 9248892,
+      "errors": []
+    },
+    {
+      "smart": true,
+      "trial": 4,
+      "cache": "warm",
+      "firstVisibleMs": 52.599999994039536,
+      "phaseCosts": [],
+      "firstResultChain": {},
+      "longTasks": [],
+      "maxFrameGapMs": 66.59999999999991,
+      "walks": 603,
+      "wrappers": 24,
+      "localCounters": {
+        "reads": 1490,
+        "extractions": 0
+      },
+      "summaryMessages": 0,
+      "summaryCalls": 0,
+      "translationCalls": 0,
+      "persistentCacheHits": 0,
+      "contextInstrumentation": "v2-native-counters",
+      "contextDelta": {
+        "readMs": 3.400000035762787,
+        "projections": 0,
+        "metadataProjections": 0,
+        "rebuilds": 0,
+        "validations": 24,
+        "promptValidations": 24,
+        "validationNodes": 72
+      },
+      "sampledPeakHeapUsed": 11598180,
+      "interaction": {
+        "keyToFrameMs": 12.600000008940697,
+        "scrollFrameGapMs": 16.799999999999955,
+        "scrollY": 630
+      },
+      "heapUsed": 11582400,
+      "heapAfterStop": 9485132,
+      "errors": []
+    }
+  ],
+  "transport": "browser harness; simulated extension storage and messages",
+  "compatibility": [
+    {
+      "fixture": "hover-after-navigation",
+      "passed": true
+    },
+    {
+      "fixture": "float",
+      "passed": true
+    },
+    {
+      "fixture": "markdown",
+      "passed": true
+    },
+    {
+      "fixture": "shadow",
+      "passed": true
+    },
+    {
+      "fixture": "giant",
+      "passed": true
+    },
+    {
+      "fixture": "spa",
+      "passed": true
+    },
+    {
+      "fixture": "virtual",
+      "passed": true
+    },
+    {
+      "fixture": "mutation",
+      "passed": true,
+      "mutationMs": 203.41993500000171
+    },
+    {
+      "fixture": "pending-mutation",
+      "passed": true
+    }
+  ]
+}

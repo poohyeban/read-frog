@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { CONTENT_WRAPPER_CLASS } from "@/utils/constants/dom-labels"
 
 const { mockCreateMarkdownContent, mockDefuddleConstructor, mockParse, mockWarn } = vi.hoisted(
   () => ({
@@ -60,18 +61,22 @@ describe("getOrCreateWebPageContext", () => {
 
     const first = await getOrCreateWebPageContext()
 
+    window.__READ_FROG_TRANSLATED_DOCUMENT_TITLE__ = {
+      source: "Original Title",
+      translated: "Translated Browser Title",
+    }
     document.title = "Translated Browser Title"
     const second = await getOrCreateWebPageContext()
 
     expect(first?.webTitle).toBe("Original Title")
     expect(first?.webContent).toBe("# Readable page body")
-    expect(second).toEqual({
+    expect(second).toMatchObject({
       url: first?.url,
       webTitle: "Original Title",
       webDescription: "",
       webContent: first?.webContent,
     })
-    expect(mockDefuddleConstructor).toHaveBeenCalledTimes(1)
+    expect(second?.identity).toBe(first?.identity)
   })
 
   it("extracts webpage content with Defuddle and converts it to markdown", async () => {
@@ -80,7 +85,7 @@ describe("getOrCreateWebPageContext", () => {
     const result = await getOrCreateWebPageContext()
 
     expect(result?.webContent).toBe("# Readable page body")
-    expect(mockDefuddleConstructor).toHaveBeenCalledWith(document, {
+    expect(mockDefuddleConstructor).toHaveBeenCalledWith(expect.any(Document), {
       url: window.location.href,
       useAsync: false,
     })
@@ -102,7 +107,7 @@ describe("getOrCreateWebPageContext", () => {
     await getOrCreateWebPageContext()
 
     expect(mockCreateMarkdownContent).toHaveBeenCalledWith(
-      `<article>${leading}</article>`,
+      `<article><p>${"a".repeat(1500)}</p><p>${"b".repeat(500)}</p></article>`,
       window.location.href,
     )
   })
@@ -154,14 +159,17 @@ describe("getOrCreateWebPageContext", () => {
     const first = await getOrCreateWebPageContext()
 
     // By now the page holds its translations; re-reading it would change the content.
-    document.body.insertAdjacentHTML("beforeend", "<p>Translated paragraph</p>")
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `<p class="${CONTENT_WRAPPER_CLASS}">Translated paragraph</p>`,
+    )
     mockCreateMarkdownContent.mockReturnValueOnce("# Page body with translations")
     window.history.replaceState({}, "", "/article#far")
 
     const second = await getOrCreateWebPageContext()
 
     expect(mockDefuddleConstructor).toHaveBeenCalledTimes(1)
-    expect(second).toEqual({ ...first, url: window.location.href })
+    expect(second).toBe(first) // An immutable snapshot retains its captured URL across anchor jumps.
   })
 
   it("matches a percent-encoded anchor to its element", async () => {
@@ -250,7 +258,7 @@ describe("getOrCreateWebPageContext", () => {
     expect(mockDefuddleConstructor).not.toHaveBeenCalled()
   })
 
-  it("invalidates a same-URL article replacement but not a local paragraph edit", async () => {
+  it("invalidates future document context on both a local edit and same-URL replacement", async () => {
     const { getOrCreateWebPageContext, notePageContentMutations, isWebPageContextCurrent } =
       await loadModule()
     const first = await getOrCreateWebPageContext()
@@ -260,7 +268,7 @@ describe("getOrCreateWebPageContext", () => {
     notePageContentMutations([
       { type: "characterData", target: paragraph.firstChild! } as unknown as MutationRecord,
     ])
-    expect(isWebPageContextCurrent(first!)).toBe(true)
+    expect(isWebPageContextCurrent(first!)).toBe(false)
     const main = document.querySelector("main")!
     const replacement = document.createElement("p")
     replacement.textContent = "A completely different article"
@@ -272,35 +280,23 @@ describe("getOrCreateWebPageContext", () => {
     expect(mockDefuddleConstructor).toHaveBeenCalledTimes(2)
   })
 
-  it("retains article context during 100 content appends and invalidates a true replacement", async () => {
+  it("retains a scoped article during 100 unrelated appends and invalidates its replacement", async () => {
     const { getOrCreateWebPageContext } = await loadModule()
-    await getOrCreateWebPageContext()
-    const main = document.querySelector("main")!
+    document.body.innerHTML = "<main><article><p>Article source</p></article><aside></aside></main>"
+    const article = document.querySelector("article")!
+    const read = () => getOrCreateWebPageContext(true, undefined, { source: article })
+    await read()
+    const main = document.querySelector("aside")!
     for (let index = 0; index < 100; index++) {
       const comment = document.createElement("p")
       comment.textContent = `Comment ${index}`
       main.append(comment)
-      await getOrCreateWebPageContext()
+      await read()
     }
     expect(mockDefuddleConstructor).toHaveBeenCalledTimes(1)
-    main.innerHTML = "<p>Entire new article</p>"
-    await getOrCreateWebPageContext()
+    article.innerHTML = "<p>Entire new article</p>"
+    await read()
     expect(mockDefuddleConstructor).toHaveBeenCalledTimes(2)
-  })
-  it("ends a continuous replacement wait with an explicit retryable error", async () => {
-    const { invalidateWebPageContext, waitForStableWebPageContext } = await loadModule()
-    vi.useFakeTimers()
-    try {
-      invalidateWebPageContext()
-      const changing = setInterval(invalidateWebPageContext, 25)
-      const result = waitForStableWebPageContext(undefined, 200).catch((error) => error)
-      await vi.advanceTimersByTimeAsync(201)
-      expect(await result).toMatchObject({ code: "CONTEXT_UNSTABLE", retryAfterMs: 1000 })
-      clearInterval(changing)
-      expect(mockDefuddleConstructor).not.toHaveBeenCalled()
-    } finally {
-      vi.useRealTimers()
-    }
   })
   it("rejects page A's late context after page B replaces it", async () => {
     const { getOrCreateWebPageContext } = await loadModule()

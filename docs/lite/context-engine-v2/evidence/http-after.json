@@ -1,0 +1,95 @@
+{
+  "unrelatedRemoval": {
+    "http": 1,
+    "firstTranslationMs": 1019.1173990000007
+  },
+  "cache": {
+    "http": 0,
+    "hits": 1
+  },
+  "sharedCancellation": {
+    "http": 1,
+    "consumers": 2
+  },
+  "safe429": {
+    "http": 2
+  },
+  "resources": {
+    "active": 0,
+    "queued": 0,
+    "lanes": 0,
+    "timers": 0,
+    "counters": {
+      "starts": 4,
+      "cancellations": 0,
+      "rejected": 0,
+      "admissions": 4,
+      "eligibilityChecks": 8,
+      "maxActive": 1,
+      "maxQueued": 1
+    },
+    "domains": {
+      "bf136bdd-67df-49f2-b3b6-876590e83021": {
+        "active": 0,
+        "queued": 0,
+        "tokens": 19,
+        "cooldownUntil": 1793539290909
+      }
+    }
+  },
+  "context": {
+    "scopes": 0,
+    "snapshots": 0,
+    "activePreparations": 0,
+    "workEntries": 0,
+    "capacity": 128,
+    "resolutions": 5,
+    "hits": 4,
+    "rebuilds": 1,
+    "projections": 1,
+    "metadataProjections": 1,
+    "visitedNodes": 8,
+    "stalePreparations": 0,
+    "activeExtractions": 0,
+    "evictions": 0,
+    "resolveMs": 18.48312100000112,
+    "readMs": 158.45167000000038,
+    "invalidation": {
+      "registrations": 0,
+      "observers": 0,
+      "observedRoots": 0,
+      "batches": 4,
+      "records": 1,
+      "invalidations": 0,
+      "processingMs": 1.7922160000016447
+    }
+  },
+  "requests": [
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_A"],
+      "status": 200,
+      "at": 1793539290386
+    },
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_SHARED"],
+      "status": 200,
+      "at": 1793539290735
+    },
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_RETRY"],
+      "status": 429,
+      "at": 1793539290893
+    },
+    {
+      "kind": "translation",
+      "members": ["V2_SOURCE_RETRY"],
+      "status": 200,
+      "at": 1793539296383
+    }
+  ],
+  "summaryRPCs": 0,
+  "totalHTTP": 4
+}

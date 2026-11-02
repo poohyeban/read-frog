@@ -104,7 +104,6 @@ vi.mock("@/utils/host/translate/ui/translation-config-feedback", () => ({
 
 vi.mock("@/utils/host/translate/translate-variants", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/utils/host/translate/translate-variants")>()),
-  primePageTranslationContext: () => {},
   translateTextForPageTitle: mockTranslateTextForPageTitle,
 }))
 
